@@ -1,0 +1,10 @@
+# Ignore: Apple's attributes
+.DS_Store
+
+# Ignore: IntelliJ IDEA project files
+.idea/
+*.iml
+
+# Ignore: Java class files
+out/
+*.class
