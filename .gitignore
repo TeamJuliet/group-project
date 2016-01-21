@@ -8,3 +8,8 @@
 # Ignore: Java class files
 out/
 *.class
+
+# Ignore: Eclipse project files
+/bin/
+.project
+.classpath
