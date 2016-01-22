@@ -1,8 +1,5 @@
 package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
-/**
- * Created by devankuleindiren on 21/01/2016.
- */
 public class Move {
 
     private int x;                  // x coordinate of move
