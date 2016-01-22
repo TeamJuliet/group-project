@@ -4,9 +4,17 @@ public class Cell {
     private CellType cellType;
     private Candy candy;
 
-    public Cell (CellType cellType, Candy candy) {
+    public Cell (CellType cellType) {
         this.cellType = cellType;
-        this.candy = candy;
+        this.candy = null;
+    }
+    
+    public void setCandy(Candy candy) {
+    	this.candy = candy;
+    }
+    
+    public Candy getCandy() {
+    	return candy;
     }
 
     public void removeCandy () {
