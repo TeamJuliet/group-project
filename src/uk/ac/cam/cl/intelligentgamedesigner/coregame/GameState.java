@@ -24,7 +24,16 @@ public class GameState {
     	
     	candyGenerator = new CandyGenerator(null);
     	
+    	refreshBoard();
     	fillBoard();
+    }
+    
+    private void refreshBoard() {
+    	fillBoard();
+//    	while(false) {
+//    		fillBoard();
+//    	}
+    	
     }
     
     private void fillBoard() {
@@ -44,6 +53,7 @@ public class GameState {
     }
 
     void makeMove (Move move) throws InvalidMoveException {
+    	
 
     }
 }
