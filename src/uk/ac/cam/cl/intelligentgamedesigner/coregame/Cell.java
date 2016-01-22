@@ -1,11 +1,19 @@
 package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
 public class Cell {
+    private CellType cellType;
+    private Candy candy;
 
-    // Still undecided whether we want this class
+    public Cell (CellType cellType, Candy candy) {
+        this.cellType = cellType;
+        this.candy = candy;
+    }
 
-//    public Candy getCandy() {}
-//    public boolean isJelly() {}
-//    public boolean isLiquorice();
-//    public boolean isIcing();
+    public void removeCandy () {
+        cellType = CellType.EMPTY;
+    }
+
+    public CellType getCellType () {
+        return cellType;
+    }
 }

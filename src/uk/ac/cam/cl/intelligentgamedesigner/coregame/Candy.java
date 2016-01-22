@@ -1,9 +1,16 @@
 package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
+/**
+ * Created by devankuleindiren on 22/01/2016.
+ */
 public class Candy {
+    private CandyColour colour;
 
-    // Still undecided whether we want this class
+    Candy (CandyColour colour) {
+        this.colour = colour;
+    }
 
-//  public int getColour();
-//  public int getType();
+    public CandyColour getColour () {
+        return colour;
+    }
 }
