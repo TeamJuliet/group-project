@@ -1,8 +1,5 @@
 package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
-/**
- * Created by devankuleindiren on 21/01/2016.
- */
 public class GameState {
     Cell[][] board;
     int width;
