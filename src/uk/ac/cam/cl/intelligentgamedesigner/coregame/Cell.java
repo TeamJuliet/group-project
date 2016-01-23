@@ -8,6 +8,11 @@ public class Cell {
         this.cellType = cellType;
         this.candy = null;
     }
+
+    public Cell (CellType cellType, Candy candy) {
+        this.cellType = cellType;
+        this.candy = candy;
+    }
     
     public void setCandy(Candy candy) {
     	this.candy = candy;

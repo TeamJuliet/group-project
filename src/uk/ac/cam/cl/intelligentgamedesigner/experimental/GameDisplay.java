@@ -26,7 +26,7 @@ public class GameDisplay extends JPanel {
 				super.add(displays[i][j]);
 				displays[i][j].setBounds(blockSize * i, blockSize * j, blockSize-1, blockSize-1);
 				displays[i][j].setPosition(new Position(i, j));
-				displays[i][j].addMouseListener(new ColorChangeAdapter());
+				displays[i][j].addMouseListener(new CellChooserAdapter());
 				// Choose the ColorChangeAdapter for modifying the board.
 			}
 		}
@@ -35,7 +35,7 @@ public class GameDisplay extends JPanel {
 	public void setBoard(Cell[][] values) {
 		for (int i = 0; i < sizeX; ++i) {
 			for (int j = 0; j < sizeY; ++j) {
-				displays[i][j].setCandyColor(values[i][j].getCellCandy().getColour());
+				displays[i][j].setCandyColor(values[i][j].getCandy().getColour());
 			}
 		}
 	}
