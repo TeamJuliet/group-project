@@ -62,7 +62,7 @@ public class GameState {
 
     public List<Match> getMatches() {
         List<Match> matches = new ArrayList();
-        List<Coordinates> matched = new ArrayList();
+        List<Position> matched = new ArrayList();
 
         // since we check downwards and rightwards we don't need to check last
         // two rows/columns as min length is 3;
@@ -70,7 +70,7 @@ public class GameState {
             for (int y = 0; y < height - 2; y++) {
                 // TODO: check that .contains actually matches different
                 // instances with the same values;
-                if (matched.contains(new Coordinates(x, y)))
+                if (matched.contains(new Position(x, y)))
                     continue;
                 int height = 1;
                 int width = 1;
@@ -89,9 +89,9 @@ public class GameState {
                 // TODO: there is quite a lot of repetition in those if
                 // statements parphaps this can be optimised
                 if (height > 2 && width > 2) {
-                    Coordinates[] cells = new Coordinates[height + width - 1];
+                    Position[] cells = new Position[height + width - 1];
                     for (int i = 0; i < width; i++) {
-                        Coordinates match = new Coordinates(x + i, y);
+                        Position match = new Position(x + i, y);
                         cells[i] = match;
                         matched.add(match);
                     }
@@ -99,23 +99,23 @@ public class GameState {
                                                        // we don't want to
                                                        // include original
                                                        // candy twice
-                        Coordinates match = new Coordinates(x, y + j);
+                        Position match = new Position(x, y + j);
                         cells[width + j] = match;
                         matched.add(match);
                     }
                     matches.add(new Match(cells, true));
                 } else if (width > 2) {
-                    Coordinates[] cells = new Coordinates[height + width - 1];
+                    Position[] cells = new Position[height + width - 1];
                     for (int i = 0; i < width; i++) {
-                        Coordinates match = new Coordinates(x + i, y);
+                        Position match = new Position(x + i, y);
                         cells[i] = match;
                         matched.add(match);
                     }
                     matches.add(new Match(cells));
                 } else if (height > 2) {
-                    Coordinates cells[] = new Coordinates[height];
+                    Position cells[] = new Position[height];
                     for (int j = 0; j < height; j++) {
-                        Coordinates match = new Coordinates(x, y + j);
+                        Position match = new Position(x, y + j);
                         cells[j] = match;
                         matched.add(match);
                     }

@@ -4,23 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Match {
-    private List<Coordinates> cells  = new ArrayList();
+    private List<Position> cells  = new ArrayList();
     private int               length = 0;
     boolean                   corner = false;
 
-    public Match(Coordinates[] matchedCells, boolean corner) {
-        for (Coordinates c : matchedCells) {
+    public Match(Position[] matchedCells, boolean corner) {
+        for (Position c : matchedCells) {
             cells.add(c);
             length++;
         }
         this.corner = corner;
     }
 
-    public Match(Coordinates[] matchedCells) {
+    public Match(Position[] matchedCells) {
         this(matchedCells, false);
     }
 
-    public List<Coordinates> getCells() {
+    public List<Position> getCells() {
         return cells;
     }
 
