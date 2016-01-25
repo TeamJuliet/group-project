@@ -1,26 +1,19 @@
 package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
+// A move consisting of a two positions.
 public class Move {
+    final private Position p1, p2;
 
-    private int     x;         // x coordinate of move
-    private int     y;         // y coordinate of move
-    private boolean direction; // true => right, false => down
-
-    public Move(int x, int y, boolean direction) {
-        this.x = x;
-        this.y = y;
-        this.direction = direction;
+    public Move(Position p1, Position p2) {
+        this.p1 = p1;
+        this.p2 = p2;
     }
 
-    public int getX() {
-        return x;
+    public Position getP1() {
+        return p1;
     }
 
-    public int getY() {
-        return y;
-    }
-
-    public boolean getDirection() {
-        return direction;
+    public Position getP2() {
+        return p2;
     }
 }

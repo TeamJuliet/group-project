@@ -11,23 +11,29 @@ import javax.swing.border.EtchedBorder;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CandyGenerator;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 
 public class DisplayTester {
 	
 	
 	public static void main(String[] args) {
-		int N = 10, M = 10;
+		/* int N = 10, M = 10;
 		Cell[][] values = new Cell[N][M];
 		CandyGenerator generator = new CandyGenerator(null);
 		for (int i = 0; i < N; ++i) {
 			for (int j = 0; j < M; ++j) {
 				values[i][j] = new Cell(null, generator.getCandy());
 			}
-		}
+		} */
 		JPanel generalPanel = new JPanel();
 		JFrame app = new JFrame();
-		GameDisplay gamePanel = new GameDisplay(10, 10, 50);
-		gamePanel.setBoard(values);
+		GameState game = new GameState(new Design());
+		CellChooser.game = game;
+		GameDisplay gamePanel = new GameDisplay(game.getWidth(), game.getHeight(), 50);
+		CellChooser.display = gamePanel;
+		
+		gamePanel.setBoard(game.board);
 		generalPanel.add(gamePanel);
 		
 		

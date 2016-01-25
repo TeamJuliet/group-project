@@ -1,22 +1,28 @@
 package uk.ac.cam.cl.intelligentgamedesigner.experimental;
 
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
 
 // Class to keep track of the objects that have been selected for a move.
 public class CellChooser {
 	private static Position p1, p2;
 	private static CellDisplay d1 = null, d2;
+	public static GameState game;
+	public static GameDisplay display;
 	// private final static Lock lock = new ReentrantLock();
 	// final public static Condition hasMadeMove = lock.newCondition();
+	
+	private static String positionToString(Position pos) {
+		return "(" + pos.getX() + ", " + pos.getY() + ")";
+	}
 	
 	// Function that attempts to select a new Position.
 	public static synchronized void SelectPosition(Position pos, CellDisplay d) {
 		// In case they are both selected then we can reset.
 		// TODO: In the actual game this should not be performed unless the move
 		// has been completed.
-		if (p2 != null) {
-			reset();
-		}
 		if (p1 == null || d1 == d) {
 			p1 = pos;
 			d1 = d;
@@ -28,11 +34,29 @@ public class CellChooser {
 			//hasMadeMove.signal();
 			d.setSelected(true);
 			// reset();
+			try {
+				game.makeMove(new Move(p1, p2));
+				while(game.makeSmallMove()) {
+					System.err.println("Moving on");
+					display.setBoard(game.board);
+					display.repaint();
+					game.debugBoard();
+					Thread.sleep(1000);
+				}
+			} catch (InvalidMoveException ex) {
+				System.err.println("You performed an invalid move." + positionToString(p1) + " " + positionToString(p2));
+				
+				game.debugBoard();
+			} catch (InterruptedException inter) {
+				inter.printStackTrace();
+			}
+			System.out.println("The move has ended");
+			reset();
 		}
 	}
 	
 	// Function that resets the positions that have been selected.
-	public static synchronized void reset() {
+	public static void reset() {
 		// Reset the borders for the two items.
 		d1.setSelected(false);
 		d2.setSelected(false);
