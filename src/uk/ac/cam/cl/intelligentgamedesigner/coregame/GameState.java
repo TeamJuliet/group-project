@@ -347,11 +347,11 @@ public class GameState {
 					if (y >= 0) { 
 						board[i][j].setCandy(board[i][y].getCandy());
 						board[i][y].removeCandy();
-						if (board[i][j].getCandy().isDetonated()) {
-							System.out.println("Moved Detonating Candy.");
-							detonated.add(new Position(i, j));
-						}
 					}
+				}
+				if (board[i][j].hasCandy() && board[i][j].getCandy().isDetonated()) {
+					// System.out.println("Moved Detonating Candy.");
+					detonated.add(new Position(i, j));
 				}
 			}
 		}
