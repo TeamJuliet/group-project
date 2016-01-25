@@ -4,4 +4,5 @@ public enum CellType {
     UNUSABLE,
     EMPTY,
     ICING,
+    NORMAL
 }

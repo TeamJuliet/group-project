@@ -1,5 +1,10 @@
 package uk.ac.cam.cl.intelligentgamedesigner.experimental;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.Timer;
+
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
@@ -39,16 +44,19 @@ public class CellChooser {
 				while(game.makeSmallMove()) {
 					System.err.println("Moving on");
 					display.setBoard(game.board);
-					display.repaint();
+					display.paintImmediately(0, 0, display.getWidth(), display.getHeight());
 					game.debugBoard();
-					Thread.sleep(1000);
+					Thread.sleep(500);
 				}
 			} catch (InvalidMoveException ex) {
 				System.err.println("You performed an invalid move." + positionToString(p1) + " " + positionToString(p2));
 				
 				game.debugBoard();
-			} catch (InterruptedException inter) {
+			} /*catch (InterruptedException inter) {
 				inter.printStackTrace();
+			}*/ catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 			System.out.println("The move has ended");
 			reset();

@@ -1,7 +1,5 @@
 package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
-import java.util.Random;
-
 public class PseudoRandomCandyGenerator extends CandyGenerator {
 
 	public PseudoRandomCandyGenerator(DesignParameters designParameters) {
@@ -17,9 +15,6 @@ public class PseudoRandomCandyGenerator extends CandyGenerator {
 	}
 
 	public Candy getCandy() {
-		Random random = new Random();
-
-		// int result = random.nextInt(CandyColour.values().length);
 		int result = nextPseudoRandom() % CandyColour.values().length;
 
 		return new Candy(CandyColour.values()[result], CandyType.NORMAL);

@@ -8,7 +8,7 @@ public class ColorChangeAdapter extends MouseAdapter {
 	@Override
     public void mousePressed(MouseEvent e) {
     	CellDisplay cell = (CellDisplay) e.getSource();
-    	cell.setCandyColor(CellDisplay.next(cell.getCandyColour()));
+    	cell.setNextCandyColour();
     	cell.repaint();
     }
 }

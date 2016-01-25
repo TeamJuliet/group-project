@@ -1,7 +1,5 @@
 package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
-import java.util.Random;
-
 public abstract class CandyGenerator {
     private DesignParameters designParameters;
 

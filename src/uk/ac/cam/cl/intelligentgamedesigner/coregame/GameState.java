@@ -44,10 +44,15 @@ public class GameState {
 		// }
 
 	}
-	
-	public int getHeight() { return height; }
-	public int getWidth() { return width; }
-	
+
+	public int getHeight() {
+		return height;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
 	private class SingleTileAnalysis {
 		// the start and end of the match on x-axis.
 		public int start_x, end_x;
@@ -79,9 +84,10 @@ public class GameState {
 	// Returns the axial analysis for a single tile.
 	// (i.e. the intervals on the x and y-axis that match the tile.
 	private SingleTileAnalysis analyzeTile(Position pos) {
-		System.out.println("Board before analysis: ");
-		debugBoard();
-		System.out.println("Analysis for " + pos.getX() + " " + pos.getY());
+		/*
+		 * System.out.println("Board before analysis: "); debugBoard();
+		 * System.out.println("Analysis for " + pos.getX() + " " + pos.getY());
+		 */
 		int x = pos.getX(), y = pos.getY();
 		CandyColour cellColour = board[x][y].getCandy().getColour();
 		int start_x = x - 1, end_x = x + 1, start_y = y - 1, end_y = y + 1;
@@ -98,7 +104,8 @@ public class GameState {
 		start_y++;
 		end_x--;
 		end_y--;
-		System.out.println("s_x: " + start_x + " e_x: " + end_x + " s_y: " + start_y + " e_y: " + end_y);
+		// System.out.println("s_x: " + start_x + " e_x: " + end_x + " s_y: " +
+		// start_y + " e_y: " + end_y);
 		return new SingleTileAnalysis(x, y, start_x, end_x, start_y, end_y);
 	}
 
@@ -107,9 +114,9 @@ public class GameState {
 		SingleTileAnalysis analysis = analyzeTile(position);
 		return analysis.getLengthX() > 2 || analysis.getLengthY() > 2;
 	}
-	
+
 	private boolean wasSomethingPopped = false;
-	
+
 	// Function that adds the tile to detonated (the ones that are going to
 	// break on the
 	// next state). Note that bombs should have two levels of detonation.
@@ -118,7 +125,7 @@ public class GameState {
 	// TODO: Need to add scoring.
 	private void trigger(int x, int y) {
 		Cell current = board[x][y];
-		
+
 		if (current.hasCandy() && current.getCandy().isDetonated())
 			return;
 		if (current.hasCandy() && current.getCandy().getCandyType().isSpecial()) {
@@ -146,30 +153,38 @@ public class GameState {
 	// Function that replaces all the matched tiles with their respective
 	// Candy (either empty or special is some cases).
 	private void markAndReplaceMatchingTiles() {
+		// TODO(Dimitrios): make this more concise.
 		for (int x = 0; x < width; ++x) {
 			for (int y = 0; y < height; ++y) {
 				// Do not consider EMPTY cells.
 				if (board[x][y].getCellType() == CellType.EMPTY)
 					continue;
+				CandyColour colour = board[x][y].getCandy().getColour();
 				SingleTileAnalysis analysis = analyzeTile(new Position(x, y));
 				// In case there is a horizontal match.
 				if (analysis.getLengthX() > 2) {
+					// System.out.println("Found a horizontal at (" + x + ", " +
+					// y + ")");
 					boolean foundVertical = false;
-					if (analysis.getLengthX() >= 5) foundVertical = true;
+					// If it forms a bomb there is no need to place wrapped.
+					if (analysis.getLengthX() >= 5)
+						foundVertical = true;
 					for (int k = analysis.start_x; k <= analysis.end_x; ++k) {
 						SingleTileAnalysis childAnalysis = analyzeTile(new Position(k, y));
 						if (childAnalysis.getLengthY() > 2) {
-							// Should this candy be replaced by a wrapped candy.
+							// This candy will be replaced by a wrapped one if
+							// it is the first junction.
 							if (!foundVertical) {
 								foundVertical = true;
 								// Wrap the candy at position (k, y).
-								board[k][y].changeCandyType(CandyType.WRAPPED);
+								board[k][y].setCandy(new Candy(colour, CandyType.WRAPPED));
 							} else {
+								// Otherwise just empty that candy.
 								trigger(k, y);
 							}
 							// Iterate through the vertical column and trigger
 							// them.
-							for (int yy = childAnalysis.start_y; yy <= childAnalysis.end_y; ++y) {
+							for (int yy = childAnalysis.start_y; yy <= childAnalysis.end_y; ++yy) {
 								if (yy == y)
 									continue;
 								trigger(k, yy);
@@ -180,13 +195,15 @@ public class GameState {
 							trigger(k, y);
 						}
 					}
-					if (!foundVertical) {
+					if (analysis.getLengthX() == 3)
+						continue;
+					else if (!foundVertical) {
 						// If last move is in the range we went through, then
 						// make
 						// that one the stripped candy.
 						if (lastMove == null || !moveInHorizontalRange(lastMove, analysis.start_x, analysis.end_x)) {
 							// Make the middle candy vertically stripped.
-							board[x + 1][y].changeCandyType(CandyType.VERTICALLY_STRIPPED);
+							board[x + 1][y].setCandy(new Candy(colour, CandyType.VERTICALLY_STRIPPED));
 						} else {
 							int coordinate;
 							// If one of the positions has the same
@@ -195,17 +212,71 @@ public class GameState {
 								coordinate = lastMove.getP1().getX();
 							else
 								coordinate = lastMove.getP2().getX();
-							board[coordinate][y].changeCandyType(CandyType.VERTICALLY_STRIPPED);
+							board[coordinate][y].setCandy(new Candy(colour, CandyType.VERTICALLY_STRIPPED));
 						}
 					} else {
 						// TODO: Fix to be aligned with the last move.
-						if (analysis.getLengthX() >= 5) board[x+2][y].changeCandyType(CandyType.BOMB);
+						if (analysis.getLengthX() >= 5)
+							board[x + 2][y].changeCandyType(CandyType.BOMB);
 					}
-				} else if (analysis.getLengthY() > 2) {
-					boolean foundHorizontal = false;
-					// TODO: complete this.
-
 				}
+				/* Symmetric case for the vertical matches. */
+				else if (analysis.getLengthY() > 2) {
+					boolean foundHorizontal = false;
+					// If it forms a bomb there is no need to place wrapped.
+					if (analysis.getLengthY() >= 5)
+						foundHorizontal = true;
+					for (int k = analysis.start_y; k <= analysis.end_y; ++k) {
+						SingleTileAnalysis childAnalysis = analyzeTile(new Position(x, k));
+						if (childAnalysis.getLengthY() > 2) {
+							// This candy will be replaced by a wrapped one if
+							// it is the first junction.
+							if (!foundHorizontal) {
+								foundHorizontal = true;
+								// Wrap the candy at position (k, y).
+								board[x][k].setCandy(new Candy(colour, CandyType.WRAPPED));
+							} else {
+								// Otherwise just empty that candy.
+								trigger(x, k);
+							}
+							// Iterate through the vertical column and trigger
+							// them.
+							for (int xx = childAnalysis.start_x; xx <= childAnalysis.end_x; ++xx) {
+								if (xx == x)
+									continue;
+								trigger(xx, k);
+							}
+						} else {
+							// If there is no vertical match formed then just
+							// trigger the cell.
+							trigger(x, k);
+						}
+					}
+					if (analysis.getLengthY() == 3)
+						continue;
+					else if (!foundHorizontal) {
+						// If last move is in the range we went through, then
+						// make that one the stripped candy.
+						if (lastMove == null || !moveInVerticalRange(lastMove, analysis.start_y, analysis.end_y)) {
+							// Make the middle candy vertically stripped.
+							board[x][y+1].setCandy(new Candy(colour, CandyType.VERTICALLY_STRIPPED));
+						} else {
+							int coordinate;
+							// If one of the positions has the same
+							// x-coordinate.
+							if (lastMove.getP1().getX() == x)
+								coordinate = lastMove.getP1().getY();
+							else
+								coordinate = lastMove.getP2().getY();
+							board[x][coordinate].setCandy(new Candy(colour, CandyType.VERTICALLY_STRIPPED));
+						}
+					} else {
+						// TODO: Fix to be aligned with the last move.
+						if (analysis.getLengthY() >= 5)
+							board[x][y + 2].changeCandyType(CandyType.BOMB);
+					}
+				}
+
 			}
 		}
 	}
@@ -265,24 +336,30 @@ public class GameState {
 	// Brings candies down.
 	private void bringDownCandies() {
 		for (int i = 0; i < width; ++i) {
-			for (int j = 1; j < height; ++j) {
-				if (board[i][j - 1].getCellType().equals(CellType.EMPTY)) {
-					// board[i][j].getUpper( board[i][j-1] );
+			for (int j = height - 1; j >= 1; --j) {
+				if (board[i][j].getCellType().equals(CellType.EMPTY)) {
+					board[i][j].setCandy(board[i][j - 1].getCandy());
+					;
+					board[i][j - 1].removeCandy();
 				}
 			}
 		}
 	}
 
+	// Function that fills the board by requesting candies from the
+	// candyGenerator.
 	private void fillBoard() {
+		int debugCount = 0;
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
 				Cell cell = board[x][y];
 				if (cell.getCellType() == CellType.EMPTY) {
-					Candy candy = candyGenerator.getCandy();
-					cell.setCandy(candy);
+					cell.setCandy(candyGenerator.getCandy());
+					debugCount++;
 				}
 			}
 		}
+		System.out.println("The number of filled cells is " + debugCount);
 	}
 
 	Cell getCell(int x, int y) {
@@ -318,7 +395,7 @@ public class GameState {
 		else if (cell1.getCandy().getCandyType().equals(CandyType.NORMAL)
 				&& cell2.getCandy().getCandyType().equals(CandyType.BOMB))
 			return true;
-		
+
 		// Swap values and check if the tiles form a match.
 		Candy tmp = cell1.getCandy();
 		cell1.setCandy(cell2.getCandy());
@@ -326,16 +403,17 @@ public class GameState {
 		boolean isValid = tileFormsMatch(move.getP1()) || tileFormsMatch(move.getP2());
 		return isValid;
 	}
-	
+
 	private boolean sameColourWithCell(Cell c, CandyColour colour) {
-		if (c.getCandy() == null) return false;
+		if (c.getCandy() == null || c.getCandy().getColour() == null)
+			return false;
 		return c.getCandy().getColour().equals(colour);
 	}
-	
+
 	private void breakAllOf(CandyColour colour) {
 		for (int i = 0; i < width; ++i) {
 			for (int j = 0; j < height; ++j) {
-				if (sameColourWithCell(board[i][j], colour)) 
+				if (sameColourWithCell(board[i][j], colour))
 					trigger(i, j);
 			}
 		}
@@ -352,80 +430,107 @@ public class GameState {
 	}
 
 	private boolean hasSpecial(Position pos) {
-		return getCell(pos).hasCandy() && getCell(pos).getCandy().getCandyType().isSpecial(); 
+		return getCell(pos).hasCandy() && getCell(pos).getCandy().getCandyType().isSpecial();
 	}
-	
+
 	private int proceedState = 0;
-	
+
 	public void makeMove(Move move) throws InvalidMoveException {
 		if (!isMoveValid(move))
 			throw new InvalidMoveException();
 		lastMove = move;
-		makeSmallMove();
-		// if (hasSpecial(move.getP1()) && hasSpecial(move.getP2())) combine them
+		// makeSmallMove();
+		// if (hasSpecial(move.getP1()) && hasSpecial(move.getP2())) combine
+		// them
 		// if (oneIsBomb() && otherRegular()) then detonate break.
 		// else if (oneIsBomb() && otherSpecial()) then replace with Special.
 
 	}
-	
-	
+
+	private int countSmallMoves = 0;
+
 	public boolean makeSmallMove() {
+		countSmallMoves++;
+		System.out.println("We are on " + countSmallMoves);
 		if (proceedState == 0) {
+			System.out.println("1: Mark and replace tiles on");
+			debugBoard();
 			markAndReplaceMatchingTiles();
 			lastMove = null;
-			if (!wasSomethingPopped) return false;
+			if (!wasSomethingPopped)
+				return false;
+		} else if (proceedState == 1) {
+			detonateAllPending();
+			System.out.println("2: Detonating all pending.");
+		} else if (proceedState == 2) {
+			bringDownCandies();
+			fillBoard();
+			System.out.println("3: Bringing down some candies (and filling board).");
+			wasSomethingPopped = false;
 		}
-		else if (proceedState == 1) detonateAllPending();
-		else if (proceedState == 2) bringDownCandies();
 		proceedState = (proceedState + 1) % 3;
 		return true;
 	}
-	
+
 	private void proceed() {
 		wasSomethingPopped = false;
 		markAndReplaceMatchingTiles();
 		detonateAllPending();
 		bringDownCandies();
 		lastMove = null;
-		if (wasSomethingPopped) proceed();
+		if (wasSomethingPopped)
+			proceed();
 	}
-	
-	// Returns a list of all valid moves. 
+
+	// Returns a list of all valid moves.
 	public List<Move> getValidMoves() {
 		List<Move> moves = new ArrayList<Move>();
 		for (int i = 0; i < width; ++i) {
 			for (int j = 0; j < height; ++j) {
-				Move move1 = new Move(new Position(i, j), new Position(i+1, j));
-				if (isMoveValid(move1)) moves.add(move1);
-				Move move2 = new Move(new Position(i, j), new Position(i, j+1));
-				if (isMoveValid(move2)) moves.add(move2);
+				Move move1 = new Move(new Position(i, j), new Position(i + 1, j));
+				if (isMoveValid(move1))
+					moves.add(move1);
+				Move move2 = new Move(new Position(i, j), new Position(i, j + 1));
+				if (isMoveValid(move2))
+					moves.add(move2);
 			}
 		}
 		return moves;
 	}
 
 	private String candyColorToString(CandyColour candy) {
+		if (candy == null) return "B";
 		switch (candy) {
-		case RED: return "R";
-		case GREEN: return "G";
-		case YELLOW: return "Y";
-		case ORANGE: return "O";
-		case BLUE: return "B";
-		case PURPLE: return "P";
+		case RED:
+			return "R";
+		case GREEN:
+			return "G";
+		case YELLOW:
+			return "Y";
+		case ORANGE:
+			return "O";
+		case BLUE:
+			return "B";
+		case PURPLE:
+			return "P";
 		}
 		return "";
 	}
-	
+
 	private String candyTypeToString(CandyType candy) {
 		switch (candy) {
-		case NORMAL: return "N";
-		case VERTICALLY_STRIPPED: return "V";
-		case HORIZONTALLY_STRIPPED: return "H";
-		case WRAPPED: return "W";
+		case NORMAL:
+			return "N";
+		case VERTICALLY_STRIPPED:
+			return "V";
+		case HORIZONTALLY_STRIPPED:
+			return "H";
+		case WRAPPED:
+			return "W";
 		}
 		return "";
 	}
-	
+
 	private String cellToString(int i, int j) {
 		Cell cell = getCell(i, j);
 		if (cell.hasCandy()) {
@@ -433,85 +538,57 @@ public class GameState {
 		}
 		return "EE";
 	}
-	
+
 	public void debugBoard() {
 		System.out.println();
-		System.out.print("    ");
-		for (int i = 0; i < width; ++i) System.out.print("  " + i + " ");
-		System.out.println();
-		for (int i = 0; i < width; ++i) {
+		System.out.print("   ");
+		for (int i = 0; i < width; ++i)
 			System.out.print(" " + i + " ");
-			for (int j = 0; j < height; ++j) {
-				System.out.print(cellToString(i, j) + " ");
+		System.out.println();
+		for (int i = 0; i < height; ++i) {
+			System.out.print(" " + i + " ");
+			for (int j = 0; j < width; ++j) {
+				System.out.print(cellToString(j, i) + " ");
 			}
 			System.out.println();
 		}
 	}
-	
+
 	/*
-	public List<Match> getMatches() {
-		List<Match> matches = new ArrayList();
-		List<Coordinates> matched = new ArrayList();
-
-		// since we check downwards and rightwards we don't need to check last
-		// two rows/columns as min length is 3;
-		for (int x = 0; x < width - 2; x++) {
-			for (int y = 0; y < height - 2; y++) {
-				// TODO: check that .contains actually matches different
-				// instances with the same values;
-				if (matched.contains(new Coordinates(x, y)))
-					continue;
-				int height = 1;
-				int width = 1;
-
-				CandyColour colour = getCell(x, y).getCandy().getColour();
-
-				while (getCell(x + 1 + width, y).getCandy().getColour() == colour) {
-					width++;
-				}
-				while (getCell(x, y + 1 + height).getCandy().getColour() == colour) {
-					height++;
-				}
-
-				// TODO: there is quite a lot of repetition in those if
-				// statements parphaps this can be optimised
-				if (height > 2 && width > 2) {
-					Coordinates[] cells = new Coordinates[height + width - 1];
-					for (int i = 0; i < width; i++) {
-						Coordinates match = new Coordinates(x + i, y);
-						cells[i] = match;
-						matched.add(match);
-					}
-					for (int j = 1; j < height; j++) { // start from one since
-														// we don't want to
-														// include original
-														// candy twice
-						Coordinates match = new Coordinates(x, y + j);
-						cells[width + j] = match;
-						matched.add(match);
-					}
-					matches.add(new Match(cells, true));
-				} else if (width > 2) {
-					Coordinates[] cells = new Coordinates[height + width - 1];
-					for (int i = 0; i < width; i++) {
-						Coordinates match = new Coordinates(x + i, y);
-						cells[i] = match;
-						matched.add(match);
-					}
-					matches.add(new Match(cells));
-				} else if (height > 2) {
-					Coordinates cells[] = new Coordinates[height];
-					for (int j = 0; j < height; j++) {
-						Coordinates match = new Coordinates(x, y + j);
-						cells[j] = match;
-						matched.add(match);
-					}
-					matches.add(new Match(cells));
-				}
-
-			}
-		}
-
-		return matches;
-	} */
+	 * public List<Match> getMatches() { List<Match> matches = new ArrayList();
+	 * List<Coordinates> matched = new ArrayList();
+	 * 
+	 * // since we check downwards and rightwards we don't need to check last //
+	 * two rows/columns as min length is 3; for (int x = 0; x < width - 2; x++)
+	 * { for (int y = 0; y < height - 2; y++) { // TODO: check that .contains
+	 * actually matches different // instances with the same values; if
+	 * (matched.contains(new Coordinates(x, y))) continue; int height = 1; int
+	 * width = 1;
+	 * 
+	 * CandyColour colour = getCell(x, y).getCandy().getColour();
+	 * 
+	 * while (getCell(x + 1 + width, y).getCandy().getColour() == colour) {
+	 * width++; } while (getCell(x, y + 1 + height).getCandy().getColour() ==
+	 * colour) { height++; }
+	 * 
+	 * // TODO: there is quite a lot of repetition in those if // statements
+	 * parphaps this can be optimised if (height > 2 && width > 2) {
+	 * Coordinates[] cells = new Coordinates[height + width - 1]; for (int i =
+	 * 0; i < width; i++) { Coordinates match = new Coordinates(x + i, y);
+	 * cells[i] = match; matched.add(match); } for (int j = 1; j < height; j++)
+	 * { // start from one since // we don't want to // include original //
+	 * candy twice Coordinates match = new Coordinates(x, y + j); cells[width +
+	 * j] = match; matched.add(match); } matches.add(new Match(cells, true)); }
+	 * else if (width > 2) { Coordinates[] cells = new Coordinates[height +
+	 * width - 1]; for (int i = 0; i < width; i++) { Coordinates match = new
+	 * Coordinates(x + i, y); cells[i] = match; matched.add(match); }
+	 * matches.add(new Match(cells)); } else if (height > 2) { Coordinates
+	 * cells[] = new Coordinates[height]; for (int j = 0; j < height; j++) {
+	 * Coordinates match = new Coordinates(x, y + j); cells[j] = match;
+	 * matched.add(match); } matches.add(new Match(cells)); }
+	 * 
+	 * } }
+	 * 
+	 * return matches; }
+	 */
 }

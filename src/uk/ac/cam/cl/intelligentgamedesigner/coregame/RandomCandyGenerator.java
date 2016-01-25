@@ -9,10 +9,7 @@ public class RandomCandyGenerator extends CandyGenerator {
 
 	public Candy getCandy() {
 		Random random = new Random();
-
 		int result = random.nextInt(CandyColour.values().length);
-
-
 		return new Candy(CandyColour.values()[result], CandyType.NORMAL);
 	}
 

@@ -21,7 +21,7 @@ public class Cell {
 
     public void setCandy(Candy candy) {
         this.candy = candy;
-        if (candy != null) cellType = null;
+        if (candy != null) cellType = CellType.NORMAL;
     }
 
     public Candy getCandy() {
@@ -39,12 +39,16 @@ public class Cell {
     
     // Upgrades candy to the type specified.
     public void changeCandyType(CandyType candyType) {
-    	candy = new Candy(candyType == CandyType.BOMB ? null : candy.getColour(), candyType);
+    	if (candyType == CandyType.BOMB) {
+    		candy = new Candy(null, CandyType.BOMB);
+    	} else {
+    		candy = new Candy(candy.getColour(), candyType);
+    	}
     }
     
     // Function that returns whether it is possible to move the contents of the block.
     public boolean isMoveable() {
-    	return cellType == null;
+    	return cellType == cellType.NORMAL;
     }
     
     public CellType getCellType() {
