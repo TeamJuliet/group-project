@@ -229,7 +229,7 @@ public class GameState {
 						foundHorizontal = true;
 					for (int k = analysis.start_y; k <= analysis.end_y; ++k) {
 						SingleTileAnalysis childAnalysis = analyzeTile(new Position(x, k));
-						if (childAnalysis.getLengthY() > 2) {
+						if (childAnalysis.getLengthX() > 2) {
 							// This candy will be replaced by a wrapped one if
 							// it is the first junction.
 							if (!foundHorizontal) {
@@ -260,7 +260,7 @@ public class GameState {
 						// make that one the stripped candy.
 						if (lastMove == null || !moveInVerticalRange(lastMove, analysis.start_y, analysis.end_y)) {
 							// Make the middle candy vertically stripped.
-							board[x][y+1].setCandy(new Candy(colour, CandyType.VERTICALLY_STRIPPED));
+							board[x][y+1].setCandy(new Candy(colour, CandyType.HORIZONTALLY_STRIPPED));
 						} else {
 							int coordinate;
 							// If one of the positions has the same
@@ -269,7 +269,7 @@ public class GameState {
 								coordinate = lastMove.getP1().getY();
 							else
 								coordinate = lastMove.getP2().getY();
-							board[x][coordinate].setCandy(new Candy(colour, CandyType.VERTICALLY_STRIPPED));
+							board[x][coordinate].setCandy(new Candy(colour, CandyType.HORIZONTALLY_STRIPPED));
 						}
 					} else {
 						// TODO: Fix to be aligned with the last move.
