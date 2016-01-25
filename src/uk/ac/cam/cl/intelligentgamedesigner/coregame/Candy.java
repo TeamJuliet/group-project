@@ -4,7 +4,7 @@ public class Candy {
     final private CandyColour colour;
     final private CandyType candyType;
     
-    private boolean detonated;
+    private boolean detonated = false;
     private int detonationsRemaining = 0;
     
     Candy (CandyColour colour, CandyType candyType) {

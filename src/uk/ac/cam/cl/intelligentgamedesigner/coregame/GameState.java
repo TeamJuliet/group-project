@@ -124,6 +124,7 @@ public class GameState {
 	// Consider making this i, j.
 	// TODO: Need to add scoring.
 	private void trigger(int x, int y) {
+		if (!inBoard(new Position(x, y))) return;
 		Cell current = board[x][y];
 
 		if (current.hasCandy() && current.getCandy().isDetonated())
@@ -283,10 +284,9 @@ public class GameState {
 
 	// Function that will detonate a wrapped candy.
 	private void detonateWrapped(Position wrapped) {
-		for (int i = wrapped.getX() - 1; i <= wrapped.getY() + 1; ++i) {
+		for (int i = wrapped.getX() - 1; i <= wrapped.getX() + 1; ++i) {
 			for (int j = wrapped.getY() - 1; j <= wrapped.getY() + 1; ++j) {
 				if (i == wrapped.getX() && j == wrapped.getY()) {
-					// table[i][j].detonate
 					continue;
 				}
 				trigger(i, j);
@@ -294,14 +294,16 @@ public class GameState {
 		}
 	}
 
+	// Function that performs the clearing of the vertical line for the stripped candy.
 	private void detonateVerticallyStripped(Position vStripped) {
 		for (int y = 0; y < height; ++y) {
 			trigger(vStripped.getX(), y);
 		}
 	}
 
+	// Function that performs the clearing of the horizontal line for the stripped candy.
 	private void detonateHorizontallyStripped(Position hStripped) {
-		for (int x = 0; x < height; ++x) {
+		for (int x = 0; x < width; ++x) {
 			trigger(x, hStripped.getY());
 		}
 	}
@@ -339,7 +341,6 @@ public class GameState {
 			for (int j = height - 1; j >= 1; --j) {
 				if (board[i][j].getCellType().equals(CellType.EMPTY)) {
 					board[i][j].setCandy(board[i][j - 1].getCandy());
-					;
 					board[i][j - 1].removeCandy();
 				}
 			}
@@ -375,7 +376,7 @@ public class GameState {
 		return inRange(pos.getX(), 0, width - 1) && inRange(pos.getY(), 0, height - 1);
 	}
 
-	private boolean isPositionValid(Position pos) {
+	private boolean isPositionValidAndMoveable(Position pos) {
 		return inBoard(pos) && board[pos.getX()][pos.getY()].isMoveable();
 	}
 
@@ -383,24 +384,29 @@ public class GameState {
 		return board[pos.getX()][pos.getY()];
 	}
 
-	private boolean isMoveValid(Move move) {
-		if (!isPositionValid(move.getP1()) && !isPositionValid(move.getP2()))
-			return false;
+	private void swapCandies(Move move) {
 		Cell cell1 = getCell(move.getP1()), cell2 = getCell(move.getP2());
-		if (cell1.getCandy().getCandyType().isSpecial() && cell2.getCandy().getCandyType().isSpecial())
-			return true;
-		else if (cell1.getCandy().getCandyType().equals(CandyType.BOMB)
-				&& cell2.getCandy().getCandyType().equals(CandyType.NORMAL))
-			return true;
-		else if (cell1.getCandy().getCandyType().equals(CandyType.NORMAL)
-				&& cell2.getCandy().getCandyType().equals(CandyType.BOMB))
-			return true;
-
 		// Swap values and check if the tiles form a match.
 		Candy tmp = cell1.getCandy();
 		cell1.setCandy(cell2.getCandy());
 		cell2.setCandy(tmp);
+	}
+	
+	private boolean isMoveValid(Move move) {
+		if (!isPositionValidAndMoveable(move.getP1()) || !isPositionValidAndMoveable(move.getP2()))
+			return false;
+		Cell cell1 = getCell(move.getP1()), cell2 = getCell(move.getP2());
+		if (cell1.getCandy().getCandyType().isSpecial() && cell2.getCandy().getCandyType().isSpecial())
+			return true;
+		// Exchanging a Bomb with a cell that has a moveable item is a valid move.
+		else if (cell1.getCandy().getCandyType().equals(CandyType.BOMB) ||
+				cell2.getCandy().getCandyType().equals(CandyType.BOMB))
+			return true;
+
+		swapCandies(move);
 		boolean isValid = tileFormsMatch(move.getP1()) || tileFormsMatch(move.getP2());
+		// Place candies as they were initially.
+		swapCandies(move);
 		return isValid;
 	}
 
@@ -410,6 +416,7 @@ public class GameState {
 		return c.getCandy().getColour().equals(colour);
 	}
 
+	// Function that performs the combination of a bomb and a Normal Candy.
 	private void breakAllOf(CandyColour colour) {
 		for (int i = 0; i < width; ++i) {
 			for (int j = 0; j < height; ++j) {
@@ -419,18 +426,26 @@ public class GameState {
 		}
 	}
 
-	private void replaceWithSpecialAllOf(CandyColour colourMatched, CellType typeToReplace) {
+	// Function that performs the combination of a bomb and a Special Candy.
+	private void replaceWithSpecialAllOf(CandyColour colourMatched, CandyType typeToReplace) {
 		for (int i = 0; i < width; ++i) {
 			for (int j = 0; j < height; ++j) {
-				// board[i][j].makeSpecial(typeToReplace());
-				if (sameColourWithCell(board[i][j], colourMatched))
+				if (sameColourWithCell(board[i][j], colourMatched)) {
+					board[i][j].setCandy(new Candy(colourMatched, typeToReplace));
 					trigger(i, j);
+				}
 			}
 		}
 	}
 
+	// Function that checks whether the position contains a special candy.
 	private boolean hasSpecial(Position pos) {
 		return getCell(pos).hasCandy() && getCell(pos).getCandy().getCandyType().isSpecial();
+	}
+	
+	// Function that checks whether the position contains a bomb.
+	private boolean hasBomb(Position pos) {
+		return getCell(pos).hasCandy() && getCell(pos).getCandy().getCandyType().equals(CandyType.BOMB);
 	}
 
 	private int proceedState = 0;
@@ -438,7 +453,18 @@ public class GameState {
 	public void makeMove(Move move) throws InvalidMoveException {
 		if (!isMoveValid(move))
 			throw new InvalidMoveException();
+		// Record the last move.
 		lastMove = move;
+		swapCandies(move);
+		Position p1 = move.getP1(), p2 = move.getP2();
+		if (hasBomb(p1) && hasSpecial(p2)) {
+			replaceWithSpecialAllOf(getCell(p2).getCandy().getColour(), getCell(p2).getCandy().getCandyType());
+		} else if (hasBomb(p2) && hasSpecial(p1)) {
+			replaceWithSpecialAllOf(getCell(p1).getCandy().getColour(), getCell(p1).getCandy().getCandyType());
+		} else {
+			makeSmallMove();
+		}
+		// TODO: Add the remaining cases.
 		// makeSmallMove();
 		// if (hasSpecial(move.getP1()) && hasSpecial(move.getP2())) combine
 		// them
@@ -449,6 +475,7 @@ public class GameState {
 
 	private int countSmallMoves = 0;
 
+	// Performs the corresponding action on each step (will be used by the DisplayBoard extension).
 	public boolean makeSmallMove() {
 		countSmallMoves++;
 		System.out.println("We are on " + countSmallMoves);
