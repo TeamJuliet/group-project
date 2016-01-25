@@ -45,7 +45,7 @@ public class CellChooser {
 					System.err.println("Moving on");
 					display.setBoard(game.board);
 					display.paintImmediately(0, 0, display.getWidth(), display.getHeight());
-					game.debugBoard();
+					// game.debugBoard();
 					Thread.sleep(500);
 				}
 			} catch (InvalidMoveException ex) {

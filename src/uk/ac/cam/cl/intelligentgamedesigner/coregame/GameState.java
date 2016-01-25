@@ -328,7 +328,7 @@ public class GameState {
 			}
 			if (detonatingCell.getCandy().getDetonationsRemaining() > 1) {
 				detonatingCell.getCandy().decreaseDetonations();
-				detonated.add(d);
+				// detonated.add(d);
 			} else {
 				detonatingCell.removeCandy();
 			}
@@ -340,8 +340,18 @@ public class GameState {
 		for (int i = 0; i < width; ++i) {
 			for (int j = height - 1; j >= 1; --j) {
 				if (board[i][j].getCellType().equals(CellType.EMPTY)) {
-					board[i][j].setCandy(board[i][j - 1].getCandy());
-					board[i][j - 1].removeCandy();
+					int y = j - 1;
+					// TODO: can be optimized.
+					while(y >= 0 && board[i][y].getCellType().equals(CellType.EMPTY)) y--;
+					// Replacement was found.
+					if (y >= 0) { 
+						board[i][j].setCandy(board[i][y].getCandy());
+						board[i][y].removeCandy();
+						if (board[i][j].getCandy().isDetonated()) {
+							System.out.println("Moved Detonating Candy.");
+							detonated.add(new Position(i, j));
+						}
+					}
 				}
 			}
 		}
@@ -490,10 +500,14 @@ public class GameState {
 			detonateAllPending();
 			System.out.println("2: Detonating all pending.");
 		} else if (proceedState == 2) {
+			System.out.println("3: Bringing down some candies (and filling board).");
 			bringDownCandies();
 			fillBoard();
-			System.out.println("3: Bringing down some candies (and filling board).");
-			wasSomethingPopped = false;
+			if (detonated.isEmpty()){
+				wasSomethingPopped = false;
+			} else {
+				proceedState = 0;
+			}
 		}
 		proceedState = (proceedState + 1) % 3;
 		return true;
