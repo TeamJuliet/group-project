@@ -107,6 +107,7 @@ public class CellDisplay extends JPanel  {
 	
 	private void drawBomb(Graphics g) {
 		Dimension dim = getSize();
+		g.setColor(Color.BLACK);
 		int stepWidth = (int) (dim.getWidth()/4.0), stepHeight = (int) (dim.getHeight() /4.0);
 		g.fillOval(stepWidth, stepHeight, 2 * stepWidth, 2 * stepHeight);
 	}

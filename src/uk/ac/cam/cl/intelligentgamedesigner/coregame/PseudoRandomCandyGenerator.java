@@ -16,7 +16,8 @@ public class PseudoRandomCandyGenerator extends CandyGenerator {
 
 	public Candy getCandy() {
 		int result = nextPseudoRandom() % CandyColour.values().length;
-
+		/* if (CandyColour.values()[result] == CandyColour.GREEN)
+			return new Candy(CandyColour.values()[result], CandyType.HORIZONTALLY_STRIPPED); */
 		return new Candy(CandyColour.values()[result], CandyType.NORMAL);
 	}
 
