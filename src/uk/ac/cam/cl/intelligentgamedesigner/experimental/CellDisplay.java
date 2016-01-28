@@ -83,7 +83,7 @@ public class CellDisplay extends JPanel  {
 	final static private int numStripes = 9;
 	 
 	private void drawVerticalStripes(Graphics g) {
-		System.out.println("Something has been drawn");
+		// System.out.println("Something has been drawn");
 		Dimension dim = getSize();
 		int stripeWidth = (int) (dim.getWidth()/(double) numStripes), height = (int) dim.getHeight();
 		for (int i = 0; i < numStripes; ++i) {
@@ -105,6 +105,12 @@ public class CellDisplay extends JPanel  {
 		g.fillRect(stepWidth, stepHeight, 2 * stepWidth, 2 * stepHeight);
 	}
 	
+	private void drawBomb(Graphics g) {
+		Dimension dim = getSize();
+		int stepWidth = (int) (dim.getWidth()/4.0), stepHeight = (int) (dim.getHeight() /4.0);
+		g.fillOval(stepWidth, stepHeight, 2 * stepWidth, 2 * stepHeight);
+	}
+	
 	private void drawSpecial(Graphics g) {
 		if (candyType == null) return;
 		g.setColor(Color.WHITE);
@@ -117,6 +123,9 @@ public class CellDisplay extends JPanel  {
 			break;
 		case WRAPPED:
 			drawWrapped(g);
+			break;
+		case BOMB:
+			drawBomb(g);
 			break;
 		default:
 		}

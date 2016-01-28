@@ -48,7 +48,7 @@ public class Cell {
     
     // Function that returns whether it is possible to move the contents of the block.
     public boolean isMoveable() {
-    	return cellType == cellType.NORMAL;
+    	return cellType == CellType.NORMAL;
     }
     
     public CellType getCellType() {
