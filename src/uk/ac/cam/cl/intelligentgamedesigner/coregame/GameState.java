@@ -308,6 +308,20 @@ public class GameState {
 			trigger(x, hStripped.y);
 		}
 	}
+	
+	private void detonateWrappedStripped(Position pos) {
+		for (int x = pos.x - 1; x <= pos.x + 1; ++x) {
+			for (int y = 0; y < height; ++y) {
+				trigger(x, y);
+			}
+		}
+		
+		for (int y = pos.y - 1; y <= pos.y + 1; ++y) {
+			for (int x = 0; x < width; ++x) {
+				trigger(x, y);
+			}
+		}
+	}
 
 	// Function that detonates all the elements that have to explode
 	private void detonateAllPending() {
@@ -337,6 +351,18 @@ public class GameState {
 		}
 	}
 
+	// Function that triggers all cells in the cross around position.
+	private void detonateWrappedWrapped(Position pos) {
+		int yWindow;
+		for (int x = pos.x - 3; x < pos.x + 3; ++x) {
+			if ( inRange(x, pos.x-1, pos.x) ) yWindow = 3;
+			else yWindow = 2;
+			for (int y = pos.y - yWindow; y < pos.y + yWindow; ++y) {
+				trigger(x, y);
+			}
+		}
+	}
+	
 	// Brings candies down.
 	private void bringDownCandies() {
 		detonated = new ArrayList<Position>();
@@ -451,6 +477,8 @@ public class GameState {
 		}
 	}
 
+	// TODO: Consider moving these function is more appropriate place.
+	
 	// Function that checks whether the position contains a special candy.
 	private boolean hasSpecial(Position pos) {
 		return getCell(pos).hasCandy() && getCell(pos).getCandy().getCandyType().isSpecial();
@@ -460,7 +488,26 @@ public class GameState {
 	private boolean hasBomb(Position pos) {
 		return getCell(pos).hasCandy() && getCell(pos).getCandy().getCandyType().equals(CandyType.BOMB);
 	}
-
+	
+	// Function that checks whether the position contains a vertically stripped.
+	private boolean hasVerticallyStripped(Position pos) {
+		return getCell(pos).hasCandy() && getCell(pos).getCandy().getCandyType().equals(CandyType.VERTICALLY_STRIPPED);
+	}
+	
+	// Function that checks whether the position contains a horizontally stripped.
+	private boolean hasHorizontallyStripped(Position pos) {
+		return getCell(pos).hasCandy() && getCell(pos).getCandy().getCandyType().equals(CandyType.HORIZONTALLY_STRIPPED);
+	}
+	
+	// Function that checks whether the position contains a wrapped candy.
+	private boolean hasWrapped(Position pos) {
+		return getCell(pos).hasCandy() && getCell(pos).getCandy().getCandyType().equals(CandyType.WRAPPED);
+	}
+	
+	private boolean hasStripped(Position pos) {
+		return hasVerticallyStripped(pos) || hasHorizontallyStripped(pos);
+	}
+	
 	private int proceedState = 0;
 
 	public void makeMove(Move move) throws InvalidMoveException {
@@ -474,6 +521,33 @@ public class GameState {
 			replaceWithSpecialAllOf(getCell(p2).getCandy().getColour(), getCell(p2).getCandy().getCandyType());
 		} else if (hasBomb(p2) && hasSpecial(p1)) {
 			replaceWithSpecialAllOf(getCell(p1).getCandy().getColour(), getCell(p1).getCandy().getCandyType());
+		} else if (hasHorizontallyStripped(p1) && hasVerticallyStripped(p2)) {
+			getCell(p1).removeCandy();
+			getCell(p2).removeCandy();
+			detonateHorizontallyStripped(p1);
+			detonateVerticallyStripped(p2);
+		} else if (hasVerticallyStripped(p1) && hasHorizontallyStripped(p2)) {
+			getCell(p1).removeCandy();
+			getCell(p2).removeCandy();
+			detonateVerticallyStripped(p1);
+			detonateHorizontallyStripped(p2);
+		}
+		// TODO: Check if this is the right thing to do.
+		else if ((hasVerticallyStripped(p1) && hasVerticallyStripped(p2)) || (hasHorizontallyStripped(p1) && hasHorizontallyStripped(p2))) {
+			getCell(p1).removeCandy();
+			getCell(p2).removeCandy();
+			detonateVerticallyStripped(p1);
+			detonateHorizontallyStripped(p2);
+		} else if (hasWrapped(p1) && hasStripped(p2)) {
+			getCell(p1).removeCandy();
+			getCell(p2).removeCandy();
+			detonateWrappedStripped(p1);
+		} else if (hasWrapped(p1) && hasStripped(p2)) {
+			getCell(p1).removeCandy();
+			getCell(p2).removeCandy();
+			detonateWrappedStripped(p2);
+		} else if (hasWrapped(p1) && hasWrapped(p2)) {
+			detonateWrappedWrapped(p1);
 		} else {
 			makeSmallMove();
 		}
