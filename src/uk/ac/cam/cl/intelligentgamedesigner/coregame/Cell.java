@@ -1,6 +1,8 @@
 package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
 public class Cell {
+	public static final int maxJellyLevel = 5;
+	
     private CellType cellType;
     private Candy    candy;
     private int jellyLevel = 0;
@@ -39,8 +41,8 @@ public class Cell {
     
     // Upgrades candy to the type specified.
     public void changeCandyType(CandyType candyType) {
-    	if (candyType == CandyType.BOMB) {
-    		candy = new Candy(null, CandyType.BOMB);
+    	if (candyType == CandyType.BOMB || candyType == CandyType.INGREDIENT) {
+    		candy = new Candy(null, candyType);
     	} else {
     		candy = new Candy(candy.getColour(), candyType);
     	}
@@ -53,5 +55,9 @@ public class Cell {
     
     public CellType getCellType() {
         return cellType;
+    }
+    
+    public int getJellyLevel(){
+    	return jellyLevel;
     }
 }

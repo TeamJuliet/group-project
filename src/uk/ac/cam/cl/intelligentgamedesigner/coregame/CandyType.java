@@ -5,7 +5,10 @@ public enum CandyType {
 	VERTICALLY_STRIPPED,
 	HORIZONTALLY_STRIPPED,
 	WRAPPED,
-	BOMB; // Does not have a Candy Color.
+	BOMB,// Does not have a Candy Color.
+	
+	INGREDIENT,//Does not have a Candy Color
+	; 
 	
 	public boolean isSpecial() {
 		return this != NORMAL;

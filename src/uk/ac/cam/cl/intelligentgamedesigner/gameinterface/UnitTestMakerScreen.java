@@ -2,10 +2,17 @@ package uk.ac.cam.cl.intelligentgamedesigner.gameinterface;
 
 import java.awt.event.ActionEvent;
 
-public class DesignDisplayScreen extends DisplayScreen{
-	public DesignDisplayScreen(){
+public class UnitTestMakerScreen extends DisplayScreen{
+
+	public UnitTestMakerScreen()
+	{
 		super();
-		identifier = "Design Display";
+		identifier = "Unit Test Maker";
+	}
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
@@ -26,9 +33,4 @@ public class DesignDisplayScreen extends DisplayScreen{
 		
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
 }
