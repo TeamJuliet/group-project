@@ -1,6 +1,8 @@
 package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
-public class Cell {
+import java.io.Serializable;
+
+public class Cell implements Serializable {
     private CellType cellType;
     private Candy    candy;
     private int jellyLevel = 0;

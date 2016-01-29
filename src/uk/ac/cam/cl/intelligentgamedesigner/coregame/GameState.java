@@ -1,5 +1,6 @@
 package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +8,7 @@ import java.util.List;
  * Created by devankuleindiren on 21/01/2016.
  */
 
-public class GameState {
+public class GameState implements Serializable {
 	// TODO: Make this cell private (public just for testing purposes).
 	public Cell[][] board;
 	int width;
@@ -46,6 +47,7 @@ public class GameState {
 
 	}
 
+	// Get methods
 	public int getHeight() {
 		return height;
 	}
@@ -53,6 +55,14 @@ public class GameState {
 	public int getWidth() {
 		return width;
 	}
+
+	public Cell[][] getBoard() { return board; }
+
+	public CandyGenerator getCandyGenerator() { return candyGenerator; }
+
+	public int getScore () { return score; }
+
+	public int getMovesRemaining () { return movesRemaining; }
 
 	private class SingleTileAnalysis {
 		// the start and end of the match on x-axis.

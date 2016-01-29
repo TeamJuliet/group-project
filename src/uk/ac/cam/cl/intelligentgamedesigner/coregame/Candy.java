@@ -1,6 +1,8 @@
 package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
-public class Candy {
+import java.io.Serializable;
+
+public class Candy implements Serializable {
     final private CandyColour colour;
     final private CandyType candyType;
     
