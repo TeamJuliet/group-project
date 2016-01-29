@@ -21,6 +21,16 @@ public class Candy implements Serializable {
     public CandyType getCandyType() {
     	return candyType;
     }
+
+    @Override
+    public boolean equals (Object toCompare) {
+        Candy candyToCompare = (Candy) toCompare;
+
+        return (this.colour                 == candyToCompare.colour &&
+                this.candyType              == candyToCompare.candyType &&
+                this.detonated              == candyToCompare.detonated &&
+                this.detonationsRemaining   == candyToCompare.detonationsRemaining);
+    }
     
     public boolean isDetonated() {
     	return detonated;

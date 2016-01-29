@@ -64,6 +64,29 @@ public class GameState implements Serializable {
 
 	public int getMovesRemaining () { return movesRemaining; }
 
+	@Override
+	public boolean equals (Object toCompare) {
+		GameState gameStateToCompare = (GameState) toCompare;
+		boolean isEqual = true;
+
+		// Check the basic parameters match
+		isEqual &= (this.height 		== gameStateToCompare.height)
+				&& (this.width 			== gameStateToCompare.width)
+				&& (this.movesRemaining == gameStateToCompare.movesRemaining)
+				&& (this.score 			== gameStateToCompare.score);
+
+		// If so, then check the candies on the board match
+		if (isEqual) {
+			for (int row = 0; row < height; row++) {
+				for (int col = 0; col < width; col++) {
+					isEqual &= (board[row][col].equals(gameStateToCompare.board[row][col]));
+				}
+			}
+		}
+
+		return isEqual;
+	}
+
 	private class SingleTileAnalysis {
 		// the start and end of the match on x-axis.
 		public final int start_x, end_x;

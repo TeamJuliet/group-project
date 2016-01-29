@@ -56,4 +56,13 @@ public class Cell implements Serializable {
     public CellType getCellType() {
         return cellType;
     }
+
+    @Override
+    public boolean equals (Object toCompare) {
+        Cell cellToCompare = (Cell) toCompare;
+
+        return (this.candy.equals(cellToCompare.candy) &&
+                this.cellType   == cellToCompare.cellType &&
+                this.jellyLevel == cellToCompare.jellyLevel);
+    }
 }

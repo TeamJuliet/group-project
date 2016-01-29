@@ -1,6 +1,8 @@
 package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
-public abstract class CandyGenerator {
+import java.io.Serializable;
+
+public abstract class CandyGenerator implements Serializable {
     private DesignParameters designParameters;
 
     public CandyGenerator (DesignParameters designParameters) {
