@@ -6,9 +6,9 @@ public class PseudoRandomCandyGenerator extends CandyGenerator {
 		super(designParameters);
 	}
 
-	private static int curNum = 38, prime = 361, anotherPrime = 991;
+	private int curNum = 38, prime = 361, anotherPrime = 991;
 
-	public static int nextPseudoRandom() {
+	public int nextPseudoRandom() {
 		// System.out.println(curNum + " " + CandyColour.values().length);
 		curNum = (curNum * prime) % anotherPrime;
 		return curNum;

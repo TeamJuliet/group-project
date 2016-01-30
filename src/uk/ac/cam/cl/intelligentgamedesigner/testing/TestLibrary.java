@@ -10,7 +10,7 @@ public class TestLibrary {
 
     static final String UNIT_TESTS_FILENAME = "unittests.jobj";
 
-    // Opens a local file with the given file, creating it if it doesn't already exist
+    // Opens a local file with the given filename, creating it if it doesn't already exist
     public static File createLocalFile (String fileName) throws IOException {
 
         // TODO: Add non-UNIX operating system support
@@ -56,7 +56,7 @@ public class TestLibrary {
         try {
             File unitTestFile = createLocalFile(UNIT_TESTS_FILENAME);
 
-            // Read in current array of test cases and add the new test
+            // Read in the array of test cases and run them
             ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(unitTestFile));
             ArrayList<TestCase> testCases = (ArrayList) objectInputStream.readObject();
 

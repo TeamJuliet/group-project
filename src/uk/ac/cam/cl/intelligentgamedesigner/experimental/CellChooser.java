@@ -42,6 +42,7 @@ public class CellChooser {
 				movesRecord.setText(movesRecord.getText() + "|" + positionToString(p1) + positionToString(p2));
 				while(game.makeSmallMove()) {
 					System.err.println("Moving on");
+					game.debugBoard();
 					display.setBoard(game.board);
 					display.paintImmediately(0, 0, display.getWidth(), display.getHeight());
 					// game.debugBoard();
