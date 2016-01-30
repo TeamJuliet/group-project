@@ -4,11 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by devankuleindiren on 21/01/2016.
- */
-
-public class GameState implements Serializable {
+public class GameState implements Cloneable, Serializable {
 	// TODO: Make this cell private (public just for testing purposes).
 	public Cell[][] board;
 	int width;
@@ -74,6 +70,9 @@ public class GameState implements Serializable {
 				&& (this.width 			== gameStateToCompare.width)
 				&& (this.movesRemaining == gameStateToCompare.movesRemaining)
 				&& (this.score 			== gameStateToCompare.score);
+		// NOTE:
+		// I have left out comparison of the CandyGenerator, since this isn't needed in
+		// the unit testing.
 
 		// If so, then check the candies on the board match
 		if (isEqual) {
@@ -85,6 +84,28 @@ public class GameState implements Serializable {
 		}
 
 		return isEqual;
+	}
+
+	@Override
+	public Object clone () {
+
+		GameState clone = new GameState(new Design());
+
+		// Copy the basic parameters
+		clone.height 			= this.height;
+		clone.width 			= this.width;
+		clone.movesRemaining 	= this.movesRemaining;
+		clone.score 			= this.score;
+
+		// TODO: Sort out cloning of CandyGenerator instance if necessary
+
+		// Copy the candies on the board
+		for (int row = 0; row < height; row++) {
+			for (int col = 0; col < width; col++) {
+				clone.board[row][col] = (Cell) this.board[row][col].clone();
+			}
+		}
+		return clone;
 	}
 
 	private class SingleTileAnalysis {

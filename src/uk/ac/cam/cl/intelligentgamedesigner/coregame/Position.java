@@ -1,7 +1,9 @@
 package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
+import java.io.Serializable;
+
 // The coordinates for a position on the grid.
-public class Position {
+public class Position implements Serializable {
 	
 	public final int x, y;
 	

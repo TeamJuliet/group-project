@@ -2,7 +2,7 @@ package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
 import java.io.Serializable;
 
-public class Candy implements Serializable {
+public class Candy implements Cloneable, Serializable {
     final private CandyColour colour;
     final private CandyType candyType;
     
@@ -30,6 +30,15 @@ public class Candy implements Serializable {
                 this.candyType              == candyToCompare.candyType &&
                 this.detonated              == candyToCompare.detonated &&
                 this.detonationsRemaining   == candyToCompare.detonationsRemaining);
+    }
+
+    @Override
+    public Object clone () {
+        Candy clone = new Candy(this.colour, this.candyType);
+        clone.detonated             = this.detonated;
+        clone.detonationsRemaining  = this.detonationsRemaining;
+
+        return clone;
     }
     
     public boolean isDetonated() {

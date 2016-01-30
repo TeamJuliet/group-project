@@ -1,6 +1,8 @@
 package uk.ac.cam.cl.intelligentgamedesigner.testing;
 
-public abstract class TestCase {
+import java.io.Serializable;
+
+public abstract class TestCase implements Serializable {
 
     protected String description;
 

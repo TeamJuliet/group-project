@@ -2,7 +2,7 @@ package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
 import java.io.Serializable;
 
-public class Cell implements Serializable {
+public class Cell implements Cloneable, Serializable {
     private CellType cellType;
     private Candy    candy;
     private int jellyLevel = 0;
@@ -64,5 +64,18 @@ public class Cell implements Serializable {
         return (this.candy.equals(cellToCompare.candy) &&
                 this.cellType   == cellToCompare.cellType &&
                 this.jellyLevel == cellToCompare.jellyLevel);
+    }
+
+    @Override
+    public Object clone () {
+        try {
+            Cell clone  = (Cell) super.clone();
+            clone.candy = (Candy) this.candy.clone();
+            return clone;
+
+        } catch (CloneNotSupportedException e) {
+            System.err.println("Could not clone Cell");
+            return null;
+        }
     }
 }

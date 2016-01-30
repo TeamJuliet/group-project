@@ -20,7 +20,18 @@ public class TestCaseGame extends TestCase {
     @Override
     public void run () {
         try {
+            System.out.println("BEFORE:");
+            before.debugBoard();
+
+            // Make move
             before.makeMove(moveMade);
+            while(before.makeSmallMove()) {}
+
+            System.out.println("AFTER");
+            before.debugBoard();
+
+            System.out.println("EXPECTED AFTER");
+            after.debugBoard();
 
             if (after.equals(before)) {
                 System.out.println("PASS: " + super.description);
