@@ -10,7 +10,7 @@ public class RandomCandyGenerator extends CandyGenerator {
 	@Override
 	public Candy generateCandy(int x) {
 		Random random = new Random();
-		int result = random.nextInt(CandyColour.values().length);
+		int result = random.nextInt(super.designParameters.getNumberOfCandyColours());
 		return new Candy(CandyColour.values()[result], CandyType.NORMAL);
 	}
 

@@ -9,8 +9,8 @@ public class GameState implements Cloneable, Serializable {
 	public final Design levelDesign;
 	public final int width;
 	public final int height;
-	int movesRemaining;
-	int score;
+	private int movesRemaining;
+	private int score;
 	CandyGenerator candyGenerator;
 	
 
@@ -37,7 +37,7 @@ public class GameState implements Cloneable, Serializable {
 			}
 		}
 
-		candyGenerator = new PseudoRandomCandyGenerator(null);
+		candyGenerator = new PseudoRandomCandyGenerator(new DesignParameters(design.getNumberOfCandyColours()));
 		fillBoard();
 		while (makeSmallMove()) {
 

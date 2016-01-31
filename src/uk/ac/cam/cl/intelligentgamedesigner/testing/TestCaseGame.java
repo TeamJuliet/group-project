@@ -21,14 +21,16 @@ public class TestCaseGame extends TestCase {
     public boolean run () {
         try {
             // Construct GameState representing game before
-            GameState gameStateBefore = new GameState(before, new PreFilledCandyGenerator(lookahead));
+            GameState gameStateBefore = new GameState(before, new PreFilledCandyGenerator(new DesignParameters(6),
+                    lookahead));
 
             // Make the test move
             gameStateBefore.makeMove(moveMade);
             while(gameStateBefore.makeSmallMove()) {}
 
             // Construct GameState representing game after
-            GameState gameStateAfter = new GameState(after, new PreFilledCandyGenerator(lookahead));
+            GameState gameStateAfter = new GameState(after, new PreFilledCandyGenerator(new DesignParameters(6),
+                    lookahead));
 
             // Check the GameStates match
             return after.equals(before);
