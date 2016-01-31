@@ -22,18 +22,19 @@ import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.Candy;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.CandyColour;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.CandyType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 
 //an interface for a human user to manually create a level, to then save
-public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
+public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener{
 	
 	//buttons for controlling stuff
 	private JButton save_and_quit;
 	private JButton just_quit;
-	private JButton just_save;
-	private JButton analyse;
 	
 	private JSlider dimensions_width;
 	private JSlider dimensions_height;
@@ -44,12 +45,14 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 	private JRadioButton ingredients;
 	
 	private String[] cells;
+	private String[] candies;
 	private String[] highscore_specials;
 	private String[] jelly_specials;
 	private String[] ingredients_specials;
 	private String[] types;
 	private JComboBox<String> selection;
 	private ComboBoxModel<String> cells_fill;
+	private ComboBoxModel<String> candies_fill;
 	private ComboBoxModel<String> highscore_model;
 	private ComboBoxModel<String> jelly_model;
 	private ComboBoxModel<String> ingredients_model;
@@ -58,29 +61,31 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 	private JSlider moves;
 	
 	//state relevant to level creation
-	private CustomBoard board;
+	private UnitTestBoard board_before;
+	private UnitTestBoard board_after;
 	private int width;
 	private int height;
+	private int above_screen;
 	private GameMode mode;
 	
 	private CellType replace_cell;
+	private Candy replace_candy;
 	private boolean objective_fill;
+	private boolean candy_fill;
 	private boolean jelly_fill;
 	private boolean null_fill;
 	
 	private int number_of_moves;
 	
-	public LevelCreatorScreen(){
+	public UnitTestMakerScreen(){
 		super();
-		identifier = "Level Creator";
+		identifier = "Unit Test Maker";
 	}
 
 	@Override
 	protected void makeItems() {
 		save_and_quit = new JButton("Save and Quit");
 		just_quit = new JButton("Quit without saving");
-		analyse = new JButton("Analyse Level");
-		just_save = new JButton("Save Level");
 		
 		dimensions_width = new JSlider(5,10);
 		dimensions_height = new JSlider(5,10);
@@ -94,13 +99,15 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		game_mode.add(jelly);
 		game_mode.add(ingredients);
 		
-		types = new String[]{"Regular Cell","Objective Pieces"};
+		types = new String[]{"Regular Cell","Candies","Objective Pieces"};
 		cells = new String[]{"Normal","Unusable","Icing","Liquorice"};
+		candies = new String[] {"Red","Orange","Yellow","Green","Blue","Purple"};
 		highscore_specials = new String[]{"<None>"};
 		jelly_specials = new String[]{"Jelly Level"};
 		ingredients_specials = new String[]{"Ingredient"};
 		selection = new JComboBox<String>(types);
 		cells_fill = new DefaultComboBoxModel<String>(cells);
+		candies_fill = new DefaultComboBoxModel<String>(candies);
 		fill_type = new JComboBox<String>();
 		highscore_model = new DefaultComboBoxModel<String>(highscore_specials);
 		jelly_model = new DefaultComboBoxModel<String>(jelly_specials);
@@ -112,8 +119,11 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		//The Game Board
 		width = 10;
 		height = 10;
-		board = new CustomBoard(width,height);
-		board.watchLevelCreator(this);
+		above_screen = 5;
+		board_before = new UnitTestBoard(width,height+above_screen);
+		board_before.watchLevelCreator(this);
+		board_after = new UnitTestBoard(width,height+above_screen);
+		board_after.watchLevelCreator(this);
 		number_of_moves = 10;
 		
 		replace_cell = CellType.EMPTY;
@@ -127,15 +137,9 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		save_and_quit.setToolTipText("Saves your level and returns to the previous screen");
 		save_and_quit.setActionCommand("save and quit");
 		save_and_quit.addActionListener(this);
-		just_save.setToolTipText("Saves your level");
-		just_save.setActionCommand("save");
-		just_save.addActionListener(this);
 		just_quit.setToolTipText("Warning: unsaved progress will be lost.");
 		just_quit.setActionCommand("quit");
 		just_quit.addActionListener(this);
-		analyse.setToolTipText("Runs the simulated players on the level to get an estimated difficulty");
-		analyse.setActionCommand("analyse");
-		analyse.addActionListener(this);
 		
 		high_score.setActionCommand("high score");
 		high_score.addActionListener(this);
@@ -205,11 +209,7 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		controls.setBorder(BorderFactory.createLineBorder(Color.black));
 		controls.setLayout(new BoxLayout(controls,BoxLayout.Y_AXIS));
 		controls.add(Box.createRigidArea(new Dimension(0, 20)));
-		just_save.setAlignmentX(CENTER_ALIGNMENT);
-		controls.add(just_save);
 		controls.add(Box.createRigidArea(new Dimension(0, 20)));
-		analyse.setAlignmentX(CENTER_ALIGNMENT);
-		controls.add(analyse);
 		controls.add(Box.createRigidArea(new Dimension(0, 20)));
 		save_and_quit.setAlignmentX(CENTER_ALIGNMENT);
 		controls.add(save_and_quit);
@@ -219,12 +219,14 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		controls.add(Box.createRigidArea(new Dimension(0, 20)));
 		add(controls);
 		
-		add(board);
+		add(board_before);
+		add(board_after);
 
 		//set the locations
-		position(settings,0.15,0.7,300,400);
-		position(controls,0.15,0.25,300,200);
-		position(board,0.75,0.2,900,1000);
+		position(settings,0.5,0.7,300,400);
+		position(controls,0.5,0.25,300,200);
+		position(board_before,0.8,0.2,900,1000);
+		position(board_after,0.2,0.2,900,1000);
 	}
 
 	@Override
@@ -244,7 +246,8 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 			
 		case "high score":
 			mode = GameMode.HIGHSCORE;
-			board.changeMode(mode);
+			board_before.changeMode(mode);
+			board_after.changeMode(mode);
 			
 			if(objective_fill){
 				null_fill = true;
@@ -254,7 +257,8 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 			break;
 		case "jelly":
 			mode = GameMode.JELLY;
-			board.changeMode(mode);
+			board_before.changeMode(mode);
+			board_after.changeMode(mode);
 			
 			if(objective_fill){
 				null_fill = false;
@@ -264,11 +268,13 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 			break;
 		case "ingredients":
 			mode = GameMode.INGREDIENTS;
-			board.changeMode(mode);
+			board_before.changeMode(mode);
+			board_after.changeMode(mode);
 			
 			if(objective_fill){
 				null_fill = false;
 				jelly_fill = false;
+				candy_fill = false;
 				fill_type.setModel(ingredients_model);				
 			}
 			break;
@@ -280,11 +286,24 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 				objective_fill = false;
 				jelly_fill = false;
 				null_fill = false;
+				candy_fill = false;
 				
 				//switch the fill type to cells
 				fill_type.setModel(cells_fill);
 				fill_type.setSelectedIndex(0);
 				replace_cell = CellType.EMPTY;
+								
+				break;
+			case "Candies":
+				objective_fill = false;
+				jelly_fill = false;
+				null_fill = false;
+				candy_fill = true;
+				
+				//switch the fill type to cells
+				fill_type.setModel(candies_fill);
+				fill_type.setSelectedIndex(0);
+				replace_candy = new Candy(CandyColour.RED,CandyType.NORMAL);
 								
 				break;
 			case "Objective Pieces":
@@ -335,13 +354,18 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 
 	@Override
 	public void stateChanged(ChangeEvent e) {
-	    JSlider source = (JSlider)e.getSource();
-	    board.changeSize(dimensions_width.getValue(), dimensions_height.getValue());
+	    board_before.changeSize(dimensions_width.getValue(), dimensions_height.getValue());
+	    board_after.changeSize(dimensions_width.getValue(), dimensions_height.getValue());
 	}
 	
 	public boolean canFill() {
 		return !null_fill;
 	}
+	
+	public boolean fillingCandies(){
+		return candy_fill;
+	}
+	
 	public boolean fillingCells(){
 		return !objective_fill;
 	}
@@ -354,7 +378,7 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 	
 	private void makeDesign(){
 		Design level = new Design();
-		level.setBoard(board.getBoard());
+		level.setBoard(board_before.getBoard());
 		level.setRules(mode, number_of_moves);
 	}
 }

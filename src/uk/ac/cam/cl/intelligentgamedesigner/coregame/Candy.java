@@ -9,7 +9,8 @@ public class Candy implements Cloneable, Serializable {
     private boolean detonated = false;
     private int detonationsRemaining = 0;
     
-    Candy (CandyColour colour, CandyType candyType) {
+    //made public
+    public Candy (CandyColour colour, CandyType candyType) {
         this.colour = colour;
         this.candyType = candyType;
     }
