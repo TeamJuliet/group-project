@@ -140,5 +140,6 @@ public abstract class GameBoard extends JComponent {
 		
 		//replace the board
 		board = new_board;
+		
 	}
 }

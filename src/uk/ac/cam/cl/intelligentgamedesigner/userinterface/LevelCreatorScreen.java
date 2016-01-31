@@ -397,14 +397,16 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		
 		board.minimumBoundingBox();
 		
-		dimensions_width.setValue(board.width);
-		dimensions_height.setValue(board.height);
+		int temp_width = board.width;
+		int temp_height = board.height;
+		dimensions_width.setValue(temp_width);
+		dimensions_height.setValue(temp_height);
 		
 		int number_of_moves = (int)moves.getValue();
 		int objective_value = (int)mode_objective.getValue();
 		
 		level.setBoard(board.getBoard());
-		level.setSize(board.width, board.height);
+		level.setSize(temp_width, temp_height);
 		level.setRules(mode, number_of_moves, objective_value);
 	}
 }
