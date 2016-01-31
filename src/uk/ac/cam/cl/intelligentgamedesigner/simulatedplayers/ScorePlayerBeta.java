@@ -3,6 +3,7 @@ package uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers;
 import java.util.List;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 
 public class ScorePlayerBeta implements SimulatedPlayerBase {
@@ -10,18 +11,17 @@ public class ScorePlayerBeta implements SimulatedPlayerBase {
 
     @Override
     public void solve() {
-        /* Look through all available moves
-         * make each move
-         * compare resulting scores
-         * pick the move with highest resulting score
-         */
-        while(level.getMovesRemaining() > 0){
-            List<Move> validMoves = level.getValidMoves();
-            int highestScore = 0;
-            int bestMoveIndex = null;
-            for(Move candidate: validMoves){
-                GameState tmp = level.clone();
-                
+        while (level.getMovesRemaining() > 0) {
+            Move bestMove = calculateBestMove(level);
+            try {
+                level.makeMove(bestMove);
+            } catch (InvalidMoveException e) {
+                printInvalidMoveError(e.invalidMove);
+                try { // TODO: this is horrible, fix it
+                    level.makeMove(level.getValidMoves().get(0));
+                } catch (InvalidMoveException exception) {
+                    return;
+                }
             }
         }
     }
@@ -29,6 +29,17 @@ public class ScorePlayerBeta implements SimulatedPlayerBase {
     @Override
     public void printInvalidMoveError(Move move) {
         System.err.println("WARNING! ScorePlayerBeta has suggested an invalidMove " + move + ".");
+    }
+
+    @Override
+    public Move calculateBestMove(GameState currentState) {
+        List<Move> validMoves = level.getValidMoves();
+        int longestMatch = 0;
+        Move bestMove = null;
+        for (Move candidateMove : validMoves) {
+            // TODO: finish this
+        }
+        return bestMove;
     }
 
 }
