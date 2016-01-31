@@ -101,4 +101,44 @@ public abstract class GameBoard extends JComponent {
 			}
 		}
 	}
+	
+	public void minimumBoundingBox() {
+		int min_x = width-1;
+		int min_y = height-1;
+		int max_x = 0;
+		int max_y = 0;
+		
+		//scan for min and max pixels
+		for(int x=0;x<width;x++){
+			for(int y=0;y<height;y++){
+				if(board[x][y].getCellType() != CellType.UNUSABLE){
+					if(x<min_x)min_x = x;
+					if(y<min_y)min_y = y;
+					if(x>max_x)max_x = x;
+					if(y>max_y)max_y = y;
+				}
+			}
+		}
+		
+		//make new board from this
+		width = max_x - min_x + 1;
+		height = max_y - min_y + 1;
+		if(width<5){
+			width = 5;
+			if(min_x>5)min_x = 5;
+		}
+		if(height<5){
+			height = 5;
+			if(min_y>5)min_y = 5;
+		}
+		Cell[][] new_board = new Cell[width][height];
+		for(int x=0;x<width;x++){
+			for(int y=0;y<height;y++){
+				new_board[x][y] = board[x+min_x][y+min_y];
+			}
+		}
+		
+		//replace the board
+		board = new_board;
+	}
 }

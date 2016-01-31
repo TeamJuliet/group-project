@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.text.NumberFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -14,6 +15,7 @@ import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -56,7 +58,10 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 	private ComboBoxModel<String> ingredients_model;
 	private JComboBox<String> fill_type;
 
-	private JSlider moves;
+	private String[] objectives;
+	private JFormattedTextField moves;
+	private JFormattedTextField mode_objective;
+	private JLabel what_objective;
 	
 	//state relevant to level creation
 	private CustomBoard board;
@@ -68,8 +73,6 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 	private boolean objective_fill;
 	private boolean jelly_fill;
 	private boolean null_fill;
-	
-	private int number_of_moves;
 	
 	public LevelCreatorScreen(){
 		super();
@@ -108,15 +111,21 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		jelly_model = new DefaultComboBoxModel<String>(jelly_specials);
 		ingredients_model = new DefaultComboBoxModel<String>(ingredients_specials);
 		fill_type.setModel(cells_fill);
-
-		moves = new JSlider(5,99);
+		
+		NumberFormat nf = NumberFormat.getInstance();
+	    nf.setMaximumFractionDigits(0);
+	    nf.setMaximumIntegerDigits(9);
+	    
+		moves = new JFormattedTextField(nf);
+		mode_objective = new JFormattedTextField(nf);
+		objectives = new String[]{"High Score Target","No additional objective","Ingredients Target"};
+		what_objective = new JLabel(objectives[0]);
 
 		//The Game Board
 		width = 10;
 		height = 10;
 		board = new CustomBoard(width,height);
 		board.watchLevelCreator(this);
-		number_of_moves = 10;
 		
 		replace_cell = CellType.EMPTY;
 		objective_fill = false;
@@ -160,7 +169,6 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		dimensions_height.setPaintLabels(true);
 		dimensions_height.addChangeListener(this);
 
-		
 		selection.setActionCommand("new mode");
 		selection.addActionListener(this);
 		selection.setSelectedIndex(0);
@@ -168,8 +176,8 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		fill_type.addActionListener(this);
 		fill_type.setSelectedIndex(0);
 		
-		moves.setValue(number_of_moves);
-		
+		moves.setValue(10);
+		mode_objective.setValue(100);
 		
 	}
 
@@ -203,6 +211,10 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		settings.add(jelly);
 		settings.add(ingredients);
 		settings.add(Box.createRigidArea(new Dimension(0, 20)));
+		settings.add(new JLabel("Number of moves:"));
+		settings.add(moves);
+		settings.add(what_objective);
+		settings.add(mode_objective);
 		add(settings);
 
 		//make a box with all the controls
@@ -212,27 +224,27 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		controls.add(Box.createRigidArea(new Dimension(0, 20)));
 		just_save.setAlignmentX(CENTER_ALIGNMENT);
 		controls.add(just_save);
-		controls.add(Box.createRigidArea(new Dimension(0, 10)));
+		controls.add(Box.createRigidArea(new Dimension(0, 20)));
 		analyse.setAlignmentX(CENTER_ALIGNMENT);
 		controls.add(analyse);
-		controls.add(Box.createRigidArea(new Dimension(0, 10)));
+		controls.add(Box.createRigidArea(new Dimension(0, 20)));
 		save_and_quit.setAlignmentX(CENTER_ALIGNMENT);
 		controls.add(save_and_quit);
-		controls.add(Box.createRigidArea(new Dimension(0, 10)));
+		controls.add(Box.createRigidArea(new Dimension(0, 20)));
 		just_quit.setAlignmentX(CENTER_ALIGNMENT);
 		controls.add(just_quit);	
-		controls.add(Box.createRigidArea(new Dimension(0, 10)));
+		controls.add(Box.createRigidArea(new Dimension(0, 20)));
 		reset_board.setAlignmentX(CENTER_ALIGNMENT);
 		controls.add(reset_board);	
-		controls.add(Box.createRigidArea(new Dimension(0, 10)));
+		controls.add(Box.createRigidArea(new Dimension(0, 20)));
 		add(controls);
 		
 		add(board);
 
 		//set the locations
-		position(settings,0.15,0.7,300,400);
-		position(controls,0.15,0.25,300,200);
-		position(board,0.75,0.2,900,1000);
+		position(settings,0.15,0.5,300,500);
+		position(controls,0.85,0.5,300,400);
+		position(board,0.65,0.2,900,1000);
 	}
 
 	@Override
@@ -240,10 +252,12 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		switch(e.getActionCommand()){
 		
 		case "save":
+			makeDesign();
 			break;
 		case "analyse":
 			break;
 		case "save and quit":
+			makeDesign();
 			InterfaceManager.switchScreen(Windows.MAIN);
 			break;
 		case "quit":
@@ -257,6 +271,11 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 			mode = GameMode.HIGHSCORE;
 			board.changeMode(mode);
 			
+			//set the objective text
+			what_objective.setText(objectives[0]);
+			mode_objective.setEditable(true);
+			mode_objective.setValue(100);
+			
 			if(objective_fill){
 				null_fill = true;
 				jelly_fill = false;
@@ -267,6 +286,11 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 			mode = GameMode.JELLY;
 			board.changeMode(mode);
 			
+			//set the objective text
+			what_objective.setText(objectives[1]);
+			mode_objective.setEditable(false);
+			mode_objective.setValue(0);
+			
 			if(objective_fill){
 				null_fill = false;
 				jelly_fill = true;
@@ -276,6 +300,11 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		case "ingredients":
 			mode = GameMode.INGREDIENTS;
 			board.changeMode(mode);
+			
+			//set the objective text
+			what_objective.setText(objectives[2]);
+			mode_objective.setEditable(true);
+			mode_objective.setValue(1);
 			
 			if(objective_fill){
 				null_fill = false;
@@ -365,7 +394,17 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 	
 	private void makeDesign(){
 		Design level = new Design();
+		
+		board.minimumBoundingBox();
+		
+		dimensions_width.setValue(board.width);
+		dimensions_height.setValue(board.height);
+		
+		int number_of_moves = (int)moves.getValue();
+		int objective_value = (int)mode_objective.getValue();
+		
 		level.setBoard(board.getBoard());
-		level.setRules(mode, number_of_moves);
+		level.setSize(board.width, board.height);
+		level.setRules(mode, number_of_moves, objective_value);
 	}
 }

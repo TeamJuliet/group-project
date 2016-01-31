@@ -379,6 +379,6 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 	private void makeDesign(){
 		Design level = new Design();
 		level.setBoard(board_before.getBoard());
-		level.setRules(mode, number_of_moves);
+		//level.setRules(mode, number_of_moves, );
 	}
 }
