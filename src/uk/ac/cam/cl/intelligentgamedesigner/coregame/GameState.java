@@ -46,8 +46,8 @@ public class GameState implements Cloneable, Serializable {
 
 	// This constructor is for testing purposes
 	public GameState(Cell[][] board, CandyGenerator candyGenerator) {
-		width = 10;
-		height = 10;
+		width = board.length;
+		height = board[0].length;
 
 		this.levelDesign = new Design();
 		this.board = board;

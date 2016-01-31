@@ -11,13 +11,13 @@ public class PreFilledCandyGenerator extends CandyGenerator {
     public PreFilledCandyGenerator (Cell[][] lookahead) {
         super(new DesignParameters());
 
-        this.lookahead = new ArrayList<>(10);
+        this.lookahead = new ArrayList<>(lookahead.length);
 
         // Populate the stacks with the candies specified in the lookahead array
-        for (int x = 0; x < 10; x++) {
+        for (int x = 0; x < lookahead.length; x++) {
             Stack<Cell> column = new Stack<>();
 
-            for (int y = 9; y >= 0; y--) {
+            for (int y = 0; y < lookahead[0].length - 1; y++) {
                 column.push(lookahead[x][y]);
             }
 
@@ -27,7 +27,7 @@ public class PreFilledCandyGenerator extends CandyGenerator {
 
     @Override
     public Candy generateCandy (int x) {
-        if (x >= 0 && x < 10 && !lookahead.get(x).empty()) {
+        if (x >= 0 && x < lookahead.size() && !lookahead.get(x).empty()) {
             return lookahead.get(x).pop().getCandy();
         }
 
