@@ -17,39 +17,21 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 
-public class CustomBoard extends JComponent implements MouseListener{
-
-	private final int tile_size;
-	private int width;
-	private int height;
-	private Cell[][] board;
+public class CustomBoard extends GameBoard implements MouseListener{
 	
 	private Timer timer;
 	private TimerTask task;
 	private final int refresh_rate = 20;
 	
-	private LevelCreatorScreen watch_creator;
+	private DisplayScreen watch_creator;
 	
 	public CustomBoard(int width, int height)	{
-		super();
-		this.width = width;
-		this.height = height;
-		board = new Cell[width][height];
-
-		for(int x=0;x<width;x++){
-			for(int y=0;y<height;y++){
-				board[x][y] = new Cell(CellType.UNUSABLE);
-			}
-		}
-		
-		tile_size = InterfaceManager.screenHeight()/15;
-		
-		setPreferredSize(new Dimension(width*tile_size,height*tile_size));
+		super(width, height);
 		
 		addMouseListener(this);
 		timer = new Timer();
 	}
-	public void watchLevelCreator(LevelCreatorScreen level_creator){
+	public void watchLevelCreator(DisplayScreen level_creator){
 		watch_creator = level_creator;
 	}
 	
@@ -69,60 +51,6 @@ public class CustomBoard extends JComponent implements MouseListener{
 		board = new_board;
 		
 		setPreferredSize(new Dimension(width*tile_size,height*tile_size));
-	}
-	
-	public Cell[][] getBoard(){
-		return board;
-	}
-
-	//drawing the screen
-	private void draw_cell(int x, int y, Graphics g){
-		
-		//draw the cell
-		switch(board[x][y].getCellType()){
-		case UNUSABLE:
-			g.setColor(Color.GRAY);
-			break;
-		case ICING:
-			g.setColor(Color.WHITE);
-			break;
-		case LIQUORICE:
-			g.setColor(Color.BLACK);
-			break;
-		default:
-			g.setColor(Color.LIGHT_GRAY);
-			break;
-		}
-		g.fillRect(x*tile_size, y*tile_size, tile_size, tile_size);
-		
-		//draw the jelly
-		int jelly_level = board[x][y].getJellyLevel();
-		if(jelly_level>0){
-			g.setColor(Color.CYAN);
-			g.fillOval(x*tile_size, y*tile_size, tile_size, tile_size);
-			g.setColor(Color.BLACK);
-			g.drawString(Integer.toString(jelly_level), x*tile_size + tile_size/2, y*tile_size + tile_size/2);
-		}
-		
-		//draw the ingredients
-		if(board[x][y].getCandy()!=null &&
-				board[x][y].getCandy().getCandyType() == CandyType.INGREDIENT){
-			g.setColor(Color.RED);
-			g.fillOval(x*tile_size, y*tile_size, tile_size, tile_size);			
-		}
-		
-		//outline the tiles
-		g.setColor(Color.BLACK);
-		g.drawRect(x*tile_size, y*tile_size, tile_size, tile_size);		
-	}
-	
-	public void paint(Graphics g){
-		setBorder(BorderFactory.createLineBorder(Color.black));
-		for(int x=0;x<width;x++){
-			for(int y=0;y<height;y++){
-				draw_cell(x,y,g);
-			}
-		}
 	}
 	
 	public void changeMode(GameMode mode){
@@ -158,56 +86,65 @@ public class CustomBoard extends JComponent implements MouseListener{
 
 	public void changeTile(){
 
-		Point pos = getMousePosition();
-		
-		if(pos != null){
-			int x = pos.x/tile_size;
-			int y = pos.y/tile_size;
-			//convert to coordinates
-			if(
-				x>=0 && x<width &&
-				y>=0 && y<height &&
-				board[x][y].getCellType() != watch_creator.getReplacer()
-					)
-				board[x][y] = new Cell(watch_creator.getReplacer());
+		if(watch_creator.identifier.equals("Level Creator")){ //check is level cretor
+			Point pos = getMousePosition();
+			
+			if(pos != null){
+				int x = pos.x/tile_size;
+				int y = pos.y/tile_size;
+				//convert to coordinates
+				if(
+					x>=0 && x<width &&
+					y>=0 && y<height &&
+					board[x][y].getCellType() != ((LevelCreatorScreen)watch_creator).getReplacer()
+						)
+					board[x][y] = new Cell(((LevelCreatorScreen)watch_creator).getReplacer());
+			}
 		}
 	}
 
 	public void mousePressed(MouseEvent e) {
-		if(watch_creator.fillingCells()){
-			task = new ClickDrag(this);
-	    	timer.scheduleAtFixedRate(task, 0, refresh_rate); // Time is in milliseconds
-	    	// The second parameter is delay before the first run
-	    	// The third is how often to run it
+		if(watch_creator.identifier.equals("Level Creator")){ //check is level creator
+			if(((LevelCreatorScreen)watch_creator).fillingCells()){
+				task = new ClickDrag(this);
+		    	timer.scheduleAtFixedRate(task, 0, refresh_rate); // Time is in milliseconds
+		    	// The second parameter is delay before the first run
+		    	// The third is how often to run it
+			}
+			
 		}
 	}
 
 	public void mouseReleased(MouseEvent e) {
-		if(watch_creator.fillingCells()){
-			task.cancel();
-			// Will not stop execution of task.run() if it is midway
-			// But will guarantee that after this call it runs no more than one more time
+		if(watch_creator.identifier.equals("Level Creator")){ //check is level creator
+			if(((LevelCreatorScreen)watch_creator).fillingCells()){
+				task.cancel();
+				// Will not stop execution of task.run() if it is midway
+				// But will guarantee that after this call it runs no more than one more time
+			}
 		}
 	}
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		//click for special candies
-		if(!watch_creator.fillingCells() && watch_creator.canFill()){
-			int x = e.getX()/tile_size;
-			int y = e.getY()/tile_size;
-			
-			//fill with a jelly (toggle level)
-			if(watch_creator.fillingJellies()){
-				int jelly_level = board[x][y].getJellyLevel()+1;
-				if(jelly_level>Cell.maxJellyLevel)jelly_level = 0;
-				board[x][y].setJellyLevel(jelly_level);
-			}
-			//fill with an ingredient (toggle on/off)
-			else {
-				if(board[x][y].getCandy() == null){
-					board[x][y].changeCandyType(CandyType.INGREDIENT);
-				} else {
-					board[x][y] = new Cell(board[x][y].getCellType());
+		if(watch_creator.identifier.equals("Level Creator")){ //check is level creator
+			if(!((LevelCreatorScreen)watch_creator).fillingCells() && ((LevelCreatorScreen)watch_creator).canFill()){
+				int x = e.getX()/tile_size;
+				int y = e.getY()/tile_size;
+				
+				//fill with a jelly (toggle level)
+				if(((LevelCreatorScreen)watch_creator).fillingJellies()){
+					int jelly_level = board[x][y].getJellyLevel()+1;
+					if(jelly_level>Cell.maxJellyLevel)jelly_level = 0;
+					board[x][y].setJellyLevel(jelly_level);
+				}
+				//fill with an ingredient (toggle on/off)
+				else {
+					if(board[x][y].getCandy() == null){
+						board[x][y].changeCandyType(CandyType.INGREDIENT);
+					} else {
+						board[x][y] = new Cell(board[x][y].getCellType());
+					}
 				}
 			}
 		}

@@ -87,6 +87,10 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		title.setFont(new Font("Helvetica", Font.CENTER_BASELINE, 18));
 		title.setAlignmentX(CENTER_ALIGNMENT);
 		
+		high_score.setAlignmentX(CENTER_ALIGNMENT);
+		jelly_clear.setAlignmentX(CENTER_ALIGNMENT);
+		ingredients.setAlignmentX(CENTER_ALIGNMENT);
+		
 		game_mode_text.setFont(new Font("Helvetica", Font.CENTER_BASELINE, 18));
 		game_mode_text.setAlignmentX(CENTER_ALIGNMENT);
 		difficulty_text.setFont(new Font("Helvetica", Font.CENTER_BASELINE, 18));
