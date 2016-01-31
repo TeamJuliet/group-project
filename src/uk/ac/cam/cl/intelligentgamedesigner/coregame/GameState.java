@@ -19,13 +19,17 @@ public class GameState implements Cloneable, Serializable {
 	private Move lastMove;
 
 	public GameState(Design design) {
-		levelDesign = design;
-		width = levelDesign.getWidth();
-		height = levelDesign.getHeight();
-		board = new Cell[width][height];
+		this.levelDesign = design;
+		this.width = levelDesign.getWidth();
+		this.height = levelDesign.getHeight();
+		this.board = new Cell[width][height];
+
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
-				board[x][y] = new Cell(CellType.EMPTY);
+				Cell cellToCopy = design.getCell(x, y);
+				board[x][y] = new Cell(cellToCopy.getCellType(),
+						new Candy(cellToCopy.getCandy().getColour(), cellToCopy.getCandy().getCandyType()),
+						cellToCopy.getJellyLevel());
 			}
 		}
 
