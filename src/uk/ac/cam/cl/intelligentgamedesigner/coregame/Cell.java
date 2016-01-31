@@ -1,8 +1,10 @@
 package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
-public class Cell {
-	public static final int maxJellyLevel = 5;
-	
+import java.io.Serializable;
+
+public class Cell implements Cloneable, Serializable {
+
+    public static final int maxJellyLevel = 5;
     private CellType cellType;
     private Candy    candy;
     private int jellyLevel = 0;
@@ -50,14 +52,36 @@ public class Cell {
     
     // Function that returns whether it is possible to move the contents of the block.
     public boolean isMoveable() {
-    	return cellType == cellType.NORMAL;
+    	return cellType == CellType.NORMAL;
     }
     
     public CellType getCellType() {
         return cellType;
     }
     
-    public int getJellyLevel(){
-    	return jellyLevel;
+    public int getJellyLevel() {
+        return jellyLevel;
+    }
+
+    @Override
+    public boolean equals (Object toCompare) {
+        Cell cellToCompare = (Cell) toCompare;
+
+        return (this.candy.equals(cellToCompare.candy) &&
+                this.cellType   == cellToCompare.cellType &&
+                this.jellyLevel == cellToCompare.jellyLevel);
+    }
+
+    @Override
+    public Object clone () {
+        try {
+            Cell clone  = (Cell) super.clone();
+            clone.candy = (Candy) this.candy.clone();
+            return clone;
+
+        } catch (CloneNotSupportedException e) {
+            System.err.println("Could not clone Cell");
+            return null;
+        }
     }
 }

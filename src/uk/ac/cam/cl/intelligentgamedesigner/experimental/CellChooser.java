@@ -1,9 +1,6 @@
 package uk.ac.cam.cl.intelligentgamedesigner.experimental;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.Timer;
+import java.awt.TextField;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
@@ -16,11 +13,12 @@ public class CellChooser {
 	private static CellDisplay d1 = null, d2;
 	public static GameState game;
 	public static GameDisplay display;
+	public static TextField movesRecord;
 	// private final static Lock lock = new ReentrantLock();
 	// final public static Condition hasMadeMove = lock.newCondition();
 	
 	private static String positionToString(Position pos) {
-		return "(" + pos.getX() + ", " + pos.getY() + ")";
+		return "(" + pos.x + ", " + pos.y + ")";
 	}
 	
 	// Function that attempts to select a new Position.
@@ -41,8 +39,10 @@ public class CellChooser {
 			// reset();
 			try {
 				game.makeMove(new Move(p1, p2));
+				movesRecord.setText(movesRecord.getText() + "|" + positionToString(p1) + positionToString(p2));
 				while(game.makeSmallMove()) {
 					System.err.println("Moving on");
+					game.debugBoard();
 					display.setBoard(game.board);
 					display.paintImmediately(0, 0, display.getWidth(), display.getHeight());
 					// game.debugBoard();
@@ -51,7 +51,7 @@ public class CellChooser {
 			} catch (InvalidMoveException ex) {
 				System.err.println("You performed an invalid move." + positionToString(p1) + " " + positionToString(p2));
 				
-				game.debugBoard();
+				// game.debugBoard();
 			} /*catch (InterruptedException inter) {
 				inter.printStackTrace();
 			}*/ catch (InterruptedException e) {

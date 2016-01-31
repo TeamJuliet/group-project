@@ -18,14 +18,6 @@ public class DisplayTester {
 	
 	
 	public static void main(String[] args) {
-		/* int N = 10, M = 10;
-		Cell[][] values = new Cell[N][M];
-		CandyGenerator generator = new CandyGenerator(null);
-		for (int i = 0; i < N; ++i) {
-			for (int j = 0; j < M; ++j) {
-				values[i][j] = new Cell(null, generator.getCandy());
-			}
-		} */
 		JPanel generalPanel = new JPanel();
 		JFrame app = new JFrame();
 		GameState game = new GameState(new Design());
@@ -47,8 +39,18 @@ public class DisplayTester {
 		controlPanel.add(saveButton);
 		generalPanel.add(controlPanel);
 		
+		JPanel trackPanel = new JPanel();
+		trackPanel.setBorder(BorderFactory.createTitledBorder(
+				BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), "Track Panel"));
+		TextField moves = new TextField();
+		moves.setColumns(40);
+		trackPanel.add(moves);
+		generalPanel.add(trackPanel);
+		
+		CellChooser.movesRecord = moves;
+		
 		app.add(generalPanel);
-		app.setSize(new Dimension(500, 600));
+		app.setSize(new Dimension(600, 700));
 		app.setVisible(true);
 		app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
