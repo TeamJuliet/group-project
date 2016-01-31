@@ -5,16 +5,16 @@ import java.io.Serializable;
 public class Design implements Serializable {
 	private int height, width;          // The dimensions of the board.
     private Cell[][] boardLayout;       // The layout - specifying the position of special candies and blocks
-    private int numberOfMoves;          // The number of moves the player has available
+    private int numberOfMovesAvailable; // The number of moves the player has available
     private int objectiveTarget;		// The target needed to clear whatever game mode
-    	//(if high score, then = the required score)
-    	//(if jelly, then ignore this)
-    	//(if ingredients, then = the number of ingredients that need to be cleared)
+                                        // (if high score, then = the required score)
+                                        // (if jelly, then ignore this)
+                                        // (if ingredients, then = the number of ingredients that need to be cleared)
+    private int numberOfCandyColours;   // The number of unique colours a candy can take
     private GameMode gameMode;			// The game mode
 
-    //initialise with no values. specified elsewhere
-
-    public Design(){ //initialise with default values. specified elsewhere
+    // Initialise the Design with a default - namely a 10x10 board of empty cells
+    public Design () {
     	height = 10;
     	width = 10;
     	boardLayout = new Cell[width][height];
@@ -23,12 +23,13 @@ public class Design implements Serializable {
                 boardLayout[x][y] = new Cell(CellType.EMPTY);
             }
         }
-    	numberOfMoves = 10;
-    	gameMode = GameMode.HIGHSCORE;
-    	objectiveTarget = 1;
+    	numberOfMovesAvailable = 10;
+        objectiveTarget = 1;
+        numberOfCandyColours = 4;
+        gameMode = GameMode.HIGHSCORE;
     }
 
-    public void setSize(int width, int height){
+    public void setSize(int width, int height) {
     	this.width = width;
     	this.height = height;
     }
@@ -37,10 +38,11 @@ public class Design implements Serializable {
     	boardLayout = board;
     }
 
-    public void setRules(GameMode gameMode, int numberOfMoves, int objectiveTarget){
-    	this.gameMode = gameMode;
-    	this.numberOfMoves = numberOfMoves;
-    	this.objectiveTarget = objectiveTarget;
+    public void setRules(GameMode gameMode, int numberOfMovesAvailable, int objectiveTarget, int numberOfCandyColours){
+    	this.gameMode               = gameMode;
+    	this.numberOfMovesAvailable = numberOfMovesAvailable;
+    	this.objectiveTarget        = objectiveTarget;
+        this.numberOfCandyColours   = numberOfCandyColours;
     }
     
     public int getWidth(){
@@ -56,5 +58,17 @@ public class Design implements Serializable {
             return boardLayout[x][y];
         }
         return null;
+    }
+
+    public int getNumberOfMovesAvailable () {
+        return numberOfMovesAvailable;
+    }
+
+    public int getObjectiveTarget () {
+        return objectiveTarget;
+    }
+
+    public int getNumberOfCandyColours () {
+        return numberOfCandyColours;
     }
 }
