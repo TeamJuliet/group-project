@@ -16,4 +16,9 @@ public class Move {
     public Position getP2() {
         return p2;
     }
+
+    @Override
+    public String toString() {
+        return "Swap " + p1 + " with " + p2;
+    }
 }
