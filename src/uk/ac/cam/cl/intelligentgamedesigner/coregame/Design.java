@@ -12,14 +12,7 @@ public class Design implements Serializable {
     	//(if ingredients, then = the number of ingredients that need to be cleared)
     private GameMode gameMode;			// The game mode
     
-    public Design(){ //initialise with default values. specified elsewhere
-    	height = 10;
-    	width = 10;
-    	boardLayout = new Cell[width][height];
-    	numberOfMoves = 10;
-    	gameMode = GameMode.HIGHSCORE;
-    	objectiveTarget = 1;
-    }
+    //initialise with no values. specified elsewhere
     public void setSize(int width, int height){
     	this.width = width;
     	this.height = height;
