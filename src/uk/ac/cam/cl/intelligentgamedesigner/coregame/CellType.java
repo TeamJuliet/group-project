@@ -5,5 +5,6 @@ public enum CellType {
     EMPTY,
     ICING,
     NORMAL,
-    LIQUORICE
+    LIQUORICE,
+    DONT_CARE
 }

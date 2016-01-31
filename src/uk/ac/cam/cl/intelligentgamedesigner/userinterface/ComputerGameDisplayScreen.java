@@ -1,4 +1,4 @@
-package uk.ac.cam.cl.intelligentgamedesigner.gameinterface;
+package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
 import java.awt.event.ActionEvent;
 

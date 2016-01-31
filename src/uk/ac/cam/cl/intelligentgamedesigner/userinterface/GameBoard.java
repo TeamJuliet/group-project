@@ -1,4 +1,4 @@
-package uk.ac.cam.cl.intelligentgamedesigner.gameinterface;
+package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -13,7 +13,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 
 public abstract class GameBoard extends JComponent {
 
-	protected final int tile_size;
+	protected int tile_size;
 	protected int width;
 	protected int height;
 	protected Cell[][] board;
@@ -40,6 +40,14 @@ public abstract class GameBoard extends JComponent {
 	public Cell[][] getBoard(){
 		return board;
 	}
+	
+	public void clearBoard(){
+		for(int x=0;x<width;x++){
+			for(int y=0;y<height;y++){
+				board[x][y] = new Cell(CellType.UNUSABLE);				
+			}
+		}
+	}
 
 	//drawing the screen
 	private void draw_cell(int x, int y, Graphics g){
@@ -54,6 +62,9 @@ public abstract class GameBoard extends JComponent {
 			break;
 		case LIQUORICE:
 			g.setColor(Color.BLACK);
+			break;
+		case DONT_CARE:
+			g.setColor(Color.PINK);
 			break;
 		default:
 			g.setColor(Color.LIGHT_GRAY);

@@ -1,16 +1,14 @@
-package uk.ac.cam.cl.intelligentgamedesigner.gameinterface;
+package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
 import java.awt.event.ActionEvent;
 
-//loads the saved levels and allows you to scroll between them and select one
-public class LevelBrowserScreen extends DisplayScreen{
-	public LevelBrowserScreen(){
+//defines functionality specific to the Human controlled game
+public class HumanGameDisplayScreen extends GameDisplayScreen{
+	public HumanGameDisplayScreen(){
 		super();
-		identifier = "Level Browser";
+		identifier = "Human";
 	}
-	protected void draw(){
-		
-	}
+	
 	@Override
 	protected void makeItems() {
 		// TODO Auto-generated method stub

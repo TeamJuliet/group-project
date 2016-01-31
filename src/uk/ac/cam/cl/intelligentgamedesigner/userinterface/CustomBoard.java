@@ -1,4 +1,4 @@
-package uk.ac.cam.cl.intelligentgamedesigner.gameinterface;
+package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -27,6 +27,8 @@ public class CustomBoard extends GameBoard implements MouseListener{
 	
 	public CustomBoard(int width, int height)	{
 		super(width, height);
+		
+		tile_size = InterfaceManager.screenHeight()/15;
 		
 		addMouseListener(this);
 		timer = new Timer();

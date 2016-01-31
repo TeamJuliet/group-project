@@ -1,4 +1,4 @@
-package uk.ac.cam.cl.intelligentgamedesigner.gameinterface;
+package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -225,8 +225,8 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 		//set the locations
 		position(settings,0.5,0.7,300,400);
 		position(controls,0.5,0.25,300,200);
-		position(board_before,0.8,0.2,900,1000);
-		position(board_after,0.2,0.2,900,1000);
+		position(board_before,0.9,0.2,500,1000);
+		position(board_after,0.3,0.2,500,1000);
 	}
 
 	@Override

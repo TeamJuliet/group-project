@@ -1,12 +1,13 @@
-package uk.ac.cam.cl.intelligentgamedesigner.gameinterface;
+package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
 import java.awt.event.ActionEvent;
 
-//defines functionality specific to the Human controlled game
-public class HumanGameDisplayScreen extends GameDisplayScreen{
-	public HumanGameDisplayScreen(){
+//The screen while the level designer is working
+//will give stats on the progress etc.
+public class DesigningLevelScreen extends DisplayScreen{
+	public DesigningLevelScreen(){
 		super();
-		identifier = "Human";
+		identifier = "Designing Level";
 	}
 	
 	@Override
@@ -26,7 +27,7 @@ public class HumanGameDisplayScreen extends GameDisplayScreen{
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub

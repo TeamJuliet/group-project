@@ -1,4 +1,4 @@
-package uk.ac.cam.cl.intelligentgamedesigner.gameinterface;
+package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -34,6 +34,7 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 	private JButton just_quit;
 	private JButton just_save;
 	private JButton analyse;
+	private JButton reset_board;
 	
 	private JSlider dimensions_width;
 	private JSlider dimensions_height;
@@ -81,6 +82,7 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		just_quit = new JButton("Quit without saving");
 		analyse = new JButton("Analyse Level");
 		just_save = new JButton("Save Level");
+		reset_board = new JButton("Clear Board");
 		
 		dimensions_width = new JSlider(5,10);
 		dimensions_height = new JSlider(5,10);
@@ -136,6 +138,9 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		analyse.setToolTipText("Runs the simulated players on the level to get an estimated difficulty");
 		analyse.setActionCommand("analyse");
 		analyse.addActionListener(this);
+		reset_board.setToolTipText("Clears the game board entirely");
+		reset_board.setActionCommand("reset");
+		reset_board.addActionListener(this);
 		
 		high_score.setActionCommand("high score");
 		high_score.addActionListener(this);
@@ -207,16 +212,19 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		controls.add(Box.createRigidArea(new Dimension(0, 20)));
 		just_save.setAlignmentX(CENTER_ALIGNMENT);
 		controls.add(just_save);
-		controls.add(Box.createRigidArea(new Dimension(0, 20)));
+		controls.add(Box.createRigidArea(new Dimension(0, 10)));
 		analyse.setAlignmentX(CENTER_ALIGNMENT);
 		controls.add(analyse);
-		controls.add(Box.createRigidArea(new Dimension(0, 20)));
+		controls.add(Box.createRigidArea(new Dimension(0, 10)));
 		save_and_quit.setAlignmentX(CENTER_ALIGNMENT);
 		controls.add(save_and_quit);
-		controls.add(Box.createRigidArea(new Dimension(0, 20)));
+		controls.add(Box.createRigidArea(new Dimension(0, 10)));
 		just_quit.setAlignmentX(CENTER_ALIGNMENT);
 		controls.add(just_quit);	
-		controls.add(Box.createRigidArea(new Dimension(0, 20)));
+		controls.add(Box.createRigidArea(new Dimension(0, 10)));
+		reset_board.setAlignmentX(CENTER_ALIGNMENT);
+		controls.add(reset_board);	
+		controls.add(Box.createRigidArea(new Dimension(0, 10)));
 		add(controls);
 		
 		add(board);
@@ -240,6 +248,9 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 			break;
 		case "quit":
 			InterfaceManager.switchScreen(Windows.MAIN);
+			break;
+		case "reset":
+			board.clearBoard();
 			break;
 			
 		case "high score":

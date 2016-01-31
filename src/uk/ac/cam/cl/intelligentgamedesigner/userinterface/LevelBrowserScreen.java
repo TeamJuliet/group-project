@@ -1,15 +1,16 @@
-package uk.ac.cam.cl.intelligentgamedesigner.gameinterface;
+package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
 import java.awt.event.ActionEvent;
 
-//The screen while the level designer is working
-//will give stats on the progress etc.
-public class DesigningLevelScreen extends DisplayScreen{
-	public DesigningLevelScreen(){
+//loads the saved levels and allows you to scroll between them and select one
+public class LevelBrowserScreen extends DisplayScreen{
+	public LevelBrowserScreen(){
 		super();
-		identifier = "Designing Level";
+		identifier = "Level Browser";
 	}
-	
+	protected void draw(){
+		
+	}
 	@Override
 	protected void makeItems() {
 		// TODO Auto-generated method stub
@@ -27,7 +28,7 @@ public class DesigningLevelScreen extends DisplayScreen{
 		// TODO Auto-generated method stub
 		
 	}
-	
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
