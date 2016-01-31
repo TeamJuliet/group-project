@@ -5,7 +5,10 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.text.FieldPosition;
+import java.text.Format;
 import java.text.NumberFormat;
+import java.text.ParsePosition;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -62,6 +65,9 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 	private JFormattedTextField moves;
 	private JFormattedTextField mode_objective;
 	private JLabel what_objective;
+
+	private int level_on;
+	private JFormattedTextField level_name;
 	
 	//state relevant to level creation
 	private CustomBoard board;
@@ -131,6 +137,27 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		objective_fill = false;
 		jelly_fill = false;
 		null_fill = false;
+		
+//		Format format = new Format(){
+//
+//			@Override
+//			public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
+//				String string = (String)obj;
+//				string.replaceAll(" ", "_");
+//				toAppendTo.append(string);
+//				return toAppendTo;
+//			}
+//
+//			@Override
+//			public Object parseObject(String arg0, ParsePosition arg1) {
+//				return arg0;
+//			}
+//			
+//		};
+		int level_on = InterfaceManager.level_manager.get_next_num();
+		//level_name = new JFormattedTextField(format);
+		level_name = new JFormattedTextField();
+		level_name.setValue("the name");
 	}
 
 	@Override
@@ -213,8 +240,10 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		settings.add(Box.createRigidArea(new Dimension(0, 20)));
 		settings.add(new JLabel("Number of moves:"));
 		settings.add(moves);
+		settings.add(Box.createRigidArea(new Dimension(0, 5)));
 		settings.add(what_objective);
 		settings.add(mode_objective);
+		settings.add(Box.createRigidArea(new Dimension(0, 20)));
 		add(settings);
 
 		//make a box with all the controls
@@ -239,12 +268,21 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		controls.add(Box.createRigidArea(new Dimension(0, 20)));
 		add(controls);
 		
+		//make a title box
+		JPanel title = new JPanel();
+		title.setBorder(BorderFactory.createLineBorder(Color.black));
+		title.setLayout(new BoxLayout(title,BoxLayout.X_AXIS));
+		title.add(new JLabel(level_on+". "));
+		title.add(level_name);
+		add(title);
+		
 		add(board);
 
 		//set the locations
 		position(settings,0.15,0.5,300,500);
-		position(controls,0.85,0.5,300,400);
+		position(controls,0.85,0.5,300,300);
 		position(board,0.65,0.2,900,1000);
+		position(title,0.5,0.9,200,40);
 	}
 
 	@Override
@@ -252,12 +290,12 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		switch(e.getActionCommand()){
 		
 		case "save":
-			makeDesign();
+			makeAndSave();
 			break;
 		case "analyse":
 			break;
 		case "save and quit":
-			makeDesign();
+			makeAndSave();
 			InterfaceManager.switchScreen(Windows.MAIN);
 			break;
 		case "quit":
@@ -392,7 +430,7 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		return replace_cell;
 	}
 	
-	private void makeDesign(){
+	private void makeAndSave(){
 		Design level = new Design();
 		
 		board.minimumBoundingBox();
@@ -407,6 +445,9 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		
 		level.setBoard(board.getBoard());
 		level.setSize(temp_width, temp_height);
-		level.setRules(mode, number_of_moves, objective_value);
+		level.setRules(mode, number_of_moves, objective_value, 6);
+		
+		String fileName = level_on + ". " + level_name.getValue();
+		InterfaceManager.level_manager.saveLevel(fileName, level);
 	}
 }
