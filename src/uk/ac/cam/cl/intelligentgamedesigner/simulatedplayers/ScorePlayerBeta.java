@@ -1,5 +1,7 @@
 package uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers;
 
+import java.util.List;
+
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 
@@ -14,7 +16,13 @@ public class ScorePlayerBeta implements SimulatedPlayerBase {
          * pick the move with highest resulting score
          */
         while(level.getMovesRemaining() > 0){
-            
+            List<Move> validMoves = level.getValidMoves();
+            int highestScore = 0;
+            int bestMoveIndex = null;
+            for(Move candidate: validMoves){
+                GameState tmp = level.clone();
+                
+            }
         }
     }
 
