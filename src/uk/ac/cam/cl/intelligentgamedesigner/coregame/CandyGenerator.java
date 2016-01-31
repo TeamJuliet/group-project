@@ -9,5 +9,5 @@ public abstract class CandyGenerator implements Cloneable, Serializable {
     	this.designParameters = designParameters;
     }
     
-    public abstract Candy getCandy();
+    public abstract Candy generateCandy(int x);
 }
