@@ -14,5 +14,5 @@ public abstract class TestCase implements Serializable {
         return description;
     }
 
-    public abstract void run ();
+    public abstract boolean run ();
 }
