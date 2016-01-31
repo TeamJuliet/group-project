@@ -25,7 +25,7 @@ public class TestRunner extends JPanel implements ActionListener, PropertyChange
 
         UIManager.put("ProgressBar.selectionForeground", Color.BLACK);
         
-        startButton = new JButton("Start");
+        startButton = new JButton("Run Unit Tests");
         startButton.setActionCommand("start");
         startButton.addActionListener(this);
 
@@ -48,7 +48,7 @@ public class TestRunner extends JPanel implements ActionListener, PropertyChange
 
     public static void main (String[] args) {
         //Create and set up the window.
-        JFrame frame = new JFrame("Unit Tests");
+        JFrame frame = new JFrame("Unit Testing");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //Create and set up the content pane.
@@ -95,7 +95,12 @@ public class TestRunner extends JPanel implements ActionListener, PropertyChange
             Toolkit.getDefaultToolkit().beep();
             startButton.setEnabled(true);
             setCursor(null); //turn off the wait cursor
-            taskOutput.append(numPassed + "/" + numTests + " tests passed.\n");
+
+            if (numPassed == numTests) {
+                taskOutput.append("Wohoo! All tests passed :)\n");
+            } else {
+                taskOutput.append(numPassed + "/" + numTests + " tests passed.\n");
+            }
         }
     }
 
