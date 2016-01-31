@@ -1,9 +1,7 @@
 package uk.ac.cam.cl.intelligentgamedesigner.testing;
 
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
-
+import javax.swing.*;
 import java.io.*;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 public class TestLibrary {
@@ -52,24 +50,16 @@ public class TestLibrary {
         }
     }
 
-    public static void runTests () {
+    public static ArrayList<TestCase> getTests () {
         try {
             File unitTestFile = createLocalFile(UNIT_TESTS_FILENAME);
 
             // Read in the array of test cases and run them
             ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(unitTestFile));
-            ArrayList<TestCase> testCases = (ArrayList) objectInputStream.readObject();
-
-            for (TestCase testCase : testCases) {
-                testCase.run();
-            }
-
-            objectInputStream.close();
-
+            return (ArrayList) objectInputStream.readObject();
         } catch (ClassNotFoundException | IOException e) {
-
+            e.printStackTrace();
+            return null;
         }
     }
-
-
 }

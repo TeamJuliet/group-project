@@ -18,19 +18,17 @@ public class TestCaseGame extends TestCase {
     }
 
     @Override
-    public void run () {
+    public boolean run () {
         try {
             // Make move
             before.makeMove(moveMade);
             while(before.makeSmallMove()) {}
 
-            if (after.equals(before)) {
-                System.out.println("PASS: " + super.description);
-            } else {
-                System.err.println("FAIL: " + super.description);
-            }
+            return after.equals(before);
+
         } catch (InvalidMoveException e) {
             e.printStackTrace();
+            return false;
         }
     }
 }
