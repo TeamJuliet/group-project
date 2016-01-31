@@ -35,6 +35,15 @@ public class GameState implements Cloneable, Serializable {
 		}
 	}
 
+	// This constructor is for testing purposes
+	public GameState(Cell[][] board, CandyGenerator candyGenerator) {
+		width = 10;
+		height = 10;
+
+		this.board = board;
+		this.candyGenerator = candyGenerator;
+	}
+
 	private void refreshBoard() {
 		fillBoard();
 		// while(false) {
@@ -469,7 +478,7 @@ public class GameState implements Cloneable, Serializable {
 			for (int y = 0; y < height; y++) {
 				Cell cell = board[x][y];
 				if (cell.getCellType() == CellType.EMPTY) {
-					cell.setCandy(candyGenerator.getCandy());
+					cell.setCandy(candyGenerator.generateCandy(x));
 					debugCount++;
 				}
 			}
