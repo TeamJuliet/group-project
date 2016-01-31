@@ -20,13 +20,16 @@ public class Design implements Serializable {
     	gameMode = GameMode.HIGHSCORE;
     	objectiveTarget = 1;
     }
+
     public void setSize(int width, int height){
     	this.width = width;
     	this.height = height;
     }
+
     public void setBoard(Cell[][] board){
     	boardLayout = board;
     }
+
     public void setRules(GameMode gameMode, int numberOfMoves, int objectiveTarget){
     	this.gameMode = gameMode;
     	this.numberOfMoves = numberOfMoves;
@@ -39,5 +42,12 @@ public class Design implements Serializable {
     
     public int getHeight(){
         return this.height;
+    }
+
+    public Cell getCell (int x, int y) {
+        if (x >= 0 && x < width && y >= 0 && y < height) {
+            return boardLayout[x][y];
+        }
+        return null;
     }
 }
