@@ -5,22 +5,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameState implements Cloneable, Serializable {
-	// TODO: Make this cell private (public just for testing purposes).
-	public Cell[][] board;
-	int width;
-	int height;
+	private Cell[][] board;
+	public final Design levelDesign;
+	public final int width;
+	public final int height;
 	int movesRemaining;
 	int score;
 	CandyGenerator candyGenerator;
+	
 
 	private List<Position> detonated = new ArrayList<Position>();
 	private List<Position> popped = new ArrayList<Position>();
 	private Move lastMove;
 
 	public GameState(Design design) {
-		width = 10;
-		height = 10;
-
+		levelDesign = design;
+		width = levelDesign.getWidth();
+		height = levelDesign.getHeight();
 		board = new Cell[width][height];
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
@@ -54,11 +55,11 @@ public class GameState implements Cloneable, Serializable {
 
 	// Get methods
 	public int getHeight() {
-		return height;
+		return levelDesign.getHeight();
 	}
 
 	public int getWidth() {
-		return width;
+		return levelDesign.getHeight();
 	}
 
 	public Cell[][] getBoard() { return board; }
@@ -96,13 +97,11 @@ public class GameState implements Cloneable, Serializable {
 	}
 
 	@Override
-	public Object clone () {
+	public GameState clone () {
 
-		GameState clone = new GameState(new Design());
+		GameState clone = new GameState(levelDesign);
 
 		// Copy the basic parameters
-		clone.height 			= this.height;
-		clone.width 			= this.width;
 		clone.movesRemaining 	= this.movesRemaining;
 		clone.score 			= this.score;
 
@@ -515,7 +514,7 @@ public class GameState implements Cloneable, Serializable {
 		cell2.setCandy(tmp);
 	}
 
-	private boolean isMoveValid(Move move) {
+	public boolean isMoveValid(Move move) {
 		if (!isPositionValidAndMoveable(move.p1) || !isPositionValidAndMoveable(move.p2))
 			return false;
 		Cell cell1 = getCell(move.p1), cell2 = getCell(move.p2);
@@ -599,7 +598,7 @@ public class GameState implements Cloneable, Serializable {
 
 	public void makeMove(Move move) throws InvalidMoveException {
 		if (!isMoveValid(move))
-			throw new InvalidMoveException();
+			throw new InvalidMoveException(move);
 		// Record the last move.
 		lastMove = move;
 		swapCandies(move);
@@ -773,5 +772,4 @@ public class GameState implements Cloneable, Serializable {
 			System.out.println();
 		}
 	}
-
 }

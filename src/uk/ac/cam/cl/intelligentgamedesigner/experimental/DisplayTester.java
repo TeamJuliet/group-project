@@ -14,8 +14,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 
-public class DisplayTester {
-	
+public class DisplayTester {	
 	
 	public static void main(String[] args) {
 		JPanel generalPanel = new JPanel();
@@ -25,7 +24,7 @@ public class DisplayTester {
 		GameDisplay gamePanel = new GameDisplay(game.getWidth(), game.getHeight(), 50);
 		CellChooser.display = gamePanel;
 		
-		gamePanel.setBoard(game.board);
+		gamePanel.setBoard(game.getBoard());
 		generalPanel.add(gamePanel);
 		
 		

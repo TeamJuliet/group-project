@@ -10,4 +10,9 @@ public class Move implements Serializable {
         this.p1 = p1;
         this.p2 = p2;
     }
+
+    @Override
+    public String toString() {
+        return "Swap " + p1 + " with " + p2;
+    }
 }
