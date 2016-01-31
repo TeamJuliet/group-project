@@ -6,9 +6,9 @@ public class PseudoRandomCandyGenerator extends CandyGenerator {
 		super(designParameters);
 	}
 
-	private static int curNum = 38, prime = 361, anotherPrime = 991;
+	private int curNum = 38, prime = 361, anotherPrime = 991;
 
-	public static int nextPseudoRandom() {
+	public int nextPseudoRandom() {
 		// System.out.println(curNum + " " + CandyColour.values().length);
 		curNum = (curNum * prime) % anotherPrime;
 		return curNum;
@@ -16,7 +16,8 @@ public class PseudoRandomCandyGenerator extends CandyGenerator {
 
 	public Candy getCandy() {
 		int result = nextPseudoRandom() % CandyColour.values().length;
-
+		/* if (CandyColour.values()[result] == CandyColour.GREEN)
+			return new Candy(CandyColour.values()[result], CandyType.HORIZONTALLY_STRIPPED); */
 		return new Candy(CandyColour.values()[result], CandyType.NORMAL);
 	}
 
