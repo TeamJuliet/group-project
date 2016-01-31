@@ -88,7 +88,7 @@ public class GameState implements Cloneable, Serializable {
 	}
 
 	@Override
-	public Object clone () {
+	public GameState clone () {
 
 		GameState clone = new GameState(levelDesign);
 
@@ -505,7 +505,7 @@ public class GameState implements Cloneable, Serializable {
 		cell2.setCandy(tmp);
 	}
 
-	private boolean isMoveValid(Move move) {
+	public boolean isMoveValid(Move move) {
 		if (!isPositionValidAndMoveable(move.p1) || !isPositionValidAndMoveable(move.p2))
 			return false;
 		Cell cell1 = getCell(move.p1), cell2 = getCell(move.p2);

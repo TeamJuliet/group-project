@@ -43,7 +43,7 @@ public class CellChooser {
 				while(game.makeSmallMove()) {
 					System.err.println("Moving on");
 					game.debugBoard();
-					display.setBoard(game.board);
+					display.setBoard(game.getBoard());
 					display.paintImmediately(0, 0, display.getWidth(), display.getHeight());
 					// game.debugBoard();
 					Thread.sleep(500);
