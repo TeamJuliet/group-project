@@ -41,6 +41,7 @@ public class GameState implements Cloneable, Serializable {
 		width = 10;
 		height = 10;
 
+		this.levelDesign = new Design();
 		this.board = board;
 		this.candyGenerator = candyGenerator;
 	}
