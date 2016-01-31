@@ -18,7 +18,7 @@ public class ScorePlayerBeta implements SimulatedPlayerBase {
         while(level.getMovesRemaining() > 0){
             List<Move> validMoves = level.getValidMoves();
             int highestScore = 0;
-            int bestMoveIndex = null;
+            int bestMoveIndex = 0;
             for(Move candidate: validMoves){
                 GameState tmp = level.clone();
                 

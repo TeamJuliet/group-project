@@ -27,9 +27,13 @@ public class GameState implements Cloneable, Serializable {
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
 				Cell cellToCopy = design.getCell(x, y);
-				board[x][y] = new Cell(cellToCopy.getCellType(),
-						new Candy(cellToCopy.getCandy().getColour(), cellToCopy.getCandy().getCandyType()),
-						cellToCopy.getJellyLevel());
+				if (cellToCopy.getCandy() == null) {
+					board[x][y] = new Cell(cellToCopy.getCellType(), cellToCopy.getJellyLevel());
+				} else {
+					board[x][y] = new Cell(cellToCopy.getCellType(),
+							new Candy(cellToCopy.getCandy().getColour(), cellToCopy.getCandy().getCandyType()),
+							cellToCopy.getJellyLevel());
+				}
 			}
 		}
 

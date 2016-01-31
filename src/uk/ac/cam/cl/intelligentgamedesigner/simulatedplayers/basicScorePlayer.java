@@ -6,7 +6,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
 
 //Very basic player, simply search for first available move and make it
-public class basicScorePlayer implements simulatedPlayerBase {
+public class basicScorePlayer implements SimulatedPlayerBase {
     GameState level;
 
     public basicScorePlayer(GameState level) {

@@ -19,6 +19,11 @@ public class Cell implements Cloneable, Serializable {
         this.candy = candy;
     }
 
+    public Cell(CellType cellType, int jellyLevel) {
+        this.cellType = cellType;
+        this.jellyLevel = jellyLevel;
+    }
+
     public Cell(CellType cellType, Candy candy, int jellyLevel) {
         this.cellType = cellType;
         this.candy = candy;

@@ -18,11 +18,16 @@ public class Design implements Serializable {
     	height = 10;
     	width = 10;
     	boardLayout = new Cell[width][height];
+        for (int x = 0; x < 10; x++) {
+            for (int y = 0; y < 10; y++) {
+                boardLayout[x][y] = new Cell(CellType.EMPTY);
+            }
+        }
     	numberOfMoves = 10;
     	gameMode = GameMode.HIGHSCORE;
     	objectiveTarget = 1;
     }
-    
+
     public void setSize(int width, int height){
     	this.width = width;
     	this.height = height;
