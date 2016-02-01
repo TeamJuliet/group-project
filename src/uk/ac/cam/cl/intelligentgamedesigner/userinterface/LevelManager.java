@@ -3,7 +3,6 @@ package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 import java.io.*;
 import java.util.ArrayList;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
-import uk.ac.cam.cl.intelligentgamedesigner.testing.TestCase;
 
 public class LevelManager {
 	static int levels_so_far;
@@ -48,6 +47,7 @@ public class LevelManager {
 		            	System.err.println("Error in reading file (File not found)");
 					} catch (IOException e) {
 		            	System.err.println("Error in reading file (IO)");
+		            	e.printStackTrace();
 					} catch (ClassNotFoundException e) {
 		            	System.err.println("Error in reading file (Class not found)");
 					}
@@ -61,7 +61,42 @@ public class LevelManager {
 	public int get_next_num(){
 		return levels_so_far+1;
 	}
-
+	
+	public String[] getLevelNames() {
+		int num = 0;
+		String[] name_list = new String[level_names.size()];
+		for(String name:level_names){
+			name_list[num] = name;
+			num++;
+		}
+		return name_list;
+	}
+	
+	public Design getLevel(int level_number) {
+		try{
+			return levels.get(level_number-1);
+		} catch(IndexOutOfBoundsException e) {
+			return null;
+		}
+	}
+	
+	public void deleteLevel(int level_num) {
+		File root = new File(location);
+		File[] files = root.listFiles();
+		for(File f:files){
+			if(f.getName().startsWith(level_num+".")){
+				f.delete();
+			}
+		}
+		//rename the files etc.
+		levels.remove(level_num-1);
+		level_names.remove(level_num-1);
+		for(int n=level_num-1;n<level_names.size();n++){
+			String name_minus_num = level_names.get(n).split("\\.")[1];
+			level_names.set(n, (n+1)+name_minus_num);
+		}
+	}
+	
 	public void saveLevel(String fileName, Design level) {
 		//get the level number
 		int level_num = 0;
@@ -77,7 +112,6 @@ public class LevelManager {
 		for(File f:files){
 			if(f.getName().startsWith(level_num+".")){
 				f.delete();
-				//System.out.println("Deleted old file");
 			}
 		}
 		

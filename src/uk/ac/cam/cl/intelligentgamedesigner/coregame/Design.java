@@ -37,6 +37,10 @@ public class Design implements Serializable {
     public void setBoard(Cell[][] board){
     	boardLayout = board;
     }
+    
+    public Cell[][] getBoard() {
+    	return boardLayout;
+    }
 
     public void setRules(GameMode gameMode, int numberOfMovesAvailable, int objectiveTarget, int numberOfCandyColours){
     	this.gameMode               = gameMode;

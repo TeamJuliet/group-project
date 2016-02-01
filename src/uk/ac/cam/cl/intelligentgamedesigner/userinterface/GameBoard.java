@@ -10,8 +10,9 @@ import javax.swing.JComponent;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CandyType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 
-public abstract class GameBoard extends JComponent {
+public class GameBoard extends JComponent {
 
 	protected int tile_size;
 	protected int width;
@@ -35,6 +36,28 @@ public abstract class GameBoard extends JComponent {
 		
 		setPreferredSize(new Dimension(width*tile_size,height*tile_size));
 		
+	}
+	public GameBoard(Design design){
+		if(design == null){
+			width = 5;
+			height = 5;
+			board = new Cell[width][height];
+
+			for(int x=0;x<width;x++){
+				for(int y=0;y<height;y++){
+					board[x][y] = new Cell(CellType.UNUSABLE);
+				}
+			}
+		} else {
+			width = design.getWidth();
+			height = design.getHeight();
+			board = design.getBoard();
+		}
+		tile_size = InterfaceManager.screenHeight()/15;
+	}
+	
+	public void adjustSize(int scaleFactor) {
+		tile_size = InterfaceManager.screenHeight()/(60/scaleFactor);
 	}
 	
 	public Cell[][] getBoard(){
@@ -118,6 +141,16 @@ public abstract class GameBoard extends JComponent {
 					if(y>max_y)max_y = y;
 				}
 			}
+		}
+		
+		//check for no items found
+		if(min_x>max_x){
+			min_x = 0;
+			max_x = 4;
+		}
+		if(min_y>max_y){
+			min_y = 0;
+			max_y = 4;
 		}
 		
 		//make new board from this

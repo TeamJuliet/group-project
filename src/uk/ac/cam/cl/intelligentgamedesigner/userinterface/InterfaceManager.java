@@ -12,7 +12,6 @@ import javax.swing.JPanel;
 //I will also use this for testing the different screens
 public class InterfaceManager extends JFrame {
 	public static final LevelManager level_manager = new LevelManager();
-	
 	private static final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	
 	//Declaring the necessary components
@@ -86,6 +85,7 @@ public class InterfaceManager extends JFrame {
 			switchTo(level_creator_screen);
 			break;
 		case LOAD:
+			((LevelBrowserScreen) level_browser_screen).refreshList();
 			switchTo(level_browser_screen);
 			break;
 		case DISPLAY:
