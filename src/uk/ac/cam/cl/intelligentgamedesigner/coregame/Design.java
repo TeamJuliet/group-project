@@ -25,7 +25,7 @@ public class Design implements Serializable {
         }
     	numberOfMovesAvailable = 10;
         objectiveTarget = 1;
-        numberOfCandyColours = 4;
+        numberOfCandyColours = 6;
         gameMode = GameMode.HIGHSCORE;
     }
 
