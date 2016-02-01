@@ -58,7 +58,6 @@ public class TestLibrary {
             ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(unitTestFile));
             return (ArrayList) objectInputStream.readObject();
         } catch (ClassNotFoundException | IOException e) {
-            e.printStackTrace();
             return null;
         }
     }
