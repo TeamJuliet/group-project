@@ -12,6 +12,16 @@ public class GameState implements Cloneable, Serializable {
 	private int movesRemaining;
 	private int score;
 	CandyGenerator candyGenerator;
+
+	// Scoring values (in accordance with the spec)
+	static final int SCORE_MATCHED_3                = 60;	// When 3 candies are matched
+	static final int SCORE_MATCHED_4                = 120;	// When 4 candies are matched
+	static final int SCORE_MATCHED_5                = 200;	// When 5 candies are matched (include T, L and + shapes)
+	static final int SCORE_CANDY_ELIMINATED         = 60;	// When a candy is eliminated by some special candy
+	static final int SCORE_MATCHED_A_JELLY          = 1000;	// When a jelly is part of a match
+	static final int SCORE_ACTIVATED_WRAPPED_CANDY  = 540;	// When a wrapped candy is activated
+	static final int SCORE_ACTIVATED_BOMB           = 3000;	// When a bomb is activated
+	static final int SCORE_BROUGHT_INGREDIENT_DOWN  = 10000;// When an ingredient reaches the bottom
 	
 
 	private List<Position> detonated = new ArrayList<Position>();
@@ -19,10 +29,11 @@ public class GameState implements Cloneable, Serializable {
 	private Move lastMove;
 
 	public GameState(Design design) {
-		this.levelDesign = design;
-		this.width = levelDesign.getWidth();
-		this.height = levelDesign.getHeight();
-		this.board = new Cell[width][height];
+		this.levelDesign    = design;
+		this.width          = levelDesign.getWidth();
+		this.height         = levelDesign.getHeight();
+		this.board          = new Cell[width][height];
+		this.movesRemaining = levelDesign.getNumberOfMovesAvailable();
 
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
@@ -46,11 +57,11 @@ public class GameState implements Cloneable, Serializable {
 
 	// This constructor is for testing purposes
 	public GameState(Cell[][] board, CandyGenerator candyGenerator) {
-		width = board.length;
-		height = board[0].length;
-
-		this.levelDesign = new Design();
-		this.board = board;
+		this.width          = board.length;
+		this.height         = board[0].length;
+		this.movesRemaining = 100;
+		this.levelDesign    = new Design();
+		this.board          = board;
 		this.candyGenerator = candyGenerator;
 	}
 
@@ -611,6 +622,10 @@ public class GameState implements Cloneable, Serializable {
 		// Record the last move.
 		lastMove = move;
 		swapCandies(move);
+
+		// Reduce the number of remaining moves available
+		movesRemaining--;
+
 		Position p1 = move.p1, p2 = move.p2;
 		if (hasBomb(p1) && hasBomb(p2)) {
 			detonateBombBomb();
