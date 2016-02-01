@@ -505,7 +505,7 @@ public class GameState implements Cloneable, Serializable {
         return board[pos.x][pos.y];
     }
 
-    private void swapCandies(Move move) {
+    protected void swapCandies(Move move) {
         Cell cell1 = getCell(move.p1), cell2 = getCell(move.p2);
         // Swap values and check if the tiles form a match.
         Candy tmp = cell1.getCandy();

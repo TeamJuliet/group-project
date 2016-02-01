@@ -34,10 +34,21 @@ public class ScorePlayerBeta implements SimulatedPlayerBase {
     @Override
     public Move calculateBestMove(GameState currentState) {
         List<Move> validMoves = level.getValidMoves();
-        int longestMatch = 0;
+        int largestMatch = 0;
         Move bestMove = null;
         for (Move candidateMove : validMoves) {
-            // TODO: finish this
+            GameStateForSimulatedPlayers tmp = (GameStateForSimulatedPlayers) level;
+            // perhaps we don't need to copy in this case, we can just swap back
+            // at the end
+            // but we will definetly need a rollback or copy in more
+            // sophisticated AI
+            tmp.swapCandies(candidateMove);
+            int numberOfCellsMathed = 0; // TODO:check how many cells are
+                                         // matched
+            if (numberOfCellsMathed > largestMatch) {
+                largestMatch = numberOfCellsMathed;
+                bestMove = candidateMove;
+            }
         }
         return bestMove;
     }
