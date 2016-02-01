@@ -3,7 +3,8 @@ This is a repository for the group project of team Juliet. It aims to automate t
 
 ## Branching
 ### What To Do
-Unless you are providing a simple fix to the project, please develop all code on a branch (see below), and then only 
+Unless you are providing a simple fix to the project, please develop all code on a *non*-`master` branch (see below), 
+and then only 
 merge that branch to `master` once you are *sure* it works.
 ### Branch Names
 The branching convention we will use is as follows:
