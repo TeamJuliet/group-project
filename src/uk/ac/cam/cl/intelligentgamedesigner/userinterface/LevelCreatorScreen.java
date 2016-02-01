@@ -68,6 +68,8 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 
 	private int level_on;
 	private JFormattedTextField level_name;
+
+	private JSlider number_of_candies;
 	
 	//state relevant to level creation
 	private CustomBoard board;
@@ -95,6 +97,8 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		
 		dimensions_width = new JSlider(5,10);
 		dimensions_height = new JSlider(5,10);
+
+		number_of_candies = new JSlider(4,6);
 		
 		game_mode = new ButtonGroup();
 		high_score = new JRadioButton("High Score",true);
@@ -154,7 +158,7 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 //			}
 //			
 //		};
-		int level_on = InterfaceManager.level_manager.get_next_num();
+		level_on = InterfaceManager.level_manager.get_next_num();
 		//level_name = new JFormattedTextField(format);
 		level_name = new JFormattedTextField();
 		level_name.setValue("the name");
@@ -195,6 +199,11 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		dimensions_height.setPaintTicks(true);
 		dimensions_height.setPaintLabels(true);
 		dimensions_height.addChangeListener(this);
+		
+		number_of_candies.setValue(6);
+		number_of_candies.setMajorTickSpacing(1);
+		number_of_candies.setPaintTicks(true);
+		number_of_candies.setPaintLabels(true);		
 
 		selection.setActionCommand("new mode");
 		selection.addActionListener(this);
@@ -243,6 +252,9 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		settings.add(Box.createRigidArea(new Dimension(0, 5)));
 		settings.add(what_objective);
 		settings.add(mode_objective);
+		settings.add(Box.createRigidArea(new Dimension(0, 5)));
+		settings.add(new JLabel("Number of candy types:"));
+		settings.add(number_of_candies);
 		settings.add(Box.createRigidArea(new Dimension(0, 20)));
 		add(settings);
 
@@ -279,7 +291,7 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		add(board);
 
 		//set the locations
-		position(settings,0.15,0.5,300,500);
+		position(settings,0.15,0.5,300,600);
 		position(controls,0.85,0.5,300,300);
 		position(board,0.65,0.2,900,1000);
 		position(title,0.5,0.9,200,40);
@@ -445,7 +457,7 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		
 		level.setBoard(board.getBoard());
 		level.setSize(temp_width, temp_height);
-		level.setRules(mode, number_of_moves, objective_value, 6);
+		level.setRules(mode, number_of_moves, objective_value, number_of_candies.getValue());
 		
 		String fileName = level_on + ". " + level_name.getValue();
 		InterfaceManager.level_manager.saveLevel(fileName, level);

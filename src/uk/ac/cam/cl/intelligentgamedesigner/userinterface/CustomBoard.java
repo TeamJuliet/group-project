@@ -21,7 +21,7 @@ public class CustomBoard extends GameBoard implements MouseListener{
 	
 	private Timer timer;
 	private TimerTask task;
-	private final int refresh_rate = 20;
+	private final int refresh_rate = 10;
 	
 	private DisplayScreen watch_creator;
 	

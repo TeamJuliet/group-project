@@ -12,10 +12,13 @@ public class LevelManager {
 	//of the format 1. name.lv
 	
 	private ArrayList<Design> levels;
+	private ArrayList<String> level_names;
 	
 	public LevelManager() {
+		System.out.println(location);
 		levels_so_far = 0;
 		levels = new ArrayList<Design>();
+		level_names = new ArrayList<String>();
 		searchForLevels();
 	}
 	
@@ -26,7 +29,8 @@ public class LevelManager {
 		while(!foundEnd){
 			foundEnd = true;
 			for(File f:files) {
-				if(f.getName().startsWith(levels_so_far+". ")){
+				System.out.println("found "+f.getName());
+				if(f.getName().startsWith((levels_so_far+1)+". ")){
 					//add the latest numbered level to the list
 					Design latest;
 		            try {
@@ -35,21 +39,23 @@ public class LevelManager {
 		                latest = (Design) objectInputStream.readObject();
 		                objectInputStream.close();
 			            levels.add(latest);
+			            level_names.add(f.getName());
 						foundEnd = false;
 						levels_so_far++;
 		            } catch (EOFException e) {
-		            	System.err.println("Error in reading file");
+		            	System.err.println("Error in reading file (End of file)");
 		            } catch (FileNotFoundException e) {
-		            	System.err.println("Error in reading file");
+		            	System.err.println("Error in reading file (File not found)");
 					} catch (IOException e) {
-		            	System.err.println("Error in reading file");
+		            	System.err.println("Error in reading file (IO)");
 					} catch (ClassNotFoundException e) {
-		            	System.err.println("Error in reading file");
+		            	System.err.println("Error in reading file (Class not found)");
 					}
 					break;
 				}
 			}
 		}
+		System.out.println("found "+levels_so_far+" levels saved");
 	}
 	
 	public int get_next_num(){
@@ -60,7 +66,7 @@ public class LevelManager {
 		//get the level number
 		int level_num = 0;
 		try{
-			level_num = Integer.parseInt(fileName.split(".")[0]);
+			level_num = Integer.parseInt(fileName.split("\\.")[0]);
 		} catch (NumberFormatException e){
 			System.err.println("error in file name");
 		}
@@ -71,11 +77,19 @@ public class LevelManager {
 		for(File f:files){
 			if(f.getName().startsWith(level_num+".")){
 				f.delete();
+				//System.out.println("Deleted old file");
 			}
 		}
 		
 		if(level_num>0){ //update the manager's list of levels
-			levels.set(level_num-1, level);
+			if(levels.size()>level_num-1){
+				levels.set(level_num-1, level);
+				level_names.set(level_num-1, fileName);
+			}
+			else {
+				levels.add(level);
+				level_names.add(fileName);
+			}
 		}
 		
 		//create and save the new file
@@ -85,18 +99,16 @@ public class LevelManager {
 		} catch (IOException e) {
 			System.err.println("error in saving the new file");
 		}
+
+        // Output the new array of test cases
+        try {
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(file));
+			objectOutputStream.writeObject(level);
+	        objectOutputStream.close();
+		} catch (IOException e) {
+			System.err.println("error in saving the new file");
+		}
 		
 	}
-	
-	public static File createLocalFile (String fileName) throws IOException {
-
-        // TODO: Add non-UNIX operating system support
-        File file = new File(location + fileName);
-
-        // Create the file if it doesn't exist
-        if (!file.exists()) file.createNewFile();
-
-        return file;
-    }
 
 }
