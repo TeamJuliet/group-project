@@ -50,8 +50,10 @@ public class LevelRepresentationJelly extends GeneralLevelRepresentation {
 	}
 
 	@Override
-	public Design getDesign() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public Design getDesign()
+    {
+    	Design design = getBaseDesign();
+    	
+    	// TODO: set other parameters
+    }
 }
