@@ -77,9 +77,13 @@ public class TestRunner extends JPanel implements ActionListener, PropertyChange
                 boolean result = testCases.get(t).run();
                 if (result) {
                     numPassed++;
-                    mostRecentTestDescription = "PASSED: " + testCases.get(t).description;
+                    mostRecentTestDescription = "PASSED: " + testCases.get(t).description + "\n" +
+                            "        (unit test saved as: " + TestLibrary.UNIT_TESTS_PREFIX + testCases
+                            .get(t).fileName + TestLibrary.UNIT_TESTS_EXTENSION + ")";
                 } else {
-                    mostRecentTestDescription = "FAILED: " + testCases.get(t).description;
+                    mostRecentTestDescription = "FAILED: " + testCases.get(t).description + "\n" +
+                            "        (unit test saved as: " + TestLibrary.UNIT_TESTS_PREFIX + testCases
+                            .get(t).fileName + TestLibrary.UNIT_TESTS_EXTENSION + ")";
                 }
 
                 setProgress((int) (((t + 1) / (double) numTests) * 100));

@@ -10,13 +10,23 @@ public class TestCaseGame extends TestCase {
     private int scoreBefore;
     private int scoreAfter;
 
-    public TestCaseGame (String description, Cell[][] before, Cell[][] lookahead, Cell[][] after, Move moveMade) {
-        this(description, before, lookahead, after, moveMade, 0, 0);
+    public TestCaseGame (String description,
+                         Cell[][] before,
+                         Cell[][] lookahead,
+                         Cell[][] after,
+                         Move moveMade) {
+        this(description, "defaultName", before, lookahead, after, moveMade, 0, 0);
     }
 
-    public TestCaseGame (String description, Cell[][] before, Cell[][] lookahead, Cell[][] after, Move moveMade, int
-            scoreBefore, int scoreAfter) {
-        super(description);
+    public TestCaseGame (String description,
+                         String fileName,
+                         Cell[][] before,
+                         Cell[][] lookahead,
+                         Cell[][] after,
+                         Move moveMade,
+                         int scoreBefore,
+                         int scoreAfter) {
+        super(description, fileName);
 
         this.before = before;
         this.lookahead = lookahead;
@@ -47,7 +57,7 @@ public class TestCaseGame extends TestCase {
             return after.equals(before);
 
         } catch (InvalidMoveException e) {
-            e.printStackTrace();
+            // Move was invalid, anyway, no point running test
             return false;
         }
     }
