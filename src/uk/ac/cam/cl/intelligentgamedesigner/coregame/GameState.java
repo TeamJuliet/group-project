@@ -2,9 +2,11 @@ package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class GameState implements Cloneable, Serializable {
+
     private Cell[][]       board;
     public final Design    levelDesign;
     public final int       width;
@@ -16,27 +18,40 @@ public class GameState implements Cloneable, Serializable {
     private List<Position> detonated = new ArrayList<Position>();
     private List<Position> popped    = new ArrayList<Position>();
     private Move           lastMove;
+    
+    private int proceedState = 0;
 
     public GameState(Design design) {
-        levelDesign = design;
-        width = levelDesign.getWidth();
-        height = levelDesign.getHeight();
-        board = new Cell[width][height];
+        this.levelDesign = design;
+        this.width = levelDesign.getWidth();
+        this.height = levelDesign.getHeight();
+        this.board = new Cell[width][height];
+        this.movesRemaining = levelDesign.getNumberOfMovesAvailable();
+
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                board[x][y] = new Cell(CellType.EMPTY);
+                Cell cellToCopy = design.getCell(x, y);
+                if (cellToCopy.getCandy() == null) {
+                    board[x][y] = new Cell(cellToCopy.getCellType(), cellToCopy.getJellyLevel());
+                } else {
+                    board[x][y] = new Cell(cellToCopy.getCellType(),
+                            new Candy(cellToCopy.getCandy().getColour(), cellToCopy.getCandy().getCandyType()),
+                            cellToCopy.getJellyLevel());
+                }
             }
         }
 
-        candyGenerator = new PseudoRandomCandyGenerator(null);
+        candyGenerator = new PseudoRandomCandyGenerator(new DesignParameters(design.getNumberOfCandyColours()));
         fillBoard();
+
+        // Make sure the board is in a stable state
         while (makeSmallMove()) {
 
         }
     }
-    
-    //Copy constructor
-    public GameState(GameState original){
+
+    // Copy constructor
+    public GameState(GameState original) {
         this.board = original.board;
         this.levelDesign = original.levelDesign;
         this.width = original.width;
@@ -50,12 +65,21 @@ public class GameState implements Cloneable, Serializable {
         this.proceedState = original.proceedState;
     }
 
-    private void refreshBoard() {
-        fillBoard();
-        // while(false) {
-        // fillBoard();
-        // }
+    // This constructor is for testing purposes
+    public GameState(Cell[][] board, int score, CandyGenerator candyGenerator) {
+        this.width = board.length;
+        this.height = board[0].length;
+        this.movesRemaining = 100;
+        this.levelDesign = new Design();
+        this.board = board;
+        this.candyGenerator = candyGenerator;
 
+        // Make sure the board is in a stable state
+        while (makeSmallMove()) {
+
+        }
+
+        this.score = score;
     }
 
     // Get methods
@@ -94,7 +118,8 @@ public class GameState implements Cloneable, Serializable {
                 && (this.score == gameStateToCompare.score);
                 // NOTE:
                 // I have left out comparison of the CandyGenerator, since this
-                // isn't needed in
+                // isn't
+                // needed in
                 // the unit testing.
 
         // If so, then check the candies on the board match
@@ -189,6 +214,65 @@ public class GameState implements Cloneable, Serializable {
         return analysis.getLengthX() > 2 || analysis.getLengthY() > 2;
     }
 
+    private CandyType getSpecialCandyFormed(SingleTileAnalysis analysis) {
+        if (analysis.getLengthX() < 3 && analysis.getLengthY() < 3)
+            return null;
+        else if (analysis.getLengthX() < 3 && analysis.getLengthY() == 4)
+            return CandyType.VERTICALLY_STRIPPED;
+        else if (analysis.getLengthY() < 3 && analysis.getLengthX() == 4)
+            return CandyType.HORIZONTALLY_STRIPPED;
+        else if (analysis.getLengthX() == 5 || analysis.getLengthY() == 5)
+            return CandyType.BOMB;
+        else
+            return CandyType.WRAPPED;
+    }
+
+    private MatchAnalysis getSingleMatchAnalysis(Position pos) {
+        SingleTileAnalysis analysis = analyzeTile(pos);
+        if (analysis.getLengthX() < 3 && analysis.getLengthY() < 3)
+            return null;
+        List<Position> positions = new LinkedList<Position>();
+        List<CandyType> specials = new LinkedList<CandyType>();
+        if (analysis.getLengthX() > 2) {
+            for (int x = analysis.start_x; x <= analysis.end_x; ++x) {
+                if (x == pos.x)
+                    continue;
+                Position currentPosition = new Position(x, pos.y);
+                positions.add(currentPosition);
+                if (hasSpecial(currentPosition))
+                    specials.add(getCell(currentPosition).getCandy().getCandyType());
+            }
+        }
+        if (analysis.getLengthY() > 2) {
+            for (int y = analysis.start_y; y <= analysis.end_y; ++y) {
+                if (y == pos.y)
+                    continue;
+                Position currentPosition = new Position(pos.x, y);
+                positions.add(currentPosition);
+                if (hasSpecial(currentPosition))
+                    specials.add(getCell(currentPosition).getCandy().getCandyType());
+            }
+        }
+        return new MatchAnalysis(positions, specials, getSpecialCandyFormed(analysis));
+    }
+
+    // Function that returns the matches formed by a move.
+    // (Note: that when the board is in a final state then this is at most two).
+    public List<MatchAnalysis> getMatchAnalysis(Move move) {
+        // Make move in order to get information.
+        swapCandies(move);
+        List<MatchAnalysis> ret = new ArrayList<MatchAnalysis>();
+        MatchAnalysis analysis1 = getSingleMatchAnalysis(move.p1);
+        MatchAnalysis analysis2 = getSingleMatchAnalysis(move.p2);
+        if (analysis1 != null)
+            ret.add(analysis1);
+        if (analysis2 != null)
+            ret.add(analysis2);
+        // reverse the operation.
+        swapCandies(move);
+        return ret;
+    }
+
     private boolean wasSomethingPopped = false;
 
     // Function that adds the tile to detonated (the ones that are going to
@@ -235,8 +319,8 @@ public class GameState implements Cloneable, Serializable {
         // TODO(Dimitrios): make this more concise.
         for (int x = 0; x < width; ++x) {
             for (int y = 0; y < height; ++y) {
-                // Do not consider EMPTY cells.
-                if (board[x][y].getCellType() == CellType.EMPTY)
+                // Do not consider EMPTY cells or UNUSABLE cells
+                if (board[x][y].getCellType() == CellType.EMPTY || board[x][y].getCellType() == CellType.UNUSABLE)
                     continue;
                 CandyColour colour = board[x][y].getCandy().getColour();
                 SingleTileAnalysis analysis = analyzeTile(new Position(x, y));
@@ -491,7 +575,7 @@ public class GameState implements Cloneable, Serializable {
             for (int y = 0; y < height; y++) {
                 Cell cell = board[x][y];
                 if (cell.getCellType() == CellType.EMPTY) {
-                    cell.setCandy(candyGenerator.getCandy());
+                    cell.setCandy(candyGenerator.generateCandy(x));
                     debugCount++;
                 }
             }
@@ -608,7 +692,7 @@ public class GameState implements Cloneable, Serializable {
         return hasVerticallyStripped(pos) || hasHorizontallyStripped(pos);
     }
 
-    private int proceedState = 0;
+
 
     public void makeMove(Move move) throws InvalidMoveException {
         if (!isMoveValid(move))
@@ -616,6 +700,10 @@ public class GameState implements Cloneable, Serializable {
         // Record the last move.
         lastMove = move;
         swapCandies(move);
+
+        // Reduce the number of remaining moves available
+        movesRemaining--;
+
         Position p1 = move.p1, p2 = move.p2;
         if (hasBomb(p1) && hasBomb(p2)) {
             detonateBombBomb();

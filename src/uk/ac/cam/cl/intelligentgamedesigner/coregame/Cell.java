@@ -19,6 +19,17 @@ public class Cell implements Cloneable, Serializable {
         this.candy = candy;
     }
 
+    public Cell(CellType cellType, int jellyLevel) {
+        this.cellType = cellType;
+        this.jellyLevel = jellyLevel;
+    }
+
+    public Cell(CellType cellType, Candy candy, int jellyLevel) {
+        this.cellType = cellType;
+        this.candy = candy;
+        this.jellyLevel = jellyLevel;
+    }
+
     public void setJellyLevel(int jellyLevel) {
         this.jellyLevel = jellyLevel;
     }
@@ -59,6 +70,11 @@ public class Cell implements Cloneable, Serializable {
 
     public CellType getCellType() {
         return cellType;
+    }
+
+    // added a setter for customisation purposes
+    public void setCellType(CellType cellType) {
+        this.cellType = cellType;
     }
 
     public int getJellyLevel() {

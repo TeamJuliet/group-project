@@ -1,4 +1,4 @@
-package uk.ac.cam.cl.intelligentgamedesigner.gameinterface;
+package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -12,6 +12,7 @@ import java.util.TimerTask;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.Candy;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CandyType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
@@ -19,14 +20,16 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 
 public class CustomBoard extends GameBoard implements MouseListener{
 	
-	private Timer timer;
-	private TimerTask task;
-	private final int refresh_rate = 20;
+	protected Timer timer;
+	protected TimerTask task;
+	protected final int refresh_rate = 10;
 	
-	private DisplayScreen watch_creator;
+	protected DisplayScreen watch_creator;
 	
 	public CustomBoard(int width, int height)	{
 		super(width, height);
+		
+		tile_size = InterfaceManager.screenHeight()/15;
 		
 		addMouseListener(this);
 		timer = new Timer();
@@ -42,7 +45,7 @@ public class CustomBoard extends GameBoard implements MouseListener{
 			for(int y=0;y<new_h;y++){
 				if(x<width && y<height)
 					new_board[x][y] = board[x][y];
-				else new_board[x][y] = new Cell(CellType.UNUSABLE);
+				else new_board[x][y] = defaultCell();
 			}
 		}
 		//replace the old board
@@ -59,7 +62,11 @@ public class CustomBoard extends GameBoard implements MouseListener{
 			//(removes any objective cells)
 			for(int x=0;x<width;x++){
 				for(int y=0;y<height;y++){
+					board[x][y].setJellyLevel(0);
 					board[x][y] = new Cell(board[x][y].getCellType());
+					if(board[x][y].getCandy().getCandyType() == CandyType.INGREDIENT){
+						board[x][y] = new Cell(board[x][y].getCellType());
+					}
 				}
 			}
 			break;
@@ -68,7 +75,9 @@ public class CustomBoard extends GameBoard implements MouseListener{
 			for(int x=0;x<width;x++){
 				for(int y=0;y<height;y++){
 					int temp_jl = board[x][y].getJellyLevel();
-					board[x][y] = new Cell(board[x][y].getCellType());
+					if(board[x][y].getCandy() != null && board[x][y].getCandy().getCandyType() == CandyType.INGREDIENT){
+						board[x][y] = new Cell(board[x][y].getCellType());
+					}
 					board[x][y].setJellyLevel(temp_jl);
 				}
 			}
@@ -85,20 +94,17 @@ public class CustomBoard extends GameBoard implements MouseListener{
 	}
 
 	public void changeTile(){
-
-		if(watch_creator.identifier.equals("Level Creator")){ //check is level cretor
-			Point pos = getMousePosition();
-			
-			if(pos != null){
-				int x = pos.x/tile_size;
-				int y = pos.y/tile_size;
-				//convert to coordinates
-				if(
-					x>=0 && x<width &&
-					y>=0 && y<height &&
-					board[x][y].getCellType() != ((LevelCreatorScreen)watch_creator).getReplacer()
-						)
-					board[x][y] = new Cell(((LevelCreatorScreen)watch_creator).getReplacer());
+		Point pos = getMousePosition();
+		if(pos != null){
+			//convert to coordinates
+			int x = pos.x/tile_size;
+			int y = pos.y/tile_size;
+			if(x>=0 && x<width && y>=0 && y<height){				
+				if(watch_creator.identifier.equals("Level Creator")){ //check is level creator
+					if(board[x][y].getCellType() != ((LevelCreatorScreen)watch_creator).getReplacer()){
+						board[x][y] = new Cell(((LevelCreatorScreen)watch_creator).getReplacer());						
+					}
+				}				
 			}
 		}
 	}
@@ -111,7 +117,6 @@ public class CustomBoard extends GameBoard implements MouseListener{
 		    	// The second parameter is delay before the first run
 		    	// The third is how often to run it
 			}
-			
 		}
 	}
 
@@ -134,6 +139,13 @@ public class CustomBoard extends GameBoard implements MouseListener{
 				
 				//fill with a jelly (toggle level)
 				if(((LevelCreatorScreen)watch_creator).fillingJellies()){
+					//make the cell type normal
+					if(board[x][y].getCellType() != CellType.NORMAL){
+						Cell temp = new Cell(CellType.NORMAL);
+						temp.setJellyLevel(board[x][y].getJellyLevel());
+						temp.setCandy(board[x][y].getCandy());
+						board[x][y] = temp;
+					}
 					int jelly_level = board[x][y].getJellyLevel()+1;
 					if(jelly_level>Cell.maxJellyLevel)jelly_level = 0;
 					board[x][y].setJellyLevel(jelly_level);
@@ -141,7 +153,8 @@ public class CustomBoard extends GameBoard implements MouseListener{
 				//fill with an ingredient (toggle on/off)
 				else {
 					if(board[x][y].getCandy() == null){
-						board[x][y].changeCandyType(CandyType.INGREDIENT);
+						board[x][y] = new Cell(CellType.NORMAL);
+						board[x][y].setCandy(new Candy(null, CandyType.INGREDIENT));
 					} else {
 						board[x][y] = new Cell(board[x][y].getCellType());
 					}
