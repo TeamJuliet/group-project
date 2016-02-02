@@ -3,8 +3,10 @@ package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 import java.util.ArrayList;
 import java.util.Random;
 
-public abstract class LevelRepresentation {
+public abstract class LevelRepresentation
+{
 
+	protected Random random;
     protected int[][] board;
     protected static int maxWidth = 10;
     protected static int maxHeight = 10;
@@ -25,8 +27,11 @@ public abstract class LevelRepresentation {
         2 => Icing
         3 => Liquorice
      */
+    
+    
 
-    public void initialise () {
+    public LevelRepresentation ()
+    {
 
         Random random = new Random();
 
@@ -49,5 +54,7 @@ public abstract class LevelRepresentation {
         }
     }
 
+    public abstract Design getDesign();
+    
     public abstract void mutate ();
 }

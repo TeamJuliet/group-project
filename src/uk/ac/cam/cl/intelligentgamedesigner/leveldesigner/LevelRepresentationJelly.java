@@ -20,12 +20,11 @@ public class LevelRepresentationJelly extends LevelRepresentation {
         3 => Liquorice
      */
 
-    @Override
-    public void initialise() {
-        super.initialise();
+    public LevelRepresentationJelly(Random random)
+    {
+        super(random);
 
         // Initialise the jelly levels
-        Random random = new Random();
         this.jellyLevels = new int[LevelRepresentation.maxWidth][LevelRepresentation.maxHeight];
         for (int x = 0; x < LevelRepresentation.maxWidth; x++) {
             for (int y = 0; y < LevelRepresentation.maxHeight; y++) {
@@ -33,6 +32,12 @@ public class LevelRepresentationJelly extends LevelRepresentation {
                 jellyLevels[x][y] = random.nextInt(3);
             }
         }
+    }
+    
+    @Override
+    public Design getDesign()
+    {
+    	
     }
 
     @Override

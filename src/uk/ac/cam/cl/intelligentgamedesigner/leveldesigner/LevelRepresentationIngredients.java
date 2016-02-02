@@ -19,15 +19,20 @@ public class LevelRepresentationIngredients extends LevelRepresentation {
         3 => Liquorice
      */
 
-    @Override
-    public void initialise() {
-        super.initialise();
+    public LevelRepresentationIngredients(Random random)
+    {
+        super(random);
 
-        Random random = new Random();
         // Number of ingredients is initialised in the range: 1-5
         this.parameters.add(random.nextInt(5) + 1);
     }
 
+    @Override
+    public Design getDesign()
+    {
+    	
+    }
+    
     @Override
     public void mutate() {
 

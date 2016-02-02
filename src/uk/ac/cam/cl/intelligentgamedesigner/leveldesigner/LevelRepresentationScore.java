@@ -20,12 +20,18 @@ public class LevelRepresentationScore extends LevelRepresentation {
      */
 
     @Override
-    public void initialise() {
-        super.initialise();
+    public LevelRepresentationScore(Random random)
+    {
+        super(random);
 
-        Random random = new Random();
         // Score to reach is initialised in the range: 1000-500000
         this.parameters.add(random.nextInt(499001) + 1000);
+    }
+    
+    @Override
+    public Design getDesign()
+    {
+    	
     }
 
     @Override
