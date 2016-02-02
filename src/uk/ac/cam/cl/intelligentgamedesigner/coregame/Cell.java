@@ -69,6 +69,10 @@ public class Cell implements Cloneable, Serializable {
     public CellType getCellType() {
         return cellType;
     }
+    //added a setter for customisation purposes
+    public void setCellType(CellType cellType){
+    	this.cellType = cellType;
+    }
     
     public int getJellyLevel() {
         return jellyLevel;

@@ -3,8 +3,6 @@ package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -14,7 +12,9 @@ import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -22,7 +22,6 @@ import javax.swing.JSlider;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -30,8 +29,9 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Candy;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CandyColour;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CandyType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
+import uk.ac.cam.cl.intelligentgamedesigner.testing.TestCaseGame;
+import uk.ac.cam.cl.intelligentgamedesigner.testing.TestLibrary;
 
 //an interface for a human user to manually create a level, to then save
 public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener{
@@ -79,6 +79,7 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 	private boolean candy_fill;
 	private boolean jelly_fill;
 	private boolean null_fill;
+	private boolean move_place;
 
 	private JTable game_state_stuff;
 	private JTextField description;
@@ -106,8 +107,8 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 		game_mode.add(jelly);
 		game_mode.add(ingredients);
 		
-		types = new String[]{"Regular Cell","Candies","Objective Pieces"};
-		cells = new String[]{"Normal","Unusable","Icing","Liquorice"};
+		types = new String[]{"Regular Cell","Candies","Objective Pieces","Test Move"};
+		cells = new String[]{"Normal","Unusable","Icing","Liquorice","Don't Care"};
 		candies = new String[] {"Red","Orange","Yellow","Green","Blue","Purple"};
 		highscore_specials = new String[]{"<None>"};
 		jelly_specials = new String[]{"Jelly Level"};
@@ -122,19 +123,21 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 		fill_type.setModel(cells_fill);
 
 		String[] column_names = {
-				"", "Before", "After"
+				"Game State:", "Before", "After"
 		};
 		Object[][] data = {
+				column_names,
 				{"Number of Moves",new Integer(4),new Integer(3)},
 				{"Score (-1 is don't care)",new Integer(100),new Integer(200)}
 		};
 		game_state_stuff = new JTable(data,column_names){
 		    @Override
 		    public boolean isCellEditable(int row, int column) {
-		        if(column == 0)return false;
+		        if(column == 0 || row == 0)return false;
 		        return true;
 		    }
 		};
+		game_state_stuff.setBorder(BorderFactory.createLineBorder(Color.black));
 		description = new JTextField("This test determines...");
 
 		//The Game Board
@@ -251,6 +254,8 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 		JPanel gameStates = new JPanel();
 		gameStates.setBorder(BorderFactory.createLineBorder(Color.black));
 		gameStates.setLayout(new BoxLayout(gameStates,BoxLayout.Y_AXIS));
+		gameStates.add(new JLabel("Additional Rules:"));
+		gameStates.add(Box.createRigidArea(new Dimension(0, 5)));
 		gameStates.add(game_state_stuff);
 		controls.add(Box.createRigidArea(new Dimension(0, 20)));
 		gameStates.add(new JLabel("Description of Test:"));
@@ -271,7 +276,7 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 		position(infinite_lookahead,0.2,0.8,400,160);
 		position(board_before,0.2,0.4,400,400);
 		position(board_after,0.8,0.5,400,400);
-		position(gameStates,0.8,0.85,400,100);
+		position(gameStates,0.8,0.85,400,120);
 	}
 
 	@Override
@@ -329,6 +334,7 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 				jelly_fill = false;
 				null_fill = false;
 				candy_fill = false;
+				move_place = false;	
 				
 				//switch the fill type to cells
 				fill_type.setModel(cells_fill);
@@ -341,6 +347,7 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 				jelly_fill = false;
 				null_fill = false;
 				candy_fill = true;
+				move_place = false;	
 				
 				//switch the fill type to cells
 				fill_type.setModel(candies_fill);
@@ -351,6 +358,7 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 			case "Objective Pieces":
 				objective_fill = true;
 				candy_fill = false;
+				move_place = false;	
 				
 				//switch the fill type to misc
 				switch(mode){
@@ -373,8 +381,15 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 				fill_type.setSelectedIndex(0);
 								
 				break;
+			case "Test Move":
+				objective_fill = false;
+				jelly_fill = false;
+				null_fill = false;
+				candy_fill = false;
+				move_place = true;	
+				fill_type.setModel(highscore_model);		
+				break;
 			}
-			//System.out.println((String)fill_type.getSelectedItem());
 			break;
 		case "new selection":
 			switch((String)fill_type.getSelectedItem()){
@@ -389,6 +404,9 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 				break;
 			case "Liquorice":
 				replace_cell = CellType.LIQUORICE;
+				break;
+			case "Don't Care":
+				replace_cell = CellType.DONT_CARE;
 				break;
 				
 			case "Red":
@@ -435,6 +453,9 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 	public boolean fillingJellies(){
 		return jelly_fill;
 	}
+	public boolean placingMove(){
+		return move_place;
+	}
 	public CellType getReplacer(){
 		return replace_cell;
 	}
@@ -443,6 +464,10 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 	}
 	
 	private void makeAndSave(){
-		
+		TestLibrary.addTest(new TestCaseGame(description.getText(), 
+				board_before.getBoard(), 
+				board_above.getBoard(), 
+				board_after.getBoard(), board_before.getMove()));
+		JOptionPane.showMessageDialog(this,"Unit Test Saved!","Notification",JOptionPane.INFORMATION_MESSAGE);
 	}
 }

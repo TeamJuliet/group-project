@@ -20,9 +20,9 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 
 public class CustomBoard extends GameBoard implements MouseListener{
 	
-	private Timer timer;
-	private TimerTask task;
-	private final int refresh_rate = 10;
+	protected Timer timer;
+	protected TimerTask task;
+	protected final int refresh_rate = 10;
 	
 	protected DisplayScreen watch_creator;
 	
@@ -118,28 +118,11 @@ public class CustomBoard extends GameBoard implements MouseListener{
 		    	// The third is how often to run it
 			}
 		}
-
-		if(watch_creator.identifier.equals("Unit Test Maker")){ //check is unit test maker
-			if(((UnitTestMakerScreen)watch_creator).fillingCells() || ((UnitTestMakerScreen)watch_creator).fillingCandies()){
-				task = new ClickDrag(this);
-		    	timer.scheduleAtFixedRate(task, 0, refresh_rate); // Time is in milliseconds
-		    	// The second parameter is delay before the first run
-		    	// The third is how often to run it
-			}
-		}
 	}
 
 	public void mouseReleased(MouseEvent e) {
 		if(watch_creator.identifier.equals("Level Creator")){ //check is level creator
 			if(((LevelCreatorScreen)watch_creator).fillingCells()){
-				task.cancel();
-				// Will not stop execution of task.run() if it is midway
-				// But will guarantee that after this call it runs no more than one more time
-			}
-		}
-
-		if(watch_creator.identifier.equals("Unit Test Maker")){ //check is unit test maker
-			if(((UnitTestMakerScreen)watch_creator).fillingCells() || ((UnitTestMakerScreen)watch_creator).fillingCandies()){
 				task.cancel();
 				// Will not stop execution of task.run() if it is midway
 				// But will guarantee that after this call it runs no more than one more time

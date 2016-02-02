@@ -98,6 +98,12 @@ public class GameBoard extends JComponent {
 			break;
 		}
 		g.fillRect(x*tile_size, y*tile_size, tile_size, tile_size);
+		//don't care state
+		if(board[x][y].getCellType() == CellType.DONT_CARE){
+			g.setColor(Color.BLACK);
+			g.drawLine(x*tile_size, y*tile_size, x*tile_size + tile_size, y*tile_size + tile_size);
+			g.drawLine(x*tile_size, y*tile_size + tile_size, x*tile_size + tile_size, y*tile_size);
+		}
 		
 		//draw the jelly
 		int jelly_level = board[x][y].getJellyLevel();

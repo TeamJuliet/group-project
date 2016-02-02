@@ -44,12 +44,13 @@ public class LevelManager {
 		            	System.err.println("Error in reading file (End of file)");
 		            } catch (FileNotFoundException e) {
 		            	System.err.println("Error in reading file (File not found)");
-					} catch (IOException e) {
+					} catch (InvalidClassException e) {
+		            	System.err.println("Error in reading file (Invalid Class)");
+					}catch (IOException e) {
 		            	System.err.println("Error in reading file (IO)");
-		            	e.printStackTrace();
 					} catch (ClassNotFoundException e) {
 		            	System.err.println("Error in reading file (Class not found)");
-					}
+					} 
 					break;
 				}
 			}

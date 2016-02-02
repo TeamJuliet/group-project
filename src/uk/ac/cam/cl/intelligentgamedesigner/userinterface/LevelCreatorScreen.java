@@ -20,6 +20,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
@@ -461,5 +462,7 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		
 		String fileName = level_on + ". " + level_name.getValue();
 		InterfaceManager.level_manager.saveLevel(fileName, level);
+		
+		JOptionPane.showMessageDialog(this,fileName+" Saved!","Notification",JOptionPane.INFORMATION_MESSAGE);
 	}
 }
