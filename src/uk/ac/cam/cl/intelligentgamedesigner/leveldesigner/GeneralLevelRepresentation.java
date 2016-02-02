@@ -6,7 +6,7 @@ import java.util.Random;
 public abstract class GeneralLevelRepresentation extends LevelRepresentation {
 
 	protected Random random;
-    protected int[][] board;
+    protected DesignCellType[][] board;
     protected static int maxWidth = 10;
     protected static int maxHeight = 10;
     protected static int cellModulo = 4;
@@ -43,11 +43,54 @@ public abstract class GeneralLevelRepresentation extends LevelRepresentation {
         // TODO: The above initialisations are just guesses at the moment. We may need to refine them
 
         // Initialise the board
-        this.board = new int[GeneralLevelRepresentation.maxWidth][GeneralLevelRepresentation.maxHeight];
+        this.board = new DesignCellType[GeneralLevelRepresentation.maxWidth][GeneralLevelRepresentation.maxHeight];
         for (int x = 0; x < GeneralLevelRepresentation.maxWidth; x++) {
             for (int y = 0; y < GeneralLevelRepresentation.maxHeight; y++) {
                 board[x][y] = random.nextInt(GeneralLevelRepresentation.cellModulo);
             }
         }
+    }
+    
+    /** Creates a Design instance that includes the basic layout of the board, but excludes the parameters specific to
+     *  particular game type.
+     * 
+     */
+    protected Design getBaseDesign()
+    {
+    	Design design = new Design();
+        
+    	design.setSize(board.getWidth(),board.getHeight());
+    
+    	Cell[][] designBoard = new Cell[board.getWidth()][board.getHeight()];
+    
+    	for(int i = 0; i < designBoard.getWidth(); i++)
+    	{
+    		for(int j = 0; j < designBoard.getHeight(); j++)
+        	{
+    			switch(board[i][j])
+    			{
+    			case DesignCellType::UNUSABLE:
+    				designBoard[i][j] = new Cell(CellType::UNUSABLE);
+    				break;
+    			case DesignCellType::EMPTY:
+    				designBoard[i][j] = new Cell(CellType::EMPTY);
+    				break;
+    			case DesignCellType::ICING:
+    				designBoard[i][j] = new Cell(CellType::ICING);
+    				break;
+    			case DesignCellType::LIQUORICE:
+    				designBoard[i][j] = new Cell(CellType::LIQUORICE);
+    				break;
+    			}        		
+        	}		
+    	}
+    	
+    	design.setBoard(designBoard);
+    	
+    	// TODO: set Max Moves
+    	
+    	// TODO: set number of candy colours
+    	
+    	return design;
     }
 }

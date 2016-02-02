@@ -32,7 +32,9 @@ public class LevelRepresentationScore extends GeneralLevelRepresentation {
     @Override
     public Design getDesign()
     {
-    	return null;
+    	Design design = getBaseDesign();
+    
+    	// TODO: set other parameters
     }
 
     @Override
