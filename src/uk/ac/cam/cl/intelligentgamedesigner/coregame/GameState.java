@@ -43,18 +43,30 @@ public class GameState implements Cloneable, Serializable {
 		candyGenerator = new PseudoRandomCandyGenerator(new DesignParameters(
 				design.getNumberOfCandyColours()));
 		fillBoard();
+		// Guarantees that the board will not have any matches in the beginning.
+		// Note: This could mean that there are some special candies formed.
 		while (makeSmallMove()) {
 
 		}
 	}
 
-	// This constructor is for testing purposes
+	// This constructor is for testing purposes.
 	public GameState(Cell[][] board, CandyGenerator candyGenerator) {
 		this.width = board.length;
 		this.height = board[0].length;
 		this.movesRemaining = 100;
 		this.levelDesign = new Design();
 		this.board = board;
+		this.candyGenerator = candyGenerator;
+	}
+
+	// This constructor is for simulation purposes.
+	public GameState(GameState gameState, CandyGenerator candyGenerator) {
+		this.width = gameState.getWidth();
+		this.height = gameState.getHeight();
+		this.movesRemaining = gameState.movesRemaining;
+		this.levelDesign = new Design();
+		this.board = gameState.board.clone();
 		this.candyGenerator = candyGenerator;
 	}
 
@@ -195,35 +207,48 @@ public class GameState implements Cloneable, Serializable {
 	}
 
 	private CandyType getSpecialCandyFormed(SingleTileAnalysis analysis) {
-		if (analysis.getLengthX() < 3 && analysis.getLengthY() < 3) return null;
-		else if (analysis.getLengthX() < 3 && analysis.getLengthY() == 4) return CandyType.VERTICALLY_STRIPPED;
-		else if (analysis.getLengthY() < 3 && analysis.getLengthX() == 4) return CandyType.HORIZONTALLY_STRIPPED;
-		else if (analysis.getLengthX() == 5 || analysis.getLengthY() == 5) return CandyType.BOMB;
-		else return CandyType.WRAPPED;
+		if (analysis.getLengthX() < 3 && analysis.getLengthY() < 3)
+			return null;
+		else if (analysis.getLengthX() < 3 && analysis.getLengthY() == 4)
+			return CandyType.VERTICALLY_STRIPPED;
+		else if (analysis.getLengthY() < 3 && analysis.getLengthX() == 4)
+			return CandyType.HORIZONTALLY_STRIPPED;
+		else if (analysis.getLengthX() == 5 || analysis.getLengthY() == 5)
+			return CandyType.BOMB;
+		else
+			return CandyType.WRAPPED;
 	}
-	
+
 	private MatchAnalysis getSingleMatchAnalysis(Position pos) {
 		SingleTileAnalysis analysis = analyzeTile(pos);
-		if (analysis.getLengthX() < 3 && analysis.getLengthY() < 3) return null;
+		if (analysis.getLengthX() < 3 && analysis.getLengthY() < 3)
+			return null;
 		List<Position> positions = new LinkedList<Position>();
 		List<CandyType> specials = new LinkedList<CandyType>();
 		if (analysis.getLengthX() > 2) {
-			for (int x = analysis.start_x; x <= analysis.end_x; ++x ) {
-				if (x == pos.x) continue;
+			for (int x = analysis.start_x; x <= analysis.end_x; ++x) {
+				if (x == pos.x)
+					continue;
 				Position currentPosition = new Position(x, pos.y);
 				positions.add(currentPosition);
-				if (hasSpecial(currentPosition)) specials.add(getCell(currentPosition).getCandy().getCandyType());
+				if (hasSpecial(currentPosition))
+					specials.add(getCell(currentPosition).getCandy()
+							.getCandyType());
 			}
 		}
 		if (analysis.getLengthY() > 2) {
 			for (int y = analysis.start_y; y <= analysis.end_y; ++y) {
-				if (y == pos.y) continue;
+				if (y == pos.y)
+					continue;
 				Position currentPosition = new Position(pos.x, y);
 				positions.add(currentPosition);
-				if (hasSpecial(currentPosition)) specials.add(getCell(currentPosition).getCandy().getCandyType());
+				if (hasSpecial(currentPosition))
+					specials.add(getCell(currentPosition).getCandy()
+							.getCandyType());
 			}
 		}
-		return new MatchAnalysis(positions, specials, getSpecialCandyFormed(analysis));
+		return new MatchAnalysis(positions, specials,
+				getSpecialCandyFormed(analysis));
 	}
 
 	// Function that returns the matches formed by a move.
@@ -234,8 +259,10 @@ public class GameState implements Cloneable, Serializable {
 		List<MatchAnalysis> ret = new ArrayList<MatchAnalysis>();
 		MatchAnalysis analysis1 = getSingleMatchAnalysis(move.p1);
 		MatchAnalysis analysis2 = getSingleMatchAnalysis(move.p2);
-		if (analysis1 != null) ret.add(analysis1);
-		if (analysis2 != null) ret.add(analysis2);
+		if (analysis1 != null)
+			ret.add(analysis1);
+		if (analysis2 != null)
+			ret.add(analysis2);
 		// reverse the operation.
 		swapCandies(move);
 		return ret;
@@ -373,6 +400,7 @@ public class GameState implements Cloneable, Serializable {
 					for (int k = analysis.start_y; k <= analysis.end_y; ++k) {
 						SingleTileAnalysis childAnalysis = analyzeTile(new Position(
 								x, k));
+
 						if (childAnalysis.getLengthX() > 2) {
 							// This candy will be replaced by a wrapped one if
 							// it is the first junction.

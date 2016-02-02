@@ -5,9 +5,9 @@ public enum CandyType {
 	VERTICALLY_STRIPPED,
 	HORIZONTALLY_STRIPPED,
 	WRAPPED,
-	BOMB,// Does not have a Candy Color.
-	
-	INGREDIENT,//Does not have a Candy Color
+	BOMB, // Does not have a Candy Color.
+	INGREDIENT, //Does not have a Candy Color
+	UNMOVEABLE, // Does not have a Candy Color and it is used to get next partially known states.
 	; 
 	
 	public boolean isSpecial() {

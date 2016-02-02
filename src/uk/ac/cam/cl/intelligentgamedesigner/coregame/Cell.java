@@ -63,7 +63,7 @@ public class Cell implements Cloneable, Serializable {
     
     // Function that returns whether it is possible to move the contents of the block.
     public boolean isMoveable() {
-    	return cellType == CellType.NORMAL;
+    	return cellType == CellType.NORMAL && !(hasCandy() && candy.getCandyType().equals(CandyType.UNMOVEABLE));
     }
     
     public CellType getCellType() {
