@@ -26,14 +26,8 @@ public class LevelRepresentationIngredients extends GeneralLevelRepresentation {
         super(random);
 
         // Number of ingredients is initialised in the range: 1-5
-        this.parameters.add(random.nextInt(5) + 1);
+        this.parameters.add(new Parameter(random, 1, 5));
     }
-
-	@Override
-	public void mutate() {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public List<LevelRepresentation> crossoverWith(LevelRepresentation l) {

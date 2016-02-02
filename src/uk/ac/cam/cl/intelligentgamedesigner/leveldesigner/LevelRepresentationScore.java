@@ -26,18 +26,13 @@ public class LevelRepresentationScore extends GeneralLevelRepresentation {
         super(random);
 
         // Score to reach is initialised in the range: 1000-500000
-        this.parameters.add(random.nextInt(499001) + 1000);
+        this.parameters.add(new Parameter(random, 1000, 500000));
     }
     
     @Override
     public Design getDesign()
     {
     	return null;
-    }
-
-    @Override
-    public void mutate() {
-
     }
 
 	@Override
