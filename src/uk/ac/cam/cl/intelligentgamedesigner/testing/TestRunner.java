@@ -49,7 +49,7 @@ public class TestRunner extends JPanel implements ActionListener, PropertyChange
     public static void main (String[] args) {
         //Create and set up the window.
         JFrame frame = new JFrame("Unit Testing");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         //Create and set up the content pane.
         JComponent newContentPane = new TestRunner();
@@ -67,7 +67,8 @@ public class TestRunner extends JPanel implements ActionListener, PropertyChange
         public Void doInBackground() {
 
             ArrayList<TestCase> testCases = TestLibrary.getTests();
-            numTests = testCases.size();
+            if (testCases != null) numTests = testCases.size();
+            else numTests = 0;
 
             setProgress(0);
 
