@@ -1,5 +1,6 @@
 package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -44,9 +45,17 @@ public class LevelRepresentationJelly extends GeneralLevelRepresentation {
 	}
 
 	@Override
-	public List<LevelRepresentation> crossoverWith(LevelRepresentation l) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<LevelRepresentation> crossoverWith(LevelRepresentation parent) {
+        LevelRepresentationJelly child1 = new LevelRepresentationJelly(new Random());
+        LevelRepresentationJelly child2 = new LevelRepresentationJelly(new Random());
+
+        super.crossoverWith((GeneralLevelRepresentation) parent, child1, child2);
+
+        ArrayList<LevelRepresentation> children = new ArrayList<>();
+        children.add(child1);
+        children.add(child2);
+
+        return children;
 	}
 
 	@Override
