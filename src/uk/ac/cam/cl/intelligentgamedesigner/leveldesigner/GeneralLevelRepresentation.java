@@ -5,6 +5,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public abstract class GeneralLevelRepresentation extends LevelRepresentation {
@@ -30,7 +31,6 @@ public abstract class GeneralLevelRepresentation extends LevelRepresentation {
         2 => Icing
         3 => Liquorice
      */
-    
 
     public GeneralLevelRepresentation(Random random) {
     	super(random);
@@ -74,47 +74,84 @@ public abstract class GeneralLevelRepresentation extends LevelRepresentation {
         }
     }
 
-
     /** Creates a Design instance that includes the basic layout of the board, but excludes the parameters specific to
      *  particular game type.
      * 
      */
-    protected Design getBaseDesign()
-    {
-    	Design design = new Design();
-        
-    	design.setSize(maxWidth, maxHeight);
-    
-    	Cell[][] designBoard = new Cell[maxWidth][maxHeight];
-    
-    	for(int x = 0; x < maxWidth; x++)
-    	{
-    		for(int y = 0; y < maxHeight; y++)
-        	{
-    			switch(board[x][y])
-    			{
-    			case UNUSABLE:
-    				designBoard[x][y] = new Cell(CellType.UNUSABLE);
-    				break;
-    			case EMPTY:
-    				designBoard[x][y] = new Cell(CellType.EMPTY);
-    				break;
-    			case ICING:
-    				designBoard[x][y] = new Cell(CellType.ICING);
-    				break;
-    			case LIQUORICE:
-    				designBoard[x][y] = new Cell(CellType.LIQUORICE);
-    				break;
-    			}        		
-        	}		
-    	}
-    	
-    	design.setBoard(designBoard);
-    	
-    	// TODO: set Max Moves
-    	
-    	// TODO: set number of candy colours
-    	
-    	return design;
+    protected Design getBaseDesign() {
+        Design design = new Design();
+
+        design.setSize(maxWidth, maxHeight);
+
+        Cell[][] designBoard = new Cell[maxWidth][maxHeight];
+
+        for (int x = 0; x < maxWidth; x++) {
+            for (int y = 0; y < maxHeight; y++) {
+                switch (board[x][y]) {
+                    case UNUSABLE:
+                        designBoard[x][y] = new Cell(CellType.UNUSABLE);
+                        break;
+                    case EMPTY:
+                        designBoard[x][y] = new Cell(CellType.EMPTY);
+                        break;
+                    case ICING:
+                        designBoard[x][y] = new Cell(CellType.ICING);
+                        break;
+                    case LIQUORICE:
+                        designBoard[x][y] = new Cell(CellType.LIQUORICE);
+                        break;
+                }
+            }
+        }
+
+        design.setBoard(designBoard);
+
+        // TODO: set Max Moves
+
+        // TODO: set number of candy colours
+
+        return design;
+    }
+
+    /**
+     * This function takes a parent and two children, and crosses over the parent
+     * boards with t
+     *
+     * @param parent
+     * @param child1
+     * @param child2
+     */
+    public void crossoverWith(GeneralLevelRepresentation parent,
+                              GeneralLevelRepresentation child1,
+                              GeneralLevelRepresentation child2) {
+
+        boolean isVerticalSplit = (random.nextInt(2) > 0);
+
+        int splitEnd = random.nextInt(maxWidth + 1);
+
+        for (int x = 0; x < splitEnd; x++) {
+            for (int y = 0; y < maxHeight; y++) {
+
+                if (isVerticalSplit) {
+                    child1.board[x][y] = this.board[x][y];
+                    child2.board[x][y] = parent.board[x][y];
+                } else {
+                    child1.board[y][x] = this.board[y][x];
+                    child2.board[y][x] = parent.board[y][x];
+                }
+            }
+        }
+
+        for (int x = splitEnd; x < maxWidth; x++) {
+            for (int y = 0; y < maxHeight; y++) {
+                if (isVerticalSplit) {
+                    child1.board[x][y] = parent.board[x][y];
+                    child2.board[x][y] = this.board[x][y];
+                } else {
+                    child1.board[y][x] = parent.board[y][x];
+                    child2.board[y][x] = this.board[y][x];
+                }
+            }
+        }
     }
 }
