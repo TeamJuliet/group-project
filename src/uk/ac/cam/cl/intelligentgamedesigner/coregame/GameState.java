@@ -43,19 +43,28 @@ public class GameState implements Cloneable, Serializable {
 		candyGenerator = new PseudoRandomCandyGenerator(new DesignParameters(
 				design.getNumberOfCandyColours()));
 		fillBoard();
+
+		// Make sure the board is in a stable state
 		while (makeSmallMove()) {
 
 		}
 	}
 
 	// This constructor is for testing purposes
-	public GameState(Cell[][] board, CandyGenerator candyGenerator) {
+	public GameState(Cell[][] board, int score, CandyGenerator candyGenerator) {
 		this.width = board.length;
 		this.height = board[0].length;
 		this.movesRemaining = 100;
 		this.levelDesign = new Design();
 		this.board = board;
 		this.candyGenerator = candyGenerator;
+
+		// Make sure the board is in a stable state
+		while (makeSmallMove()) {
+
+		}
+
+		this.score = score;
 	}
 
 	// Get methods
@@ -289,8 +298,8 @@ public class GameState implements Cloneable, Serializable {
 		// TODO(Dimitrios): make this more concise.
 		for (int x = 0; x < width; ++x) {
 			for (int y = 0; y < height; ++y) {
-				// Do not consider EMPTY cells.
-				if (board[x][y].getCellType() == CellType.EMPTY)
+				// Do not consider EMPTY cells or UNUSABLE cells
+				if (board[x][y].getCellType() == CellType.EMPTY || board[x][y].getCellType() == CellType.UNUSABLE)
 					continue;
 				CandyColour colour = board[x][y].getCandy().getColour();
 				SingleTileAnalysis analysis = analyzeTile(new Position(x, y));
