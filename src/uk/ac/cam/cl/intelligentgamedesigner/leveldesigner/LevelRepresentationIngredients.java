@@ -1,8 +1,11 @@
 package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
+import java.util.List;
 import java.util.Random;
 
-public class LevelRepresentationIngredients extends LevelRepresentation {
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
+
+public class LevelRepresentationIngredients extends GeneralLevelRepresentation {
 
     /*
         Parameters list:
@@ -19,22 +22,28 @@ public class LevelRepresentationIngredients extends LevelRepresentation {
         3 => Liquorice
      */
 
-    public LevelRepresentationIngredients(Random random)
-    {
+    public LevelRepresentationIngredients(Random random) {
         super(random);
 
         // Number of ingredients is initialised in the range: 1-5
         this.parameters.add(random.nextInt(5) + 1);
     }
 
-    @Override
-    public Design getDesign()
-    {
-    	
-    }
-    
-    @Override
-    public void mutate() {
+	@Override
+	public void mutate() {
+		// TODO Auto-generated method stub
+		
+	}
 
-    }
+	@Override
+	public List<LevelRepresentation> crossoverWith(LevelRepresentation l) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Design getDesign() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

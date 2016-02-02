@@ -3,7 +3,7 @@ package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 public class LevelDesigner {
 
 
-    public LevelRepresentation crossOver (LevelRepresentation father, LevelRepresentation mother) {
+    public GeneralLevelRepresentation crossOver (GeneralLevelRepresentation father, GeneralLevelRepresentation mother) {
 
         // TODO: Implement method for 'breeding' two designs
 
