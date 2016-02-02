@@ -34,6 +34,21 @@ public class GameState implements Cloneable, Serializable {
 
         }
     }
+    
+    //Copy constructor
+    public GameState(GameState original){
+        this.board = original.board;
+        this.levelDesign = original.levelDesign;
+        this.width = original.width;
+        this.height = original.height;
+        this.movesRemaining = original.movesRemaining;
+        this.score = original.score;
+        this.candyGenerator = original.candyGenerator;
+        this.detonated = original.detonated;
+        this.popped = original.popped;
+        this.lastMove = original.lastMove;
+        this.proceedState = original.proceedState;
+    }
 
     private void refreshBoard() {
         fillBoard();
@@ -656,13 +671,9 @@ public class GameState implements Cloneable, Serializable {
 
     }
 
-    private int countSmallMoves = 0;
-
     // Performs the corresponding action on each step (will be used by the
     // DisplayBoard extension).
     public boolean makeSmallMove() {
-        countSmallMoves++;
-        System.out.println("We are on " + countSmallMoves);
         if (proceedState == 0) {
             System.out.println("1: Mark and replace tiles on");
             // debugBoard();

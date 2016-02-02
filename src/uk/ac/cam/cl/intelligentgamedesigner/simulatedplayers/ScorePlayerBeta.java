@@ -37,7 +37,7 @@ public class ScorePlayerBeta implements SimulatedPlayerBase {
         int largestMatch = 0;
         Move bestMove = null;
         for (Move candidateMove : validMoves) {
-            GameStateForSimulatedPlayers tmp = (GameStateForSimulatedPlayers) level;
+            SimGS tmp = (SimGS) level;
             // perhaps we don't need to copy in this case, we can just swap back
             // at the end
             // but we will definetly need a rollback or copy in more
