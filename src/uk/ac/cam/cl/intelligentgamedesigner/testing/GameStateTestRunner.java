@@ -78,12 +78,12 @@ public class GameStateTestRunner extends JPanel implements ActionListener, Prope
                 if (result) {
                     numPassed++;
                     mostRecentTestDescription = "PASSED: " + testCases.get(t).description + "\n" +
-                            "        (unit test saved as: " + TestLibrary.UNIT_TESTS_PREFIX + testCases
-                            .get(t).fileName + TestLibrary.UNIT_TESTS_EXTENSION + ")";
+                            "        (unit test saved as: " + testCases.get(t).fileName +
+                            TestLibrary.UNIT_TESTS_EXTENSION + ")";
                 } else {
                     mostRecentTestDescription = "FAILED: " + testCases.get(t).description + "\n" +
-                            "        (unit test saved as: " + TestLibrary.UNIT_TESTS_PREFIX + testCases
-                            .get(t).fileName + TestLibrary.UNIT_TESTS_EXTENSION + ")";
+                            "        (unit test saved as: " + testCases.get(t).fileName +
+                            TestLibrary.UNIT_TESTS_EXTENSION + ")";
                 }
 
                 setProgress((int) (((t + 1) / (double) numTests) * 100));
