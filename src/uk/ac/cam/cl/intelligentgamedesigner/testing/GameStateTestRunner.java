@@ -8,7 +8,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 
-public class TestRunner extends JPanel implements ActionListener, PropertyChangeListener {
+public class GameStateTestRunner extends JPanel implements ActionListener, PropertyChangeListener {
 
     private JProgressBar progressBar;
     private JButton startButton;
@@ -20,7 +20,7 @@ public class TestRunner extends JPanel implements ActionListener, PropertyChange
     private int numTests;
     private int numPassed;
 
-    public TestRunner () {
+    public GameStateTestRunner() {
         super(new BorderLayout());
 
         UIManager.put("ProgressBar.selectionForeground", Color.BLACK);
@@ -52,7 +52,7 @@ public class TestRunner extends JPanel implements ActionListener, PropertyChange
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         //Create and set up the content pane.
-        JComponent newContentPane = new TestRunner();
+        JComponent newContentPane = new GameStateTestRunner();
         newContentPane.setOpaque(true); //content panes must be opaque
         frame.setContentPane(newContentPane);
 
