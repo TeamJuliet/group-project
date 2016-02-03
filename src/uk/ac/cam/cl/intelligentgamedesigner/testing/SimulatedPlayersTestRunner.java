@@ -7,7 +7,7 @@ import static org.junit.Assert.assertEquals;
 public class SimulatedPlayersTestRunner {
 
     /*
-    INSERT UNIT TESTS FOR THE LEVEL DESIGNER BELOW BY DOING THE FOLLOWING:
+    INSERT UNIT TESTS FOR THE SIMULATED PLAYERS BELOW BY DOING THE FOLLOWING:
     ----------------------------------------------------------------------
 
     1. Write the test in a public void method.

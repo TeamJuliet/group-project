@@ -31,7 +31,7 @@ These unit tests can be created in the user interface that Ben has built. I deci
  since it was easier to write/read tests from a file using my own implementation.
 
 #### LevelDesignerTestRunner
-Running this class will run all of the unit test methods annotated with `@Test`.
+Running this class will run all of the unit test methods annotated with `@Test`. This class uses JUnit.
 
 #### SimulatedPlayersTestRunner
-Running this class will run all of the unit test methods annotated with `@Test`.
+Running this class will run all of the unit test methods annotated with `@Test`. This class uses JUnit.
