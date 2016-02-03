@@ -28,8 +28,10 @@ import javax.swing.event.ChangeListener;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Candy;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CandyColour;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CandyType;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.TestCaseGame;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.TestLibrary;
 
@@ -82,6 +84,7 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 	private boolean move_place;
 
 	private JTable game_state_stuff;
+	private JTextField test_name;
 	private JTextField description;
 	
 	public UnitTestMakerScreen(){
@@ -127,7 +130,6 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 		};
 		Object[][] data = {
 				column_names,
-				{"Number of Moves",new Integer(4),new Integer(3)},
 				{"Score (-1 is don't care)",new Integer(100),new Integer(200)}
 		};
 		game_state_stuff = new JTable(data,column_names){
@@ -139,6 +141,7 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 		};
 		game_state_stuff.setBorder(BorderFactory.createLineBorder(Color.black));
 		description = new JTextField("This test determines...");
+		test_name = new JTextField("the name");
 
 		//The Game Board
 		width = 10;
@@ -254,6 +257,9 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 		JPanel gameStates = new JPanel();
 		gameStates.setBorder(BorderFactory.createLineBorder(Color.black));
 		gameStates.setLayout(new BoxLayout(gameStates,BoxLayout.Y_AXIS));
+		gameStates.add(new JLabel("Unit Test Name:"));
+		gameStates.add(test_name);
+		controls.add(Box.createRigidArea(new Dimension(0, 20)));
 		gameStates.add(new JLabel("Additional Rules:"));
 		gameStates.add(Box.createRigidArea(new Dimension(0, 5)));
 		gameStates.add(game_state_stuff);
@@ -275,8 +281,8 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 		position(controls,0.5,0.20,300,100);
 		position(infinite_lookahead,0.2,0.8,400,160);
 		position(board_before,0.2,0.4,400,400);
-		position(board_after,0.8,0.5,400,400);
-		position(gameStates,0.8,0.85,400,120);
+		position(board_after,0.8,0.4,400,400);
+		position(gameStates,0.8,0.8,400,160);
 	}
 
 	@Override
@@ -464,10 +470,16 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 	}
 	
 	private void makeAndSave(){
-		TestLibrary.addTest(new TestCaseGame(description.getText(), 
+		TestLibrary.addTest(new TestCaseGame(
+				description.getText(),
+				test_name.getText(),
 				board_before.getBoard(), 
 				board_above.getBoard(), 
-				board_after.getBoard(), board_before.getMove()));
+				board_after.getBoard(), 
+				board_before.getMove(),
+				(int)game_state_stuff.getValueAt(1, 1),
+				(int)game_state_stuff.getValueAt(1, 2)
+				));
 		JOptionPane.showMessageDialog(this,"Unit Test Saved!","Notification",JOptionPane.INFORMATION_MESSAGE);
 	}
 }
