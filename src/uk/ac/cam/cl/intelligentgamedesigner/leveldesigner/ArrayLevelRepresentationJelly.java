@@ -6,7 +6,7 @@ import java.util.Random;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 
-public class LevelRepresentationJelly extends GeneralLevelRepresentation {
+public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
 
     protected int[][] jellyLevels;
 
@@ -24,14 +24,14 @@ public class LevelRepresentationJelly extends GeneralLevelRepresentation {
         3 => Liquorice
      */
 
-    public LevelRepresentationJelly(Random random)
+    public ArrayLevelRepresentationJelly(Random random)
     {
         super(random);
 
         // Initialise the jelly levels
-        this.jellyLevels = new int[GeneralLevelRepresentation.maxWidth][GeneralLevelRepresentation.maxHeight];
-        for (int x = 0; x < GeneralLevelRepresentation.maxWidth; x++) {
-            for (int y = 0; y < GeneralLevelRepresentation.maxHeight; y++) {
+        this.jellyLevels = new int[ArrayLevelRepresentation.maxWidth][ArrayLevelRepresentation.maxHeight];
+        for (int x = 0; x < ArrayLevelRepresentation.maxWidth; x++) {
+            for (int y = 0; y < ArrayLevelRepresentation.maxHeight; y++) {
                 // Jelly levels initialised in the range: 0-2
                 jellyLevels[x][y] = random.nextInt(3);
             }
@@ -46,10 +46,10 @@ public class LevelRepresentationJelly extends GeneralLevelRepresentation {
 
 	@Override
 	public List<LevelRepresentation> crossoverWith(LevelRepresentation parent) {
-        LevelRepresentationJelly child1 = new LevelRepresentationJelly(new Random());
-        LevelRepresentationJelly child2 = new LevelRepresentationJelly(new Random());
+        ArrayLevelRepresentationJelly child1 = new ArrayLevelRepresentationJelly(new Random());
+        ArrayLevelRepresentationJelly child2 = new ArrayLevelRepresentationJelly(new Random());
 
-        super.crossoverWith((GeneralLevelRepresentation) parent, child1, child2);
+        super.crossoverWith((ArrayLevelRepresentation) parent, child1, child2);
 
         ArrayList<LevelRepresentation> children = new ArrayList<>();
         children.add(child1);

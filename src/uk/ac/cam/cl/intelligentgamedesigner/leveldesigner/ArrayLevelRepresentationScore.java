@@ -6,7 +6,7 @@ import java.util.Random;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 
-public class LevelRepresentationScore extends GeneralLevelRepresentation {
+public class ArrayLevelRepresentationScore extends ArrayLevelRepresentation {
 
     /*
         Parameters list:
@@ -23,7 +23,7 @@ public class LevelRepresentationScore extends GeneralLevelRepresentation {
         3 => Liquorice
      */
 
-    public LevelRepresentationScore(Random random) {
+    public ArrayLevelRepresentationScore(Random random) {
         super(random);
 
         // Score to reach is initialised in the range: 1000-500000
@@ -40,10 +40,10 @@ public class LevelRepresentationScore extends GeneralLevelRepresentation {
 
 	@Override
 	public List<LevelRepresentation> crossoverWith(LevelRepresentation parent) {
-        LevelRepresentationScore child1 = new LevelRepresentationScore(new Random());
-        LevelRepresentationScore child2 = new LevelRepresentationScore(new Random());
+        ArrayLevelRepresentationScore child1 = new ArrayLevelRepresentationScore(new Random());
+        ArrayLevelRepresentationScore child2 = new ArrayLevelRepresentationScore(new Random());
 
-        super.crossoverWith((GeneralLevelRepresentation) parent, child1, child2);
+        super.crossoverWith((ArrayLevelRepresentation) parent, child1, child2);
 
         ArrayList<LevelRepresentation> children = new ArrayList<>();
         children.add(child1);

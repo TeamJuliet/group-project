@@ -5,10 +5,9 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
-public abstract class GeneralLevelRepresentation extends LevelRepresentation {
+public abstract class ArrayLevelRepresentation extends LevelRepresentation {
 
 	protected Random random;
     protected DesignCellType[][] board;
@@ -32,7 +31,7 @@ public abstract class GeneralLevelRepresentation extends LevelRepresentation {
         3 => Liquorice
      */
 
-    public GeneralLevelRepresentation(Random random) {
+    public ArrayLevelRepresentation(Random random) {
     	super(random);
 
         parameters = new ArrayList<>();
@@ -46,10 +45,10 @@ public abstract class GeneralLevelRepresentation extends LevelRepresentation {
         // TODO: The above initialisations are just guesses at the moment. We may need to refine them
 
         // Initialise the board
-        this.board = new DesignCellType[GeneralLevelRepresentation.maxWidth][GeneralLevelRepresentation.maxHeight];
-        for (int x = 0; x < GeneralLevelRepresentation.maxWidth; x++) {
-            for (int y = 0; y < GeneralLevelRepresentation.maxHeight; y++) {
-                board[x][y] = DesignCellType.values()[random.nextInt(GeneralLevelRepresentation.cellModulo)];
+        this.board = new DesignCellType[ArrayLevelRepresentation.maxWidth][ArrayLevelRepresentation.maxHeight];
+        for (int x = 0; x < ArrayLevelRepresentation.maxWidth; x++) {
+            for (int y = 0; y < ArrayLevelRepresentation.maxHeight; y++) {
+                board[x][y] = DesignCellType.values()[random.nextInt(ArrayLevelRepresentation.cellModulo)];
             }
         }
     }
@@ -121,9 +120,9 @@ public abstract class GeneralLevelRepresentation extends LevelRepresentation {
      * @param child1
      * @param child2
      */
-    public void crossoverWith(GeneralLevelRepresentation parent,
-                              GeneralLevelRepresentation child1,
-                              GeneralLevelRepresentation child2) {
+    public void crossoverWith(ArrayLevelRepresentation parent,
+                              ArrayLevelRepresentation child1,
+                              ArrayLevelRepresentation child2) {
 
         boolean isVerticalSplit = (random.nextInt(2) > 0);
 
