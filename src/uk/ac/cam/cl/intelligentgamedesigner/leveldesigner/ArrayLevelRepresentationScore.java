@@ -33,7 +33,7 @@ public class ArrayLevelRepresentationScore extends ArrayLevelRepresentation {
     	Design design = super.getDesign();
     
     	// TODO: set other parameters
-
+    	
         return design;
     }
 }

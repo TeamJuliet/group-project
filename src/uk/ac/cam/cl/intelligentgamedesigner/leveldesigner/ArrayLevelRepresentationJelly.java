@@ -76,7 +76,7 @@ public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
     	Design design = super.getDesign();
     	
     	// TODO: set other parameters
-
-        return design;
+    	
+    	return design;
     }
 }

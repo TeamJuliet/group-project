@@ -18,7 +18,7 @@ public class GameState implements Cloneable, Serializable {
     private List<Position> detonated = new ArrayList<Position>();
     private List<Position> popped    = new ArrayList<Position>();
     private Move           lastMove;
-    
+
     private int proceedState = 0;
 
     public GameState(Design design) {
@@ -64,7 +64,7 @@ public class GameState implements Cloneable, Serializable {
         this.lastMove = original.lastMove;
         this.proceedState = original.proceedState;
     }
-    
+
     public GameState(GameState original, CandyGenerator candyGenerator) {
     	this(original);
     	this.candyGenerator = candyGenerator;
@@ -325,7 +325,7 @@ public class GameState implements Cloneable, Serializable {
         for (int x = 0; x < width; ++x) {
             for (int y = 0; y < height; ++y) {
                 // Do not consider EMPTY cells or UNUSABLE cells
-                if (board[x][y].getCellType() == CellType.EMPTY || board[x][y].getCellType() == CellType.UNUSABLE)
+                if (!board[x][y].isFillable())
                     continue;
                 CandyColour colour = board[x][y].getCandy().getColour();
                 SingleTileAnalysis analysis = analyzeTile(new Position(x, y));

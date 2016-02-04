@@ -54,7 +54,6 @@ public class IterationTester {
 	}
 	
 	public static void main(String[] args) {
-		Specification s = new Specification(0.5, GameMode.JELLY);
-		new LevelDesignerManager(s);
+		testMutation();
 	}
 }
