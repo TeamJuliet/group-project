@@ -1,7 +1,5 @@
 package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
@@ -9,7 +7,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
 	private static final int maxJellyLevel = 2;
 	
-    protected int[][] jellyLevels;
+    protected RandomBoard<Integer> jellyLevels;
 
     /*
         Parameters list:
@@ -28,12 +26,16 @@ public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
     public ArrayLevelRepresentationJelly(Random random) {
         super(random);
 
-        // Initialise the jelly levels
-        this.jellyLevels = new int[ArrayLevelRepresentation.maxWidth][ArrayLevelRepresentation.maxHeight];
+        // Initialise the jelly levels.
+        Integer[] values = new Integer[maxJellyLevel + 1];
+        for (int i = 0; i < values.length; i++) {
+        	values[i] = i;
+        }
+        jellyLevels = new RandomBoard<>(maxWidth, maxHeight, random, values);
         for (int x = 0; x < ArrayLevelRepresentation.maxWidth; x++) {
             for (int y = 0; y < ArrayLevelRepresentation.maxHeight; y++) {
                 // Jelly levels initialised in the range: 0-2
-                jellyLevels[x][y] = random.nextInt(maxJellyLevel + 1);
+                jellyLevels.set(x, y, random.nextInt(maxJellyLevel + 1));
             }
         }
     }
@@ -43,10 +45,7 @@ public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
     	ArrayLevelRepresentationJelly clone = (ArrayLevelRepresentationJelly) super.clone();
     	
     	// Copy the jelly levels array.
-    	clone.jellyLevels = new int[jellyLevels.length][];
-    	for (int x = 0; x < jellyLevels.length; x++) {
-    		clone.jellyLevels[x] = jellyLevels[x].clone();
-    	}
+    	clone.jellyLevels = new RandomBoard<>(jellyLevels);
     	
     	return clone;
     }
@@ -59,31 +58,28 @@ public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
 			int x = random.nextInt(maxWidth);
 	        int y = random.nextInt(maxHeight);
 	        
-	        jellyLevels[x][y] = getNewRandomInt(jellyLevels[x][y], 0, maxJellyLevel);
+	        jellyLevels.set(x, y, getNewRandomInt(jellyLevels.get(x, y), 0, maxJellyLevel));
 		}
 	}
 
 	@Override
-	public List<LevelRepresentation> crossoverWith(LevelRepresentation parent) {
-        ArrayLevelRepresentationJelly child1 = new ArrayLevelRepresentationJelly(new Random());
-        ArrayLevelRepresentationJelly child2 = new ArrayLevelRepresentationJelly(new Random());
-
-        super.crossoverWith((ArrayLevelRepresentation) parent, child1, child2);
-
-        ArrayList<LevelRepresentation> children = new ArrayList<>();
-        children.add(child1);
-        children.add(child2);
-
-        return children;
+	public ArrayLevelRepresentationJelly[] crossoverWith(LevelRepresentation parent) {
+		ArrayLevelRepresentation[] children = super.crossoverWith(parent);
+		ArrayLevelRepresentationJelly a = (ArrayLevelRepresentationJelly) children[0];
+		ArrayLevelRepresentationJelly b = (ArrayLevelRepresentationJelly) children[1];
+        
+        // Todo crossover jelly board too.
+		
+		ArrayLevelRepresentationJelly[] jellyChildren = {a, b};
+        return jellyChildren;
 	}
 
 	@Override
-    public Design getDesign()
-    {
-    	Design design = getBaseDesign();
+    public Design getDesign() {
+    	Design design = getDesign();
     	
     	// TODO: set other parameters
 
-        return null;
+        return design;
     }
 }

@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class IterationTester {
 	
-	public static void main(String[] args) {
+	public static void testMutation() {
 		Random r = new Random();
 		ArrayLevelRepresentation l = new ArrayLevelRepresentationScore(r);
 		double fitness = l.getAestheticFitness();
@@ -31,5 +31,27 @@ public class IterationTester {
 		System.out.println("Iterations: " + iterations);
 		System.out.println("Fitness: " + fitness);
 		l.printBoard();
+	}
+	
+	public static void testCrossover() {
+		Random r = new Random();
+		ArrayLevelRepresentation a = new ArrayLevelRepresentationScore(r);
+		ArrayLevelRepresentation b = new ArrayLevelRepresentationScore(r);
+		
+		System.out.println("Fitness before: " + a.getAestheticFitness());
+		a.printBoard();
+		System.out.println();
+		b.printBoard();
+		
+		ArrayLevelRepresentation[] children = a.crossoverWith(b);
+		
+		System.out.println("Fitness after: " + children[0].getAestheticFitness());
+		children[0].printBoard();
+		System.out.println();
+		children[1].printBoard();
+	}
+	
+	public static void main(String[] args) {
+		testMutation();
 	}
 }

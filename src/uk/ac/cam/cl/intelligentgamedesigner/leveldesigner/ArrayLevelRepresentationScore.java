@@ -31,26 +31,11 @@ public class ArrayLevelRepresentationScore extends ArrayLevelRepresentation {
     }
     
     @Override
-    public Design getDesign()
-    {
-    	Design design = getBaseDesign();
+    public Design getDesign() {
+    	Design design = getDesign();
     
     	// TODO: set other parameters
 
         return null;
     }
-
-	@Override
-	public List<LevelRepresentation> crossoverWith(LevelRepresentation parent) {
-        ArrayLevelRepresentationScore child1 = new ArrayLevelRepresentationScore(new Random());
-        ArrayLevelRepresentationScore child2 = new ArrayLevelRepresentationScore(new Random());
-
-        super.crossoverWith((ArrayLevelRepresentation) parent, child1, child2);
-
-        ArrayList<LevelRepresentation> children = new ArrayList<>();
-        children.add(child1);
-        children.add(child2);
-
-        return children;
-	}
 }
