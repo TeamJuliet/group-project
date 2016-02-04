@@ -4,6 +4,10 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 
 public class LevelDesignerManager {
 
+    public LevelDesignerManager (Specification specification) {
+        
+    }
+
     public double getDifficultyFitness (Design design) {
 
         // TODO: Select appropriate simulated players to evaluate the design

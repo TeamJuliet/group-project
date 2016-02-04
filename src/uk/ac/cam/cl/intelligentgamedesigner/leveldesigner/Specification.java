@@ -1,18 +1,24 @@
 package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
+
 public class Specification {
        
-    public final float difficulty;
+    private double difficulty;
+    private GameMode gameMode;
        
-       
-    public Specification(float difficulty) {
+    public Specification(double difficulty, GameMode gameMode) {
     	this.difficulty = difficulty;
-    	
-        if(difficulty > 0.0f || difficulty < 1.0f)
-        {
-            throw new IllegalArgumentException();
-        }        
+    	this.gameMode = gameMode;
+
+        if(difficulty > 0.0 || difficulty < 1.0) throw new IllegalArgumentException();
     }
 
+    public double getDifficulty () {
+        return difficulty;
+    }
 
+    public GameMode getGameMode () {
+        return gameMode;
+    }
 }
