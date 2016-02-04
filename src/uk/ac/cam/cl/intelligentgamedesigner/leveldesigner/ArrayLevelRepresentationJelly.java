@@ -62,9 +62,7 @@ public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
 	@Override
 	public void crossoverWith(LevelRepresentation levelRepresentation) {
 		super.crossoverWith(levelRepresentation);
-        
 		ArrayLevelRepresentationJelly l = (ArrayLevelRepresentationJelly) levelRepresentation;
-		
 		jellyLevels.crossoverWith(l.jellyLevels);
 	}
 

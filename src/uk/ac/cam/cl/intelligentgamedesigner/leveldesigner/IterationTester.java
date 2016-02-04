@@ -30,8 +30,8 @@ public class IterationTester {
 	
 	public static void testCrossover() {
 		Random r = new Random();
-		ArrayLevelRepresentation a = new ArrayLevelRepresentationScore(r);
-		ArrayLevelRepresentation b = new ArrayLevelRepresentationScore(r);
+		ArrayLevelRepresentation a = new ArrayLevelRepresentationJelly(r);
+		ArrayLevelRepresentation b = new ArrayLevelRepresentationJelly(r);
 		
 		System.out.println("Fitness before: " + a.getAestheticFitness());
 		a.printBoard();

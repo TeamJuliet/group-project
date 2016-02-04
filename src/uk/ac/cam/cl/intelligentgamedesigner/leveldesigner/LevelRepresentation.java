@@ -29,9 +29,9 @@ public abstract class LevelRepresentation implements Cloneable {
 	/**
 	 * Performs crossover in place using the given LevelRepresentation and this.
 	 * Note that levelRepresenation should be an instance of the same class as this.
-	 * @param levelRepresenation the level representation to perform crossover with.
+	 * @param levelRepresentation the level representation to perform crossover with.
 	 */
-	public abstract void crossoverWith(LevelRepresentation levelRepresenation);
+	public abstract void crossoverWith(LevelRepresentation levelRepresentation);
 	
 	public abstract Design getDesign();
 	

@@ -80,7 +80,13 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
 		
 		board.crossoverWith(l.board);
 		
-		// TODO crossover parameters.
+		for (int i = 0; i < parameters.size(); i++) {
+			if (random.nextDouble() > 0.5) { // Swap each parameter with 50% probability.
+				Parameter p = parameters.get(i);
+				parameters.set(i, l.parameters.get(i));
+				l.parameters.set(i, p);
+			}
+		}
     }
     
     /**
