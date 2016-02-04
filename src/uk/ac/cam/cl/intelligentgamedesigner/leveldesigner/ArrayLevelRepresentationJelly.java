@@ -60,15 +60,12 @@ public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
 	}
 
 	@Override
-	public ArrayLevelRepresentationJelly[] crossoverWith(LevelRepresentation parent) {
-		ArrayLevelRepresentation[] children = super.crossoverWith(parent);
-		ArrayLevelRepresentationJelly a = (ArrayLevelRepresentationJelly) children[0];
-		ArrayLevelRepresentationJelly b = (ArrayLevelRepresentationJelly) children[1];
+	public void crossoverWith(LevelRepresentation levelRepresentation) {
+		super.crossoverWith(levelRepresentation);
         
-        // TODO crossover jelly board too.
+		ArrayLevelRepresentationJelly l = (ArrayLevelRepresentationJelly) levelRepresentation;
 		
-		ArrayLevelRepresentationJelly[] jellyChildren = {a, b};
-        return jellyChildren;
+		jellyLevels.crossoverWith(l.jellyLevels);
 	}
 
 	@Override

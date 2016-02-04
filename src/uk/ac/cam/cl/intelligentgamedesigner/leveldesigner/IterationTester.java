@@ -2,8 +2,6 @@ package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
 import java.util.Random;
 
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
-
 public class IterationTester {
 	
 	public static void testMutation() {
@@ -20,11 +18,6 @@ public class IterationTester {
 				l = mutation;
 				fitness = mutationFitness;
 			}
-			
-			/*int x = r.nextInt(5);
-			int y = r.nextInt(10);
-			l.board[x][y] = l.board[9 - x][y];
-			fitness = l.getAestheticFitness();*/
 			
 			iterations++;
 			System.out.println("Iteration " + iterations + " - Fitness " + fitness);
@@ -45,15 +38,15 @@ public class IterationTester {
 		System.out.println();
 		b.printBoard();
 		
-		ArrayLevelRepresentation[] children = a.crossoverWith(b);
+		a.crossoverWith(b);
 		
-		System.out.println("Fitness after: " + children[0].getAestheticFitness());
-		children[0].printBoard();
+		System.out.println("Fitness after: " + a.getAestheticFitness());
+		a.printBoard();
 		System.out.println();
-		children[1].printBoard();
+		b.printBoard();
 	}
 	
 	public static void main(String[] args) {
-		testMutation();
+		testCrossover();
 	}
 }

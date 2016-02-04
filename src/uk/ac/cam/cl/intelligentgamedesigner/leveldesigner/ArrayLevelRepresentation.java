@@ -62,61 +62,25 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
     	
     	return clone;
     }
-    
-    /**
-     * Returns a random integer between min and max inclusive, that is different from the previous value.
-     * @param oldValue the previous value.
-     * @param min the minimum new value.
-     * @param max the maximum new value.
-     * @return the random new value.
-     */
-    protected int getNewRandomInt(int oldValue, int min, int max) {
-    	int newValue = random.nextInt(max - min) + min;
-    	if (newValue >= oldValue) {
-    		newValue++;
-    	}
-    	return newValue;
-    }
 
     public void mutate() {
         if (random.nextDouble() < 0.75) {
             // Mutate the board (75% probability).
-
-            int x = random.nextInt(board.width);
-            int y = random.nextInt(board.height);
-
-            int oldValue = board.get(x, y).ordinal();
-            int newValue = getNewRandomInt(oldValue, 0, cellModulo - 1);
-            board.set(x, y, DesignCellType.values()[newValue]);
+        	board.mutate();
         } else {
             // Mutate a parameter (25% probability).
             Parameter p = parameters.get(random.nextInt(parameters.size()));
             p.generateNewValue();
         }
     }
-
-    /**
-     * This function takes a parent and two children, and crosses over the parent
-     * boards with t
-     *
-     * @param parent
-     * @param child1
-     * @param child2
-     */
-    public void crossover(ArrayLevelRepresentation a, ArrayLevelRepresentation b) {
-        a.board.crossoverWith(b.board);
-        
-        // Todo crossover parameters.
-    }
     
-    @Override
-    public ArrayLevelRepresentation[] crossoverWith(LevelRepresentation l) {
-    	ArrayLevelRepresentation a = this.clone();
-    	ArrayLevelRepresentation b = (ArrayLevelRepresentation) l.clone();
-    	crossover(a, b);
-    	
-    	ArrayLevelRepresentation[] children = {a, b};
-    	return children;
+	@Override
+    public void crossoverWith(LevelRepresentation levelRepresentation) {
+		ArrayLevelRepresentation l = (ArrayLevelRepresentation) levelRepresentation;
+		
+		board.crossoverWith(l.board);
+		
+		// TODO crossover parameters.
     }
     
     /**
