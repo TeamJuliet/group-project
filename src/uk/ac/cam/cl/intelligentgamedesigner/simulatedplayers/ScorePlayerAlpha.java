@@ -15,32 +15,17 @@ public class ScorePlayerAlpha implements SimulatedPlayerBase {
     }
 
     @Override
-    public void solve() {
+    public void solve() throws NoMovesFoundException {
         while (level.getMovesRemaining() > 0) {
-            findMove:
-            for (int x = 0; x < level.width; x++) {
-                for (int y = 0; y < level.height; y++) {
-                    Move horizontalSwap = new Move(new Position(x, y), new Position(x + 1, y));
-                    if (level.isMoveValid(horizontalSwap)) {
-                        try {
-                            level.makeMove(horizontalSwap);
-                        } catch (InvalidMoveException e) {
-                            printInvalidMoveError(e.invalidMove);
-                            continue;
-                        }
-                        break findMove;
-                    }
-
-                    Move verticalSwap = new Move(new Position(x, y), new Position(x, y + 1));
-                    if (level.isMoveValid(horizontalSwap)) {
-                        try {
-                            level.makeMove(verticalSwap);
-                        } catch (InvalidMoveException e) {
-                            printInvalidMoveError(e.invalidMove);
-                            continue;
-                        }
-                        break findMove;
-                    }
+            Move bestMove = calculateBestMove(level);
+            try {
+                level.makeMove(bestMove);
+            } catch (InvalidMoveException e) {
+                printInvalidMoveError(e.invalidMove);
+                try { // TODO: this is horrible, fix it
+                    level.makeMove(level.getValidMoves().get(0));
+                } catch (InvalidMoveException exception) {
+                    return;
                 }
             }
         }
@@ -49,6 +34,24 @@ public class ScorePlayerAlpha implements SimulatedPlayerBase {
     @Override
     public void printInvalidMoveError(Move move) {
         System.err.println("WARNING! ScorePlayerAlpha has suggested an invalidMove " + move + ".");
+    }
+
+    @Override
+    public Move calculateBestMove(GameState currentState) throws NoMovesFoundException {
+        for (int x = 0; x < level.width; x++) {
+            for (int y = 0; y < level.height; y++) {
+                Move horizontalSwap = new Move(new Position(x, y), new Position(x + 1, y));
+                if (level.isMoveValid(horizontalSwap)) {
+                    return horizontalSwap;
+                }
+
+                Move verticalSwap = new Move(new Position(x, y), new Position(x, y + 1));
+                if (level.isMoveValid(horizontalSwap)) {
+                    return verticalSwap;
+                }
+            }
+        }
+        throw new NoMovesFoundException(currentState);
     }
 
 }

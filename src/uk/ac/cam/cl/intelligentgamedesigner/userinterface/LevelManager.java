@@ -14,7 +14,6 @@ public class LevelManager {
 	private ArrayList<String> level_names;
 	
 	public LevelManager() {
-		System.out.println(location);
 		levels_so_far = 0;
 		levels = new ArrayList<Design>();
 		level_names = new ArrayList<String>();
@@ -28,7 +27,7 @@ public class LevelManager {
 		while(!foundEnd){
 			foundEnd = true;
 			for(File f:files) {
-				System.out.println("found "+f.getName());
+				//System.out.println("found "+f.getName());
 				if(f.getName().startsWith((levels_so_far+1)+". ")){
 					//add the latest numbered level to the list
 					Design latest;
@@ -45,17 +44,18 @@ public class LevelManager {
 		            	System.err.println("Error in reading file (End of file)");
 		            } catch (FileNotFoundException e) {
 		            	System.err.println("Error in reading file (File not found)");
-					} catch (IOException e) {
+					} catch (InvalidClassException e) {
+		            	System.err.println("Error in reading file (Invalid Class)");
+					}catch (IOException e) {
 		            	System.err.println("Error in reading file (IO)");
-		            	e.printStackTrace();
 					} catch (ClassNotFoundException e) {
 		            	System.err.println("Error in reading file (Class not found)");
-					}
+					} 
 					break;
 				}
 			}
 		}
-		System.out.println("found "+levels_so_far+" levels saved");
+		//System.out.println("found "+levels_so_far+" levels saved");
 	}
 	
 	public int get_next_num(){

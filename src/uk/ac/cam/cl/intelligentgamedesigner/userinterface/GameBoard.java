@@ -28,7 +28,7 @@ public class GameBoard extends JComponent {
 
 		for(int x=0;x<width;x++){
 			for(int y=0;y<height;y++){
-				board[x][y] = new Cell(CellType.UNUSABLE);
+				board[x][y] = defaultCell();
 			}
 		}
 		
@@ -56,6 +56,10 @@ public class GameBoard extends JComponent {
 		tile_size = InterfaceManager.screenHeight()/15;
 	}
 	
+	protected Cell defaultCell(){
+		return new Cell(CellType.UNUSABLE);
+	}
+	
 	public void adjustSize(int scaleFactor) {
 		tile_size = InterfaceManager.screenHeight()/(60/scaleFactor);
 	}
@@ -67,7 +71,7 @@ public class GameBoard extends JComponent {
 	public void clearBoard(){
 		for(int x=0;x<width;x++){
 			for(int y=0;y<height;y++){
-				board[x][y] = new Cell(CellType.UNUSABLE);				
+				board[x][y] = defaultCell();				
 			}
 		}
 	}
@@ -94,6 +98,12 @@ public class GameBoard extends JComponent {
 			break;
 		}
 		g.fillRect(x*tile_size, y*tile_size, tile_size, tile_size);
+		//don't care state
+		if(board[x][y].getCellType() == CellType.DONT_CARE){
+			g.setColor(Color.BLACK);
+			g.drawLine(x*tile_size, y*tile_size, x*tile_size + tile_size, y*tile_size + tile_size);
+			g.drawLine(x*tile_size, y*tile_size + tile_size, x*tile_size + tile_size, y*tile_size);
+		}
 		
 		//draw the jelly
 		int jelly_level = board[x][y].getJellyLevel();
@@ -104,11 +114,69 @@ public class GameBoard extends JComponent {
 			g.drawString(Integer.toString(jelly_level), x*tile_size + tile_size/2, y*tile_size + tile_size/2);
 		}
 		
-		//draw the ingredients
-		if(board[x][y].getCandy()!=null &&
-				board[x][y].getCandy().getCandyType() == CandyType.INGREDIENT){
-			g.setColor(Color.RED);
-			g.fillOval(x*tile_size, y*tile_size, tile_size, tile_size);			
+		//draw the candies
+		if(board[x][y].getCandy()!=null){
+			switch(board[x][y].getCandy().getCandyType())
+			{
+			case INGREDIENT:
+				g.setColor(Color.YELLOW);
+				g.fillOval(x*tile_size, y*tile_size, tile_size, tile_size);
+				g.setColor(Color.ORANGE);
+				g.fillRect(x*tile_size, y*tile_size+tile_size/2-tile_size/8, tile_size, tile_size/4);
+				break;
+			case BOMB:
+				g.setColor(new Color(100,80,0));
+				g.fillOval(x*tile_size, y*tile_size, tile_size, tile_size);
+				g.setColor(Color.MAGENTA);
+				g.fillOval(x*tile_size+tile_size/2, y*tile_size+tile_size/2, 3, 3);
+				g.fillOval(x*tile_size+tile_size/2+10, y*tile_size+tile_size/2, 3, 3);
+				g.fillOval(x*tile_size+tile_size/2-10, y*tile_size+tile_size/2, 3, 3);
+				g.fillOval(x*tile_size+tile_size/2, y*tile_size+tile_size/2+10, 3, 3);
+				g.fillOval(x*tile_size+tile_size/2, y*tile_size+tile_size/2-10, 3, 3);
+				break;
+			case VERTICALLY_STRIPPED:
+			case HORIZONTALLY_STRIPPED:
+			case WRAPPED:
+			case NORMAL:
+				switch (board[x][y].getCandy().getColour()){
+				case RED:
+					g.setColor(Color.RED);
+					break;
+				case ORANGE:
+					g.setColor(Color.ORANGE);
+					break;
+				case YELLOW:
+					g.setColor(Color.YELLOW);
+					break;
+				case GREEN:
+					g.setColor(Color.GREEN);
+					break;
+				case BLUE:
+					g.setColor(Color.BLUE);
+					break;
+				case PURPLE:
+					g.setColor(new Color(120,0,150));
+					break;
+				}
+				g.fillOval(x*tile_size, y*tile_size+tile_size/8, tile_size, tile_size-tile_size/4);
+				break;
+			}
+			//an additional switch for special properties
+			g.setColor(Color.WHITE);
+			switch(board[x][y].getCandy().getCandyType())
+			{
+			case VERTICALLY_STRIPPED:
+				g.fillRect(x*tile_size + tile_size/2-1, y*tile_size+tile_size/8, 4, tile_size-tile_size/4);
+				break;
+			case HORIZONTALLY_STRIPPED:
+				g.fillRect(x*tile_size, y*tile_size+tile_size/2-1, tile_size, 4);
+				break;
+			case WRAPPED:
+				g.fillRect(x*tile_size + tile_size/4, y*tile_size + tile_size/4, tile_size/2, tile_size/2);
+				break;
+			default:
+					break;
+			}
 		}
 		
 		//outline the tiles

@@ -13,3 +13,4 @@ out/
 /bin/
 .project
 .classpath
+.metadata/

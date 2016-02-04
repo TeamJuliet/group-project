@@ -7,6 +7,8 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
 
+import javax.swing.*;
+
 // Class to keep track of the objects that have been selected for a move.
 public class CellChooser {
 	private static Position p1, p2;
@@ -14,6 +16,7 @@ public class CellChooser {
 	public static GameState game;
 	public static GameDisplay display;
 	public static TextField movesRecord;
+	public static JLabel scoreLabel;
 	// private final static Lock lock = new ReentrantLock();
 	// final public static Condition hasMadeMove = lock.newCondition();
 	
@@ -43,6 +46,7 @@ public class CellChooser {
 				while(game.makeSmallMove()) {
 					System.err.println("Moving on");
 					game.debugBoard();
+					scoreLabel.setText("Score: " + game.getScore());
 					display.setBoard(game.getBoard());
 					display.paintImmediately(0, 0, display.getWidth(), display.getHeight());
 					// game.debugBoard();

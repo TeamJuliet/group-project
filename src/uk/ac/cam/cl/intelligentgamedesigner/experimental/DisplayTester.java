@@ -3,10 +3,7 @@ package uk.ac.cam.cl.intelligentgamedesigner.experimental;
 import java.awt.Dimension;
 import java.awt.TextField;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CandyGenerator;
@@ -45,8 +42,18 @@ public class DisplayTester {
 		moves.setColumns(40);
 		trackPanel.add(moves);
 		generalPanel.add(trackPanel);
-		
+
 		CellChooser.movesRecord = moves;
+
+		JPanel scorePanel = new JPanel();
+		scorePanel.setBorder(BorderFactory.createTitledBorder(
+				BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), "Score Panel"));
+		JLabel scoreLabel = new JLabel("Score: " + game.getScore());
+		scoreLabel.setPreferredSize(new Dimension(100, 22));
+		scorePanel.add(scoreLabel);
+		generalPanel.add(scorePanel);
+
+		CellChooser.scoreLabel = scoreLabel;
 		
 		app.add(generalPanel);
 		app.setSize(new Dimension(600, 700));

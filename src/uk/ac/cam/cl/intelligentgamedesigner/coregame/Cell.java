@@ -5,10 +5,10 @@ import java.io.Serializable;
 public class Cell implements Cloneable, Serializable {
 
     public static final int maxJellyLevel = 5;
-    private CellType cellType;
-    private Candy    candy;
-    private int jellyLevel = 0;
-    
+    private CellType        cellType;
+    private Candy           candy;
+    private int             jellyLevel    = 0;
+
     public Cell(CellType cellType) {
         this.cellType = cellType;
         this.candy = null;
@@ -29,14 +29,15 @@ public class Cell implements Cloneable, Serializable {
         this.candy = candy;
         this.jellyLevel = jellyLevel;
     }
-    
+
     public void setJellyLevel(int jellyLevel) {
-    	this.jellyLevel = jellyLevel;
+        this.jellyLevel = jellyLevel;
     }
 
     public void setCandy(Candy candy) {
         this.candy = candy;
-        if (candy != null) cellType = CellType.NORMAL;
+        if (candy != null)
+            cellType = CellType.NORMAL;
     }
 
     public Candy getCandy() {
@@ -44,49 +45,54 @@ public class Cell implements Cloneable, Serializable {
     }
 
     public boolean hasCandy() {
-    	return candy != null;
+        return candy != null;
     }
-    
+
     public void removeCandy() {
         cellType = CellType.EMPTY;
         candy = null;
     }
-    
+
     // Upgrades candy to the type specified.
     public void changeCandyType(CandyType candyType) {
-    	if (candyType == CandyType.BOMB || candyType == CandyType.INGREDIENT) {
-    		candy = new Candy(null, candyType);
-    	} else {
-    		candy = new Candy(candy.getColour(), candyType);
-    	}
+        if (candyType == CandyType.BOMB || candyType == CandyType.INGREDIENT) {
+            candy = new Candy(null, candyType);
+        } else {
+            candy = new Candy(candy.getColour(), candyType);
+        }
     }
-    
-    // Function that returns whether it is possible to move the contents of the block.
+
+    // Function that returns whether it is possible to move the contents of the
+    // block.
     public boolean isMoveable() {
     	return cellType == CellType.NORMAL && !(hasCandy() && candy.getCandyType().equals(CandyType.UNMOVEABLE));
     }
-    
+
     public CellType getCellType() {
         return cellType;
     }
-    
+
+    // added a setter for customisation purposes
+    public void setCellType(CellType cellType) {
+        this.cellType = cellType;
+    }
+
     public int getJellyLevel() {
         return jellyLevel;
     }
 
     @Override
-    public boolean equals (Object toCompare) {
+    public boolean equals(Object toCompare) {
         Cell cellToCompare = (Cell) toCompare;
 
-        return (this.candy.equals(cellToCompare.candy) &&
-                this.cellType   == cellToCompare.cellType &&
-                this.jellyLevel == cellToCompare.jellyLevel);
+        return (this.candy.equals(cellToCompare.candy) && this.cellType == cellToCompare.cellType
+                && this.jellyLevel == cellToCompare.jellyLevel);
     }
 
     @Override
-    public Object clone () {
+    public Object clone() {
         try {
-            Cell clone  = (Cell) super.clone();
+            Cell clone = (Cell) super.clone();
             clone.candy = (Candy) this.candy.clone();
             return clone;
 
