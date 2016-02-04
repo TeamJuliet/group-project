@@ -120,19 +120,19 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
     }
     
     /**
-     * Creates a Design instance that includes the basic layout of the board, but excludes the parameters specific to
-     * particular game type.
+     * Creates a Design instance that includes the basic layout of the board,
+     * but excludes the parameters specific to a particular game type.
      */
     @Override
 	public Design getDesign() {
         Design design = new Design();
 
-        design.setSize(maxWidth, maxHeight);
+        design.setSize(board.width, board.height);
 
-        Cell[][] designBoard = new Cell[maxWidth][maxHeight];
+        Cell[][] designBoard = new Cell[board.width][board.height];
 
-        for (int x = 0; x < maxWidth; x++) {
-            for (int y = 0; y < maxHeight; y++) {
+        for (int x = 0; x < board.width; x++) {
+            for (int y = 0; y < board.height; y++) {
                 switch (board.get(x, y)) {
                     case UNUSABLE:
                         designBoard[x][y] = new Cell(CellType.UNUSABLE);
@@ -161,18 +161,7 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
     
     @Override
     public double getAestheticFitness() {
-    	int maxX = board.width / 2;
-    	int score = 0;
-    	for (int x = 0; x < maxX; x++) {
-    		for (int y = 0; y < maxHeight; y++) {
-    			if (board.get(x, y) == board.get(board.width - x - 1, y)) {
-    				score++;
-    			}
-    		}
-    	}
-    	
-    	double perfectScore = maxX * board.height;
-    	return score / perfectScore;
+    	return AestheticChecker.calculateFitness(board);
     }
     
     public void printBoard() {

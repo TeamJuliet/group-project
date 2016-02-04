@@ -2,6 +2,8 @@ package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
 import java.util.Random;
 
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
+
 public class IterationTester {
 	
 	public static void testMutation() {
@@ -52,6 +54,7 @@ public class IterationTester {
 	}
 	
 	public static void main(String[] args) {
-		testMutation();
+		Specification s = new Specification(0.5, GameMode.JELLY);
+		new LevelDesignerManager(s);
 	}
 }

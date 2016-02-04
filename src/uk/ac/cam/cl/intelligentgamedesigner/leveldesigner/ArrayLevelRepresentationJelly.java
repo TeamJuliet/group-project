@@ -31,9 +31,9 @@ public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
         for (int i = 0; i < values.length; i++) {
         	values[i] = i;
         }
-        jellyLevels = new RandomBoard<>(maxWidth, maxHeight, random, values);
-        for (int x = 0; x < ArrayLevelRepresentation.maxWidth; x++) {
-            for (int y = 0; y < ArrayLevelRepresentation.maxHeight; y++) {
+        jellyLevels = new RandomBoard<>(board.width, board.height, random, values);
+        for (int x = 0; x < jellyLevels.width; x++) {
+            for (int y = 0; y < jellyLevels.height; y++) {
                 // Jelly levels initialised in the range: 0-2
                 jellyLevels.set(x, y, random.nextInt(maxJellyLevel + 1));
             }
@@ -55,10 +55,7 @@ public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
 		super.mutate();
 		
 		if (random.nextDouble() > 0.5) { // Mutate one of the jelly levels with 50% probability.
-			int x = random.nextInt(maxWidth);
-	        int y = random.nextInt(maxHeight);
-	        
-	        jellyLevels.set(x, y, getNewRandomInt(jellyLevels.get(x, y), 0, maxJellyLevel));
+			jellyLevels.mutate();
 		}
 	}
 
@@ -68,7 +65,7 @@ public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
 		ArrayLevelRepresentationJelly a = (ArrayLevelRepresentationJelly) children[0];
 		ArrayLevelRepresentationJelly b = (ArrayLevelRepresentationJelly) children[1];
         
-        // Todo crossover jelly board too.
+        // TODO crossover jelly board too.
 		
 		ArrayLevelRepresentationJelly[] jellyChildren = {a, b};
         return jellyChildren;
@@ -76,7 +73,7 @@ public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
 
 	@Override
     public Design getDesign() {
-    	Design design = getDesign();
+    	Design design = super.getDesign();
     	
     	// TODO: set other parameters
 

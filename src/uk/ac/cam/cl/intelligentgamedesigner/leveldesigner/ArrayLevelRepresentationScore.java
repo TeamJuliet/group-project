@@ -1,7 +1,5 @@
 package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
@@ -32,10 +30,10 @@ public class ArrayLevelRepresentationScore extends ArrayLevelRepresentation {
     
     @Override
     public Design getDesign() {
-    	Design design = getDesign();
+    	Design design = super.getDesign();
     
     	// TODO: set other parameters
 
-        return null;
+        return design;
     }
 }

@@ -30,7 +30,7 @@ public class ArrayLevelRepresentationIngredients extends ArrayLevelRepresentatio
 
 	@Override
     public Design getDesign() {
-    	Design design = getDesign();
+    	Design design = super.getDesign();
     	
     	// TODO: set other parameters
 
