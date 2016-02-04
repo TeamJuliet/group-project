@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public abstract class ArrayLevelRepresentation extends LevelRepresentation {
+
     protected DesignCellType[][] board;
     protected static int maxWidth = 10;
     protected static int maxHeight = 10;

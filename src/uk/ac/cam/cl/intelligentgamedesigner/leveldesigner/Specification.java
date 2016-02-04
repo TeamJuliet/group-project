@@ -2,6 +2,7 @@ package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 
+
 public class Specification {
        
     private double difficulty;

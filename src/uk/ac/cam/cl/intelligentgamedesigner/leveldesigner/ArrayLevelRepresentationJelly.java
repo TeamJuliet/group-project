@@ -70,7 +70,7 @@ public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
     	Design design = getBaseDesign();
     	
     	// TODO: set other parameters
+    	return design;
 
-        return null;
     }
 }
