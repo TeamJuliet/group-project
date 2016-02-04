@@ -9,12 +9,12 @@ public class IterationTester {
 		ArrayLevelRepresentation l = new ArrayLevelRepresentationScore(r);
 		double fitness = l.getAestheticFitness();
 		int iterations = 0;
-		while (fitness < 0.56) {
+		while (fitness < 1) {
 			ArrayLevelRepresentation mutation = l.clone();
 			mutation.mutate();
 			
 			double mutationFitness = mutation.getAestheticFitness();
-			if (mutationFitness >= fitness) {
+			if (mutationFitness > fitness) {
 				l = mutation;
 				fitness = mutationFitness;
 			}

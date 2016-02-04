@@ -51,8 +51,24 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
         }
     }
     
+    @Override
     public ArrayLevelRepresentation clone() {
-    	return (ArrayLevelRepresentation) super.clone();
+    	ArrayLevelRepresentation clone = (ArrayLevelRepresentation) super.clone();
+    	
+    	// Copy the board.
+    	clone.board = new DesignCellType[board.length][];
+    	for (int x = 0; x < board.length; x++) {
+    		clone.board[x] = board[x].clone();
+    	}
+    	
+    	// Copy the list of parameters.
+    	int length = parameters.size();
+    	clone.parameters = new ArrayList<>(length);
+    	for (int i = 0; i < length; i++) {
+    		clone.parameters.add(parameters.get(i).copy());
+    	}
+    	
+    	return clone;
     }
     
     /**

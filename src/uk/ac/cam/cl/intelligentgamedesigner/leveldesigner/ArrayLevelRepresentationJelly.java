@@ -37,6 +37,19 @@ public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
             }
         }
     }
+    
+    @Override
+    public ArrayLevelRepresentationJelly clone() {
+    	ArrayLevelRepresentationJelly clone = (ArrayLevelRepresentationJelly) super.clone();
+    	
+    	// Copy the jelly levels array.
+    	clone.jellyLevels = new int[jellyLevels.length][];
+    	for (int x = 0; x < jellyLevels.length; x++) {
+    		clone.jellyLevels[x] = jellyLevels[x].clone();
+    	}
+    	
+    	return clone;
+    }
 
 	@Override
 	public void mutate() {

@@ -8,12 +8,21 @@ public class Parameter {
 	private int max;
 	private int min;
 	
-	public Parameter(Random r, int start, int max) {
-		random = r;
-		this.min = start;
-		this.max = max;
+	public Parameter(Random r, int min, int max) {
+		this(r, min, max, 0);
 		// The value will be between min and max inclusive.
-		value = random.nextInt(max - start + 1) + start;
+		value = random.nextInt(max - min + 1) + min;
+	}
+	
+	private Parameter(Random r, int min, int max, int initialValue) {
+		this.min = min;
+		this.max = max;
+		random = r;
+		value = initialValue;
+	}
+	
+	public Parameter copy() {
+		return new Parameter(random, min, max, value);
 	}
 	
 	public void generateNewValue() {
