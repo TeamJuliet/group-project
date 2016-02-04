@@ -36,6 +36,8 @@ public class ArrayLevelRepresentationScore extends ArrayLevelRepresentation {
     	Design design = getBaseDesign();
     
     	// TODO: set other parameters
+    	
+    	return design;
     }
 
 	@Override

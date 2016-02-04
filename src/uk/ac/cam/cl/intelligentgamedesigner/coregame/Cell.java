@@ -42,6 +42,10 @@ public class Cell implements Cloneable, Serializable {
     public Candy getCandy() {
         return candy;
     }
+    
+    public boolean isFillable() {
+    	return ( this.cellType.equals(CellType.EMPTY) ) || ( this.cellType.equals( CellType.LIQUORICE ));
+    }
 
     public boolean hasCandy() {
     	return candy != null;

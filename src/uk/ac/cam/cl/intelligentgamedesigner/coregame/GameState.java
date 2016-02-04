@@ -290,7 +290,7 @@ public class GameState implements Cloneable, Serializable {
 		for (int x = 0; x < width; ++x) {
 			for (int y = 0; y < height; ++y) {
 				// Do not consider EMPTY cells.
-				if (board[x][y].getCellType() == CellType.EMPTY)
+				if (!board[x][y].isFillable())
 					continue;
 				CandyColour colour = board[x][y].getCandy().getColour();
 				SingleTileAnalysis analysis = analyzeTile(new Position(x, y));
@@ -560,7 +560,7 @@ public class GameState implements Cloneable, Serializable {
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
 				Cell cell = board[x][y];
-				if (cell.getCellType() == CellType.EMPTY) {
+				if (cell.getCellType() == CellType.EMPTY || cell.getCellType() == CellType.LIQUORICE) {
 					cell.setCandy(candyGenerator.generateCandy(x));
 					debugCount++;
 				}
