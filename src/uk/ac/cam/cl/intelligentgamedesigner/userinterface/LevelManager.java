@@ -18,7 +18,7 @@ public class LevelManager {
 		levels = new ArrayList<Design>();
 		level_names = new ArrayList<String>();
 		searchForLevels();
-		System.out.println("");
+		System.out.println("found "+levels_so_far);
 	}
 	
 	private void searchForLevels(){

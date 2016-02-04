@@ -108,7 +108,7 @@ public class LevelBrowserScreen extends DisplayScreen implements ListSelectionLi
 		case "back":
 			InterfaceManager.switchScreen(Windows.MAIN);
 			break;
-		case "edit":
+		case "view":
 			InterfaceManager.switchScreen(Windows.DISPLAY);
 			break;
 		case "delete":

@@ -20,6 +20,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
+import uk.ac.cam.cl.intelligentgamedesigner.leveldesigner.LevelDesignerManager;
+import uk.ac.cam.cl.intelligentgamedesigner.leveldesigner.Specification;
 
 //The menu from which you can request levels.
 public class LevelRequesterScreen extends DisplayScreen implements ChangeListener{
@@ -148,7 +150,7 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 			if(jelly_clear.isSelected())mode = GameMode.JELLY;
 			if(ingredients.isSelected())mode = GameMode.INGREDIENTS;
 			LevelDesignerManager manager = new LevelDesignerManager(
-					new Specification(mode,val_difficulty));
+					new Specification(val_difficulty,mode));
 	    	InterfaceManager.switchScreen(Windows.REQUESTING);
 			break;
 		}
@@ -158,6 +160,8 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 	public void stateChanged(ChangeEvent e) {
 	    JSlider source = (JSlider)e.getSource();
 	    val_difficulty = source.getValue();
+	    String difficulty_measure;
+	    if(val_difficulty>=0 && val_difficulty<10)difficulty_measure = "simples";
 	    show_difficulty.setText(val_difficulty+"%");
 	}
 }
