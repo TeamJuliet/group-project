@@ -21,7 +21,7 @@ public class ArrayLevelRepresentationScore extends ArrayLevelRepresentation {
         1 => Unusable
         2 => Icing
         3 => Liquorice
-     */
+    */
 
     public ArrayLevelRepresentationScore(Random random) {
         super(random);

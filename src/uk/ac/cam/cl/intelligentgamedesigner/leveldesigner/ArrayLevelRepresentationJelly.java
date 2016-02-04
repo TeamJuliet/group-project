@@ -7,7 +7,8 @@ import java.util.Random;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 
 public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
-
+	private static final int maxJellyLevel = 2;
+	
     protected int[][] jellyLevels;
 
     /*
@@ -24,8 +25,7 @@ public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
         3 => Liquorice
      */
 
-    public ArrayLevelRepresentationJelly(Random random)
-    {
+    public ArrayLevelRepresentationJelly(Random random) {
         super(random);
 
         // Initialise the jelly levels
@@ -33,15 +33,21 @@ public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
         for (int x = 0; x < ArrayLevelRepresentation.maxWidth; x++) {
             for (int y = 0; y < ArrayLevelRepresentation.maxHeight; y++) {
                 // Jelly levels initialised in the range: 0-2
-                jellyLevels[x][y] = random.nextInt(3);
+                jellyLevels[x][y] = random.nextInt(maxJellyLevel + 1);
             }
         }
     }
 
 	@Override
 	public void mutate() {
-		// TODO Auto-generated method stub
+		super.mutate();
 		
+		if (random.nextDouble() > 0.5) { // Mutate one of the jelly levels with 50% probability.
+			int x = random.nextInt(maxWidth);
+	        int y = random.nextInt(maxHeight);
+	        
+	        jellyLevels[x][y] = getNewRandomInt(jellyLevels[x][y], 0, maxJellyLevel);
+		}
 	}
 
 	@Override
