@@ -5,7 +5,10 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 public class LevelDesignerManager {
 
     public LevelDesignerManager (Specification specification) {
-        
+        LevelRepresentationFactory levelRepFactory = new LevelRepresentationFactory(specification.getGameMode());
+        LevelDesigner levelDesigner = new LevelDesigner(levelRepFactory);
+
+        levelDesigner.run();
     }
 
     public double getDifficultyFitness (Design design) {
