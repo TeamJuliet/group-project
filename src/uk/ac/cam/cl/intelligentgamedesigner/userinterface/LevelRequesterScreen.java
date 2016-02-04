@@ -19,6 +19,8 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
+
 //The menu from which you can request levels.
 public class LevelRequesterScreen extends DisplayScreen implements ChangeListener{
 	
@@ -142,6 +144,11 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 	    	InterfaceManager.switchScreen(Windows.MAIN);
 			break;
 		case "go":
+			GameMode mode = GameMode.HIGHSCORE;
+			if(jelly_clear.isSelected())mode = GameMode.JELLY;
+			if(ingredients.isSelected())mode = GameMode.INGREDIENTS;
+			LevelDesignerManager manager = new LevelDesignerManager(
+					new Specification(mode,val_difficulty));
 	    	InterfaceManager.switchScreen(Windows.REQUESTING);
 			break;
 		}
