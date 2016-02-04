@@ -27,7 +27,7 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
         1 => Unusable
         2 => Icing
         3 => Liquorice
-     */
+    */
 
     public ArrayLevelRepresentation(Random random) {
     	super(random);
