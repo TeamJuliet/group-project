@@ -2,6 +2,7 @@ package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 
 import javax.swing.BorderFactory;
@@ -41,6 +42,8 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 	//buttons for controlling stuff
 	private JButton save_and_quit;
 	private JButton just_quit;
+	private JButton load_test;
+	private JButton run_tests;
 	
 	private JSlider dimensions_width;
 	private JSlider dimensions_height;
@@ -94,8 +97,10 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 
 	@Override
 	protected void makeItems() {
-		save_and_quit = new JButton("Save");
-		just_quit = new JButton("Quit");
+		save_and_quit = new JButton("Save Tests");
+		just_quit = new JButton("Quit Editor");
+		load_test = new JButton("Load Test");
+		run_tests = new JButton("Run Tests");
 		
 		dimensions_width = new JSlider(5,10);
 		dimensions_height = new JSlider(5,10);
@@ -243,15 +248,12 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 
 		//make a box with all the controls
 		JPanel controls = new JPanel();
-		controls.setBorder(BorderFactory.createLineBorder(Color.black));
-		controls.setLayout(new BoxLayout(controls,BoxLayout.Y_AXIS));
-		controls.add(Box.createRigidArea(new Dimension(0, 20)));
-		save_and_quit.setAlignmentX(CENTER_ALIGNMENT);
+		//controls.setBorder(BorderFactory.createLineBorder(Color.black));
+		controls.setLayout(new GridLayout(0,2));
 		controls.add(save_and_quit);
-		controls.add(Box.createRigidArea(new Dimension(0, 20)));
-		just_quit.setAlignmentX(CENTER_ALIGNMENT);
 		controls.add(just_quit);	
-		controls.add(Box.createRigidArea(new Dimension(0, 20)));
+		controls.add(load_test);
+		controls.add(run_tests);
 		add(controls);
 		
 		JPanel gameStates = new JPanel();
