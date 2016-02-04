@@ -30,6 +30,12 @@ public class Cell implements Cloneable, Serializable {
         this.jellyLevel = jellyLevel;
     }
 
+    public Cell(Cell original) {
+        this.cellType = original.cellType;
+        this.candy = original.candy;
+        this.jellyLevel = original.jellyLevel;
+    }
+
     public void setJellyLevel(int jellyLevel) {
         this.jellyLevel = jellyLevel;
     }

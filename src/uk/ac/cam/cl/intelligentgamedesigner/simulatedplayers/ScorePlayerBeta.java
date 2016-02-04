@@ -4,6 +4,7 @@ import java.util.List;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.MatchAnalysis;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 
 public class ScorePlayerBeta implements SimulatedPlayerBase {
@@ -38,13 +39,11 @@ public class ScorePlayerBeta implements SimulatedPlayerBase {
         Move bestMove = null;
         for (Move candidateMove : validMoves) {
             SimGS tmp = (SimGS) level;
-            // perhaps we don't need to copy in this case, we can just swap back
-            // at the end
-            // but we will definetly need a rollback or copy in more
-            // sophisticated AI
-            tmp.swapCandies(candidateMove);
-            int numberOfCellsMathed = 0; // TODO:check how many cells are
-                                         // matched
+            List<MatchAnalysis> matches = tmp.getMatchAnalysis(candidateMove);
+            int numberOfCellsMathed = 0;
+            for (MatchAnalysis match : matches) {
+                numberOfCellsMathed += match.positionsMatched.size();
+            }
             if (numberOfCellsMathed > largestMatch) {
                 largestMatch = numberOfCellsMathed;
                 bestMove = candidateMove;
@@ -52,5 +51,4 @@ public class ScorePlayerBeta implements SimulatedPlayerBase {
         }
         return bestMove;
     }
-
 }

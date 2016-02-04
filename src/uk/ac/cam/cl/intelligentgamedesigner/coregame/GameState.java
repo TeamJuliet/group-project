@@ -15,11 +15,11 @@ public class GameState implements Cloneable, Serializable {
     int                    score;
     CandyGenerator         candyGenerator;
 
-    private List<Position> detonated = new ArrayList<Position>();
-    private List<Position> popped    = new ArrayList<Position>();
+    private List<Position> detonated    = new ArrayList<Position>();
+    private List<Position> popped       = new ArrayList<Position>();
     private Move           lastMove;
-    
-    private int proceedState = 0;
+
+    private int            proceedState = 0;
 
     public GameState(Design design) {
         this.levelDesign = design;
@@ -52,15 +52,22 @@ public class GameState implements Cloneable, Serializable {
 
     // Copy constructor
     public GameState(GameState original) {
-        this.board = original.board;
+        this.board = new Cell[original.width][original.height];
+        for (int x = 0; x < original.width; x++) {
+            for (int y = 0; y < original.height; y++) {
+                this.board[x][y] = original.board[x][y];
+            }
+        }
         this.levelDesign = original.levelDesign;
         this.width = original.width;
         this.height = original.height;
         this.movesRemaining = original.movesRemaining;
         this.score = original.score;
         this.candyGenerator = original.candyGenerator;
-        this.detonated = original.detonated;
-        this.popped = original.popped;
+        for (Position p : original.detonated)
+            this.detonated.add(new Position(p));
+        for (Position p : original.popped)
+            this.popped.add(new Position(p));
         this.lastMove = original.lastMove;
         this.proceedState = original.proceedState;
     }
@@ -691,8 +698,6 @@ public class GameState implements Cloneable, Serializable {
     private boolean hasStripped(Position pos) {
         return hasVerticallyStripped(pos) || hasHorizontallyStripped(pos);
     }
-
-
 
     public void makeMove(Move move) throws InvalidMoveException {
         if (!isMoveValid(move))
