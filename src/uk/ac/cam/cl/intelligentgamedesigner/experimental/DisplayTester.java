@@ -3,13 +3,16 @@ package uk.ac.cam.cl.intelligentgamedesigner.experimental;
 import java.awt.Dimension;
 import java.awt.TextField;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.CandyGenerator;
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.UnmoveableCandyGenerator;
 
 public class DisplayTester {	
 	
@@ -17,6 +20,7 @@ public class DisplayTester {
 		JPanel generalPanel = new JPanel();
 		JFrame app = new JFrame();
 		GameState game = new GameState(new Design());
+		// game.changeCandyGenerator(new UnmoveableCandyGenerator(null));
 		CellChooser.game = game;
 		GameDisplay gamePanel = new GameDisplay(game.getWidth(), game.getHeight(), 50);
 		CellChooser.display = gamePanel;

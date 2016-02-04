@@ -64,6 +64,11 @@ public class GameState implements Cloneable, Serializable {
         this.lastMove = original.lastMove;
         this.proceedState = original.proceedState;
     }
+    
+    public GameState(GameState original, CandyGenerator candyGenerator) {
+    	this(original);
+    	this.candyGenerator = candyGenerator;
+    }
 
     // This constructor is for testing purposes
     public GameState(Cell[][] board, int score, CandyGenerator candyGenerator) {
