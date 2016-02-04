@@ -1,3 +1,5 @@
+package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
+
 public class Specification {
        
     public final float difficulty;

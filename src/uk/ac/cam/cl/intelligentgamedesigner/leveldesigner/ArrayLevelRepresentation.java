@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public abstract class ArrayLevelRepresentation extends LevelRepresentation {
-
-	protected Random random;
     protected DesignCellType[][] board;
     protected static int maxWidth = 10;
     protected static int maxHeight = 10;
@@ -52,22 +50,38 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
             }
         }
     }
+    
+    public ArrayLevelRepresentation clone() {
+    	return (ArrayLevelRepresentation) super.clone();
+    }
+    
+    /**
+     * Returns a random integer between min and max inclusive, that is different from the previous value.
+     * @param oldValue the previous value.
+     * @param min the minimum new value.
+     * @param max the maximum new value.
+     * @return the random new value.
+     */
+    protected int getNewRandomInt(int oldValue, int min, int max) {
+    	int newValue = random.nextInt(max - min) + min;
+    	if (newValue >= oldValue) {
+    		newValue++;
+    	}
+    	return newValue;
+    }
 
     public void mutate() {
-        if (random.nextDouble() < 0.8) {
-            // Mutate the board (80% probability).
+        if (random.nextDouble() < 0.75) {
+            // Mutate the board (75% probability).
 
             int x = random.nextInt(maxWidth);
             int y = random.nextInt(maxHeight);
 
-            // Make sure the value actually changes.
-            int newValue = random.nextInt(cellModulo - 1);
-            if (newValue >= board[x][y].ordinal()) {
-                newValue++;
-            }
+            int oldValue = board[x][y].ordinal();
+            int newValue = getNewRandomInt(oldValue, 0, cellModulo - 1);
             board[x][y] = DesignCellType.values()[newValue];
         } else {
-            // Mutate a parameter (20% probability).
+            // Mutate a parameter (25% probability).
             Parameter p = parameters.get(random.nextInt(parameters.size()));
             p.generateNewValue();
         }
@@ -153,4 +167,32 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
             }
         }
     }
+    
+    @Override
+    public double getAestheticFitness() {
+    	int maxX = maxWidth / 2;
+    	int score = 0;
+    	for (int x = 0; x < maxX; x++) {
+    		for (int y = 0; y < maxHeight; y++) {
+    			if (board[x][y] == board[maxWidth - x - 1][y]) {
+    				score++;
+    			}
+    		}
+    	}
+    	
+    	double perfectScore = maxX * maxHeight;
+    	return score / perfectScore;
+    }
+    
+    public void printBoard() {
+    	String[] r = {"X", " ", "I", "L"};
+    	for (int y = 0; y < maxHeight; y++) {
+    		for (int x = 0; x < maxWidth; x++) {
+    			int t = board[x][y].ordinal();
+    			System.out.print(r[t] + ' ');
+    		}
+    		System.out.println();
+    	}
+    }
+    
 }
