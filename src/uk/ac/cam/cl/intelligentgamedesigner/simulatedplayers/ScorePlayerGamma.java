@@ -7,13 +7,13 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.MatchAnalysis;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 
-public class ScorePlayerBeta implements SimulatedPlayerBase {
+public class ScorePlayerGamma implements SimulatedPlayerBase {
     GameState level;
 
-    public ScorePlayerBeta(GameState level) {
+    public ScorePlayerGamma(GameState level){
         this.level = level;
     }
-
+    
     @Override
     public void solve() {
         while (level.getMovesRemaining() > 0) {
@@ -33,25 +33,21 @@ public class ScorePlayerBeta implements SimulatedPlayerBase {
 
     @Override
     public void printInvalidMoveError(Move move) {
-        System.err.println("WARNING! ScorePlayerBeta has suggested an invalidMove " + move + ".");
+        System.err.println("WARNING! ScorePlayerGamma has suggested an invalidMove " + move + ".");
     }
 
     @Override
     public Move calculateBestMove(GameState currentState) {
-        List<Move> validMoves = level.getValidMoves();
-        int largestMatch = 0;
+        /* Simple look ahead AI
+         * Consider each move
+         * Consider best possible move after one
+         * Pick best combination of two moves
+         */
         Move bestMove = null;
-        for (Move candidateMove : validMoves) {
+        int largestMatch = 0;
+        List<Move> validMoves = level.getValidMoves();
+        for(Move candidateMove: validMoves){
             SimGS tmp = (SimGS) level;
-            List<MatchAnalysis> matches = tmp.getMatchAnalysis(candidateMove);
-            int numberOfCellsMathed = 0;
-            for (MatchAnalysis match : matches) {
-                numberOfCellsMathed += match.positionsMatched.size();
-            }
-            if (numberOfCellsMathed > largestMatch) {
-                largestMatch = numberOfCellsMathed;
-                bestMove = candidateMove;
-            }
         }
         return bestMove;
     }

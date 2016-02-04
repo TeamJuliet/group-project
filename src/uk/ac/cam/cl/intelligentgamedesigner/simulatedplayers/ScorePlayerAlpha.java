@@ -11,7 +11,6 @@ public class ScorePlayerAlpha implements SimulatedPlayerBase {
 
     public ScorePlayerAlpha(GameState level) {
         this.level = level;
-
     }
 
     @Override
