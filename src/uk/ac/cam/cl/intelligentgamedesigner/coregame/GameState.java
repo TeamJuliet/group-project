@@ -324,8 +324,8 @@ public class GameState implements Cloneable, Serializable {
         // TODO(Dimitrios): make this more concise.
         for (int x = 0; x < width; ++x) {
             for (int y = 0; y < height; ++y) {
-                // Do not consider EMPTY cells or UNUSABLE cells
-                if (!board[x][y].isFillable())
+                // Do not consider cells with no candy.
+                if (!board[x][y].hasCandy())
                     continue;
                 CandyColour colour = board[x][y].getCandy().getColour();
                 SingleTileAnalysis analysis = analyzeTile(new Position(x, y));
