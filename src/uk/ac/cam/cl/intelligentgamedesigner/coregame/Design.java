@@ -56,6 +56,10 @@ public class Design implements Serializable {
     public int getHeight(){
         return this.height;
     }
+    
+    public GameMode getMode(){
+    	return gameMode;
+    }
 
     public Cell getCell (int x, int y) {
         if (x >= 0 && x < width && y >= 0 && y < height) {

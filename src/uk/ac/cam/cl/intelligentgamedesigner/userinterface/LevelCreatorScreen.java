@@ -28,6 +28,7 @@ import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
@@ -87,6 +88,36 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		super();
 		identifier = "Level Creator";
 	}
+	
+	public void reload(Design design, String name){
+		if(design == null){
+			board.setBoard(GameBoard.blank_board());
+			level_name.setValue("thename");
+			number_of_candies.setValue(6);
+			moves.setValue(10);
+			mode_objective.setValue(100);
+			high_score.setSelected(true);
+		}
+		else {
+			board.setBoard(design.getBoard());
+			number_of_candies.setValue(design.getNumberOfCandyColours());
+			moves.setValue(design.getNumberOfMovesAvailable());
+			level_name.setValue(name);
+			mode_objective.setValue(design.getObjectiveTarget());
+			GameMode obj = design.getMode();
+			switch(obj){
+			case HIGHSCORE:
+				high_score.setSelected(true);
+				break;
+			case JELLY:
+				jelly.setSelected(true);
+				break;
+			case INGREDIENTS:
+				ingredients.setSelected(true);
+				break;
+			}
+		}
+	}
 
 	@Override
 	protected void makeItems() {
@@ -143,26 +174,9 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		jelly_fill = false;
 		null_fill = false;
 		
-//		Format format = new Format(){
-//
-//			@Override
-//			public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
-//				String string = (String)obj;
-//				string.replaceAll(" ", "_");
-//				toAppendTo.append(string);
-//				return toAppendTo;
-//			}
-//
-//			@Override
-//			public Object parseObject(String arg0, ParsePosition arg1) {
-//				return arg0;
-//			}
-//			
-//		};
 		level_on = InterfaceManager.level_manager.get_next_num();
-		//level_name = new JFormattedTextField(format);
 		level_name = new JFormattedTextField();
-		level_name.setValue("the name");
+		level_name.setValue("thename");
 	}
 
 	@Override
@@ -461,8 +475,8 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		level.setRules(mode, number_of_moves, objective_value, number_of_candies.getValue());
 		
 		String fileName = level_on + ". " + level_name.getValue();
-		InterfaceManager.level_manager.saveLevel(fileName, level);
-		
-		JOptionPane.showMessageDialog(this,fileName+" Saved!","Notification",JOptionPane.INFORMATION_MESSAGE);
+		boolean success = InterfaceManager.level_manager.saveLevel(fileName, level);
+		String message = success?(fileName+" Saved!"):("Failed to save.");
+		JOptionPane.showMessageDialog(this,message,"Notification",JOptionPane.INFORMATION_MESSAGE);
 	}
 }

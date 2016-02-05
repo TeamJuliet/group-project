@@ -1,12 +1,13 @@
 package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
 import java.io.*;
+import java.nio.file.FileAlreadyExistsException;
 import java.util.ArrayList;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 
 public class LevelManager {
 	static int levels_so_far;
-	static final String location = System.getProperty("user.dir") + File.separator;
+	static final String location = System.getProperty("user.dir") + File.separator + "levels" + File.separator;
 	static final String suffix = ".lv";
 	//of the format 1. name.lv
 	
@@ -25,38 +26,39 @@ public class LevelManager {
 		File root = new File(location);
 		File[] files = root.listFiles();
 		boolean foundEnd = false;
-		while(!foundEnd){
-			foundEnd = true;
-			for(File f:files) {
-				//System.out.println("found "+f.getName());
-				if(f.getName().startsWith((levels_so_far+1)+". ")){
-					//add the latest numbered level to the list
-					Design latest;
-		            try {
-		                // Read in current array of test cases and add the new test
-		                ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(f));
-		                latest = (Design) objectInputStream.readObject();
-		                objectInputStream.close();
-			            levels.add(latest);
-			            level_names.add(f.getName());
-						foundEnd = false;
-						levels_so_far++;
-		            } catch (EOFException e) {
-		            	System.err.println("Error in reading file (End of file)");
-		            } catch (FileNotFoundException e) {
-		            	System.err.println("Error in reading file (File not found)");
-					} catch (InvalidClassException e) {
-		            	System.err.println("Error in reading file (Invalid Class)");
-					}catch (IOException e) {
-		            	System.err.println("Error in reading file (IO)");
-					} catch (ClassNotFoundException e) {
-		            	System.err.println("Error in reading file (Class not found)");
-					} 
-					break;
+		if(files != null){
+			while(!foundEnd){
+				foundEnd = true;
+				for(File f:files) {
+					//System.out.println("found "+f.getName());
+					if(f.getName().startsWith((levels_so_far+1)+". ")){
+						//add the latest numbered level to the list
+						Design latest;
+			            try {
+			                // Read in current array of test cases and add the new test
+			                ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(f));
+			                latest = (Design) objectInputStream.readObject();
+			                objectInputStream.close();
+				            levels.add(latest);
+				            level_names.add(f.getName());
+							foundEnd = false;
+							levels_so_far++;
+			            } catch (EOFException e) {
+			            	System.err.println("Error in reading file (End of file)");
+			            } catch (FileNotFoundException e) {
+			            	System.err.println("Error in reading file (File not found)");
+						} catch (InvalidClassException e) {
+			            	System.err.println("Error in reading file (Invalid Class)");
+						}catch (IOException e) {
+			            	System.err.println("Error in reading file (IO)");
+						} catch (ClassNotFoundException e) {
+			            	System.err.println("Error in reading file (Class not found)");
+						} 
+						break;
+					}
 				}
 			}
 		}
-		//System.out.println("found "+levels_so_far+" levels saved");
 	}
 	
 	public int get_next_num(){
@@ -77,6 +79,7 @@ public class LevelManager {
 		try{
 			return levels.get(level_number-1);
 		} catch(IndexOutOfBoundsException e) {
+			System.out.println("Invalid level");
 			return null;
 		}
 	}
@@ -84,9 +87,11 @@ public class LevelManager {
 	public void deleteLevel(int level_num) {
 		File root = new File(location);
 		File[] files = root.listFiles();
-		for(File f:files){
-			if(f.getName().startsWith(level_num+".")){
-				f.delete();
+		if(files!=null){
+			for(File f:files){
+				if(f.getName().startsWith(level_num+".")){
+					f.delete();
+				}
 			}
 		}
 		//rename the files etc.
@@ -95,10 +100,35 @@ public class LevelManager {
 		for(int n=level_num-1;n<level_names.size();n++){
 			String name_minus_num = level_names.get(n).split("\\.")[1];
 			level_names.set(n, (n+1)+name_minus_num);
+			if(files!=null){
+				for(File f:files){
+					if(f.getName().startsWith(n+".")){
+						f.renameTo(new File(location+(n+1)+name_minus_num));
+					}
+				}
+			}
+			System.out.println("renamed to "+((n+1)+name_minus_num));
 		}
 	}
 	
-	public void saveLevel(String fileName, Design level) {
+    public static File createLocalFile (String fileName) throws IOException {
+        File unitTestDirectory = new File(location);
+        // Create unit test directory if it doesn't already exist
+        // This will return a SecurityException is sudo/admin access is required!
+        if (!unitTestDirectory.exists()){
+        	unitTestDirectory.mkdir();
+        	System.out.println("New directory made");
+        }
+        File file = new File(location + fileName + suffix);
+
+        //All files of that number deleted
+        file.createNewFile();
+        System.out.println("Made file");
+
+        return file;
+    }
+	
+	public boolean saveLevel(String fileName, Design level) {
 		//get the level number
 		int level_num = 0;
 		try{
@@ -110,9 +140,11 @@ public class LevelManager {
 		//remove existing files with that number
 		File root = new File(location);
 		File[] files = root.listFiles();
-		for(File f:files){
-			if(f.getName().startsWith(level_num+".")){
-				f.delete();
+		if(files != null){
+			for(File f:files){
+				if(f.getName().startsWith(level_num+".")){
+					f.delete();
+				}
 			}
 		}
 		
@@ -127,23 +159,28 @@ public class LevelManager {
 			}
 		}
 		
-		//create and save the new file
-		File file = new File(location + fileName + suffix);
+		//create the new file
+		File file;
 		try {
-			file.createNewFile();
+			file = createLocalFile(fileName);
+			System.out.println("made!");
+	        //save the new file
+	        try {
+	            ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(file));
+				objectOutputStream.writeObject(level);
+		        objectOutputStream.close();
+			} catch (IOException e) {
+				System.err.println("error in writing the new file");
+				e.printStackTrace();
+				return false;
+			}
+	        
 		} catch (IOException e) {
-			System.err.println("error in saving the new file");
+			System.err.println("error in making the new file");
+			e.printStackTrace();
+			return false;
 		}
-
-        // Output the new array of test cases
-        try {
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(file));
-			objectOutputStream.writeObject(level);
-	        objectOutputStream.close();
-		} catch (IOException e) {
-			System.err.println("error in saving the new file");
-		}
-		
+		return true;
 	}
 
 }
