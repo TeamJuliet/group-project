@@ -1,7 +1,5 @@
 package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
@@ -31,26 +29,11 @@ public class ArrayLevelRepresentationIngredients extends ArrayLevelRepresentatio
     }
 
 	@Override
-	public List<LevelRepresentation> crossoverWith(LevelRepresentation parent) {
-		ArrayLevelRepresentationIngredients child1 = new ArrayLevelRepresentationIngredients(new Random());
-		ArrayLevelRepresentationIngredients child2 = new ArrayLevelRepresentationIngredients(new Random());
-
-		super.crossoverWith((ArrayLevelRepresentation) parent, child1, child2);
-
-		ArrayList<LevelRepresentation> children = new ArrayList<>();
-		children.add(child1);
-		children.add(child2);
-
-		return children;
-	}
-
-	@Override
-    public Design getDesign()
-    {
-    	Design design = getBaseDesign();
+    public Design getDesign() {
+    	Design design = super.getDesign();
     	
     	// TODO: set other parameters
 
-        return null;
+        return design;
     }
 }

@@ -8,6 +8,9 @@ import java.awt.Toolkit;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
+import uk.ac.cam.cl.intelligentgamedesigner.testing.TestCaseGame;
+
 //This will be used to navigate between the menu screens
 //I will also use this for testing the different screens
 public class InterfaceManager extends JFrame {
@@ -29,7 +32,7 @@ public class InterfaceManager extends JFrame {
 	private static final DisplayScreen designing_level_screen = new DesigningLevelScreen();
 	
 	private static final DisplayScreen unit_test_screen = new UnitTestMakerScreen();
-	
+		
 	public static int screenWidth(){
 		return screenSize.width;
 	}
@@ -65,6 +68,16 @@ public class InterfaceManager extends JFrame {
 	
 	private static void switchTo(DisplayScreen new_screen){
 		screenLayout.show(screens, new_screen.identifier);
+	}
+	
+	public static void setSelectedCDesign(Design design, String name){
+		((LevelCreatorScreen)level_creator_screen).reload(design, name);
+	}
+	public static void setSelectedDDesign(Design design, String name){
+		((DesignDisplayScreen)design_display_screen).reload(design, name);
+	}
+	public static void setSelectedTest(TestCaseGame test){
+		((UnitTestMakerScreen)unit_test_screen).reload(test);
 	}
 	
 	public static void switchScreen(Windows window){
