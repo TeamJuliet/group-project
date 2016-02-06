@@ -8,8 +8,8 @@ public class LevelDesigner {
 	private static final double aestheticThreshold = 0.5;
 	
     private LevelRepresentationFactory levelRepresentationFactory;
-    private List<Individual> feasiblePopulation;
-    private List<Individual> infeasiblePopulation;
+    private Population<Individual> feasiblePopulation;
+    private Population<Individual> infeasiblePopulation;
     
     private static class Individual {
     	public final LevelRepresentation levelRepresentation;
@@ -30,8 +30,8 @@ public class LevelDesigner {
     }
 
     public void run() {
-    	feasiblePopulation = new ArrayList<>();
-    	infeasiblePopulation = new ArrayList<>();
+    	feasiblePopulation = new Population<>();
+    	infeasiblePopulation = new Population<>();
     	
     	// Generate the random population and split them into the two groups.
     	List<LevelRepresentation> p = levelRepresentationFactory.getLevelRepresentationBatch(populationSize);

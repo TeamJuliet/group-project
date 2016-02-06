@@ -1,65 +1,33 @@
 package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.concurrent.Semaphore;
 
-public class Population<T> implements Iterable {
+public class Population<T> {
 
     private int size;
     private ArrayList<T> members;
-    private Semaphore[] semaphores;
 
-    public Population (int size) {
-        this.size = size;
-        this.members = new ArrayList<>(size);
-        this.semaphores = new Semaphore[size];
+    public Population () {
+        this.members = new ArrayList<>();
     }
 
-    public int getSize () {
+    public synchronized int size () {
         return size;
     }
 
-    private boolean isValidIndex (int index) {
-        return (index >= 0 && index < size);
-    }
-
-    public T get (int index) {
-        if (isValidIndex(index)) {
-            T result;
-            try {
-                semaphores[index].acquire();
-                result = members.get(index);
-                return result;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                return null;
-            } finally {
-                semaphores[index].release();
-            }
-        } else {
-            throw new ArrayIndexOutOfBoundsException(index);
-        }
+    public synchronized T get (int index) {
+    	return members.get(index);
     }
 
     public synchronized void set (int index, T value) {
-        if (isValidIndex(index)) {
-            try {
-                semaphores[index].acquire();
-                members.set(index, value);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } finally {
-                semaphores[index].release();
-            }
-        } else {
-            throw new ArrayIndexOutOfBoundsException(index);
-        }
+    	members.set(index, value);
     }
-
-    @Override
-    public Iterator iterator() {
-        // TODO: Make population iterable
-        return null;
+    
+    public synchronized void add(T value) {
+    	members.add(value);
+    }
+    
+    public synchronized void remove(int index) {
+    	members.remove(index);
     }
 }
