@@ -20,10 +20,14 @@ public class LevelBrowserScreen extends DisplayScreen implements ListSelectionLi
 	private JScrollPane level_list;
 	private JList<String> level_names;
 	private GameBoard board_display;
+	private Design board_design;
 	private JButton back_button;
 	private JButton edit_button;
 	private JButton delete_button;
 	private JLabel title;
+	
+	private int selected_index;
+	private String selected_name;
 	
 	public LevelBrowserScreen(){
 		super();
@@ -41,14 +45,14 @@ public class LevelBrowserScreen extends DisplayScreen implements ListSelectionLi
 		if(ln.length>0) {
 			level_names = new JList<String>(ln);
 			level_list = new JScrollPane(level_names);
-			Design design = InterfaceManager.level_manager.getLevel(1);
-			board_display = new GameBoard(design);
+			board_design = InterfaceManager.level_manager.getLevel(1);
 		} else {
 			level_list = new JScrollPane(new JLabel("<No Levels Saved>"));
-			board_display = new GameBoard(new Design());
 			System.out.println("new Design");
+			board_design = new Design();
 		}
-		
+
+		board_display = new GameBoard(board_design);
 		back_button = new JButton("Back");
 		edit_button = new JButton("View Level Options");
 		delete_button = new JButton("Delete Selected Level");
@@ -63,6 +67,7 @@ public class LevelBrowserScreen extends DisplayScreen implements ListSelectionLi
 		if(level_names != null) {
 	        level_names.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	        level_names.setSelectedIndex(0);
+	        selected_name = level_names.getSelectedValue();
 			level_names.addListSelectionListener(this);
 		}
 		
@@ -109,12 +114,16 @@ public class LevelBrowserScreen extends DisplayScreen implements ListSelectionLi
 			InterfaceManager.switchScreen(Windows.MAIN);
 			break;
 		case "view":
-			InterfaceManager.switchScreen(Windows.DISPLAY);
+			if(level_names!=null){
+				System.out.println(selected_name);
+				InterfaceManager.setSelectedDDesign(board_design,selected_name);
+				InterfaceManager.switchScreen(Windows.DISPLAY);
+			}
 			break;
 		case "delete":
 			if(level_names!=null){
-				System.out.println("Deleting level" + level_names.getSelectedIndex() + "+ 1");
-				InterfaceManager.level_manager.deleteLevel(level_names.getSelectedIndex()+1);
+				System.out.println("Deleting level" + selected_index + 1);
+				InterfaceManager.level_manager.deleteLevel(selected_index+1);
 			}
 			refreshList();
 			break;
@@ -123,10 +132,14 @@ public class LevelBrowserScreen extends DisplayScreen implements ListSelectionLi
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		if(!e.getValueIsAdjusting()) {
-			int design_num = level_names.getSelectedIndex();
-			System.out.println("New number "+design_num);
-			board_display = new GameBoard(InterfaceManager.level_manager.getLevel(design_num));
-			//board_display.repaint();
+			JList selected = ((JList)e.getSource());
+			selected_index = selected.getSelectedIndex();
+			selected_name = (String)selected.getSelectedValue();
+			board_design = InterfaceManager.level_manager.getLevel(selected_index+1);
+			board_display.setBoard(board_design.getBoard());
+			board_display.clearBoard();
+			board_display.repaint();
+			System.out.println("new board?");
 		}
 	}
 }

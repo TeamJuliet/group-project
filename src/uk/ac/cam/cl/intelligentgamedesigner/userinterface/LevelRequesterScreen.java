@@ -44,7 +44,7 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 	JSlider difficulty;
 	
 	//specified values
-	int val_difficulty;
+	double val_difficulty;
 	
 	public LevelRequesterScreen(){
 		super();
@@ -79,16 +79,16 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		go_button.setActionCommand("go");
 		go_button.addActionListener(this);
 		
-		val_difficulty = 50;
-		show_difficulty.setText(val_difficulty + "%");
-		difficulty.setValue(val_difficulty);
+		val_difficulty = 0.5;
+		show_difficulty.setText("Middling");
+		difficulty.setValue(50);
 		difficulty.setMajorTickSpacing(10);
 		difficulty.setMinorTickSpacing(10);
 		difficulty.setPaintTicks(true);
 		difficulty.setPaintLabels(true);
 		difficulty.addChangeListener(this);
 		
-		title.setFont(new Font("Helvetica", Font.CENTER_BASELINE, 18));
+		title.setFont(new Font("Helvetica", Font.CENTER_BASELINE, 22));
 		title.setAlignmentX(CENTER_ALIGNMENT);
 		
 		high_score.setAlignmentX(CENTER_ALIGNMENT);
@@ -159,9 +159,19 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 	@Override
 	public void stateChanged(ChangeEvent e) {
 	    JSlider source = (JSlider)e.getSource();
-	    val_difficulty = source.getValue();
-	    String difficulty_measure;
-	    if(val_difficulty>=0 && val_difficulty<10)difficulty_measure = "simples";
-	    show_difficulty.setText(val_difficulty+"%");
+	    val_difficulty = ((double)source.getValue())/100;
+	    String difficulty_measure = null;
+	    if(val_difficulty<0.10)difficulty_measure = "Trivial";
+	    if(val_difficulty>=0.10 && val_difficulty<0.20)difficulty_measure = "Simples";
+	    if(val_difficulty>=0.20 && val_difficulty<0.30)difficulty_measure = "Easy";
+	    if(val_difficulty>=0.30 && val_difficulty<0.40)difficulty_measure = "Nice";
+	    if(val_difficulty>=0.40 && val_difficulty<0.50)difficulty_measure = "Lower Normal";
+	    if(val_difficulty==0.50)difficulty_measure = "Middling";
+	    if(val_difficulty>0.50 && val_difficulty<=0.60)difficulty_measure = "Upper Normal";
+	    if(val_difficulty>0.60 && val_difficulty<=0.70)difficulty_measure = "Challenging";
+	    if(val_difficulty>0.70 && val_difficulty<=0.80)difficulty_measure = "Hard";
+	    if(val_difficulty>0.80 && val_difficulty<=0.90)difficulty_measure = "Very Hard";
+	    if(val_difficulty>0.90)difficulty_measure = "Holy Moley";
+	    show_difficulty.setText(difficulty_measure);
 	}
 }

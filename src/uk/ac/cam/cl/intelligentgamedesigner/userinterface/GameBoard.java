@@ -19,6 +19,17 @@ public class GameBoard extends JComponent {
 	protected int height;
 	protected Cell[][] board;
 	
+	public static Cell[][] blank_board(){
+		Cell[][] new_board = new Cell[10][10];
+
+		for(int x=0;x<10;x++){
+			for(int y=0;y<10;y++){
+				new_board[x][y] = defaultCell();
+			}
+		}
+		return new_board;
+	}
+	
 	public GameBoard(int width, int height) {
 		super();
 		
@@ -56,7 +67,7 @@ public class GameBoard extends JComponent {
 		tile_size = InterfaceManager.screenHeight()/15;
 	}
 	
-	protected Cell defaultCell(){
+	protected static Cell defaultCell(){
 		return new Cell(CellType.UNUSABLE);
 	}
 	
@@ -66,6 +77,11 @@ public class GameBoard extends JComponent {
 	
 	public Cell[][] getBoard(){
 		return board;
+	}
+	public void setBoard(Cell[][] board){
+		this.board = board.clone();
+		width = board.length;
+		height = board[0].length;
 	}
 	
 	public void clearBoard(){

@@ -95,6 +95,17 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 		identifier = "Unit Test Maker";
 	}
 
+	public void reload(TestCaseGame test) {
+		test_name.setText(test.getFileName());
+		description.setText(test.getDescription());
+		board_before.setBoard(test.getBefore());
+		board_after.setBoard(test.getAfter());
+		board_above.setBoard(test.getLookahead());
+		board_before.setMove(test.getMove());
+		game_state_stuff.setValueAt(test.getScoreBefore(), 1, 1);
+		game_state_stuff.setValueAt(test.getScoreAfter(), 1, 2);
+	}
+
 	@Override
 	protected void makeItems() {
 		save_and_quit = new JButton("Save Tests");
