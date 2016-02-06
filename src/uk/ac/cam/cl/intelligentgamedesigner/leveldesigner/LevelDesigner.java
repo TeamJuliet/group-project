@@ -46,4 +46,8 @@ public class LevelDesigner {
     	
     }
     
+    private void iterate() {
+    	
+    }
+    
 }
