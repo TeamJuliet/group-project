@@ -620,6 +620,9 @@ public class GameState implements Cloneable, Serializable {
     public boolean isMoveValid(Move move) {
         if (!isPositionValidAndMoveable(move.p1) || !isPositionValidAndMoveable(move.p2))
             return false;
+        // Check move is for adjacent positions.
+        if (Math.abs(move.p1.x - move.p2.x) > 1 || Math.abs(move.p1.y - move.p2.y) > 1)
+            return false;
         Cell cell1 = getCell(move.p1), cell2 = getCell(move.p2);
         if (cell1.getCandy().getCandyType().isSpecial() && cell2.getCandy().getCandyType().isSpecial())
             return true;

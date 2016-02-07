@@ -1,5 +1,7 @@
 package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
+
 import java.util.Random;
 
 public class IterationTester {
@@ -47,6 +49,8 @@ public class IterationTester {
 	}
 	
 	public static void main(String[] args) {
-		testCrossover();
+		Specification s = new Specification(0.5, GameMode.JELLY);
+		LevelDesignerManager m = new LevelDesignerManager(s);
+		m.run();
 	}
 }
