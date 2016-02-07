@@ -9,6 +9,7 @@ import java.util.Random;
 public class LevelDesigner {
 	private static final int populationSize = 100;
 	private static final double aestheticThreshold = 0.5;
+	private static final double crossoverProbability = 0.8;
 
 	private LevelDesignerManager manager;
     private List<Individual> feasiblePopulation;
@@ -83,6 +84,10 @@ public class LevelDesigner {
 			for (Individual individual : newFeasible) {
 				individual.difficultyFitness = manager.getDifficultyFitness(individual.getDesign());
 			}
+			
+			if (i % 10 == 0) {
+				System.out.println("Iteration " + i);
+			}
 		}
     	
     	System.out.println("Feasible: " + feasiblePopulation.size());
@@ -128,15 +133,22 @@ public class LevelDesigner {
 		}
 		
 		// Perform crossover to generate new level representations.
-    	for (int i = 0; i < numberToGenerate / 2; i++) {
+		// If there is an odd number to generate, generate one more, then remove one at random.
+		int currentPopulationSize = current.size();
+    	for (int i = 0; i < (numberToGenerate + 1) / 2; i++) {
+    		// Get the parents using weighted random based on their fitness.
 			LevelRepresentation mother = stochasticSelection(current, totalFitness).levelRepresentation;
-			LevelRepresentation father = stochasticSelection(current, totalFitness).levelRepresentation;
+			LevelRepresentation father = mother;
+			if (currentPopulationSize > 1) {
+				while (father == mother) {
+					father = stochasticSelection(current, totalFitness).levelRepresentation;
+				}
+			}
 
 			LevelRepresentation daughter = mother.clone();
 			LevelRepresentation son = father.clone();
 
-			// In some cases, the same mother and father will be selected, so we don't perform crossover.
-			if (mother != father) {
+			if (random.nextDouble() <= crossoverProbability) {
 				son.crossoverWith(daughter);
 			}
 			
@@ -144,10 +156,9 @@ public class LevelDesigner {
 			newRepresentations.add(daughter);
 		}
     	
-    	// If there were an odd number to generate, clone over one more individual to keep size constant.
+    	// If numberToGenerate is odd, remove one to keep size constant.
     	if (numberToGenerate % 2 == 1) {
-    		Individual individual = stochasticSelection(current, totalFitness);
-    		newRepresentations.add(individual.levelRepresentation.clone());
+    		newRepresentations.remove(random.nextInt(newRepresentations.size()));
     	}
     	
     	// Mutate and split into the two new populations.
