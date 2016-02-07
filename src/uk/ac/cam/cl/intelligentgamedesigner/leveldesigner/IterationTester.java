@@ -1,10 +1,12 @@
 package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
+
 import java.util.Random;
 
 public class IterationTester {
 	
-	public static void main(String[] args) {
+	public static void testMutation() {
 		Random r = new Random();
 		ArrayLevelRepresentation l = new ArrayLevelRepresentationScore(r);
 		double fitness = l.getAestheticFitness();
@@ -19,11 +21,6 @@ public class IterationTester {
 				fitness = mutationFitness;
 			}
 			
-			/*int x = r.nextInt(5);
-			int y = r.nextInt(10);
-			l.board[x][y] = l.board[9 - x][y];
-			fitness = l.getAestheticFitness();*/
-			
 			iterations++;
 			System.out.println("Iteration " + iterations + " - Fitness " + fitness);
 		}
@@ -31,5 +28,30 @@ public class IterationTester {
 		System.out.println("Iterations: " + iterations);
 		System.out.println("Fitness: " + fitness);
 		l.printBoard();
+	}
+	
+	public static void testCrossover() {
+		Random r = new Random();
+		ArrayLevelRepresentation a = new ArrayLevelRepresentationJelly(r);
+		ArrayLevelRepresentation b = new ArrayLevelRepresentationJelly(r);
+		
+		System.out.println("Fitness before: " + a.getAestheticFitness());
+		a.printBoard();
+		System.out.println();
+		b.printBoard();
+		
+		a.crossoverWith(b);
+		
+		System.out.println("Fitness after: " + a.getAestheticFitness());
+		a.printBoard();
+		System.out.println();
+		b.printBoard();
+	}
+	
+	public static void main(String[] args) {
+		Specification s = new Specification(0.5, GameMode.JELLY);
+		LevelDesignerManager m = new LevelDesignerManager(s);
+		m.run();
+		m.levelDesigner.printBestIndividual();
 	}
 }

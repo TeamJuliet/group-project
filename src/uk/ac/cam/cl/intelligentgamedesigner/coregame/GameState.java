@@ -18,7 +18,7 @@ public class GameState implements Cloneable, Serializable {
     private List<Position> detonated = new ArrayList<Position>();
     private List<Position> popped    = new ArrayList<Position>();
     private Move           lastMove;
-    
+
     private int proceedState = 0;
 
     public GameState(Design design) {
@@ -64,7 +64,7 @@ public class GameState implements Cloneable, Serializable {
         this.lastMove = original.lastMove;
         this.proceedState = original.proceedState;
     }
-    
+
     public GameState(GameState original, CandyGenerator candyGenerator) {
     	this(original);
     	this.candyGenerator = candyGenerator;
@@ -324,8 +324,8 @@ public class GameState implements Cloneable, Serializable {
         // TODO(Dimitrios): make this more concise.
         for (int x = 0; x < width; ++x) {
             for (int y = 0; y < height; ++y) {
-                // Do not consider EMPTY cells or UNUSABLE cells
-                if (board[x][y].getCellType() == CellType.EMPTY || board[x][y].getCellType() == CellType.UNUSABLE)
+                // Do not consider cells with no candy.
+                if (!board[x][y].hasCandy())
                     continue;
                 CandyColour colour = board[x][y].getCandy().getColour();
                 SingleTileAnalysis analysis = analyzeTile(new Position(x, y));
@@ -619,6 +619,9 @@ public class GameState implements Cloneable, Serializable {
 
     public boolean isMoveValid(Move move) {
         if (!isPositionValidAndMoveable(move.p1) || !isPositionValidAndMoveable(move.p2))
+            return false;
+        // Check move is for adjacent positions.
+        if (Math.abs(move.p1.x - move.p2.x) > 1 || Math.abs(move.p1.y - move.p2.y) > 1)
             return false;
         Cell cell1 = getCell(move.p1), cell2 = getCell(move.p2);
         if (cell1.getCandy().getCandyType().isSpecial() && cell2.getCandy().getCandyType().isSpecial())
