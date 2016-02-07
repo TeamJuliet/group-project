@@ -63,7 +63,7 @@ public class LevelDesigner {
     }
 
     public void run() {
-    	for (int i = 0; i < 10000; i++) {
+    	for (int i = 0; i < 1000; i++) {
 			List<Individual> newFeasible = new ArrayList<>();
 			List<Individual> newInfeasible = new ArrayList<>();
 			
@@ -118,13 +118,16 @@ public class LevelDesigner {
 						 int numberToGenerate,
 						 List<Individual> newFeasible,
 						 List<Individual> newInfeasible) {
+    	
+    	List<LevelRepresentation> newRepresentations = new ArrayList<>();
 
 		// Calculate total fitness.
 		double totalFitness = 0.0;
 		for (Individual individual : current) {
 			totalFitness += individual.getFitness();
 		}
-
+		
+		// Perform crossover to generate new level representations.
     	for (int i = 0; i < numberToGenerate / 2; i++) {
 			LevelRepresentation mother = stochasticSelection(current, totalFitness).levelRepresentation;
 			LevelRepresentation father = stochasticSelection(current, totalFitness).levelRepresentation;
@@ -136,31 +139,21 @@ public class LevelDesigner {
 			if (mother != father) {
 				son.crossoverWith(daughter);
 			}
-
-			son.mutate();
-			daughter.mutate();
-
-			Individual individualSon = new Individual(son);
-			Individual individualDaughter = new Individual(daughter);
-
-			if (individualSon.isFeasible()) {
-				newFeasible.add(individualSon);
-			} else {
-				newInfeasible.add(individualSon);
-			}
-
-			if (individualDaughter.isFeasible()) {
-				newFeasible.add(individualDaughter);
-			} else {
-				newInfeasible.add(individualDaughter);
-			}
+			
+			newRepresentations.add(son);
+			newRepresentations.add(daughter);
 		}
     	
-    	// If there were an odd number to generate, move over one more individual to keep size consistent.
+    	// If there were an odd number to generate, clone over one more individual to keep size constant.
     	if (numberToGenerate % 2 == 1) {
     		Individual individual = stochasticSelection(current, totalFitness);
-    		individual.levelRepresentation.mutate();
-    		Individual mutated = new Individual(individual.levelRepresentation);
+    		newRepresentations.add(individual.levelRepresentation.clone());
+    	}
+    	
+    	// Mutate and split into the two new populations.
+    	for (LevelRepresentation l : newRepresentations) {
+    		l.mutate();
+    		Individual mutated = new Individual(l);
     		if (mutated.isFeasible()) {
 				newFeasible.add(mutated);
 			} else {
@@ -170,16 +163,15 @@ public class LevelDesigner {
     }
 
 	public void printBestIndividual() {
-		Individual best = feasiblePopulation.get(0);
+		Individual fittest = getFittest(feasiblePopulation);
 
-		for (Individual individual : feasiblePopulation) {
-			if (individual.getFitness() > best.getFitness()) {
-				best = individual;
-			}
+		if (fittest == null) {
+			System.out.println("No feasible solutions.");
+			return;
 		}
 
-		((ArrayLevelRepresentation) best.levelRepresentation).printBoard();
-		System.out.println("Fitness: " + best.getFitness());
+		((ArrayLevelRepresentation) fittest.levelRepresentation).printBoard();
+		System.out.println("Fitness: " + fittest.levelRepresentation.getAestheticFitness());
 	}
 
 }
