@@ -63,13 +63,18 @@ public class LevelDesigner {
     }
 
     public void run() {
-    	for (int i = 0; i < 1000; i++) {
+    	for (int i = 0; i < 10000; i++) {
 			List<Individual> newFeasible = new ArrayList<>();
 			List<Individual> newInfeasible = new ArrayList<>();
+			
+			int feasibleSize = feasiblePopulation.size();
+			Individual fittest = getFittest(feasiblePopulation);
+			if (fittest != null) {
+				newFeasible.add(fittest);
+				feasibleSize--;
+			}
 
-			// TODO elitism.
-
-			iterate(feasiblePopulation, feasiblePopulation.size(), newFeasible, newInfeasible);
+			iterate(feasiblePopulation, feasibleSize, newFeasible, newInfeasible);
 			iterate(infeasiblePopulation, infeasiblePopulation.size(), newFeasible, newInfeasible);
 
 			feasiblePopulation = newFeasible;
@@ -79,6 +84,24 @@ public class LevelDesigner {
 				individual.difficultyFitness = manager.getDifficultyFitness(individual.getDesign());
 			}
 		}
+    	
+    	System.out.println("Feasible: " + feasiblePopulation.size());
+    	System.out.println("Infeasible: " + infeasiblePopulation.size());
+    }
+    
+    private Individual getFittest(List<Individual> population) {
+    	if (population.size() == 0) {
+    		return null;
+    	}
+    	
+    	Individual fittest = feasiblePopulation.get(0);
+		for (Individual individual : feasiblePopulation) {
+			if (individual.getFitness() > fittest.getFitness()) {
+				fittest = individual;
+			}
+		}
+		
+		return fittest;
     }
 
 	private Individual stochasticSelection(List<Individual> population, double totalFitness) {
@@ -132,9 +155,21 @@ public class LevelDesigner {
 				newInfeasible.add(individualDaughter);
 			}
 		}
+    	
+    	// If there were an odd number to generate, move over one more individual to keep size consistent.
+    	if (numberToGenerate % 2 == 1) {
+    		Individual individual = stochasticSelection(current, totalFitness);
+    		individual.levelRepresentation.mutate();
+    		Individual mutated = new Individual(individual.levelRepresentation);
+    		if (mutated.isFeasible()) {
+				newFeasible.add(mutated);
+			} else {
+				newInfeasible.add(mutated);
+			}
+    	}
     }
 
-	public void printPopulations() {
+	public void printBestIndividual() {
 		Individual best = feasiblePopulation.get(0);
 
 		for (Individual individual : feasiblePopulation) {
@@ -144,6 +179,7 @@ public class LevelDesigner {
 		}
 
 		((ArrayLevelRepresentation) best.levelRepresentation).printBoard();
+		System.out.println("Fitness: " + best.getFitness());
 	}
 
 }

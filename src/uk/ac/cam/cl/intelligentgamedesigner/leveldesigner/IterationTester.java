@@ -52,5 +52,6 @@ public class IterationTester {
 		Specification s = new Specification(0.5, GameMode.JELLY);
 		LevelDesignerManager m = new LevelDesignerManager(s);
 		m.run();
+		m.levelDesigner.printBestIndividual();
 	}
 }
