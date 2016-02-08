@@ -8,44 +8,13 @@ import java.util.Random;
 
 public class LevelDesigner {
 	private static final int populationSize = 100;
-	private static final double aestheticThreshold = 0.5;
+	protected static final double feasibleThreshold = 0.5;
+	private static final double crossoverProbability = 0.8;
 
 	private LevelDesignerManager manager;
-    private List<Individual> feasiblePopulation;
-    private List<Individual> infeasiblePopulation;
+    private List<LevelDesignIndividual> feasiblePopulation;
+    private List<LevelDesignIndividual> infeasiblePopulation;
 	private Random random;
-    
-    private static class Individual {
-    	public final LevelRepresentation levelRepresentation;
-    	public double aestheticFitness;
-		public double difficultyFitness;
-		private Design design = null;
-    	
-    	public Individual(LevelRepresentation levelRepresentation) {
-    		this.levelRepresentation = levelRepresentation;
-			this.aestheticFitness = levelRepresentation.getAestheticFitness();
-    	}
-    	
-    	public boolean isFeasible() {
-        	return this.aestheticFitness >= aestheticThreshold;
-        }
-
-		public double getFitness() {
-			double fitness = aestheticFitness;
-			if (isFeasible()) {
-				// TODO this needs to be tweaked, need to decide how fitnesses will be combined.
-				fitness += difficultyFitness;
-			}
-			return fitness;
-		}
-
-		public Design getDesign() {
-			if (design == null) {
-				design = levelRepresentation.getDesign();
-			}
-			return design;
-		}
-    }
 
     public LevelDesigner(LevelDesignerManager manager, Random random) {
 		this.manager = manager;
@@ -57,18 +26,18 @@ public class LevelDesigner {
 		// Generate the random population.
 		List<LevelRepresentation> p = manager.getPopulation(populationSize);
 		for (LevelRepresentation l : p) {
-			Individual individual = new Individual(l);
+			LevelDesignIndividual individual = new LevelDesignIndividual(l);
 			infeasiblePopulation.add(individual);
 		}
     }
 
     public void run() {
-    	for (int i = 0; i < 10000; i++) {
-			List<Individual> newFeasible = new ArrayList<>();
-			List<Individual> newInfeasible = new ArrayList<>();
+    	for (int i = 0; i < 1000; i++) {
+			List<LevelDesignIndividual> newFeasible = new ArrayList<>();
+			List<LevelDesignIndividual> newInfeasible = new ArrayList<>();
 			
 			int feasibleSize = feasiblePopulation.size();
-			Individual fittest = getFittest(feasiblePopulation);
+			LevelDesignIndividual fittest = getFittest(feasiblePopulation);
 			if (fittest != null) {
 				newFeasible.add(fittest);
 				feasibleSize--;
@@ -80,8 +49,12 @@ public class LevelDesigner {
 			feasiblePopulation = newFeasible;
 			infeasiblePopulation = newInfeasible;
 
-			for (Individual individual : newFeasible) {
-				individual.difficultyFitness = manager.getDifficultyFitness(individual.getDesign());
+			for (LevelDesignIndividual individual : newFeasible) {
+				individual.setDifficultyFitness(manager.getDifficultyFitness(individual.getDesign()));
+			}
+			
+			if (i % 10 == 0) {
+				System.out.println("Iteration " + i);
 			}
 		}
     	
@@ -89,13 +62,13 @@ public class LevelDesigner {
     	System.out.println("Infeasible: " + infeasiblePopulation.size());
     }
     
-    private Individual getFittest(List<Individual> population) {
+    private LevelDesignIndividual getFittest(List<LevelDesignIndividual> population) {
     	if (population.size() == 0) {
     		return null;
     	}
-    	
-    	Individual fittest = feasiblePopulation.get(0);
-		for (Individual individual : feasiblePopulation) {
+
+		LevelDesignIndividual fittest = feasiblePopulation.get(0);
+		for (LevelDesignIndividual individual : feasiblePopulation) {
 			if (individual.getFitness() > fittest.getFitness()) {
 				fittest = individual;
 			}
@@ -104,63 +77,62 @@ public class LevelDesigner {
 		return fittest;
     }
 
-	private Individual stochasticSelection(List<Individual> population, double totalFitness) {
+	private LevelDesignIndividual stochasticSelection(List<LevelDesignIndividual> population, double totalFitness) {
 		int length = population.size();
 		while (true) {
-			Individual individual = population.get(random.nextInt(length));
+			LevelDesignIndividual individual = population.get(random.nextInt(length));
 			if (random.nextDouble() < individual.getFitness() / totalFitness) {
 				return individual;
 			}
 		}
 	}
     
-    private void iterate(List<Individual> current,
+    private void iterate(List<LevelDesignIndividual> current,
 						 int numberToGenerate,
-						 List<Individual> newFeasible,
-						 List<Individual> newInfeasible) {
+						 List<LevelDesignIndividual> newFeasible,
+						 List<LevelDesignIndividual> newInfeasible) {
+    	
+    	List<LevelRepresentation> newRepresentations = new ArrayList<>();
 
 		// Calculate total fitness.
 		double totalFitness = 0.0;
-		for (Individual individual : current) {
+		for (LevelDesignIndividual individual : current) {
 			totalFitness += individual.getFitness();
 		}
-
-    	for (int i = 0; i < numberToGenerate / 2; i++) {
-			LevelRepresentation mother = stochasticSelection(current, totalFitness).levelRepresentation;
-			LevelRepresentation father = stochasticSelection(current, totalFitness).levelRepresentation;
+		
+		// Perform crossover to generate new level representations.
+		// If there is an odd number to generate, generate one more, then remove one at random.
+		int currentPopulationSize = current.size();
+    	for (int i = 0; i < (numberToGenerate + 1) / 2; i++) {
+    		// Get the parents using weighted random based on their fitness.
+			LevelRepresentation mother = stochasticSelection(current, totalFitness).getLevelRepresentation();
+			LevelRepresentation father = mother;
+			if (currentPopulationSize > 1) {
+				while (father == mother) {
+					father = stochasticSelection(current, totalFitness).getLevelRepresentation();
+				}
+			}
 
 			LevelRepresentation daughter = mother.clone();
 			LevelRepresentation son = father.clone();
 
-			// In some cases, the same mother and father will be selected, so we don't perform crossover.
-			if (mother != father) {
+			if (random.nextDouble() <= crossoverProbability) {
 				son.crossoverWith(daughter);
 			}
-
-			son.mutate();
-			daughter.mutate();
-
-			Individual individualSon = new Individual(son);
-			Individual individualDaughter = new Individual(daughter);
-
-			if (individualSon.isFeasible()) {
-				newFeasible.add(individualSon);
-			} else {
-				newInfeasible.add(individualSon);
-			}
-
-			if (individualDaughter.isFeasible()) {
-				newFeasible.add(individualDaughter);
-			} else {
-				newInfeasible.add(individualDaughter);
-			}
+			
+			newRepresentations.add(son);
+			newRepresentations.add(daughter);
 		}
     	
-    	// If there were an odd number to generate, move over one more individual to keep size consistent.
+    	// If numberToGenerate is odd, remove one to keep size constant.
     	if (numberToGenerate % 2 == 1) {
-    		Individual individual = stochasticSelection(current, totalFitness);
-    		individual.levelRepresentation.mutate();
-    		Individual mutated = new Individual(individual.levelRepresentation);
+    		newRepresentations.remove(random.nextInt(newRepresentations.size()));
+    	}
+    	
+    	// Mutate and split into the two new populations.
+    	for (LevelRepresentation l : newRepresentations) {
+    		l.mutate();
+			LevelDesignIndividual mutated = new LevelDesignIndividual(l);
     		if (mutated.isFeasible()) {
 				newFeasible.add(mutated);
 			} else {
@@ -170,16 +142,15 @@ public class LevelDesigner {
     }
 
 	public void printBestIndividual() {
-		Individual best = feasiblePopulation.get(0);
+		LevelDesignIndividual fittest = getFittest(feasiblePopulation);
 
-		for (Individual individual : feasiblePopulation) {
-			if (individual.getFitness() > best.getFitness()) {
-				best = individual;
-			}
+		if (fittest == null) {
+			System.out.println("No feasible solutions.");
+			return;
 		}
 
-		((ArrayLevelRepresentation) best.levelRepresentation).printBoard();
-		System.out.println("Fitness: " + best.getFitness());
+		((ArrayLevelRepresentation) fittest.getLevelRepresentation()).printBoard();
+		System.out.println("Fitness: " + fittest.getLevelRepresentation().getAestheticFitness());
 	}
 
 }

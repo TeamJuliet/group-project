@@ -34,8 +34,8 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
 
         parameters = new ArrayList<>();
 
-        // Number of moves is initialised in the range: 10-40 (inclusive)
-        parameters.add(new Parameter(random, 10, 40));
+        // Number of moves is initialised in the range: 10-50 (inclusive)
+        parameters.add(new Parameter(random, 10, 50));
 
         // Number of candy colours is initialised in the range: 4-6 (inclusive)
         parameters.add(new Parameter(random, 4, 6));
@@ -132,6 +132,11 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
     @Override
     public double getAestheticFitness() {
     	return AestheticChecker.calculateFitness(board);
+    }
+
+    @Override
+    public double getConstraintFitness() {
+        return ConstraintChecker.calculateFitness(board);
     }
     
     public void printBoard() {
