@@ -1,11 +1,10 @@
 package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
-import java.util.List;
 import java.util.Random;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 
-public class LevelRepresentationScore extends GeneralLevelRepresentation {
+public class ArrayLevelRepresentationScore extends ArrayLevelRepresentation {
 
     /*
         Parameters list:
@@ -20,29 +19,21 @@ public class LevelRepresentationScore extends GeneralLevelRepresentation {
         1 => Unusable
         2 => Icing
         3 => Liquorice
-     */
+    */
 
-    public LevelRepresentationScore(Random random) {
+    public ArrayLevelRepresentationScore(Random random) {
         super(random);
 
         // Score to reach is initialised in the range: 1000-500000
-        this.parameters.add(random.nextInt(499001) + 1000);
+        this.parameters.add(new Parameter(random, 1000, 500000));
     }
     
     @Override
-    public Design getDesign()
-    {
-    	return null;
+    public Design getDesign() {
+    	Design design = super.getDesign();
+    
+    	// TODO: set other parameters
+    	
+        return design;
     }
-
-    @Override
-    public void mutate() {
-
-    }
-
-	@Override
-	public List<LevelRepresentation> crossoverWith(LevelRepresentation l) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

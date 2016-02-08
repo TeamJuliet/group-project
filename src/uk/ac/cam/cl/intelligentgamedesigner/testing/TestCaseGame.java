@@ -61,4 +61,24 @@ public class TestCaseGame extends TestCase {
             return false;
         }
     }
+    
+    //all the getters
+    public Cell[][] getBefore(){
+    	return before;
+    }
+    public Cell[][] getLookahead(){
+    	return lookahead;
+    }
+    public Cell[][] getAfter(){
+    	return after;
+    }
+    public Move getMove(){
+    	return moveMade;
+    }
+    public int getScoreBefore(){
+    	return scoreBefore;
+    }
+    public int getScoreAfter(){
+    	return scoreAfter;
+    }
 }

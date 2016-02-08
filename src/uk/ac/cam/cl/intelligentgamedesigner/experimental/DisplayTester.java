@@ -6,13 +6,13 @@ import java.awt.TextField;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.CandyGenerator;
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.UnmoveableCandyGenerator;
 
 public class DisplayTester {	
 	
@@ -20,6 +20,7 @@ public class DisplayTester {
 		JPanel generalPanel = new JPanel();
 		JFrame app = new JFrame();
 		GameState game = new GameState(new Design());
+		// game.changeCandyGenerator(new UnmoveableCandyGenerator(null));
 		CellChooser.game = game;
 		GameDisplay gamePanel = new GameDisplay(game.getWidth(), game.getHeight(), 50);
 		CellChooser.display = gamePanel;
@@ -45,8 +46,18 @@ public class DisplayTester {
 		moves.setColumns(40);
 		trackPanel.add(moves);
 		generalPanel.add(trackPanel);
-		
+
 		CellChooser.movesRecord = moves;
+
+		JPanel scorePanel = new JPanel();
+		scorePanel.setBorder(BorderFactory.createTitledBorder(
+				BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), "Score Panel"));
+		JLabel scoreLabel = new JLabel("Score: " + game.getScore());
+		scoreLabel.setPreferredSize(new Dimension(100, 22));
+		scorePanel.add(scoreLabel);
+		generalPanel.add(scorePanel);
+
+		CellChooser.scoreLabel = scoreLabel;
 		
 		app.add(generalPanel);
 		app.setSize(new Dimension(600, 700));

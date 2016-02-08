@@ -4,12 +4,14 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.util.Timer;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Candy;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CandyColour;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CandyType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
 
@@ -19,6 +21,7 @@ public class UnitTestBoard extends CustomBoard {
 	private Cell[][] watch_board;
 	private Position move_from;
 	private Position move_to;
+	private boolean just_clicked;//so doesn't trigger twice, for click, and down
 	
 	@Override
 	protected Cell defaultCell(){
@@ -51,6 +54,10 @@ public class UnitTestBoard extends CustomBoard {
 	public Move getMove(){
 		return new Move(move_from, move_to);
 	}
+	public void setMove(Move move){
+		move_from = move.p1;
+		move_to = move.p2;
+	}
 
 	@Override
 	public void changeTile(){
@@ -68,6 +75,11 @@ public class UnitTestBoard extends CustomBoard {
 										board[x][y].getCandy().getColour() != 
 										((UnitTestMakerScreen)watch_creator).getReplacerCandy().getColour()){
 									board[x][y].setCandy(((UnitTestMakerScreen)watch_creator).getReplacerCandy());
+									//remove the double click issue
+									if(!just_clicked){
+										just_clicked = true;
+										System.out.println("just clicked");
+									}
 								}
 							}
 						}
@@ -136,7 +148,8 @@ public class UnitTestBoard extends CustomBoard {
 	public void mouseClicked(MouseEvent e) {
 		//click for special candies
 		if(watch_creator.identifier.equals("Unit Test Maker") //check is unit test maker
-				&& type != 2){ //can't put special things in generator
+				&& type != 2 //can't put special things in generator
+				&& !just_clicked){ 
 			if(!((UnitTestMakerScreen)watch_creator).fillingCells() && ((UnitTestMakerScreen)watch_creator).canFill()){
 				int x = e.getX()/tile_size;
 				int y = e.getY()/tile_size;
@@ -176,6 +189,9 @@ public class UnitTestBoard extends CustomBoard {
 				if(watch_board != null)watch_board[x][y] = board[x][y];
 			}
 		}
+		//remove double click issue
+		just_clicked = false;
+		System.out.println("ready to click");
 	}
 	
 	@Override

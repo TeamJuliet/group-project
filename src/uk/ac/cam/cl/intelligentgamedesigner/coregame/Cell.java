@@ -49,6 +49,12 @@ public class Cell implements Cloneable, Serializable {
     public Candy getCandy() {
         return candy;
     }
+    
+    public boolean isFillable() {
+    	return (this.cellType.equals(CellType.EMPTY))
+                || (this.cellType.equals(CellType.LIQUORICE)
+                || (this.cellType.equals(CellType.UNUSABLE)));
+    }
 
     public boolean hasCandy() {
         return candy != null;
@@ -71,7 +77,7 @@ public class Cell implements Cloneable, Serializable {
     // Function that returns whether it is possible to move the contents of the
     // block.
     public boolean isMoveable() {
-        return cellType == CellType.NORMAL;
+    	return cellType == CellType.NORMAL && !(hasCandy() && candy.getCandyType().equals(CandyType.UNMOVEABLE));
     }
 
     public CellType getCellType() {
