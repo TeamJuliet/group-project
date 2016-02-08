@@ -6,9 +6,10 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.Candy;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CandyColour;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CandyType;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
 
 public class CellDisplay extends JPanel  {
@@ -17,6 +18,8 @@ public class CellDisplay extends JPanel  {
 	private Color clr;
 	private CandyColour cellColour;
 	private CandyType candyType;
+	private CellType cellType;
+	private int jellyLevel = 0;
 	private int x = 0, y = 0;
 	private Position position;
 	
@@ -54,16 +57,21 @@ public class CellDisplay extends JPanel  {
 		cellColour = next(cellColour);
 	}
 	
-	public void setCandy(Candy candy) {
-		if (candy == null) {
+	public void setCell(Cell cell) {
+		if (cell.hasCandy() && cell.getCellType().equals(CellType.ICING)) {
+			System.err.println("An icing has a candy");
+		}
+		if (!cell.hasCandy()) {
 			this.cellColour = null;
 			this.candyType = null;
 		} else {
-			this.candyType = candy.getCandyType();
-			this.cellColour = candy.getColour();
+			this.candyType = cell.getCandy().getCandyType();
+			this.cellColour = cell.getCandy().getColour();
+			this.jellyLevel = cell.getJellyLevel();
 		}
 		// this.cellColour = candy != null ? candy.getColour() : null;
 		this.clr = getCellColor(this.cellColour);
+		this.cellType = cell.getCellType();
 	}
 	
 	public Color getColor() { return clr; }
@@ -132,20 +140,49 @@ public class CellDisplay extends JPanel  {
 		}
 	}
 	
+	private void drawBorder(Graphics g, int borderSize, Color clr) {
+		Dimension dim = getSize();
+		int width = dim.width, height = dim.height;
+		g.setColor(clr);
+		g.fillRect(0, 0, width, borderSize);
+		g.fillRect(0, height - borderSize, width, borderSize);
+		g.fillRect(0, 0, borderSize, height);
+		g.fillRect(width - borderSize, 0, borderSize, height);
+	}
+	
+	private void drawCross(Graphics g) {
+		Dimension dim = getSize();
+		int width = dim.width;
+		int pad = width / 8;
+		g.setColor(Color.BLACK);
+		g.fillRect(pad, 3 * pad, 6 * pad, 2 * pad);
+		g.fillRect(3 * pad, pad, 2 * pad, 6 * pad);
+	}
+	
 	@Override
 	public void paintComponent(Graphics g) {
 		Dimension dim = getSize();
 		int width = dim.width, height = dim.height;
 		g.setColor(clr);
 		g.fillRect(0,0, width, height);
+		if (cellType.equals(CellType.ICING)) {
+			g.setColor(Color.BLACK);
+			drawHorizontalStripes(g);
+			drawVerticalStripes(g);
+			return;
+		}
 		drawSpecial(g);
+		if (jellyLevel == 1) {
+			drawBorder(g, borderSize, Color.LIGHT_GRAY);
+		} else if (jellyLevel == 2) {
+			drawBorder(g, borderSize, Color.GRAY);
+		}
 		// Draw border to selected component.
 		if (selected) {
-			g.setColor(Color.BLACK);
-			g.fillRect(0, 0, width, borderSize);
-			g.fillRect(0, height - borderSize, width, borderSize);
-			g.fillRect(0, 0, borderSize, height);
-			g.fillRect(width - borderSize, 0, borderSize, height);
+			drawBorder(g, borderSize, Color.BLACK);
+		} 
+		if (cellType.equals(CellType.LIQUORICE)) {
+			drawCross(g);
 		}
 	}
 	

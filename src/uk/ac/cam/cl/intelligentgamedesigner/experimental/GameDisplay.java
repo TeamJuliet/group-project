@@ -36,7 +36,7 @@ public class GameDisplay extends JPanel {
 		for (int i = 0; i < sizeX; ++i) {
 			for (int j = 0; j < sizeY; ++j) {
 				// TODO: Check indices.
-				displays[i][j].setCandy(values[i][j].getCandy());
+				displays[i][j].setCell(values[i][j]);
 			}
 		}
 	}
