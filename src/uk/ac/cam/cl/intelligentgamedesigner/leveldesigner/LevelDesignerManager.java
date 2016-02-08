@@ -61,49 +61,63 @@ public class LevelDesignerManager {
      */
     public double getDifficultyFitness (Design design) {
 
-        // Create a new GameState with the given design
-        GameState gameState = new GameState(design);
+        // TODO: Make this more conservative - initially try the design on simple players before testing it on
+        // TODO: advanced ones (which are likely to be more expensive to run)
 
-        // Select the appropriate simulated player(s) to tackle the level
-        SimulatedPlayerBase simulatedPlayer = null;
-        switch (design.getMode()) {
-            case HIGHSCORE:
-                simulatedPlayer = new ScorePlayerAlpha(gameState);
-                break;
-            case JELLY:
-                System.err.println("Jelly level players are not yet supported.");
-                break;
-            default:
-                System.err.println("Ingredients level players are not yet supported.");
-                break;
+        int numberOfSimulations = 10;
+
+        GameState[] gameStates = new GameState[numberOfSimulations];
+        SimulatedPlayerBase[] simulatedPlayers = new SimulatedPlayerBase[numberOfSimulations];
+        Thread[] simulationThreads = new Thread[numberOfSimulations];
+
+        for (int t = 0; t < numberOfSimulations; t++) {
+            gameStates[t] = new GameState(design);
+
+            switch (design.getMode()) {
+                case HIGHSCORE:
+                    simulatedPlayers[t] = new ScorePlayerAlpha(gameStates[t]);
+                    break;
+                case JELLY:
+                    System.err.println("Jelly level players are not yet supported.");
+                    return 0;
+                default:
+                    System.err.println("Ingredients level players are not yet supported.");
+                    return 0;
+            }
+
+            simulationThreads[t] = new Thread(new SimulationThread(simulatedPlayers[t]));
+
+            simulationThreads[t].setDaemon(true);
+            simulationThreads[t].start();
         }
 
-        if (simulatedPlayer != null) {
+        // Wait for all of the players to finish playing
+        for (int t = 0; t < numberOfSimulations; t++) {
             try {
-                // Run the player(s) on the level design
-                simulatedPlayer.solve();
-
-                double difficulty;
-                switch (design.getMode()) {
-                    case HIGHSCORE:
-                        difficulty = evaluateScoreLevelPerformance(gameState, design);
-                        break;
-                    case JELLY:
-                        difficulty = evaluateJellyLevelPerformance(gameState, design);
-                        break;
-                    default:
-                        difficulty = evaluateIngredientsLevelPerformance(gameState, design);
-                        break;
-                }
-
-                return difficulty;
-            } catch (NoMovesFoundException e) {
-                // This shouldn't ever occur
+                simulationThreads[t].join();
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
 
-        return 0;
+        // Evaluate the performance of the players
+        double totalDifficulty = 0;
+        for (int t = 0; t < numberOfSimulations; t++) {
+
+            switch (design.getMode()) {
+                case HIGHSCORE:
+                    totalDifficulty += evaluateScoreLevelPerformance(gameStates[t], design);
+                    break;
+                case JELLY:
+                    totalDifficulty += evaluateJellyLevelPerformance(gameStates[t], design);
+                    break;
+                default:
+                    totalDifficulty += evaluateIngredientsLevelPerformance(gameStates[t], design);
+                    break;
+            }
+        }
+
+        return totalDifficulty / (double) numberOfSimulations;
     }
 
     /**
