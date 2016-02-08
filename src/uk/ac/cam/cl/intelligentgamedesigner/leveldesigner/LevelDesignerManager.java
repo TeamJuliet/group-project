@@ -64,7 +64,7 @@ public class LevelDesignerManager {
         // TODO: Make this more conservative - initially try the design on simple players before testing it on
         // TODO: advanced ones (which are likely to be more expensive to run)
 
-        int numberOfSimulations = 10;
+        int numberOfSimulations = 1;
 
         GameState[] gameStates = new GameState[numberOfSimulations];
         SimulatedPlayerBase[] simulatedPlayers = new SimulatedPlayerBase[numberOfSimulations];
