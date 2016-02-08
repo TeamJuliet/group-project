@@ -133,6 +133,11 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
     public double getAestheticFitness() {
     	return AestheticChecker.calculateFitness(board);
     }
+
+    @Override
+    public double getConstraintFitness() {
+        return ConstraintChecker.calculateFitness(board);
+    }
     
     public void printBoard() {
     	String[] r = {"X", " ", "I", "L"};

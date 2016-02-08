@@ -5,18 +5,18 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 
 public class Specification {
        
-    private double difficulty;
+    private double targetDifficulty;
     private GameMode gameMode;
        
-    public Specification(double difficulty, GameMode gameMode) {
-    	if (difficulty < 0.0 || difficulty > 1.0) throw new IllegalArgumentException();
+    public Specification(double targetDifficulty, GameMode gameMode) {
+    	if (targetDifficulty < 0.0 || targetDifficulty > 1.0) throw new IllegalArgumentException();
     	
-    	this.difficulty = difficulty;
+    	this.targetDifficulty = targetDifficulty;
     	this.gameMode = gameMode;
     }
 
-    public double getDifficulty () {
-        return difficulty;
+    public double getTargetDifficulty () {
+        return targetDifficulty;
     }
 
     public GameMode getGameMode () {
