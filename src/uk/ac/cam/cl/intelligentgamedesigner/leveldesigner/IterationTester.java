@@ -1,5 +1,6 @@
 package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 
 import java.util.Random;
@@ -49,9 +50,14 @@ public class IterationTester {
 	}
 	
 	public static void main(String[] args) {
-		Specification s = new Specification(0.5, GameMode.JELLY);
-		LevelDesignerManager m = new LevelDesignerManager(s);
-		m.run();
-		m.levelDesigner.printBestIndividual();
+//		Specification s = new Specification(0.5, GameMode.JELLY);
+//		LevelDesignerManager m = new LevelDesignerManager(s);
+//		m.run();
+//		m.levelDesigner.printBestIndividual();
+
+		Specification s = new Specification(0.5, GameMode.HIGHSCORE);
+		LevelDesignerManager levelDesignerManager = new LevelDesignerManager(s);
+
+		System.out.println("Difficulty fitness: " + levelDesignerManager.getDifficultyFitness(new Design()));
 	}
 }
