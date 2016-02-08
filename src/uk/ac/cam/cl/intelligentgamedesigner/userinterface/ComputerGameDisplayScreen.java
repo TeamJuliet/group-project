@@ -10,7 +10,7 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 	}
 
 	@Override
-	protected GameBoard specificGameBoard() {
-		return new GameBoard(new Design());
+	protected DisplayBoard specificGameBoard() {
+		return new DisplayBoard(new Design());
 	}
 }

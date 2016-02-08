@@ -20,7 +20,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 
 public class DesignDisplayScreen extends DisplayScreen{
 	private JLabel title;
-	private GameBoard board;
+	private DisplayBoard board;
 	private JButton play_level;
 	private JButton watch_level;
 	private JButton save_level;
@@ -76,7 +76,7 @@ public class DesignDisplayScreen extends DisplayScreen{
 		//initialise with some noncommittal information
 		title = new JLabel("title");
 		level = new Design();
-		board = new GameBoard(level);
+		board = new DisplayBoard(level);
 		play_level = new JButton("Play Level");
 		watch_level = new JButton("Watch Level");
 		save_level = new JButton("Save Level");

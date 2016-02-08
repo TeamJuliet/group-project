@@ -27,7 +27,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.experimental.GameDisplay;
 //Displays the game, score and how to handle animations etc.
 public abstract class GameDisplayScreen extends DisplayScreen{
 	protected JButton quit_button;
-	protected GameBoard board;
+	protected DisplayBoard board;
 	protected JLabel objective_text;
 	protected JLabel moves_left_text;
 	protected JLabel game_mode_text;
@@ -40,6 +40,7 @@ public abstract class GameDisplayScreen extends DisplayScreen{
 	protected GameMode game_mode;
 	protected int score;
 	protected Design level;
+	private final int wait_time = 400;
 	
 	//game stuff
 	GameState theGame;
@@ -65,7 +66,7 @@ public abstract class GameDisplayScreen extends DisplayScreen{
 			break;
 		case JELLY:
 			game_mode_text.setText("Jelly Clear Mode");
-			objective_text.setText("Clera all the jellies!");
+			objective_text.setText("Clear all the jellies!");
 			break;
 		case INGREDIENTS:
 			game_mode_text.setText("Ingredients Mode");
@@ -91,20 +92,17 @@ public abstract class GameDisplayScreen extends DisplayScreen{
 		try {
 			theGame.makeMove(move);
 			while(theGame.makeSmallMove()) {
-				System.err.println("Moving on");
-				update();			
-				// game.debugBoard();
-				Thread.sleep(500);
+				update();		
+				board.paintImmediately(0,0,InterfaceManager.screenWidth(),InterfaceManager.screenHeight());
+				Thread.sleep(wait_time);
 			}
 		} catch (InvalidMoveException ex) {
-			System.err.println("You performed an invalid move.");
-			
 		}catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	protected abstract GameBoard specificGameBoard();
+	protected abstract DisplayBoard specificGameBoard();
 
 	@Override
 	protected void makeItems() {

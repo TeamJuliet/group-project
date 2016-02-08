@@ -117,9 +117,9 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 			
 			test_name.setText("the name");
 			description.setText("this test determines...");
-			board_before.setBoard(GameBoard.blank_board(width, height));
-			board_after.setBoard(GameBoard.blank_board(width, height));
-			board_above.setBoard(GameBoard.blank_board(width, above_screen));
+			board_before.setBoard(DisplayBoard.blank_board(width, height));
+			board_after.setBoard(DisplayBoard.blank_board(width, height));
+			board_above.setBoard(DisplayBoard.blank_board(width, above_screen));
 			board_above.clearBoard();
 			board_before.setMove(new Move(new Position(0,0),new Position(0,0)));
 			game_state_stuff.setValueAt(100, 1, 1);

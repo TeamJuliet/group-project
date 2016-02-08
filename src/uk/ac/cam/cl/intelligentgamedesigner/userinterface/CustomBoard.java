@@ -18,7 +18,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 
-public class CustomBoard extends GameBoard implements MouseListener{
+public class CustomBoard extends DisplayBoard implements MouseListener{
 	
 	protected Timer timer;
 	protected TimerTask task;

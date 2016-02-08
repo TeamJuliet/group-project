@@ -4,9 +4,9 @@ import java.util.TimerTask;
 
 public class ClickDrag extends TimerTask{
 	
-	private GameBoard board;
+	private DisplayBoard board;
 	
-	public ClickDrag(GameBoard observer){
+	public ClickDrag(DisplayBoard observer){
 		board = observer;
 	}
 
