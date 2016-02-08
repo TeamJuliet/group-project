@@ -78,11 +78,12 @@ public abstract class GameDisplayScreen extends DisplayScreen{
 	
 	protected void initialiseGame(){
 		theGame = new GameState(level);
+		update();
 	}
 	
-	protected void update(Cell[][] newBoard, int newScore){
-		theBoard = newBoard;
-		score = newScore;
+	protected void update(){
+		theBoard = theGame.getBoard();
+		score = theGame.getScore();
 		setInfo();
 	}
 	
@@ -91,7 +92,7 @@ public abstract class GameDisplayScreen extends DisplayScreen{
 			theGame.makeMove(move);
 			while(theGame.makeSmallMove()) {
 				System.err.println("Moving on");
-				update(theGame.getBoard(),theGame.getScore());			
+				update();			
 				// game.debugBoard();
 				Thread.sleep(500);
 			}

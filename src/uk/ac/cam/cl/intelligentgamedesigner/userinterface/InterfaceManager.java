@@ -81,16 +81,10 @@ public class InterfaceManager extends JFrame {
 	public static void setSelectedTest(TestCaseGame test){
 		((UnitTestMakerScreen)unit_test_screen).reload(test);
 	}
-	public static void setSelectedGame(
-			Design design
-			){
-		((HumanGameDisplayScreen)human_game_display_screen).giveInfo(
-				design
-				);
+	public static void setSelectedGame(Design design){
+		((HumanGameDisplayScreen)human_game_display_screen).giveInfo(design);
 		((HumanGameDisplayScreen)human_game_display_screen).setInfo();
-		((ComputerGameDisplayScreen)computer_game_display_screen).giveInfo(
-				design
-				);
+		((ComputerGameDisplayScreen)computer_game_display_screen).giveInfo(design);
 		((ComputerGameDisplayScreen)computer_game_display_screen).setInfo();
 	}
 	
