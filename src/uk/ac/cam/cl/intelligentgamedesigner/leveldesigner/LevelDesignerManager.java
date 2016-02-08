@@ -1,5 +1,6 @@
 package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
@@ -119,7 +120,7 @@ public class LevelDesignerManager {
      *
      * @param gameState     The game on which the simulated player has played
      * @param design        The design of the game level
-     * @return
+     * @return              The estimated difficulty of the level
      */
     private double evaluateScoreLevelPerformance (GameState gameState, Design design) {
         double center = design.getObjectiveTarget();
@@ -128,9 +129,29 @@ public class LevelDesignerManager {
         return 1 - (1 / (1 + (Math.exp(-(x - center) / center))));
     }
 
+    /**
+     * For jelly levels, the players will either manage to clear all of the jellies, or they will not. Thus, the only
+     * value that can be used to judge performance is the number of cells remaining with jelly layers above them.
+     * Other metrics such as how scattered the remaining jellies are may also be taken into account at a later date.
+     *
+     * Currently this returns difficulty as 1 - e^(- (num jellies remaining / c)) for some constant c (= 10 for now)
+     *
+     * @param gameState     The game on which the simulated player has played
+     * @param design        The design of the game level
+     * @return              The estimated difficulty of the level
+     */
     private double evaluateJellyLevelPerformance (GameState gameState, Design design) {
-        // TODO: Complete this
-        return 0;
+
+        Cell[][] gameBoard = gameState.getBoard();
+        double numberOfJelliesRemaining = 0;
+
+        for (int x = 0; x < gameState.getWidth(); x++) {
+            for (int y = 0; y < gameState.getHeight(); y++) {
+                numberOfJelliesRemaining += gameBoard[x][y].getJellyLevel();
+            }
+        }
+
+        return 1 - Math.exp(-(numberOfJelliesRemaining / 10.0));
     }
 
     private double evaluateIngredientsLevelPerformance (GameState gameState, Design design) {
