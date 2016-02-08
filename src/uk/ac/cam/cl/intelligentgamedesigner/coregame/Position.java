@@ -12,6 +12,11 @@ public class Position implements Serializable {
         this.y = y;
     }
 
+    public Position(Position original) {
+        this.x = original.x;
+        this.y = original.y;
+    }
+
     @Override
     public String toString() {
         return "(" + x + "," + y + ")";

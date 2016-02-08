@@ -98,16 +98,16 @@ public class LevelManager {
 		levels.remove(level_num-1);
 		level_names.remove(level_num-1);
 		for(int n=level_num-1;n<level_names.size();n++){
-			String name_minus_num = level_names.get(n).split("\\.")[1];
+			String name_minus_num = "." + level_names.get(n).split("\\.")[1];
 			level_names.set(n, (n+1)+name_minus_num);
 			if(files!=null){
 				for(File f:files){
 					if(f.getName().startsWith(n+".")){
-						f.renameTo(new File(location+(n+1)+name_minus_num));
+						boolean success = f.renameTo(new File(location+(n+1)+name_minus_num));
+						if(success)System.out.println("renamed to "+((n+1)+name_minus_num));
 					}
 				}
 			}
-			System.out.println("renamed to "+((n+1)+name_minus_num));
 		}
 	}
 	

@@ -8,7 +8,9 @@ import java.awt.Toolkit;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.TestCaseGame;
 
 //This will be used to navigate between the menu screens
@@ -78,6 +80,31 @@ public class InterfaceManager extends JFrame {
 	}
 	public static void setSelectedTest(TestCaseGame test){
 		((UnitTestMakerScreen)unit_test_screen).reload(test);
+	}
+	public static void setSelectedGame(
+			Cell[][] board,
+			int obj,
+			int moves,
+			GameMode mode,
+			int candies,
+			int score
+			){
+		((HumanGameDisplayScreen)human_game_display_screen).giveInfo(
+				board,
+				obj,
+				moves,
+				mode,
+				score
+				);
+		((HumanGameDisplayScreen)human_game_display_screen).setInfo();
+		((ComputerGameDisplayScreen)computer_game_display_screen).giveInfo(
+				board,
+				obj,
+				moves,
+				mode,
+				score
+				);
+		((ComputerGameDisplayScreen)computer_game_display_screen).setInfo();
 	}
 	
 	public static void switchScreen(Windows window){

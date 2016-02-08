@@ -100,6 +100,7 @@ public class MainMenuScreen extends DisplayScreen{
 			break;
 			
 		case "unit":
+			InterfaceManager.setSelectedTest(null);
 			InterfaceManager.switchScreen(Windows.UNIT_TEST);
 			break;
 		}
