@@ -130,7 +130,7 @@ public class LevelDesignerManager {
      * EASY                                     OK                                      HARD
      * score - target score >> 0         score - target = 0              score - target << 0
      *
-     * For this I will use the sigmoid function centered on the target score and scaled appropriately.
+     * For this I will use 1 minus the sigmoid function centered on the target score and scaled appropriately.
      *
      * @param gameState     The game on which the simulated player has played
      * @param design        The design of the game level
@@ -168,8 +168,19 @@ public class LevelDesignerManager {
         return 1 - Math.exp(-(numberOfJelliesRemaining / 10.0));
     }
 
+    /**
+     * For ingredients levels, the players will either manage to clear all of the ingredients, or they will not.
+     * Thus, the only value that can be used to judge performance is the number of ingredients remaining (and perhaps
+     * the initial number to start out with).
+     *
+     * Currently this returns difficulty as 1 - e^(- (num ingredients remaining / c)) for some constant c (= 2 for now)
+     *
+     * @param gameState     The game on which the simulated player has played
+     * @param design        The design of the game level
+     * @return              The estimated difficulty of the level
+     */
     private double evaluateIngredientsLevelPerformance (GameState gameState, Design design) {
-        // TODO: Complete this
-        return 0;
+
+        return 1 - Math.exp(-(gameState.getIngredientsRemaining() / 2.0));
     }
 }

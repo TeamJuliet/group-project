@@ -13,6 +13,7 @@ public class GameState implements Cloneable, Serializable {
     public final int       height;
     int                    movesRemaining;
     int                    score;
+    int                    ingredientsRemaining;
     CandyGenerator         candyGenerator;
 
     private List<Position> detonated    = new ArrayList<Position>();
@@ -27,6 +28,9 @@ public class GameState implements Cloneable, Serializable {
         this.height = levelDesign.getHeight();
         this.board = new Cell[width][height];
         this.movesRemaining = levelDesign.getNumberOfMovesAvailable();
+        if (design.getMode() == GameMode.INGREDIENTS) {
+            this.ingredientsRemaining = design.getObjectiveTarget();
+        }
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
@@ -63,6 +67,7 @@ public class GameState implements Cloneable, Serializable {
         this.height = original.height;
         this.movesRemaining = original.movesRemaining;
         this.score = original.score;
+        this.ingredientsRemaining = original.ingredientsRemaining;
         this.candyGenerator = original.candyGenerator;
         for (Position p : original.detonated)
             this.detonated.add(new Position(p));
@@ -113,6 +118,10 @@ public class GameState implements Cloneable, Serializable {
 
     public int getScore() {
         return score;
+    }
+
+    public int getIngredientsRemaining () {
+        return ingredientsRemaining;
     }
 
     public int getMovesRemaining() {
