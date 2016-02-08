@@ -29,6 +29,16 @@ public class GameBoard extends JComponent {
 		}
 		return new_board;
 	}
+	public static Cell[][] blank_board(int width, int height){
+		Cell[][] new_board = new Cell[width][height];
+
+		for(int x=0;x<width;x++){
+			for(int y=0;y<height;y++){
+				new_board[x][y] = defaultCell();
+			}
+		}
+		return new_board;
+	}
 	
 	public GameBoard(int width, int height) {
 		super();
@@ -79,9 +89,13 @@ public class GameBoard extends JComponent {
 		return board;
 	}
 	public void setBoard(Cell[][] board){
-		this.board = board.clone();
-		width = board.length;
-		height = board[0].length;
+		if(board!= null){
+			this.board = board.clone();
+			width = board.length;
+			height = board[0].length;
+		} else{
+			System.out.println("Null board sent");
+		}
 	}
 	
 	public void clearBoard(){

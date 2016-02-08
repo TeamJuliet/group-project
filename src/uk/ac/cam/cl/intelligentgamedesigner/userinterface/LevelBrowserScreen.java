@@ -136,9 +136,9 @@ public class LevelBrowserScreen extends DisplayScreen implements ListSelectionLi
 			selected_index = selected.getSelectedIndex();
 			selected_name = (String)selected.getSelectedValue();
 			board_design = InterfaceManager.level_manager.getLevel(selected_index+1);
-			board_display.setBoard(board_design.getBoard());
-			board_display.clearBoard();
-			board_display.repaint();
+			//board_display.setBoard(board_design.getBoard());
+			//board_display.clearBoard();
+			//board_display.repaint();
 			System.out.println("new board?");
 		}
 	}

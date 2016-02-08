@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 
@@ -167,6 +168,14 @@ public class DesignDisplayScreen extends DisplayScreen{
 			InterfaceManager.switchScreen(Windows.MAIN);
 			break;
 		case "play":
+			InterfaceManager.setSelectedGame(
+					board.getBoard(),
+					objective_value,
+					number_of_moves,
+					mode,
+					number_of_candies,
+					0
+					);
 			InterfaceManager.switchScreen(Windows.HUMAN);
 			break;
 		case "watch":

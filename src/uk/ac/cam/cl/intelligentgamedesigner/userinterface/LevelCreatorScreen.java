@@ -117,6 +117,10 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 				break;
 			}
 		}
+		width = board.width;
+		height = board.height;
+		dimensions_width.setValue(width);
+		dimensions_height.setValue(height);
 	}
 
 	@Override
