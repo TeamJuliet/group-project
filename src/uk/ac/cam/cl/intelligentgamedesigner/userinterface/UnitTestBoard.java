@@ -199,6 +199,16 @@ public class UnitTestBoard extends CustomBoard {
 	}
 	
 	@Override
+	public void clearBoard(){
+		if(type!=2)super.clearBoard();
+		else {
+			for(int x=0;x<width;x++)
+				for(int y=0;y<height;y++)
+					board[x][y] = new Cell(CellType.NORMAL, new Candy(CandyColour.RED,CandyType.NORMAL));
+		}
+	}
+	
+	@Override
 	public void paint(Graphics g){
 		super.paint(g);
 		

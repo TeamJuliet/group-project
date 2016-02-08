@@ -2,18 +2,26 @@ package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.TextField;
 import java.awt.event.ActionEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.EtchedBorder;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
+import uk.ac.cam.cl.intelligentgamedesigner.experimental.CellChooser;
+import uk.ac.cam.cl.intelligentgamedesigner.experimental.GameDisplay;
 
 //Defines functionality shared by the human and simulated player games
 //Displays the game, score and how to handle animations etc.
@@ -31,23 +39,22 @@ public abstract class GameDisplayScreen extends DisplayScreen{
 	protected int moves_left;
 	protected GameMode game_mode;
 	protected int score;
+	protected Design level;
+	
+	//game stuff
+	GameState theGame;
 	
 	public GameDisplayScreen(){
 		super();
 	}
 	
-	protected void giveInfo(
-			Cell[][] theBoard,
-			int objective,
-			int moves_left,
-			GameMode game_mode,
-			int score
-			){
-		this.theBoard = theBoard;
-		this.objective = objective;
-		this.moves_left = moves_left;
-		this.game_mode = game_mode;
-		this.score = score;
+	protected void giveInfo(Design level){
+		this.level = level;
+		this.theBoard = level.getBoard();
+		this.objective = level.getObjectiveTarget();
+		this.moves_left = level.getNumberOfMovesAvailable();
+		this.game_mode = level.getMode();
+		this.score = 0;
 	}
 	protected void setInfo(){
 		board.setBoard(theBoard);
@@ -68,12 +75,40 @@ public abstract class GameDisplayScreen extends DisplayScreen{
 		moves_left_text.setText("Moves remaining: "+moves_left);
 		score_text.setText("Score: "+score);
 	}
+	
+	protected void initialiseGame(){
+		theGame = new GameState(level);
+	}
+	
+	protected void update(Cell[][] newBoard, int newScore){
+		theBoard = newBoard;
+		score = newScore;
+		setInfo();
+	}
+	
+	public void playMove(Move move){
+		try {
+			theGame.makeMove(move);
+			while(theGame.makeSmallMove()) {
+				System.err.println("Moving on");
+				update(theGame.getBoard(),theGame.getScore());			
+				// game.debugBoard();
+				Thread.sleep(500);
+			}
+		} catch (InvalidMoveException ex) {
+			System.err.println("You performed an invalid move.");
+			
+		}catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	protected abstract GameBoard specificGameBoard();
 
 	@Override
 	protected void makeItems() {
 		quit_button = new JButton("Quit Game");
-		board = new GameBoard(new Design());
-		if(board != null)System.out.println("board made");
+		board = specificGameBoard();
 		objective_text = new JLabel();
 		game_mode_text = new JLabel();
 		moves_left_text = new JLabel();

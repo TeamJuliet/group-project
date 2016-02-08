@@ -82,27 +82,14 @@ public class InterfaceManager extends JFrame {
 		((UnitTestMakerScreen)unit_test_screen).reload(test);
 	}
 	public static void setSelectedGame(
-			Cell[][] board,
-			int obj,
-			int moves,
-			GameMode mode,
-			int candies,
-			int score
+			Design design
 			){
 		((HumanGameDisplayScreen)human_game_display_screen).giveInfo(
-				board,
-				obj,
-				moves,
-				mode,
-				score
+				design
 				);
 		((HumanGameDisplayScreen)human_game_display_screen).setInfo();
 		((ComputerGameDisplayScreen)computer_game_display_screen).giveInfo(
-				board,
-				obj,
-				moves,
-				mode,
-				score
+				design
 				);
 		((ComputerGameDisplayScreen)computer_game_display_screen).setInfo();
 	}
@@ -116,9 +103,11 @@ public class InterfaceManager extends JFrame {
 			switchTo(level_requester_screen);
 			break;
 		case HUMAN:
+			((HumanGameDisplayScreen)human_game_display_screen).initialiseGame();
 			switchTo(human_game_display_screen);
 			break;
 		case SIMULATED:
+			((ComputerGameDisplayScreen)computer_game_display_screen).initialiseGame();
 			switchTo(computer_game_display_screen);
 			break;
 		case CREATE:

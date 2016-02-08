@@ -37,6 +37,7 @@ public class DesignDisplayScreen extends DisplayScreen{
 	int number_of_moves;
 	int objective_value;
 	int number_of_candies;
+	Design level;
 
 	public DesignDisplayScreen(){
 		super();
@@ -67,13 +68,15 @@ public class DesignDisplayScreen extends DisplayScreen{
 		number_of_candies = design.getNumberOfCandyColours();
 		candies.setText(number_of_candies+" candy colours in play");
 		board.setBoard(design.getBoard());
+		level = design;
 	}
 
 	@Override
 	protected void makeItems() {
 		//initialise with some noncommittal information
 		title = new JLabel("title");
-		board = new GameBoard(new Design());
+		level = new Design();
+		board = new GameBoard(level);
 		play_level = new JButton("Play Level");
 		watch_level = new JButton("Watch Level");
 		save_level = new JButton("Save Level");
@@ -168,17 +171,11 @@ public class DesignDisplayScreen extends DisplayScreen{
 			InterfaceManager.switchScreen(Windows.MAIN);
 			break;
 		case "play":
-			InterfaceManager.setSelectedGame(
-					board.getBoard(),
-					objective_value,
-					number_of_moves,
-					mode,
-					number_of_candies,
-					0
-					);
+			InterfaceManager.setSelectedGame(level);
 			InterfaceManager.switchScreen(Windows.HUMAN);
 			break;
 		case "watch":
+			InterfaceManager.setSelectedGame(level);
 			InterfaceManager.switchScreen(Windows.SIMULATED);
 			break;
 		case "save":
@@ -188,12 +185,6 @@ public class DesignDisplayScreen extends DisplayScreen{
 	}
 	
 	private void makeAndSave(){
-		Design level = new Design();
-		
-		level.setBoard(board.getBoard());
-		level.setSize(board.width, board.height);
-		level.setRules(mode, number_of_moves, objective_value, number_of_candies);
-		
 		boolean success = InterfaceManager.level_manager.saveLevel(title.getText(), level);
 		String message = success?(title.getText()+" Saved!"):("Failed to save.");
 		JOptionPane.showMessageDialog(this,message,"Notification",JOptionPane.INFORMATION_MESSAGE);

@@ -4,15 +4,16 @@ import java.util.TimerTask;
 
 public class ClickDrag extends TimerTask{
 	
-	private CustomBoard board;
+	private GameBoard board;
 	
-	public ClickDrag(CustomBoard observer){
+	public ClickDrag(GameBoard observer){
 		board = observer;
 	}
 
 	@Override
 	public void run() {
-		board.changeTile();
+		if(board instanceof CustomBoard)((CustomBoard)board).changeTile();
+		if(board instanceof HumanGameBoard)((HumanGameBoard)board).updateClickPos();
 	}
 
 }
