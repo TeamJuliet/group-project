@@ -46,18 +46,6 @@ public class InterfaceManager extends JFrame {
 	}
 	
 	static void initialise(){
-		try {
-		    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-		        if ("Nimbus".equals(info.getName())) {
-		            UIManager.setLookAndFeel(info.getClassName());
-		            break;
-		        }
-		    }
-		} catch (Exception e) {
-		    // If Nimbus is not available, you can set the GUI to another look and feel.
-		}
-		
-		
 		//setting the screen properties
 		screen.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		screen.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -92,6 +80,9 @@ public class InterfaceManager extends JFrame {
 	}
 	public static void setSelectedDDesign(Design design, String name){
 		((DesignDisplayScreen)design_display_screen).reload(design, name);
+	}
+	public static void refreshLevelBrowser(){
+		((LevelBrowserScreen)level_browser_screen).refreshList();
 	}
 	public static void setSelectedTest(TestCaseGame test){
 		((UnitTestMakerScreen)unit_test_screen).reload(test);

@@ -480,6 +480,9 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		
 		String fileName = level_on + ". " + level_name.getValue();
 		boolean success = InterfaceManager.level_manager.saveLevel(fileName, level);
+		if(success){
+			InterfaceManager.refreshLevelBrowser();
+		}
 		String message = success?(fileName+" Saved!"):("Failed to save.");
 		JOptionPane.showMessageDialog(this,message,"Notification",JOptionPane.INFORMATION_MESSAGE);
 	}
