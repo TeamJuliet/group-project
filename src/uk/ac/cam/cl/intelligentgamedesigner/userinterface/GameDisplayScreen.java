@@ -85,6 +85,7 @@ public abstract class GameDisplayScreen extends DisplayScreen{
 	protected void update(){
 		theBoard = theGame.getBoard();
 		score = theGame.getScore();
+		moves_left = theGame.getMovesRemaining();
 		setInfo();
 	}
 	
