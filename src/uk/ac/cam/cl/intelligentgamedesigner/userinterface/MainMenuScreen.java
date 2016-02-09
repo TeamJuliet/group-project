@@ -92,7 +92,7 @@ public class MainMenuScreen extends DisplayScreen{
 	    	InterfaceManager.switchScreen(Windows.REQUEST);
 			break;
 		case "create":
-			InterfaceManager.setSelectedCDesign(null,null);
+			InterfaceManager.setSelectedCDesign(null,null, 0);
 	    	InterfaceManager.switchScreen(Windows.CREATE);
 			break;
 		case "load":

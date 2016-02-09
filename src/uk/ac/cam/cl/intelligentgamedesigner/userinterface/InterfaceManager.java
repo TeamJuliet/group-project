@@ -75,8 +75,9 @@ public class InterfaceManager extends JFrame {
 		screenLayout.show(screens, new_screen.identifier);
 	}
 	
-	public static void setSelectedCDesign(Design design, String name){
-		((LevelCreatorScreen)level_creator_screen).reload(design, name);
+	public static void setSelectedCDesign(Design design, String name, int level_on){
+		if(level_on == 0)level_on = level_manager.get_next_num();
+		((LevelCreatorScreen)level_creator_screen).reload(design, name, level_on);
 	}
 	public static void setSelectedDDesign(Design design, String name){
 		((DesignDisplayScreen)design_display_screen).reload(design, name);
@@ -95,6 +96,9 @@ public class InterfaceManager extends JFrame {
 		((ComputerGameDisplayScreen)computer_game_display_screen).giveInfo(design);
 		((ComputerGameDisplayScreen)computer_game_display_screen).getMethodFromClass(player_class);
 		((ComputerGameDisplayScreen)computer_game_display_screen).setInfo();
+	}
+	public static void setPreviousScreen(Windows window){
+		((DesignDisplayScreen)design_display_screen).setPreviousScreen(window);
 	}
 	
 	public static void switchScreen(Windows window){
