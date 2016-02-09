@@ -46,7 +46,9 @@ public class GameState implements Cloneable, Serializable {
             }
         }
         recordIngredientSinks();
-        candyGenerator = new PseudoRandomCandyGenerator(new DesignParameters(design.getNumberOfCandyColours()));
+        candyGenerator = new PseudoRandomCandyGenerator(new DesignParameters(design.getNumberOfCandyColours(),
+                                                        design.getMode(),
+                                                        design.getObjectiveTarget()));
         fillBoard();
 
         // Make sure the board is in a stable state
