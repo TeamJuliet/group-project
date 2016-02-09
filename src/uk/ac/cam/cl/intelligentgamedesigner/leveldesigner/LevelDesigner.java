@@ -42,10 +42,12 @@ public class LevelDesigner {
 			
 			// Copy over the elite. Always copy over at least 1.
 			int feasibleSize = feasiblePopulation.size();
-			int eliteNumber = Math.max(1, (int) (feasibleSize * elitePercentage + 0.5));
-			for (int j = 0; j < eliteNumber; j++) {
-				newFeasible.add(feasiblePopulation.get(j));
-				feasibleSize--;
+			if (feasibleSize > 0) {
+				int eliteNumber = Math.max(1, (int) (feasibleSize * elitePercentage + 0.5));
+				for (int j = 0; j < eliteNumber; j++) {
+					newFeasible.add(feasiblePopulation.get(j));
+					feasibleSize--;
+				}
 			}
 			
 			iterate(feasiblePopulation, feasibleSize, newFeasible, newInfeasible);
@@ -55,7 +57,7 @@ public class LevelDesigner {
 			infeasiblePopulation = newInfeasible;
 
 			for (LevelDesignIndividual individual : newFeasible) {
-				individual.setDifficultyFitness(manager.getDifficultyFitness(individual.getDesign()));
+				individual.setDifficultyFitness(0.0);//manager.getDifficultyFitness(individual.getDesign()));
 			}
 			
 			// Sort the individuals so they are in descending order of fitness.
@@ -64,9 +66,9 @@ public class LevelDesigner {
 			if (i % 100 == 0) {
 				System.out.println("Iteration " + i);
 				List<LevelRepresentation> l = new ArrayList<>();
-				int max = Math.max(feasiblePopulation.size(), maxTopLevels);
+				int max = Math.min(feasiblePopulation.size(), maxTopLevels);
 				for (int j = 0; j < max; j++) {
-					l.add(feasiblePopulation.get(i).getLevelRepresentation());
+					l.add(feasiblePopulation.get(j).getLevelRepresentation());
 				}
 				manager.notifyInterface(l);
 			}
@@ -146,7 +148,7 @@ public class LevelDesigner {
 	public void printIndividuals() {
 		List<LevelDesignIndividual> population = new ArrayList<>(feasiblePopulation);
 		Collections.sort(population);
-		for (LevelDesignIndividual individual : feasiblePopulation) {
+		for (LevelDesignIndividual individual : population) {
 			System.out.println();
 			((ArrayLevelRepresentation) individual.getLevelRepresentation()).printBoard();
 			System.out.println("Fitness: " + individual.getFitness());
