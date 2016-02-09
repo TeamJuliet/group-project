@@ -20,6 +20,8 @@ public class BackgroundThreadTest extends JPanel implements ActionListener, Prop
     public BackgroundThreadTest () {
         super(new BorderLayout());
 
+        this.setPreferredSize(new Dimension(500, 400));
+
         startButton = new JButton("Run Level Designer");
         startButton.setActionCommand("start");
         startButton.addActionListener(this);
@@ -66,6 +68,10 @@ public class BackgroundThreadTest extends JPanel implements ActionListener, Prop
             int iterationNumber = (int) evt.getNewValue();
 
             iterationLabel.setText("Iteration: " + iterationNumber);
+        } else if (evt.getPropertyName().equals(PropertyChanges.PROPERTY_CHANGE_DONE)) {
+            startButton.setEnabled(true);
+            // Make the cursor normal again
+            setCursor(null);
         }
     }
 

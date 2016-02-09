@@ -30,6 +30,11 @@ public class LevelDesignerManager extends SwingWorker {
 
         return null;
     }
+
+    @Override
+    public void done () {
+        firePropertyChange(PropertyChanges.PROPERTY_CHANGE_DONE, null, null);
+    }
     
     public void notifyInterface(List<LevelRepresentation> top) {
     	firePropertyChange(PropertyChanges.PROPERTY_CHANGE_DESIGNS, null, top);
