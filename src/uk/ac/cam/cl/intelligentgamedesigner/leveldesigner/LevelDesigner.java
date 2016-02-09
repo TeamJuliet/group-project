@@ -148,7 +148,7 @@ public class LevelDesigner {
 		Collections.sort(population);
 		for (LevelDesignIndividual individual : feasiblePopulation) {
 			System.out.println();
-			((ArrayLevelRepresentation) individual.getLevelRepresentation()).printBoard();
+			((ArrayLevelRepresentation) individual.getLevelRepresentation()).printRepresentation();
 			System.out.println("Fitness: " + individual.getFitness());
 		}
 	}
