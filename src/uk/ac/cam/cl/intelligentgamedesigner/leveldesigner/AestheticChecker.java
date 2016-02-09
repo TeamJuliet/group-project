@@ -8,6 +8,10 @@ public class AestheticChecker {
 		return fitness;
 	}
 	
+	private static double calculateDistributionScore(RandomBoard<DesignCellType> board) {
+		return 0.0;
+	}
+	
 	private static double calculateSymmetryScore(RandomBoard<DesignCellType> board) {
 		int maxX = board.width / 2;
     	int score = 0;

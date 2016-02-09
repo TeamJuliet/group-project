@@ -26,6 +26,10 @@ public class LevelDesignerManager {
     public void run() {
         this.levelDesigner.run();
     }
+    
+    public void notifyInterface(List<LevelRepresentation> top) {
+    	// TODO update interface with top designs.
+    }
 
     public List<LevelRepresentation> getPopulation(int size) {
         List<LevelRepresentation> population = new ArrayList<>();
