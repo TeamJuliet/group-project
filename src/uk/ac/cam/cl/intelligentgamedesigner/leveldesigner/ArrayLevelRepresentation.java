@@ -138,16 +138,26 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
     public double getConstraintFitness() {
         return ConstraintChecker.calculateFitness(board);
     }
-    
-    public void printBoard() {
-    	String[] r = {"□", " ", "I", "L"};
-    	for (int y = 0; y < board.height; y++) {
-    		for (int x = 0; x < board.width; x++) {
-    			int t = board.get(x, y).ordinal();
-    			System.out.print(r[t] + ' ');
-    		}
-    		System.out.println();
-    	}
+
+
+    @Override
+    public String representationToString() {
+        String result = "";
+        String[] r = {"□", " ", "I", "L"};
+        for (int y = 0; y < board.height; y++) {
+            for (int x = 0; x < board.width; x++) {
+                int t = board.get(x, y).ordinal();
+                result += (r[t] + ' ');
+            }
+            result += "\n";
+        }
+
+        return result;
+    }
+
+    @Override
+    public void printRepresentation () {
+        System.out.println(representationToString());
     }
     
 }

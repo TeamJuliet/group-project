@@ -72,6 +72,8 @@ public class LevelDesigner {
 				}
 				manager.notifyInterface(l);
 			}
+
+			manager.notifyInterface(i);
 		}
     	
     	System.out.println();
@@ -150,7 +152,7 @@ public class LevelDesigner {
 		Collections.sort(population);
 		for (LevelDesignIndividual individual : population) {
 			System.out.println();
-			((ArrayLevelRepresentation) individual.getLevelRepresentation()).printBoard();
+			((ArrayLevelRepresentation) individual.getLevelRepresentation()).printRepresentation();
 			System.out.println("Fitness: " + individual.getFitness());
 		}
 	}

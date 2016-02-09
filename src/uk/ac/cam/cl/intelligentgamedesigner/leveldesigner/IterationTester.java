@@ -1,7 +1,11 @@
 package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.List;
 import java.util.Random;
 
 public class IterationTester {
@@ -27,7 +31,7 @@ public class IterationTester {
 		
 		System.out.println("Iterations: " + iterations);
 		System.out.println("Fitness: " + fitness);
-		l.printBoard();
+		l.printRepresentation();
 	}
 	
 	public static void testCrossover() {
@@ -36,16 +40,16 @@ public class IterationTester {
 		ArrayLevelRepresentation b = new ArrayLevelRepresentationJelly(r);
 		
 		System.out.println("Fitness before: " + a.getAestheticFitness());
-		a.printBoard();
+		a.printRepresentation();
 		System.out.println();
-		b.printBoard();
+		b.printRepresentation();
 		
 		a.crossoverWith(b);
 		
 		System.out.println("Fitness after: " + a.getAestheticFitness());
-		a.printBoard();
+		a.printRepresentation();
 		System.out.println();
-		b.printBoard();
+		b.printRepresentation();
 	}
 
 	public static void main(String[] args) {

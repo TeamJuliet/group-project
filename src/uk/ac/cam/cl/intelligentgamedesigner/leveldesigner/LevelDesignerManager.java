@@ -6,11 +6,12 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.ScorePlayerAlpha;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerBase;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class LevelDesignerManager {
+public class LevelDesignerManager extends SwingWorker {
     private long seed = 1;
     private Specification specification;
     private Random originalRandom;
@@ -23,12 +24,19 @@ public class LevelDesignerManager {
         this.levelDesigner = new LevelDesigner(this, this.originalRandom);
     }
 
-    public void run() {
+    @Override
+    protected Void doInBackground() throws Exception {
         this.levelDesigner.run();
+
+        return null;
     }
     
     public void notifyInterface(List<LevelRepresentation> top) {
-    	// TODO update interface with top designs.
+    	firePropertyChange(PropertyChanges.PROPERTY_CHANGE_DESIGNS, null, top);
+    }
+
+    public void notifyInterface(int iterationNumber) {
+        firePropertyChange(PropertyChanges.PROPERTY_CHANGE_PROGRESS, null, iterationNumber);
     }
 
     public List<LevelRepresentation> getPopulation(int size) {

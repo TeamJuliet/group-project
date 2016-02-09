@@ -38,4 +38,8 @@ public abstract class LevelRepresentation implements Cloneable {
 	public abstract double getAestheticFitness();
 
 	public abstract double getConstraintFitness();
+
+	public abstract String representationToString();
+
+	public abstract void printRepresentation();
 }
