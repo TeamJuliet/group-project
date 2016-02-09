@@ -126,7 +126,7 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 			((ComputerGameBoard)board).showMove(next);
 			Thread.sleep(wait_time*2);
 			((ComputerGameBoard)board).hideMove();
-			
+
 			playMove(next);
 			System.out.println("move found!");
 		} catch(NoMovesFoundException e) {

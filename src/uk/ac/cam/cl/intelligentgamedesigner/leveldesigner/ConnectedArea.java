@@ -40,7 +40,10 @@ public class ConnectedArea {
 		return 0;
 	}
 	
-	private boolean checkPossibleMatch(/*match type*//*at position*/)
+	private boolean checkPossibleMatch () {
+		/*match type*//*at position*/
+		return false;
+	}
 	
 	//private longest line start and end
 	
