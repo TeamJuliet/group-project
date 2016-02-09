@@ -13,13 +13,14 @@ public class GameState implements Cloneable, Serializable {
     public final int       height;
     int                    movesRemaining;
     int                    score;
+    int                    ingredientsRemaining;
     CandyGenerator         candyGenerator;
 
-    private List<Position> detonated = new ArrayList<Position>();
-    private List<Position> popped    = new ArrayList<Position>();
+    private List<Position> detonated    = new ArrayList<Position>();
+    private List<Position> popped       = new ArrayList<Position>();
     private Move           lastMove;
 
-    private int proceedState = 0;
+    private int            proceedState = 0;
 
     public GameState(Design design) {
         this.levelDesign = design;
@@ -27,6 +28,9 @@ public class GameState implements Cloneable, Serializable {
         this.height = levelDesign.getHeight();
         this.board = new Cell[width][height];
         this.movesRemaining = levelDesign.getNumberOfMovesAvailable();
+        if (design.getMode() == GameMode.INGREDIENTS) {
+            this.ingredientsRemaining = design.getObjectiveTarget();
+        }
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
@@ -52,15 +56,23 @@ public class GameState implements Cloneable, Serializable {
 
     // Copy constructor
     public GameState(GameState original) {
-        this.board = original.board;
+        this.board = new Cell[original.width][original.height];
+        for (int x = 0; x < original.width; x++) {
+            for (int y = 0; y < original.height; y++) {
+                this.board[x][y] = original.board[x][y];
+            }
+        }
         this.levelDesign = original.levelDesign;
         this.width = original.width;
         this.height = original.height;
         this.movesRemaining = original.movesRemaining;
         this.score = original.score;
+        this.ingredientsRemaining = original.ingredientsRemaining;
         this.candyGenerator = original.candyGenerator;
-        this.detonated = original.detonated;
-        this.popped = original.popped;
+        for (Position p : original.detonated)
+            this.detonated.add(new Position(p));
+        for (Position p : original.popped)
+            this.popped.add(new Position(p));
         this.lastMove = original.lastMove;
         this.proceedState = original.proceedState;
     }
@@ -106,6 +118,10 @@ public class GameState implements Cloneable, Serializable {
 
     public int getScore() {
         return score;
+    }
+
+    public int getIngredientsRemaining () {
+        return ingredientsRemaining;
     }
 
     public int getMovesRemaining() {
@@ -190,10 +206,6 @@ public class GameState implements Cloneable, Serializable {
     // Returns the axial analysis for a single tile.
     // (i.e. the intervals on the x and y-axis that match the tile.
     private SingleTileAnalysis analyzeTile(Position pos) {
-        /*
-         * System.out.println("Board before analysis: "); debugBoard();
-         * System.out.println("Analysis for " + pos.x + " " + pos.y);
-         */
         int x = pos.x, y = pos.y;
         CandyColour cellColour = board[x][y].getCandy().getColour();
         int start_x = x - 1, end_x = x + 1, start_y = y - 1, end_y = y + 1;
@@ -290,7 +302,16 @@ public class GameState implements Cloneable, Serializable {
         if (!inBoard(new Position(x, y)))
             return;
         Cell current = board[x][y];
-
+        if (current.getCellType().equals(CellType.UNUSABLE)) return;
+        
+        touchNeighbours(x, y);
+        if (current.getCellType().equals(CellType.LIQUORICE)) {
+        	System.err.println("removed Liquorish");
+        	current.setCellType(CellType.EMPTY);
+        	// Should not remove any jelly layer if the cell type is liquorice.
+        	return;
+        }
+        current.removeJellyLayer();
         if (current.hasCandy() && current.getCandy().isDetonated())
             return;
         if (current.hasCandy() && current.getCandy().getCandyType().isSpecial()) {
@@ -306,6 +327,23 @@ public class GameState implements Cloneable, Serializable {
             current.removeCandy();
             wasSomethingPopped = true;
         }
+    }
+    
+    private void touch(int x, int y) {
+    	if (!inBoard(new Position(x, y))) return;
+    	Cell current = board[x][y];
+    	if (current.getCellType().equals(CellType.ICING)) {
+    		//  TODO: Score here is where an icing is removed.
+    		current.setCellType(CellType.EMPTY);
+    	}
+    }
+    
+    private void touchNeighbours(int x, int y) {
+    	if (!inBoard(new Position(x, y))) return;
+    	touch(x + 1, y);
+    	touch(x - 1, y);
+    	touch(x, y + 1);
+    	touch(x, y - 1);
     }
 
     // Check if any of the two positions is in the horizontal range.
@@ -331,8 +369,6 @@ public class GameState implements Cloneable, Serializable {
                 SingleTileAnalysis analysis = analyzeTile(new Position(x, y));
                 // In case there is a horizontal match.
                 if (analysis.getLengthX() > 2) {
-                    // System.out.println("Found a horizontal at (" + x + ", " +
-                    // y + ")");
                     boolean foundVertical = false;
                     // If it forms a bomb there is no need to place wrapped.
                     if (analysis.getLengthX() >= 5)
@@ -556,7 +592,7 @@ public class GameState implements Cloneable, Serializable {
                 if (board[i][j].getCellType().equals(CellType.EMPTY)) {
                     int y = j - 1;
                     // TODO: can be optimized.
-                    while (y >= 0 && board[i][y].getCellType().equals(CellType.EMPTY))
+                    while (y >= 0 && !board[i][y].canDropCandy())
                         y--;
                     // Replacement was found.
                     if (y >= 0) {
@@ -579,7 +615,7 @@ public class GameState implements Cloneable, Serializable {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 Cell cell = board[x][y];
-                if (cell.getCellType() == CellType.EMPTY) {
+                if (cell.isFillable()) {
                     cell.setCandy(candyGenerator.generateCandy(x));
                     debugCount++;
                 }
@@ -621,7 +657,7 @@ public class GameState implements Cloneable, Serializable {
         if (!isPositionValidAndMoveable(move.p1) || !isPositionValidAndMoveable(move.p2))
             return false;
         // Check move is for adjacent positions.
-        if (Math.abs(move.p1.x - move.p2.x) > 1 || Math.abs(move.p1.y - move.p2.y) > 1)
+        if (Math.abs(move.p1.x - move.p2.x) + Math.abs(move.p1.y - move.p2.y) != 1)
             return false;
         Cell cell1 = getCell(move.p1), cell2 = getCell(move.p2);
         if (cell1.getCandy().getCandyType().isSpecial() && cell2.getCandy().getCandyType().isSpecial())
@@ -699,8 +735,6 @@ public class GameState implements Cloneable, Serializable {
     private boolean hasStripped(Position pos) {
         return hasVerticallyStripped(pos) || hasHorizontallyStripped(pos);
     }
-
-
 
     public void makeMove(Move move) throws InvalidMoveException {
         if (!isMoveValid(move))

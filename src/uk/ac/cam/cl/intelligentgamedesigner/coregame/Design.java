@@ -20,7 +20,7 @@ public class Design implements Serializable {
     	boardLayout = new Cell[width][height];
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
-                boardLayout[x][y] = new Cell(CellType.EMPTY);
+                boardLayout[x][y] = new Cell(CellType.EMPTY, 2);
             }
         }
     	numberOfMovesAvailable = 10;

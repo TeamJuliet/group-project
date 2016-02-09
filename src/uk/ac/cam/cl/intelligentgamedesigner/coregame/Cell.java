@@ -6,7 +6,7 @@ public class Cell implements Cloneable, Serializable {
 
     public static final int maxJellyLevel = 5;
     private CellType        cellType;
-    private Candy           candy;
+    private Candy           candy = null;
     private int             jellyLevel    = 0;
 
     public Cell(CellType cellType) {
@@ -30,13 +30,19 @@ public class Cell implements Cloneable, Serializable {
         this.jellyLevel = jellyLevel;
     }
 
+    public Cell(Cell original) {
+        this.cellType = original.cellType;
+        this.candy = original.candy;
+        this.jellyLevel = original.jellyLevel;
+    }
+
     public void setJellyLevel(int jellyLevel) {
         this.jellyLevel = jellyLevel;
     }
 
     public void setCandy(Candy candy) {
         this.candy = candy;
-        if (candy != null)
+        if (cellType.equals(CellType.EMPTY))
             cellType = CellType.NORMAL;
     }
 
@@ -46,8 +52,8 @@ public class Cell implements Cloneable, Serializable {
     
     public boolean isFillable() {
     	return (this.cellType.equals(CellType.EMPTY))
-                || (this.cellType.equals(CellType.LIQUORICE)
-                || (this.cellType.equals(CellType.UNUSABLE)));
+                || (this.cellType.equals(CellType.LIQUORICE) && !this.hasCandy());
+                // || (this.cellType.equals(CellType.UNUSABLE)));
     }
 
     public boolean hasCandy() {
@@ -81,12 +87,21 @@ public class Cell implements Cloneable, Serializable {
     // added a setter for customisation purposes
     public void setCellType(CellType cellType) {
         this.cellType = cellType;
+        this.candy = null;
     }
 
     public int getJellyLevel() {
         return jellyLevel;
     }
-
+    
+    public void removeJellyLayer() {
+    	if (jellyLevel > 0) --jellyLevel;
+    }
+    
+    public boolean canDropCandy() {
+    	return hasCandy() && (!cellType.equals(CellType.LIQUORICE));
+    }
+    
     @Override
     public boolean equals(Object toCompare) {
         Cell cellToCompare = (Cell) toCompare;

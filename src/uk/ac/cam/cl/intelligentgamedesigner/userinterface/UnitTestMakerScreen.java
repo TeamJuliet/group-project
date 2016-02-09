@@ -33,6 +33,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.TestCaseGame;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.TestLibrary;
 
@@ -96,14 +97,39 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 	}
 
 	public void reload(TestCaseGame test) {
-		test_name.setText(test.getFileName());
-		description.setText(test.getDescription());
-		board_before.setBoard(test.getBefore());
-		board_after.setBoard(test.getAfter());
-		board_above.setBoard(test.getLookahead());
-		board_before.setMove(test.getMove());
-		game_state_stuff.setValueAt(test.getScoreBefore(), 1, 1);
-		game_state_stuff.setValueAt(test.getScoreAfter(), 1, 2);
+		if(test != null){
+			test_name.setText(test.getFileName());
+			description.setText(test.getDescription());
+			board_before.setBoard(test.getBefore());
+			board_after.setBoard(test.getAfter());
+			board_above.setBoard(test.getLookahead());
+			board_before.setMove(test.getMove());
+			game_state_stuff.setValueAt(test.getScoreBefore(), 1, 1);
+			game_state_stuff.setValueAt(test.getScoreAfter(), 1, 2);
+			
+			width = board_before.width;
+			height = board_before.height;
+			above_screen = board_above.height;
+		} else {
+			width = 10;
+			height = 10;
+			above_screen = 5;
+			
+			test_name.setText("the name");
+			description.setText("this test determines...");
+			board_before.setBoard(DisplayBoard.blank_board(width, height));
+			board_after.setBoard(DisplayBoard.blank_board(width, height));
+			board_above.setBoard(DisplayBoard.blank_board(width, above_screen));
+			board_above.clearBoard();
+			board_before.setMove(new Move(new Position(0,0),new Position(0,0)));
+			game_state_stuff.setValueAt(100, 1, 1);
+			game_state_stuff.setValueAt(200, 1, 2);
+		}
+
+		dimensions_width.setValue(width);
+		dimensions_height.setValue(height);
+		dimensions_above.setValue(above_screen);
+		
 	}
 
 	@Override

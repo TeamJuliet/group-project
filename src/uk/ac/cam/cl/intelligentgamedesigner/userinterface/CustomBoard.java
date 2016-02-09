@@ -18,7 +18,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 
-public class CustomBoard extends GameBoard implements MouseListener{
+public class CustomBoard extends DisplayBoard implements MouseListener{
 	
 	protected Timer timer;
 	protected TimerTask task;
@@ -64,9 +64,6 @@ public class CustomBoard extends GameBoard implements MouseListener{
 				for(int y=0;y<height;y++){
 					board[x][y].setJellyLevel(0);
 					board[x][y] = new Cell(board[x][y].getCellType());
-					if(board[x][y].getCandy().getCandyType() == CandyType.INGREDIENT){
-						board[x][y] = new Cell(board[x][y].getCellType());
-					}
 				}
 			}
 			break;
@@ -140,7 +137,7 @@ public class CustomBoard extends GameBoard implements MouseListener{
 				//fill with a jelly (toggle level)
 				if(((LevelCreatorScreen)watch_creator).fillingJellies()){
 					//make the cell type normal
-					if(board[x][y].getCellType() != CellType.NORMAL){
+					if(board[x][y].getCellType() == CellType.UNUSABLE){
 						Cell temp = new Cell(CellType.NORMAL);
 						temp.setJellyLevel(board[x][y].getJellyLevel());
 						temp.setCandy(board[x][y].getCandy());
@@ -153,8 +150,10 @@ public class CustomBoard extends GameBoard implements MouseListener{
 				//fill with an ingredient (toggle on/off)
 				else {
 					if(board[x][y].getCandy() == null){
-						board[x][y] = new Cell(CellType.NORMAL);
-						board[x][y].setCandy(new Candy(null, CandyType.INGREDIENT));
+						if(board[x][y].getCellType() != CellType.LIQUORICE){
+							board[x][y] = new Cell(CellType.NORMAL);
+						}
+						board[x][y].changeCandyType(CandyType.INGREDIENT);
 					} else {
 						board[x][y] = new Cell(board[x][y].getCellType());
 					}

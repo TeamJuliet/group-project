@@ -6,5 +6,9 @@ public enum CellType {
     ICING,
     NORMAL,
     LIQUORICE,
-    DONT_CARE
+    DONT_CARE;
+    
+    public boolean needsCandy() {
+    	return this.equals(NORMAL);
+    }
 }

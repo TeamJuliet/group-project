@@ -63,6 +63,8 @@ public class CellChooser {
 				e.printStackTrace();
 			}
 			System.out.println("The move has ended");
+			
+			System.out.println(movesRecord.getText());
 			reset();
 		}
 	}

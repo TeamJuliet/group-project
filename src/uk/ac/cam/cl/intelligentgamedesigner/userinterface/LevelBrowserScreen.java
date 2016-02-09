@@ -19,7 +19,7 @@ public class LevelBrowserScreen extends DisplayScreen implements ListSelectionLi
 	
 	private JScrollPane level_list;
 	private JList<String> level_names;
-	private GameBoard board_display;
+	private DisplayBoard board_display;
 	private Design board_design;
 	private JButton back_button;
 	private JButton edit_button;
@@ -52,7 +52,7 @@ public class LevelBrowserScreen extends DisplayScreen implements ListSelectionLi
 			board_design = new Design();
 		}
 
-		board_display = new GameBoard(board_design);
+		board_display = new DisplayBoard(board_design);
 		back_button = new JButton("Back");
 		edit_button = new JButton("View Level Options");
 		delete_button = new JButton("Delete Selected Level");
@@ -136,9 +136,9 @@ public class LevelBrowserScreen extends DisplayScreen implements ListSelectionLi
 			selected_index = selected.getSelectedIndex();
 			selected_name = (String)selected.getSelectedValue();
 			board_design = InterfaceManager.level_manager.getLevel(selected_index+1);
-			board_display.setBoard(board_design.getBoard());
-			board_display.clearBoard();
-			board_display.repaint();
+			//board_display.setBoard(board_design.getBoard());
+			//board_display.clearBoard();
+			//board_display.repaint();
 			System.out.println("new board?");
 		}
 	}

@@ -47,11 +47,17 @@ public class IterationTester {
 		System.out.println();
 		b.printBoard();
 	}
-	
+
 	public static void main(String[] args) {
-		Specification s = new Specification(0.5, GameMode.JELLY);
+
+		// NOTE:
+		// Exceptions will be thrown when this is run, because we currently don't filter out boards with no available moves
+		// Also, game state doesn't re-shuffle the candies whenever no moves remain yet
+		//
+		// If you want this to run without exceptions, just return 0.5 in getDifficultyFitness() in LevelDesignerManager
+		Specification s = new Specification(0.5, GameMode.HIGHSCORE);
 		LevelDesignerManager m = new LevelDesignerManager(s);
 		m.run();
-		m.levelDesigner.printBestIndividual();
+		m.levelDesigner.printIndividuals();
 	}
 }

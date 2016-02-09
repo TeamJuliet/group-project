@@ -22,16 +22,7 @@ public class UnitTestBoard extends CustomBoard {
 	private Position move_from;
 	private Position move_to;
 	private boolean just_clicked;//so doesn't trigger twice, for click, and down
-	
-	@Override
-	protected Cell defaultCell(){
-		if(type == 2){
-			return new Cell(CellType.NORMAL,new Candy(CandyColour.RED, CandyType.NORMAL));
-		} else {
-			return super.defaultCell();
-		}
-	}
-	
+		
 	public UnitTestBoard(int width, int height, int type) {
 		super(width, height);
 		this.type = type;
@@ -41,7 +32,11 @@ public class UnitTestBoard extends CustomBoard {
 		move_to = new Position(0,0);
 		
 		if(type==2){
-			clearBoard();
+			for(int x=0;x<width;x++){
+				for(int y=0;y<height;y++){
+					board[x][y] = new Cell(CellType.NORMAL,new Candy(CandyColour.RED,CandyType.NORMAL));				
+				}
+			}
 		}
 	}
 	
@@ -75,11 +70,6 @@ public class UnitTestBoard extends CustomBoard {
 										board[x][y].getCandy().getColour() != 
 										((UnitTestMakerScreen)watch_creator).getReplacerCandy().getColour()){
 									board[x][y].setCandy(((UnitTestMakerScreen)watch_creator).getReplacerCandy());
-									//remove the double click issue
-									if(!just_clicked){
-										just_clicked = true;
-										System.out.println("just clicked");
-									}
 								}
 							}
 						}
@@ -89,7 +79,14 @@ public class UnitTestBoard extends CustomBoard {
 						if(board[x][y].getCandy() == null || 
 								board[x][y].getCandy().getColour() != 
 								((UnitTestMakerScreen)watch_creator).getReplacerCandy().getColour()){
+							CellType background = CellType.NORMAL;//to keep the correct background type
+							if(board[x][y].getCellType() == CellType.LIQUORICE)background = CellType.LIQUORICE;
 							board[x][y].setCandy(((UnitTestMakerScreen)watch_creator).getReplacerCandy());
+							board[x][y].setCellType(background);
+							//remove the double click issue
+							if(!just_clicked){
+								just_clicked = true;
+							}
 						}
 					} else if(((UnitTestMakerScreen)watch_creator).placingMove()) {
 						move_to = new Position(x*tile_size,y*tile_size);
@@ -157,7 +154,7 @@ public class UnitTestBoard extends CustomBoard {
 				//fill with a jelly (toggle level)
 				if(((UnitTestMakerScreen)watch_creator).fillingJellies()){
 					//change cell type to one allowed
-					if(board[x][y].getCellType() != CellType.NORMAL && board[x][y].getCellType() != CellType.EMPTY){
+					if(board[x][y].getCellType() == CellType.UNUSABLE){
 						board[x][y].setCellType(CellType.EMPTY);
 					}
 					int jelly_level = board[x][y].getJellyLevel()+1;
@@ -173,13 +170,21 @@ public class UnitTestBoard extends CustomBoard {
 						if(n == CandyType.INGREDIENT.ordinal())n=0;
 						upgrade = CandyType.values()[n];
 						if(board[x][y].getCandy().getColour() == replacement.getColour()){
+							CellType background = CellType.NORMAL;//to keep the correct background type
+							if(board[x][y].getCellType() == CellType.LIQUORICE)background = CellType.LIQUORICE;
 							board[x][y].setCandy(new Candy(replacement.getColour(), upgrade));
+							board[x][y].setCellType(background);
 						}
 					}
 					else {
 						//fill with an ingredient (toggle on/off)
 						if(board[x][y].getCandy() == null || 
 								board[x][y].getCandy().getCandyType() != CandyType.INGREDIENT){
+							if (board[x][y].getCellType() != CellType.NORMAL && 
+									board[x][y].getCellType() != CellType.EMPTY && 
+									board[x][y].getCellType() != CellType.LIQUORICE){
+								board[x][y].setCellType(CellType.EMPTY);
+							}
 							board[x][y].changeCandyType(CandyType.INGREDIENT);
 						} else {
 							board[x][y] = new Cell(board[x][y].getCellType());
@@ -191,7 +196,16 @@ public class UnitTestBoard extends CustomBoard {
 		}
 		//remove double click issue
 		just_clicked = false;
-		System.out.println("ready to click");
+	}
+	
+	@Override
+	public void clearBoard(){
+		if(type!=2)super.clearBoard();
+		else {
+			for(int x=0;x<width;x++)
+				for(int y=0;y<height;y++)
+					board[x][y] = new Cell(CellType.NORMAL, new Candy(CandyColour.RED,CandyType.NORMAL));
+		}
 	}
 	
 	@Override
