@@ -26,7 +26,7 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 	private SimulatedPlayerBase player;
 	
 	Timer timer;
-	private static int waitspeed = 500;
+	private static final int waitspeed = 500;
 	
 	public ComputerGameDisplayScreen(){
 		super();
@@ -35,6 +35,8 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 		
 		timer = new Timer(waitspeed,this);
 		timer.setInitialDelay(waitspeed);
+		timer.addActionListener(this);
+		timer.setActionCommand("trigger");
 	}
 	
 	public void givePlayer(SimulatedPlayerBase player){
@@ -48,7 +50,7 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 
 	@Override
 	protected GameBoard specificGameBoard() {
-		return new GameBoard(new Design());
+		return new ComputerGameBoard(new Design());
 	}
 
 	@Override
@@ -106,15 +108,13 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 		case "next":
 			nextMove();
 			break;
-			
-		}
-	}
-	
-	@Override
-	public void playMove(Move move){
-		super.playMove(move);
-		if(auto_playing){
-			nextMove();
+		case "trigger":
+			if(auto_playing){
+				nextMove();
+			}
+			else System.out.println("Shouldn't be timing...");
+			timer.setDelay(waitspeed);
+			break;
 		}
 	}
 	
@@ -122,11 +122,17 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 		System.out.println("trying to find next move...");
 		try{
 			Move next = player.calculateBestMove(theGame);
-			if(next == null)System.out.println("null move...");
+
+			((ComputerGameBoard)board).showMove(next);
+			Thread.sleep(wait_time*2);
+			((ComputerGameBoard)board).hideMove();
+			
 			playMove(next);
 			System.out.println("move found!");
 		} catch(NoMovesFoundException e) {
 			System.out.println("move not found...");
+			e.printStackTrace();
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		
