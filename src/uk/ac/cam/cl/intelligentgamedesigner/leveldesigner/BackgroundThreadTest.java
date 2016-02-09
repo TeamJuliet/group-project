@@ -12,8 +12,9 @@ import java.util.List;
 
 public class BackgroundThreadTest extends JPanel implements ActionListener, PropertyChangeListener {
 
-    private JProgressBar progressBar;
     private JButton startButton;
+    private JLabel iterationLabel;
+    private JTextArea taskOutput;
     private LevelDesignerManager levelDesignerManager;
 
     public BackgroundThreadTest () {
@@ -23,15 +24,18 @@ public class BackgroundThreadTest extends JPanel implements ActionListener, Prop
         startButton.setActionCommand("start");
         startButton.addActionListener(this);
 
-        progressBar = new JProgressBar(0, 100);
-        progressBar.setValue(0);
-        progressBar.setStringPainted(true);
+        iterationLabel = new JLabel("Iteration: ");
+
+        taskOutput = new JTextArea(5, 20);
+        taskOutput.setMargin(new Insets(5,5,5,5));
+        taskOutput.setEditable(false);
 
         JPanel panel = new JPanel();
         panel.add(startButton);
-        panel.add(progressBar);
+        panel.add(iterationLabel);
 
         add(panel, BorderLayout.PAGE_START);
+        add(new JScrollPane(taskOutput), BorderLayout.CENTER);
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
     }
 
@@ -56,14 +60,12 @@ public class BackgroundThreadTest extends JPanel implements ActionListener, Prop
             List<LevelRepresentation> topDesigns = (List<LevelRepresentation>) evt.getNewValue();
 
             for (LevelRepresentation r : topDesigns) {
-                System.out.println("***************************************************");
-                System.out.println("***************************************************");
-                System.out.println("***************************************************");
-                r.printRepresentation();
-                System.out.println("***************************************************");
-                System.out.println("***************************************************");
-                System.out.println("***************************************************");
+                taskOutput.append(r.representationToString() + "\n**************\n");
             }
+        } else if (evt.getPropertyName().equals(PropertyChanges.PROPERTY_CHANGE_PROGRESS)) {
+            int iterationNumber = (int) evt.getNewValue();
+
+            iterationLabel.setText("Iteration: " + iterationNumber);
         }
     }
 

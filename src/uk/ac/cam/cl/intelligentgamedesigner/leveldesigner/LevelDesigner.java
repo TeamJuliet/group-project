@@ -72,6 +72,8 @@ public class LevelDesigner {
 				}
 				manager.notifyInterface(l);
 			}
+
+			manager.notifyInterface(i);
 		}
     	
     	System.out.println();

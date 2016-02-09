@@ -35,6 +35,10 @@ public class LevelDesignerManager extends SwingWorker {
     	firePropertyChange(PropertyChanges.PROPERTY_CHANGE_DESIGNS, null, top);
     }
 
+    public void notifyInterface(int iterationNumber) {
+        firePropertyChange(PropertyChanges.PROPERTY_CHANGE_PROGRESS, null, iterationNumber);
+    }
+
     public List<LevelRepresentation> getPopulation(int size) {
         List<LevelRepresentation> population = new ArrayList<>();
 
