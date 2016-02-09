@@ -39,12 +39,13 @@ public class LevelBrowserScreen extends DisplayScreen implements ListSelectionLi
 		board_design = InterfaceManager.level_manager.getLevel(1);
 		refreshBoard();
 		board_display.setBoard(board_design.getBoard());
+		
+		selected_name = null;
 	}
 	private void refreshBoard(){
 		try{
 			board_display.setBoard(board_design.getBoard());
 		} catch(NullPointerException e){
-			System.err.println("Error in displaying the design");
 			board_design = new Design();
 			board_display.setBoard(board_design.getBoard());
 		}
@@ -125,7 +126,7 @@ public class LevelBrowserScreen extends DisplayScreen implements ListSelectionLi
 			InterfaceManager.switchScreen(Windows.MAIN);
 			break;
 		case "view":
-			if(level_names!=null){
+			if(level_names!=null && selected_name != null){
 				System.out.println(selected_name);
 				InterfaceManager.setSelectedDDesign(board_design,selected_name);
 				InterfaceManager.setPreviousScreen(Windows.LOAD);
@@ -133,7 +134,7 @@ public class LevelBrowserScreen extends DisplayScreen implements ListSelectionLi
 			}
 			break;
 		case "delete":
-			if(level_names!=null){
+			if(level_names!=null && selected_name != null){
 				System.out.println("Deleting level" + (selected_index + 1));
 				InterfaceManager.level_manager.deleteLevel(selected_index+1);
 			}

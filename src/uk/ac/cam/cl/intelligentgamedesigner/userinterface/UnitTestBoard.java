@@ -98,7 +98,10 @@ public class UnitTestBoard extends CustomBoard {
 							}							
 						}
 					}
-					if(watch_board != null)watch_board[x][y] = board[x][y];
+					if(watch_board != null){
+						watch_board[x][y] = board[x][y];
+						System.out.println("Doing both");
+					}
 				}
 				
 			}

@@ -78,7 +78,6 @@ public class LevelManager {
 		try{
 			return levels.get(level_number-1);
 		} catch(IndexOutOfBoundsException e) {
-			System.out.println("Invalid level");
 			return null;
 		}
 	}
