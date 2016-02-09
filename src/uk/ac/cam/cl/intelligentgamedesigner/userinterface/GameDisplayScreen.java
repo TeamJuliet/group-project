@@ -27,7 +27,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.experimental.GameDisplay;
 //Displays the game, score and how to handle animations etc.
 public abstract class GameDisplayScreen extends DisplayScreen{
 	protected JButton quit_button;
-	protected DisplayBoard board;
+	protected GameBoard board;
 	protected JLabel objective_text;
 	protected JLabel moves_left_text;
 	protected JLabel game_mode_text;
@@ -102,7 +102,7 @@ public abstract class GameDisplayScreen extends DisplayScreen{
 		}
 	}
 	
-	protected abstract DisplayBoard specificGameBoard();
+	protected abstract GameBoard specificGameBoard();
 
 	@Override
 	protected void makeItems() {

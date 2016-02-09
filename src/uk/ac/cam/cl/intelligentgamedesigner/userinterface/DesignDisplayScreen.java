@@ -17,6 +17,9 @@ import javax.swing.JSlider;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
+import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.ScorePlayerAlpha;
+import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerBase;
 
 public class DesignDisplayScreen extends DisplayScreen{
 	private JLabel title;
@@ -171,17 +174,22 @@ public class DesignDisplayScreen extends DisplayScreen{
 			InterfaceManager.switchScreen(Windows.MAIN);
 			break;
 		case "play":
-			InterfaceManager.setSelectedGame(level);
+			InterfaceManager.setSelectedHumanGame(level);
 			InterfaceManager.switchScreen(Windows.HUMAN);
 			break;
 		case "watch":
-			InterfaceManager.setSelectedGame(level);
+			InterfaceManager.setSelectedComputerGame(level,generatePlayer());
 			InterfaceManager.switchScreen(Windows.SIMULATED);
 			break;
 		case "save":
 			makeAndSave();
 			break;
 		}
+	}
+	
+	private SimulatedPlayerBase generatePlayer(){
+		//TODO
+		return new ScorePlayerAlpha(new GameState(level));
 	}
 	
 	private void makeAndSave(){

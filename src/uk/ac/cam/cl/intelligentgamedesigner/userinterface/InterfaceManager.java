@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
+import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerBase;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.TestCaseGame;
 
 //This will be used to navigate between the menu screens
@@ -81,10 +82,13 @@ public class InterfaceManager extends JFrame {
 	public static void setSelectedTest(TestCaseGame test){
 		((UnitTestMakerScreen)unit_test_screen).reload(test);
 	}
-	public static void setSelectedGame(Design design){
+	public static void setSelectedHumanGame(Design design){
 		((HumanGameDisplayScreen)human_game_display_screen).giveInfo(design);
 		((HumanGameDisplayScreen)human_game_display_screen).setInfo();
+	}
+	public static void setSelectedComputerGame(Design design,SimulatedPlayerBase player){
 		((ComputerGameDisplayScreen)computer_game_display_screen).giveInfo(design);
+		((ComputerGameDisplayScreen)computer_game_display_screen).givePlayer(player);
 		((ComputerGameDisplayScreen)computer_game_display_screen).setInfo();
 	}
 	
