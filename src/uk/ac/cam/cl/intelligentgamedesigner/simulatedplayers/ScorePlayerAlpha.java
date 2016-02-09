@@ -30,13 +30,11 @@ public class ScorePlayerAlpha implements SimulatedPlayerBase {
         }
     }
 
-    @Override
-    public void printInvalidMoveError(Move move) {
+    private void printInvalidMoveError(Move move) {
         System.err.println("WARNING! ScorePlayerAlpha has suggested an invalidMove " + move + ".");
     }
 
-    @Override
-    public Move calculateBestMove(GameState currentState) throws NoMovesFoundException {
+    public static Move calculateBestMove(GameState currentState) throws NoMovesFoundException {
         GameState original = currentState;
         for (int x = 0; x < original.width; x++) {
             for (int y = 0; y < original.height; y++) {

@@ -5,10 +5,19 @@ package uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers;
 // Note: the metric should be comparable, since these objects will be inside
 //       a priority queue.
 public class GameStatePotential implements Comparable<GameStatePotential>{
-
+    public final int potential;
+    
+    public GameStatePotential(int p){
+        potential = p;
+    }
+    
+    public GameStatePotential() {
+        this(0);
+    }
 	@Override
 	public int compareTo(GameStatePotential o) {
-		
+		if(potential > o.potential) return 1;
+		if(potential < o.potential) return -1;
 		return 0;
 	}
 

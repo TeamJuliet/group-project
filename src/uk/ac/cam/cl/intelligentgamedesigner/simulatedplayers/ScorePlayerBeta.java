@@ -32,13 +32,11 @@ public class ScorePlayerBeta implements SimulatedPlayerBase {
         }
     }
 
-    @Override
-    public void printInvalidMoveError(Move move) {
+    private void printInvalidMoveError(Move move) {
         System.err.println("WARNING! ScorePlayerBeta has suggested an invalidMove " + move + ".");
     }
 
-    @Override
-    public Move calculateBestMove(GameState currentState) {
+    public static Move calculateBestMove(GameState currentState) {
         GameState original = new GameState(currentState, new UnmoveableCandyGenerator());
         List<Move> validMoves = original.getValidMoves();
         int largestMatch = 0;
