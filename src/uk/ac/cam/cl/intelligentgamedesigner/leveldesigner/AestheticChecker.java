@@ -2,6 +2,9 @@ package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
 public class AestheticChecker {
 	
+	// Currently the methods in this class were created for some quick testing,
+	// and so are pretty rubbish.
+	
 	public static double calculateFitness(RandomBoard<DesignCellType> board) {
 		double fitness = calculateSymmetryScore(board);
 		
@@ -32,13 +35,13 @@ public class AestheticChecker {
 		// Check icing distribution.
 		double icingPercentage = distributions[DesignCellType.ICING.ordinal()];
 		if (icingPercentage > 0.2) {
-			score -= 0.1;
+			score -= 0.3 * icingPercentage;
 		}
 		
 		// Check icing distribution.
 		double liquoricePercentage = distributions[DesignCellType.LIQUORICE.ordinal()];
 		if (liquoricePercentage > 0.2) {
-			score -= 0.1;
+			score -= 0.3 * liquoricePercentage;
 		}
 		
 		return score;

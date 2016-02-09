@@ -7,7 +7,7 @@ import java.util.Random;
 
 public class LevelDesigner {
 	private static final int populationSize = 100;
-	private static final int iterations = 1000;
+	private static final int iterations = 2000;
 	private static final double elitePercentage = 0.05;
 	private static final double feasibleThreshold = 0.5;
 	private static final double crossoverProbability = 0.8;
@@ -36,7 +36,7 @@ public class LevelDesigner {
     public void run() {
     	long startTime = System.currentTimeMillis();
     	
-    	for (int i = 0; i < iterations; i++) {
+    	for (int i = 1; i < iterations + 1; i++) {
 			List<LevelDesignIndividual> newFeasible = new ArrayList<>();
 			List<LevelDesignIndividual> newInfeasible = new ArrayList<>();
 			
