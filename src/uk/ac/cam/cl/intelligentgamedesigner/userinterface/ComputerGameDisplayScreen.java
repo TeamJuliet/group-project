@@ -88,11 +88,20 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 		case "mode":
 			auto_playing = auto_play.isSelected();
 			next_move.setEnabled(!auto_playing);
+			nextMove();
 			break;
 		case "next":
 			nextMove();
 			break;
 			
+		}
+	}
+	
+	@Override
+	public void playMove(Move move){
+		super.playMove(move);
+		if(auto_playing){
+			nextMove();
 		}
 	}
 	
