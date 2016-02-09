@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class Cell implements Cloneable, Serializable {
 
     public static final int maxJellyLevel = 5;
+    public final boolean isIngredientSink;
     private CellType        cellType;
     private Candy           candy = null;
     private int             jellyLevel    = 0;
@@ -12,28 +13,40 @@ public class Cell implements Cloneable, Serializable {
     public Cell(CellType cellType) {
         this.cellType = cellType;
         this.candy = null;
+        this.isIngredientSink = false;
     }
 
     public Cell(CellType cellType, Candy candy) {
         this.cellType = cellType;
         this.candy = candy;
+        this.isIngredientSink = false;
     }
 
     public Cell(CellType cellType, int jellyLevel) {
         this.cellType = cellType;
         this.jellyLevel = jellyLevel;
+        this.isIngredientSink = false;
     }
 
     public Cell(CellType cellType, Candy candy, int jellyLevel) {
         this.cellType = cellType;
         this.candy = candy;
         this.jellyLevel = jellyLevel;
+        this.isIngredientSink = false;
     }
 
+    public Cell(CellType cellType, Candy candy, int jellyLevel, boolean isIngredientSink) {
+    	this.cellType = cellType;
+        this.candy = candy;
+        this.jellyLevel = jellyLevel;
+        this.isIngredientSink = isIngredientSink;
+    }
+    
     public Cell(Cell original) {
         this.cellType = original.cellType;
         this.candy = original.candy;
         this.jellyLevel = original.jellyLevel;
+        this.isIngredientSink = original.isIngredientSink;
     }
 
     public void setJellyLevel(int jellyLevel) {
@@ -87,15 +100,20 @@ public class Cell implements Cloneable, Serializable {
     // added a setter for customisation purposes
     public void setCellType(CellType cellType) {
         this.cellType = cellType;
-        this.candy = null;
+        if (!cellType.equals(CellType.NORMAL)) this.candy = null;
     }
 
     public int getJellyLevel() {
         return jellyLevel;
     }
     
-    public void removeJellyLayer() {
-    	if (jellyLevel > 0) --jellyLevel;
+    public boolean removeJellyLayer() {
+    	boolean removedJelly = false;
+    	if (jellyLevel > 0) {
+    		--jellyLevel;
+    		removedJelly = true;
+    	}
+    	return removedJelly;
     }
     
     public boolean canDropCandy() {

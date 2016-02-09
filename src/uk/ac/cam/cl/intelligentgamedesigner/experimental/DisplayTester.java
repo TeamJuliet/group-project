@@ -10,6 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.Candy;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
@@ -22,7 +23,10 @@ public class DisplayTester {
 		Cell[][] boardLayout = new Cell[10][10];
 		for (int i = 0; i < 10; ++i) {
 			for (int j = 0; j < 10; ++j) {
-				boardLayout[i][j] = new Cell(CellType.EMPTY);
+				if (j == 9) 
+					boardLayout[i][j] = new Cell(CellType.EMPTY, null, 0, true);
+				else boardLayout[i][j] = new Cell(CellType.EMPTY);
+				
 			}
 		}
 		// Add level two jelly to top right box.

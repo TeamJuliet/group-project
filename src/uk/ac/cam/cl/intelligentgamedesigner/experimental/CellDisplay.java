@@ -28,8 +28,11 @@ public class CellDisplay extends JPanel  {
 	
 	// Get the java colour that corresponds to the candy colour.
 	// or WHITE is the cell is empty
-	public static Color getCellColor(CandyColour type) {
-		if (type == null) return emptyColor;
+	public static Color getCellColor(CandyColour type, CellType cellType) {
+		if (type == null) {
+			if (cellType != null && cellType.equals(CellType.UNUSABLE)) return Color.BLACK;
+			return emptyColor;
+		}
 		switch (type) {
 		case GREEN : return Color.GREEN;
 		case RED : return Color.RED;
@@ -70,8 +73,8 @@ public class CellDisplay extends JPanel  {
 			this.jellyLevel = cell.getJellyLevel();
 		}
 		// this.cellColour = candy != null ? candy.getColour() : null;
-		this.clr = getCellColor(this.cellColour);
 		this.cellType = cell.getCellType();
+		this.clr = getCellColor(this.cellColour, this.cellType);
 	}
 	
 	public Color getColor() { return clr; }
@@ -150,11 +153,11 @@ public class CellDisplay extends JPanel  {
 		g.fillRect(width - borderSize, 0, borderSize, height);
 	}
 	
-	private void drawCross(Graphics g) {
+	private void drawCross(Graphics g, Color clr) {
 		Dimension dim = getSize();
 		int width = dim.width;
 		int pad = width / 8;
-		g.setColor(Color.BLACK);
+		g.setColor(clr);
 		g.fillRect(pad, 3 * pad, 6 * pad, 2 * pad);
 		g.fillRect(3 * pad, pad, 2 * pad, 6 * pad);
 	}
@@ -165,6 +168,9 @@ public class CellDisplay extends JPanel  {
 		int width = dim.width, height = dim.height;
 		g.setColor(clr);
 		g.fillRect(0,0, width, height);
+		if (candyType != null && candyType.equals(CandyType.INGREDIENT)) {
+			drawCross(g, Color.RED);
+		}
 		if (cellType.equals(CellType.ICING)) {
 			g.setColor(Color.BLACK);
 			drawHorizontalStripes(g);
@@ -182,7 +188,7 @@ public class CellDisplay extends JPanel  {
 			drawBorder(g, borderSize, Color.BLACK);
 		} 
 		if (cellType.equals(CellType.LIQUORICE)) {
-			drawCross(g);
+			drawCross(g, Color.BLACK);
 		}
 	}
 	
