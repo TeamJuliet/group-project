@@ -30,6 +30,17 @@ public class Design implements Serializable {
     }
 
     public void setSize(int width, int height) {
+    	Cell[][] newBoard = new Cell[width][height];
+    	//crop/enlarge to the correct size
+    	for(int x=0;x<width;x++){
+    		for(int y=0;y<height;y++){
+    			if(x<this.width && y<this.height){
+    				newBoard[x][y] = boardLayout[x][y];
+    			}else{
+    				newBoard[x][y] = new Cell(CellType.EMPTY, 0);
+    			}
+    		}
+    	}
     	this.width = width;
     	this.height = height;
     }

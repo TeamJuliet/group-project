@@ -40,7 +40,7 @@ public abstract class GameDisplayScreen extends DisplayScreen{
 	protected GameMode game_mode;
 	protected int score;
 	protected Design level;
-	private final int wait_time = 400;
+	protected static final int wait_time = 400;
 	
 	//game stuff
 	GameState theGame;
@@ -97,6 +97,7 @@ public abstract class GameDisplayScreen extends DisplayScreen{
 				Thread.sleep(wait_time);
 			}
 		} catch (InvalidMoveException ex) {
+			System.err.println("Invalid move");
 		}catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -145,7 +146,7 @@ public abstract class GameDisplayScreen extends DisplayScreen{
 		add(quit_button);
 
 		//set the locations
-		position(stats,0.85,0.5,300,600);
+		position(stats,0.85,0.7,300,300);
 		position(board,0.4,0.3,800,800);
 		position(quit_button,0.1,0.9,150,40);
 	}

@@ -27,8 +27,7 @@ public class ScorePlayerDelta implements SimulatedPlayerBase {
         }
     }
 
-    @Override
-    public Move calculateBestMove(GameState currentState) throws NoMovesFoundException {
+    public static Move calculateBestMove(GameState currentState) throws NoMovesFoundException {
         // Look through all possible moves and try to make special candies if
         // possible
         // Try to bring special candies together and combine them
@@ -36,8 +35,7 @@ public class ScorePlayerDelta implements SimulatedPlayerBase {
         return null;
     }
 
-    @Override
-    public void printInvalidMoveError(Move move) {
+    private void printInvalidMoveError(Move move) {
         System.err.println("WARNING! ScorePlayerDelta has suggested an invalidMove " + move + ".");
     }
 

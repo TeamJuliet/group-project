@@ -10,14 +10,17 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 abstract class DepthPotentialPlayer implements SimulatedPlayerBase {
 	// The number of states that the Player should look ahead at each move.
 	// Note: when this is -1, it generates all possible moves.
-	private final int numOfStatesAhead;
+	protected final int numOfStatesAhead;
 	
 	// The number of states in the pool that will be chosen to be explored next.
 	// Note: again, when this is -1, it discovers all possible moves.
-	private final int numOfStatesInPool;
+	protected final int numOfStatesInPool;
 	
 	private PriorityQueue<GameStateWithCombinedMetric> pool;  
 	private PriorityQueue<GameStateWithCombinedMetric> results;
+	
+	//hold the current state of the level
+	protected GameState level;
 	
 	// Function that evaluates the current game state based on the knowledge
 	// at that particular state.
@@ -62,7 +65,6 @@ abstract class DepthPotentialPlayer implements SimulatedPlayerBase {
 		}
 	}
 	
-	@Override
 	public Move calculateBestMove(GameState currentState) throws NoMovesFoundException {
 		List<Move> moves = currentState.getValidMoves();
 		if (moves.size() == 0) throw new NoMovesFoundException(currentState);

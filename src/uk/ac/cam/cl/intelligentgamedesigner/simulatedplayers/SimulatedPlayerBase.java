@@ -6,7 +6,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 public interface SimulatedPlayerBase {
     public abstract void solve() throws NoMovesFoundException;
 
-    public abstract Move calculateBestMove(GameState currentState) throws NoMovesFoundException;
-
-    abstract void printInvalidMoveError(Move move);
+    public static Move calculateBestMove(GameState currentState) throws NoMovesFoundException{
+        return currentState.getValidMoves().get(0);
+    }
 }

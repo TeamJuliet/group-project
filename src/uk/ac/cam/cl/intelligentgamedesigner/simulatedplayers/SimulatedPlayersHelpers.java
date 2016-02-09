@@ -7,7 +7,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.UnmoveableCandyGenerator;
 
 public class SimulatedPlayersHelpers {
 	public static GameState simulateNextMove(GameState gameState, Move move) throws InvalidMoveException {
-		GameState nextState = new GameState(gameState, new UnmoveableCandyGenerator(null));
+		GameState nextState = new GameState(gameState, new UnmoveableCandyGenerator());
 		nextState.makeMove(move);
 		return nextState;
 	}
