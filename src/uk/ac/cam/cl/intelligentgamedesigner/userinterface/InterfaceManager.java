@@ -7,6 +7,8 @@ import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
@@ -44,6 +46,18 @@ public class InterfaceManager extends JFrame {
 	}
 	
 	static void initialise(){
+		try {
+		    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+		        if ("Nimbus".equals(info.getName())) {
+		            UIManager.setLookAndFeel(info.getClassName());
+		            break;
+		        }
+		    }
+		} catch (Exception e) {
+		    // If Nimbus is not available, you can set the GUI to another look and feel.
+		}
+		
+		
 		//setting the screen properties
 		screen.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		screen.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -86,9 +100,9 @@ public class InterfaceManager extends JFrame {
 		((HumanGameDisplayScreen)human_game_display_screen).giveInfo(design);
 		((HumanGameDisplayScreen)human_game_display_screen).setInfo();
 	}
-	public static void setSelectedComputerGame(Design design,SimulatedPlayerBase player){
+	public static void setSelectedComputerGame(Design design,Class<? extends SimulatedPlayerBase> player_class){
 		((ComputerGameDisplayScreen)computer_game_display_screen).giveInfo(design);
-		((ComputerGameDisplayScreen)computer_game_display_screen).givePlayer(player);
+		((ComputerGameDisplayScreen)computer_game_display_screen).getMethodFromClass(player_class);
 		((ComputerGameDisplayScreen)computer_game_display_screen).setInfo();
 	}
 	

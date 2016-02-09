@@ -178,7 +178,7 @@ public class DesignDisplayScreen extends DisplayScreen{
 			InterfaceManager.switchScreen(Windows.HUMAN);
 			break;
 		case "watch":
-			InterfaceManager.setSelectedComputerGame(level,generatePlayer());
+			InterfaceManager.setSelectedComputerGame(level,getPlayerClass());
 			InterfaceManager.switchScreen(Windows.SIMULATED);
 			break;
 		case "save":
@@ -187,9 +187,9 @@ public class DesignDisplayScreen extends DisplayScreen{
 		}
 	}
 	
-	private SimulatedPlayerBase generatePlayer(){
+	private Class<? extends SimulatedPlayerBase> getPlayerClass(){
 		//TODO
-		return new ScorePlayerAlpha(new GameState(level));
+		return ScorePlayerAlpha.class;
 	}
 	
 	private void makeAndSave(){
