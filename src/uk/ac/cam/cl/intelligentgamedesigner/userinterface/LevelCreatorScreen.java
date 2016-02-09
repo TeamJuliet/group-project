@@ -62,6 +62,8 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 	private ComboBoxModel<String> jelly_model;
 	private ComboBoxModel<String> ingredients_model;
 	private JComboBox<String> fill_type;
+	
+	private JLabel level_on_label;
 
 	private String[] objectives;
 	private JFormattedTextField moves;
@@ -89,10 +91,10 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		identifier = "Level Creator";
 	}
 	
-	public void reload(Design design, String name){
+	public void reload(Design design, String name, int level_on){
 		if(design == null){
 			board.setBoard(DisplayBoard.blank_board());
-			level_name.setValue("thename");
+			level_name.setValue("the name");
 			number_of_candies.setValue(6);
 			moves.setValue(10);
 			mode_objective.setValue(100);
@@ -117,6 +119,8 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 				break;
 			}
 		}
+		this.level_on = level_on;
+		level_on_label.setText(level_on+". ");
 		width = board.width;
 		height = board.height;
 		dimensions_width.setValue(width);
@@ -166,6 +170,8 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		mode_objective = new JFormattedTextField(nf);
 		objectives = new String[]{"High Score Target","No additional objective","Ingredients Target"};
 		what_objective = new JLabel(objectives[0]);
+		
+		level_on_label = new JLabel(level_on+". ");
 
 		//The Game Board
 		width = 10;
@@ -180,7 +186,7 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		
 		level_on = InterfaceManager.level_manager.get_next_num();
 		level_name = new JFormattedTextField();
-		level_name.setValue("thename");
+		level_name.setValue("the name");
 	}
 
 	@Override
@@ -303,7 +309,7 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		JPanel title = new JPanel();
 		title.setBorder(BorderFactory.createLineBorder(Color.black));
 		title.setLayout(new BoxLayout(title,BoxLayout.X_AXIS));
-		title.add(new JLabel(level_on+". "));
+		title.add(level_on_label);
 		title.add(level_name);
 		add(title);
 		
