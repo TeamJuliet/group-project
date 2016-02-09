@@ -9,8 +9,8 @@ import java.util.Random;
 
 public abstract class ArrayLevelRepresentation extends LevelRepresentation {
     protected RandomBoard<DesignCellType> board;
-    protected static int maxWidth = 10;
-    protected static int maxHeight = 10;
+    protected static int maxWidth = 9;
+    protected static int maxHeight = 9;
     protected static int cellModulo = 4;
     protected ArrayList<Parameter> parameters;
 
