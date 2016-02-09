@@ -79,4 +79,31 @@ public class Design implements Serializable {
     public int getNumberOfCandyColours () {
         return numberOfCandyColours;
     }
+
+    @Override
+    public boolean equals (Object object) {
+        if (!(object instanceof Design)) return false;
+
+        Design toCompare = (Design) object;
+
+        boolean equals = true;
+
+        equals &= (this.height                  == toCompare.height
+                && this.width                   == toCompare.width
+                && this.numberOfMovesAvailable  == toCompare.numberOfMovesAvailable
+                && this.objectiveTarget         == toCompare.objectiveTarget
+                && this.numberOfCandyColours    == toCompare.numberOfCandyColours
+                && this.gameMode                == toCompare.gameMode);
+
+        // If parameters match, then check the board
+        if (equals) {
+            for (int x = 0; x < this.width; x++) {
+                for (int y = 0; y < this.height; y++) {
+                    equals &= boardLayout[x][y].equals(toCompare.boardLayout[x][y]);
+                }
+            }
+        }
+
+        return equals;
+    }
 }

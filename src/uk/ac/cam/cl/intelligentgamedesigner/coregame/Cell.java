@@ -97,6 +97,12 @@ public class Cell implements Cloneable, Serializable {
     public boolean equals(Object toCompare) {
         Cell cellToCompare = (Cell) toCompare;
 
+        if (this.candy == null) {
+            return (cellToCompare.candy == null
+                    && this.cellType == cellToCompare.cellType
+                    && this.jellyLevel == cellToCompare.jellyLevel);
+        }
+
         return (this.candy.equals(cellToCompare.candy) && this.cellType == cellToCompare.cellType
                 && this.jellyLevel == cellToCompare.jellyLevel);
     }
