@@ -97,6 +97,7 @@ public abstract class GameDisplayScreen extends DisplayScreen{
 				Thread.sleep(wait_time);
 			}
 		} catch (InvalidMoveException ex) {
+			System.err.println("Invalid move");
 		}catch (InterruptedException e) {
 			e.printStackTrace();
 		}

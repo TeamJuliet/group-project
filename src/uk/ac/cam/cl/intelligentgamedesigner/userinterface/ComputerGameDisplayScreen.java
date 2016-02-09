@@ -11,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.Timer;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
@@ -24,10 +25,16 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 	private boolean auto_playing; 
 	private SimulatedPlayerBase player;
 	
+	Timer timer;
+	private static int waitspeed = 500;
+	
 	public ComputerGameDisplayScreen(){
 		super();
 		identifier = "Simulated Player";
 		auto_playing = false;
+		
+		timer = new Timer(waitspeed,this);
+		timer.setInitialDelay(waitspeed);
 	}
 	
 	public void givePlayer(SimulatedPlayerBase player){
@@ -76,7 +83,7 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 		add(controls);
 
 		//set the locations
-		position(controls,0.85,0.2,300,200);
+		position(controls,0.85,0.3,300,100);
 	}
 	
 	@Override
@@ -88,6 +95,12 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 		case "mode":
 			auto_playing = auto_play.isSelected();
 			next_move.setEnabled(!auto_playing);
+			if(auto_playing){
+				timer.setDelay(waitspeed);
+				timer.start();
+			} else {
+				timer.stop();
+			}
 			nextMove();
 			break;
 		case "next":
@@ -106,10 +119,14 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 	}
 	
 	private void nextMove(){
+		System.out.println("trying to find next move...");
 		try{
 			Move next = player.calculateBestMove(theGame);
+			if(next == null)System.out.println("null move...");
 			playMove(next);
+			System.out.println("move found!");
 		} catch(NoMovesFoundException e) {
+			System.out.println("move not found...");
 			e.printStackTrace();
 		}
 		
