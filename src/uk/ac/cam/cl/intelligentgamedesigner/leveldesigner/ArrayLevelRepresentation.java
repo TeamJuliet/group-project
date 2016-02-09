@@ -140,7 +140,7 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
     }
     
     public void printBoard() {
-    	String[] r = {"X", " ", "I", "L"};
+    	String[] r = {"□", " ", "I", "L"};
     	for (int y = 0; y < board.height; y++) {
     		for (int x = 0; x < board.width; x++) {
     			int t = board.get(x, y).ordinal();
