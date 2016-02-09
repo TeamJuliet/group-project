@@ -91,7 +91,7 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 	
 	public void reload(Design design, String name){
 		if(design == null){
-			board.setBoard(GameBoard.blank_board());
+			board.setBoard(DisplayBoard.blank_board());
 			level_name.setValue("thename");
 			number_of_candies.setValue(6);
 			moves.setValue(10);

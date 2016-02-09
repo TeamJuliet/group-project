@@ -10,16 +10,60 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.UnmoveableCandyGenerator;
 
 public class DisplayTester {	
+	
+	public static Design getSampleDesign() {
+		Design design = new Design();
+		Cell[][] boardLayout = new Cell[10][10];
+		for (int i = 0; i < 10; ++i) {
+			for (int j = 0; j < 10; ++j) {
+				boardLayout[i][j] = new Cell(CellType.EMPTY);
+			}
+		}
+		// Add level two jelly to top right box.
+		for (int i = 0; i < 3; ++i) {
+			for (int j = 8; j < 10; ++j) {
+				boardLayout[j][i].setJellyLevel(2);
+			}
+		}
+		// Add level one jelly around that.
+		for (int i = 0; i < 3; ++i) {
+			boardLayout[7][i].setJellyLevel(1);
+		}
+		for (int j = 7; j < 10; ++j) {
+			boardLayout[j][3].setJellyLevel(1);
+		}
+		// Set the top left corner to unused cell type.
+		for (int i = 0; i < 3; ++i) {
+			for (int j = 0; j < 3; ++j) {
+				boardLayout[i][j].setCellType(CellType.UNUSABLE);
+			}
+		}
+		// Set the cells in the middle to be locked.
+		for (int i = 4; i < 7; ++i) {
+			for (int j = 4; j < 7; ++j) {
+				boardLayout[i][j].setCellType(CellType.LIQUORICE);
+			}
+		}
+		// Add icing to the cells at the bottom right corner.
+		for (int i = 8; i < 10; ++i) {
+			for (int j = 8; j < 10; ++j) {
+				boardLayout[i][j].setCellType(CellType.ICING);
+			}
+		}
+		design.setBoard(boardLayout);
+		return design;
+	}
 	
 	public static void main(String[] args) {
 		JPanel generalPanel = new JPanel();
 		JFrame app = new JFrame();
-		GameState game = new GameState(new Design());
+		GameState game = new GameState(getSampleDesign());
 		// game.changeCandyGenerator(new UnmoveableCandyGenerator(null));
 		CellChooser.game = game;
 		GameDisplay gamePanel = new GameDisplay(game.getWidth(), game.getHeight(), 50);

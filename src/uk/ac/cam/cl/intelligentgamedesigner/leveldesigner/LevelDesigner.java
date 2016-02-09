@@ -1,14 +1,15 @@
 package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
-
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
 public class LevelDesigner {
 	private static final int populationSize = 100;
-	protected static final double feasibleThreshold = 0.5;
+	private static final int iterations = 1000;
+	private static final double elitePercentage = 0.05;
+	private static final double feasibleThreshold = 0.5;
 	private static final double crossoverProbability = 0.8;
 
 	private LevelDesignerManager manager;
@@ -32,17 +33,23 @@ public class LevelDesigner {
     }
 
     public void run() {
-    	for (int i = 0; i < 1000; i++) {
+    	long startTime = System.currentTimeMillis();
+    	
+    	for (int i = 0; i < iterations; i++) {
 			List<LevelDesignIndividual> newFeasible = new ArrayList<>();
 			List<LevelDesignIndividual> newInfeasible = new ArrayList<>();
 			
+			// Copy over the elite. Always copy over at least 1.
 			int feasibleSize = feasiblePopulation.size();
-			LevelDesignIndividual fittest = getFittest(feasiblePopulation);
-			if (fittest != null) {
-				newFeasible.add(fittest);
-				feasibleSize--;
+			if (feasibleSize > 0) {
+				int eliteNumber = Math.max(1, (int) (feasibleSize * elitePercentage + 0.5));
+				Collections.sort(feasiblePopulation);
+				for (int j = 0; j < eliteNumber; j++) {
+					feasibleSize--;
+					newFeasible.add(feasiblePopulation.get(feasibleSize));
+				}
 			}
-
+			
 			iterate(feasiblePopulation, feasibleSize, newFeasible, newInfeasible);
 			iterate(infeasiblePopulation, infeasiblePopulation.size(), newFeasible, newInfeasible);
 
@@ -53,28 +60,16 @@ public class LevelDesigner {
 				individual.setDifficultyFitness(manager.getDifficultyFitness(individual.getDesign()));
 			}
 			
-			if (i % 10 == 0) {
+			if (i % 100 == 0) {
 				System.out.println("Iteration " + i);
 			}
 		}
     	
+    	System.out.println();
     	System.out.println("Feasible: " + feasiblePopulation.size());
     	System.out.println("Infeasible: " + infeasiblePopulation.size());
-    }
-    
-    private LevelDesignIndividual getFittest(List<LevelDesignIndividual> population) {
-    	if (population.size() == 0) {
-    		return null;
-    	}
-
-		LevelDesignIndividual fittest = feasiblePopulation.get(0);
-		for (LevelDesignIndividual individual : feasiblePopulation) {
-			if (individual.getFitness() > fittest.getFitness()) {
-				fittest = individual;
-			}
-		}
-		
-		return fittest;
+    	double time = (System.currentTimeMillis() - startTime) / 1000.0;
+    	System.out.println("Time: " + time);
     }
 
 	private LevelDesignIndividual stochasticSelection(List<LevelDesignIndividual> population, double totalFitness) {
@@ -133,7 +128,7 @@ public class LevelDesigner {
     	for (LevelRepresentation l : newRepresentations) {
     		l.mutate();
 			LevelDesignIndividual mutated = new LevelDesignIndividual(l);
-    		if (mutated.isFeasible()) {
+    		if (mutated.getFeasibility() > feasibleThreshold) {
 				newFeasible.add(mutated);
 			} else {
 				newInfeasible.add(mutated);
@@ -141,16 +136,14 @@ public class LevelDesigner {
     	}
     }
 
-	public void printBestIndividual() {
-		LevelDesignIndividual fittest = getFittest(feasiblePopulation);
-
-		if (fittest == null) {
-			System.out.println("No feasible solutions.");
-			return;
+	public void printIndividuals() {
+		Collections.sort(feasiblePopulation);
+		
+		for (LevelDesignIndividual individual : feasiblePopulation) {
+			System.out.println();
+			((ArrayLevelRepresentation) individual.getLevelRepresentation()).printBoard();
+			System.out.println("Fitness: " + individual.getFitness());
 		}
-
-		((ArrayLevelRepresentation) fittest.getLevelRepresentation()).printBoard();
-		System.out.println("Fitness: " + fittest.getLevelRepresentation().getAestheticFitness());
 	}
 
 }

@@ -1,6 +1,5 @@
 package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 
 import java.util.Random;
@@ -59,6 +58,6 @@ public class IterationTester {
 		Specification s = new Specification(0.5, GameMode.HIGHSCORE);
 		LevelDesignerManager m = new LevelDesignerManager(s);
 		m.run();
-		m.levelDesigner.printBestIndividual();
+		m.levelDesigner.printIndividuals();
 	}
 }

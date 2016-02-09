@@ -206,10 +206,6 @@ public class GameState implements Cloneable, Serializable {
     // Returns the axial analysis for a single tile.
     // (i.e. the intervals on the x and y-axis that match the tile.
     private SingleTileAnalysis analyzeTile(Position pos) {
-        /*
-         * System.out.println("Board before analysis: "); debugBoard();
-         * System.out.println("Analysis for " + pos.x + " " + pos.y);
-         */
         int x = pos.x, y = pos.y;
         CandyColour cellColour = board[x][y].getCandy().getColour();
         int start_x = x - 1, end_x = x + 1, start_y = y - 1, end_y = y + 1;
@@ -306,7 +302,16 @@ public class GameState implements Cloneable, Serializable {
         if (!inBoard(new Position(x, y)))
             return;
         Cell current = board[x][y];
-
+        if (current.getCellType().equals(CellType.UNUSABLE)) return;
+        
+        touchNeighbours(x, y);
+        if (current.getCellType().equals(CellType.LIQUORICE)) {
+        	System.err.println("removed Liquorish");
+        	current.setCellType(CellType.EMPTY);
+        	// Should not remove any jelly layer if the cell type is liquorice.
+        	return;
+        }
+        current.removeJellyLayer();
         if (current.hasCandy() && current.getCandy().isDetonated())
             return;
         if (current.hasCandy() && current.getCandy().getCandyType().isSpecial()) {
@@ -322,6 +327,23 @@ public class GameState implements Cloneable, Serializable {
             current.removeCandy();
             wasSomethingPopped = true;
         }
+    }
+    
+    private void touch(int x, int y) {
+    	if (!inBoard(new Position(x, y))) return;
+    	Cell current = board[x][y];
+    	if (current.getCellType().equals(CellType.ICING)) {
+    		//  TODO: Score here is where an icing is removed.
+    		current.setCellType(CellType.EMPTY);
+    	}
+    }
+    
+    private void touchNeighbours(int x, int y) {
+    	if (!inBoard(new Position(x, y))) return;
+    	touch(x + 1, y);
+    	touch(x - 1, y);
+    	touch(x, y + 1);
+    	touch(x, y - 1);
     }
 
     // Check if any of the two positions is in the horizontal range.
@@ -347,8 +369,6 @@ public class GameState implements Cloneable, Serializable {
                 SingleTileAnalysis analysis = analyzeTile(new Position(x, y));
                 // In case there is a horizontal match.
                 if (analysis.getLengthX() > 2) {
-                    // System.out.println("Found a horizontal at (" + x + ", " +
-                    // y + ")");
                     boolean foundVertical = false;
                     // If it forms a bomb there is no need to place wrapped.
                     if (analysis.getLengthX() >= 5)
@@ -572,7 +592,7 @@ public class GameState implements Cloneable, Serializable {
                 if (board[i][j].getCellType().equals(CellType.EMPTY)) {
                     int y = j - 1;
                     // TODO: can be optimized.
-                    while (y >= 0 && board[i][y].getCellType().equals(CellType.EMPTY))
+                    while (y >= 0 && !board[i][y].canDropCandy())
                         y--;
                     // Replacement was found.
                     if (y >= 0) {
@@ -595,7 +615,7 @@ public class GameState implements Cloneable, Serializable {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 Cell cell = board[x][y];
-                if (cell.getCellType() == CellType.EMPTY) {
+                if (cell.isFillable()) {
                     cell.setCandy(candyGenerator.generateCandy(x));
                     debugCount++;
                 }
@@ -637,7 +657,7 @@ public class GameState implements Cloneable, Serializable {
         if (!isPositionValidAndMoveable(move.p1) || !isPositionValidAndMoveable(move.p2))
             return false;
         // Check move is for adjacent positions.
-        if (Math.abs(move.p1.x - move.p2.x) > 1 || Math.abs(move.p1.y - move.p2.y) > 1)
+        if (Math.abs(move.p1.x - move.p2.x) + Math.abs(move.p1.y - move.p2.y) != 1)
             return false;
         Cell cell1 = getCell(move.p1), cell2 = getCell(move.p2);
         if (cell1.getCandy().getCandyType().isSpecial() && cell2.getCandy().getCandyType().isSpecial())
