@@ -10,11 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.Candy;
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.*;
 
 public class DisplayTester {	
 	
@@ -61,6 +57,7 @@ public class DisplayTester {
 			}
 		}
 		design.setBoard(boardLayout);
+        design.setRules(GameMode.INGREDIENTS, 10, 5, 6);
 		return design;
 	}
 	
