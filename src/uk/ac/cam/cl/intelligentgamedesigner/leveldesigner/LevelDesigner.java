@@ -11,6 +11,7 @@ public class LevelDesigner {
 	private static final double elitePercentage = 0.05;
 	private static final double feasibleThreshold = 0.5;
 	private static final double crossoverProbability = 0.8;
+	private static final int maxTopLevels = 5;
 
 	private LevelDesignerManager manager;
     private List<LevelDesignIndividual> feasiblePopulation;
@@ -41,13 +42,10 @@ public class LevelDesigner {
 			
 			// Copy over the elite. Always copy over at least 1.
 			int feasibleSize = feasiblePopulation.size();
-			if (feasibleSize > 0) {
-				int eliteNumber = Math.max(1, (int) (feasibleSize * elitePercentage + 0.5));
-				Collections.sort(feasiblePopulation);
-				for (int j = 0; j < eliteNumber; j++) {
-					feasibleSize--;
-					newFeasible.add(feasiblePopulation.get(feasibleSize));
-				}
+			int eliteNumber = Math.max(1, (int) (feasibleSize * elitePercentage + 0.5));
+			for (int j = 0; j < eliteNumber; j++) {
+				newFeasible.add(feasiblePopulation.get(j));
+				feasibleSize--;
 			}
 			
 			iterate(feasiblePopulation, feasibleSize, newFeasible, newInfeasible);
@@ -60,8 +58,17 @@ public class LevelDesigner {
 				individual.setDifficultyFitness(manager.getDifficultyFitness(individual.getDesign()));
 			}
 			
+			// Sort the individuals so they are in descending order of fitness.
+			Collections.sort(feasiblePopulation, Collections.reverseOrder());
+			
 			if (i % 100 == 0) {
 				System.out.println("Iteration " + i);
+				List<LevelRepresentation> l = new ArrayList<>();
+				int max = Math.max(feasiblePopulation.size(), maxTopLevels);
+				for (int j = 0; j < max; j++) {
+					l.add(feasiblePopulation.get(i).getLevelRepresentation());
+				}
+				manager.notifyInterface(l);
 			}
 		}
     	
@@ -137,8 +144,8 @@ public class LevelDesigner {
     }
 
 	public void printIndividuals() {
-		Collections.sort(feasiblePopulation);
-		
+		List<LevelDesignIndividual> population = new ArrayList<>(feasiblePopulation);
+		Collections.sort(population);
 		for (LevelDesignIndividual individual : feasiblePopulation) {
 			System.out.println();
 			((ArrayLevelRepresentation) individual.getLevelRepresentation()).printBoard();
