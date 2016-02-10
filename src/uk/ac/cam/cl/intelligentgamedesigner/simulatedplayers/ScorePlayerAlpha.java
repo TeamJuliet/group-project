@@ -35,20 +35,8 @@ public class ScorePlayerAlpha implements SimulatedPlayerBase {
     }
 
     public static Move calculateBestMove(GameState currentState) throws NoMovesFoundException {
-        GameState original = currentState;
-        for (int x = 0; x < original.width; x++) {
-            for (int y = 0; y < original.height; y++) {
-                Move horizontalSwap = new Move(new Position(x, y), new Position(x + 1, y));
-                if (original.isMoveValid(horizontalSwap)) {
-                    return horizontalSwap;
-                }
-
-                Move verticalSwap = new Move(new Position(x, y), new Position(x, y + 1));
-                if (original.isMoveValid(horizontalSwap)) {
-                    return verticalSwap;
-                }
-            }
-        }
+        if (currentState.getValidMoves().size() > 0)
+            return currentState.getValidMoves().get(0);
         throw new NoMovesFoundException(currentState);
     }
 
