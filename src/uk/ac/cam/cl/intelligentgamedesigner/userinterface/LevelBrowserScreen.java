@@ -127,7 +127,6 @@ public class LevelBrowserScreen extends DisplayScreen implements ListSelectionLi
 			break;
 		case "view":
 			if(level_names!=null && selected_name != null){
-				System.out.println(selected_name);
 				InterfaceManager.setSelectedDDesign(board_design,selected_name);
 				InterfaceManager.setPreviousScreen(Windows.LOAD);
 				InterfaceManager.switchScreen(Windows.DISPLAY);

@@ -1,12 +1,9 @@
 package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -20,7 +17,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
-import uk.ac.cam.cl.intelligentgamedesigner.leveldesigner.LevelDesignerManager;
 import uk.ac.cam.cl.intelligentgamedesigner.leveldesigner.Specification;
 
 //The menu from which you can request levels.
@@ -149,8 +145,7 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 			GameMode mode = GameMode.HIGHSCORE;
 			if(jelly_clear.isSelected())mode = GameMode.JELLY;
 			if(ingredients.isSelected())mode = GameMode.INGREDIENTS;
-			LevelDesignerManager manager = new LevelDesignerManager(
-					new Specification(val_difficulty,mode));
+			InterfaceManager.setLevelSpecifications(new Specification(val_difficulty,mode));
 	    	InterfaceManager.switchScreen(Windows.REQUESTING);
 			break;
 		}
