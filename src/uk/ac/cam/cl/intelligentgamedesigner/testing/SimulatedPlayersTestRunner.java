@@ -2,7 +2,14 @@ package uk.ac.cam.cl.intelligentgamedesigner.testing;
 
 import org.junit.Test;
 
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
+import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.NoMovesFoundException;
+import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.ScorePlayerAlpha;
+import uk.ac.cam.cl.intelligentgamedesigner.userinterface.LevelManager;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class SimulatedPlayersTestRunner {
 
@@ -18,7 +25,17 @@ public class SimulatedPlayersTestRunner {
 
     @Test
     public void exampleTest () {
-        assertEquals("One equals one", one(), 1);
+        //TODO: make this work
+        LevelManager manager = new LevelManager();
+        GameState testLvl = new GameState(manager.getLevel(1));
+        Move suggestedMove = null;
+        try{
+            ScorePlayerAlpha.calculateBestMove(testLvl);
+        } catch (NoMovesFoundException e){
+            return;
+        }
+        boolean checkIfValid = testLvl.getValidMoves().contains(suggestedMove);
+        assertTrue(checkIfValid);
     }
 
     public int one () {
