@@ -3,8 +3,8 @@ package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 import java.io.Serializable;
 
 public class Candy implements Cloneable, Serializable {
-    final private CandyColour colour;
     final private CandyType   candyType;
+    private CandyColour colour;
 
     private boolean           detonated            = false;
     private int               detonationsRemaining = 0;
@@ -55,6 +55,10 @@ public class Candy implements Cloneable, Serializable {
     public void setDetonated() {
         detonated = true;
         detonationsRemaining = candyType.getDetonations();
+    }
+
+    public void setColour (CandyColour colour) {
+        this.colour = colour;
     }
 
     public int getDetonationsRemaining() {

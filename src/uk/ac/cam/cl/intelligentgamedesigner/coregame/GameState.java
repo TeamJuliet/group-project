@@ -2,6 +2,7 @@ package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -36,13 +37,6 @@ public class GameState implements Cloneable, Serializable {
             for (int y = 0; y < height; y++) {
                 Cell cellToCopy = design.getCell(x, y);
                 board[x][y] = new Cell(cellToCopy);
-                /* if (cellToCopy.getCandy() == null) {
-                    board[x][y] = new Cell(cellToCopy.getCellType(), cellToCopy.getJellyLevel());
-                } else {
-                    board[x][y] = new Cell(cellToCopy.getCellType(),
-                            new Candy(cellToCopy.getCandy().getColour(), cellToCopy.getCandy().getCandyType()),
-                            cellToCopy.getJellyLevel());
-                } */
             }
         }
         recordIngredientSinks();
@@ -875,7 +869,7 @@ public class GameState implements Cloneable, Serializable {
             // debugBoard();
             markAndReplaceMatchingTiles();
             lastMove = null;
-            if (!wasSomethingPopped)
+            if (!wasSomethingPopped && !candiesNeededShuffling())
                 return false;
         } else if (proceedState == 1) {
             detonateAllPending();
@@ -898,6 +892,61 @@ public class GameState implements Cloneable, Serializable {
         return true;
     }
 
+    // TODO: Handle case in which no amount of shuffling can introduce a possible move - i.e. we have need some
+    // concept of "GAME OVER"
+    private boolean candiesNeededShuffling () {
+        boolean didShuffle = false;
+
+        // It is quite complicated (and expensive to compute) whether there exists a shuffle which introduces a
+        // possible move, so for now I think we should just shuffle up to some limit, at which point we declare that
+        // the game is over
+        int movesAvailable;
+        int shuffleLimit = 5;
+        int shuffleCount = 0;
+
+        // While there are no available moves, we need to shuffle the normal (non-special) candies on the board
+        while ((movesAvailable = getValidMoves().size()) == 0 && shuffleCount < shuffleLimit) {
+
+            System.out.println("No moves available: Shuffling candies...");
+
+            // Collect all of the colours of the normal candies
+            LinkedList<CandyColour> normalCandyColours = new LinkedList<>();
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    Candy cellCandy = board[x][y].getCandy();
+                    if (cellCandy != null && cellCandy.getCandyType() == CandyType.NORMAL) {
+                        normalCandyColours.add(cellCandy.getColour());
+                    }
+                }
+            }
+
+            // Shuffle the colours - the reason I'm shuffling colours and not candies is so that jelly blocks aren't
+            // moved around
+            Collections.shuffle(normalCandyColours);
+
+            // Redistribute the shuffled colours
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    Candy cellCandy = board[x][y].getCandy();
+                    if (cellCandy != null && cellCandy.getCandyType() == CandyType.NORMAL) {
+                        cellCandy.setColour(normalCandyColours.poll());
+                    }
+                }
+            }
+
+            didShuffle = true;
+            shuffleCount++;
+        }
+
+        if (movesAvailable == 0) {
+            // TODO: Handle the case where we give up shuffling and declare the game over
+            // Perhaps we could throw an exception at this point, such as NoAvailableMovesException or GameOverException
+        }
+
+        return didShuffle;
+    }
+
+    // TODO: Do we even need this function? If not - we should remove it
     private void proceed() {
         wasSomethingPopped = false;
         markAndReplaceMatchingTiles();
