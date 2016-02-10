@@ -2,7 +2,7 @@ package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 
-public class LevelDesignIndividual {
+public class LevelDesignIndividual implements Comparable<LevelDesignIndividual> {
 
     private final LevelRepresentation levelRepresentation;
     private double aestheticFitness;
@@ -16,9 +16,9 @@ public class LevelDesignIndividual {
         this.constraintFitness = levelRepresentation.getConstraintFitness();
     }
 
-    public boolean isFeasible() {
+    public double getFeasibility() {
         // TODO: This should take constraint fitness into account
-        return this.aestheticFitness >= LevelDesigner.feasibleThreshold;
+        return this.aestheticFitness;
     }
 
     public LevelRepresentation getLevelRepresentation () {
@@ -39,10 +39,8 @@ public class LevelDesignIndividual {
 
     public double getFitness() {
         double fitness = aestheticFitness;
-        if (isFeasible()) {
-            // TODO this needs to be tweaked, need to decide how fitnesses will be combined.
-            fitness += difficultyFitness;
-        }
+        // TODO this needs to be tweaked, need to decide how fitnesses will be combined.
+        fitness += difficultyFitness;
         return fitness;
     }
 
@@ -64,4 +62,11 @@ public class LevelDesignIndividual {
     public void setDifficultyFitness(double difficultyFitness) {
         this.difficultyFitness = difficultyFitness;
     }
+    
+    @Override
+	public int compareTo(LevelDesignIndividual individual) {
+		double compared = this.getFitness() - individual.getFitness();
+		// Can't just return compared cast to an int, need to be careful with rounding.
+		return (compared > 0 ? 1 : compared < 0 ? -1 : 0);
+	}
 }

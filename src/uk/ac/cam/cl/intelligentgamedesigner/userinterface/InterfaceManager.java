@@ -7,10 +7,13 @@ import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
+import uk.ac.cam.cl.intelligentgamedesigner.leveldesigner.Specification;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerBase;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.TestCaseGame;
 
@@ -73,11 +76,15 @@ public class InterfaceManager extends JFrame {
 		screenLayout.show(screens, new_screen.identifier);
 	}
 	
-	public static void setSelectedCDesign(Design design, String name){
-		((LevelCreatorScreen)level_creator_screen).reload(design, name);
+	public static void setSelectedCDesign(Design design, String name, int level_on){
+		if(level_on == 0)level_on = level_manager.get_next_num();
+		((LevelCreatorScreen)level_creator_screen).reload(design, name, level_on);
 	}
 	public static void setSelectedDDesign(Design design, String name){
 		((DesignDisplayScreen)design_display_screen).reload(design, name);
+	}
+	public static void refreshLevelBrowser(){
+		((LevelBrowserScreen)level_browser_screen).refreshList();
 	}
 	public static void setSelectedTest(TestCaseGame test){
 		((UnitTestMakerScreen)unit_test_screen).reload(test);
@@ -86,10 +93,16 @@ public class InterfaceManager extends JFrame {
 		((HumanGameDisplayScreen)human_game_display_screen).giveInfo(design);
 		((HumanGameDisplayScreen)human_game_display_screen).setInfo();
 	}
-	public static void setSelectedComputerGame(Design design,SimulatedPlayerBase player){
+	public static void setSelectedComputerGame(Design design,Class<? extends SimulatedPlayerBase> player_class){
 		((ComputerGameDisplayScreen)computer_game_display_screen).giveInfo(design);
-		((ComputerGameDisplayScreen)computer_game_display_screen).givePlayer(player);
+		((ComputerGameDisplayScreen)computer_game_display_screen).getMethodFromClass(player_class);
 		((ComputerGameDisplayScreen)computer_game_display_screen).setInfo();
+	}
+	public static void setPreviousScreen(Windows window){
+		((DesignDisplayScreen)design_display_screen).setPreviousScreen(window);
+	}
+	public static void setLevelSpecifications(Specification specification){
+		((DesigningLevelScreen)designing_level_screen).startDesign(specification);
 	}
 	
 	public static void switchScreen(Windows window){

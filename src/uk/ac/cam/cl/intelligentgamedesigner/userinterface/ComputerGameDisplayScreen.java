@@ -3,6 +3,8 @@ package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -14,6 +16,8 @@ import javax.swing.JRadioButton;
 import javax.swing.Timer;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.NoMovesFoundException;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerBase;
@@ -23,10 +27,10 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 	private JRadioButton auto_play;
 	private JButton next_move;
 	private boolean auto_playing; 
-	private SimulatedPlayerBase player;
+	private Method next_move_method;
 	
 	Timer timer;
-	private static int waitspeed = 500;
+	private static final int waitspeed = 500;
 	
 	public ComputerGameDisplayScreen(){
 		super();
@@ -35,11 +39,23 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 		
 		timer = new Timer(waitspeed,this);
 		timer.setInitialDelay(waitspeed);
+		timer.addActionListener(this);
+		timer.setActionCommand("trigger");
 	}
 	
-	public void givePlayer(SimulatedPlayerBase player){
-		this.player = player;
+	//get the static method for invoking
+	public void getMethodFromClass(Class<? extends SimulatedPlayerBase> player_class){
+		 try {
+			 Class[] cArg = new Class[1];
+		     cArg[0] = GameState.class;
+		     next_move_method = player_class.getMethod("calculateBestMove",cArg);
+		} catch (NoSuchMethodException e) {
+			System.out.println("Couldn't find the method");
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		}
 	}
+	
 	@Override
 	public void initialiseGame(){
 		super.initialiseGame();
@@ -48,7 +64,7 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 
 	@Override
 	protected GameBoard specificGameBoard() {
-		return new GameBoard(new Design());
+		return new ComputerGameBoard(new Design());
 	}
 
 	@Override
@@ -106,28 +122,40 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 		case "next":
 			nextMove();
 			break;
-			
-		}
-	}
-	
-	@Override
-	public void playMove(Move move){
-		super.playMove(move);
-		if(auto_playing){
-			nextMove();
+		case "trigger":
+			if(auto_playing){
+				nextMove();
+			}
+			else System.out.println("Shouldn't be timing...");
+			timer.setDelay(waitspeed);
+			break;
 		}
 	}
 	
 	private void nextMove(){
 		System.out.println("trying to find next move...");
 		try{
-			Move next = player.calculateBestMove(theGame);
-			if(next == null)System.out.println("null move...");
+			Move next = (Move)next_move_method.invoke(null, theGame);
+
+			((ComputerGameBoard)board).showMove(next);
+			Thread.sleep(wait_time*2);
+			((ComputerGameBoard)board).hideMove();
+
 			playMove(next);
 			System.out.println("move found!");
-		} catch(NoMovesFoundException e) {
-			System.out.println("move not found...");
+		} catch (InterruptedException e) {
 			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NullPointerException e){
+			System.out.println("the next move method failed to load");
 		}
 		
 	}

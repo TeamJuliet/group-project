@@ -13,16 +13,23 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.JTextField;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.ScorePlayerAlpha;
+import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.ScorePlayerBeta;
+import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.ScorePlayerDelta;
+import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.ScorePlayerGamma;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerBase;
 
 public class DesignDisplayScreen extends DisplayScreen{
-	private JLabel title;
+	private JPanel title;
+	private JLabel level_number;
+	private JTextField level_name;
+	
 	private DisplayBoard board;
 	private JButton play_level;
 	private JButton watch_level;
@@ -35,20 +42,30 @@ public class DesignDisplayScreen extends DisplayScreen{
 	private JLabel difficulty;
 	private JLabel candies;
 	private JSlider ai_strength;
+	private Windows previous_screen;
 
 	GameMode mode;
 	int number_of_moves;
 	int objective_value;
 	int number_of_candies;
 	Design level;
+	int level_num;
 
 	public DesignDisplayScreen(){
 		super();
 		identifier = "Design Display";
+		previous_screen = Windows.MAIN;
+	}
+	
+	public void setPreviousScreen(Windows previous){
+		previous_screen = previous;
 	}
 	
 	public void reload(Design design, String name){
-		title.setText(name);
+		String[] split_name = name.split("\\.");
+		level_num = Integer.parseInt(split_name[0]);
+		level_number.setText(level_num+". ");
+		level_name.setText(split_name[1].trim());
 		objective_value = design.getObjectiveTarget();
 		mode = design.getMode();
 		//TODO: Difficulty
@@ -77,7 +94,9 @@ public class DesignDisplayScreen extends DisplayScreen{
 	@Override
 	protected void makeItems() {
 		//initialise with some noncommittal information
-		title = new JLabel("title");
+		title = new JPanel();
+		level_number = new JLabel("1. ");
+		level_name = new JTextField("Level Design");
 		level = new Design();
 		board = new DisplayBoard(level);
 		play_level = new JButton("Play Level");
@@ -90,7 +109,7 @@ public class DesignDisplayScreen extends DisplayScreen{
 		target = new JLabel("goal");
 		difficulty = new JLabel("Difficulty: Unknown");
 		candies = new JLabel("Candies in play");
-		ai_strength = new JSlider(1,5);
+		ai_strength = new JSlider(1,4);
 	}
 
 	@Override
@@ -111,9 +130,10 @@ public class DesignDisplayScreen extends DisplayScreen{
 		back.setActionCommand("back");
 		
 		title.setAlignmentX(CENTER_ALIGNMENT);
-		title.setFont(new Font("Helvetica", Font.CENTER_BASELINE, 18));
+		level_number.setFont(new Font("Helvetica", Font.CENTER_BASELINE, 18));
+		level_name.setFont(new Font("Helvetica", Font.CENTER_BASELINE, 18));
 		
-		ai_strength.setValue(3);
+		ai_strength.setValue(1);
 		ai_strength.setMajorTickSpacing(1);
 		ai_strength.setPaintTicks(true);
 		ai_strength.setPaintLabels(true);
@@ -123,6 +143,9 @@ public class DesignDisplayScreen extends DisplayScreen{
 	protected void placeItems() {
 		//sort out the window's layout settings:
 		setLayout(null);
+		
+		title.add(level_number);
+		title.add(level_name);
 		
 		//make a box with all the custom settings
 		JPanel details = new JPanel();
@@ -160,7 +183,7 @@ public class DesignDisplayScreen extends DisplayScreen{
 		add(board);
 		add(details);
 		
-		position(title, 0.5, 0.9, 400, 30);
+		position(title, 0.35, 0.9, 200, 30);
 		position(details, 0.7,0.4,300,300);
 		position(buttons,0.7,0.8,300,300);
 		position(board,0.4,0.3,800,800);
@@ -171,30 +194,56 @@ public class DesignDisplayScreen extends DisplayScreen{
 	public void actionPerformed(ActionEvent e) {
 		switch(e.getActionCommand()){
 		case "back":
-			InterfaceManager.switchScreen(Windows.MAIN);
+			InterfaceManager.switchScreen(previous_screen);
 			break;
 		case "play":
 			InterfaceManager.setSelectedHumanGame(level);
 			InterfaceManager.switchScreen(Windows.HUMAN);
 			break;
 		case "watch":
-			InterfaceManager.setSelectedComputerGame(level,generatePlayer());
+			InterfaceManager.setSelectedComputerGame(level,getPlayerClass());
 			InterfaceManager.switchScreen(Windows.SIMULATED);
 			break;
 		case "save":
 			makeAndSave();
 			break;
+		case "edit":
+			InterfaceManager.setSelectedCDesign(level, level_name.getText(), level_num);
+			InterfaceManager.switchScreen(Windows.CREATE);
+			break;
 		}
 	}
 	
-	private SimulatedPlayerBase generatePlayer(){
+	private Class<? extends SimulatedPlayerBase> getPlayerClass(){
 		//TODO
-		return new ScorePlayerAlpha(new GameState(level));
+		switch(mode){
+		case HIGHSCORE:
+			switch(ai_strength.getValue()){
+			case 1:
+				return ScorePlayerAlpha.class;
+			case 2:
+				return ScorePlayerBeta.class;
+			case 3:
+				return ScorePlayerGamma.class;
+			case 4:
+				return ScorePlayerDelta.class;
+			}
+			break;
+		case JELLY:
+			//TODO
+			break;
+		case INGREDIENTS:
+			//TODO
+			break;
+		}
+		return ScorePlayerAlpha.class;
 	}
 	
 	private void makeAndSave(){
-		boolean success = InterfaceManager.level_manager.saveLevel(title.getText(), level);
-		String message = success?(title.getText()+" Saved!"):("Failed to save.");
+		String fileName = level_num+". "+level_name.getText();
+		boolean success = InterfaceManager.level_manager.saveLevel(fileName, level);
+		InterfaceManager.refreshLevelBrowser();
+		String message = success?(fileName+".lv Saved!"):("Failed to save.");
 		JOptionPane.showMessageDialog(this,message,"Notification",JOptionPane.INFORMATION_MESSAGE);
 	}
 }

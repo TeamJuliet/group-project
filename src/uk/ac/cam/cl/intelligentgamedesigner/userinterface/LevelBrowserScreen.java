@@ -7,6 +7,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
@@ -34,9 +35,20 @@ public class LevelBrowserScreen extends DisplayScreen implements ListSelectionLi
 		identifier = "Level Browser";
 	}
 	public void refreshList(){
-		makeItems();
-		setUpItems();
-		placeItems();
+		level_names.setListData(InterfaceManager.level_manager.getLevelNames());
+		board_design = InterfaceManager.level_manager.getLevel(1);
+		refreshBoard();
+		board_display.setBoard(board_design.getBoard());
+		
+		selected_name = null;
+	}
+	private void refreshBoard(){
+		try{
+			board_display.setBoard(board_design.getBoard());
+		} catch(NullPointerException e){
+			board_design = new Design();
+			board_display.setBoard(board_design.getBoard());
+		}
 	}
 	
 	@Override
@@ -114,18 +126,19 @@ public class LevelBrowserScreen extends DisplayScreen implements ListSelectionLi
 			InterfaceManager.switchScreen(Windows.MAIN);
 			break;
 		case "view":
-			if(level_names!=null){
-				System.out.println(selected_name);
+			if(level_names!=null && selected_name != null){
 				InterfaceManager.setSelectedDDesign(board_design,selected_name);
+				InterfaceManager.setPreviousScreen(Windows.LOAD);
 				InterfaceManager.switchScreen(Windows.DISPLAY);
 			}
 			break;
 		case "delete":
-			if(level_names!=null){
-				System.out.println("Deleting level" + selected_index + 1);
+			if(level_names!=null && selected_name != null){
+				System.out.println("Deleting level" + (selected_index + 1));
 				InterfaceManager.level_manager.deleteLevel(selected_index+1);
 			}
 			refreshList();
+			JOptionPane.showMessageDialog(this,"Deleted the level","Notification",JOptionPane.INFORMATION_MESSAGE);
 			break;
 		}
 	}
@@ -136,11 +149,7 @@ public class LevelBrowserScreen extends DisplayScreen implements ListSelectionLi
 			selected_index = selected.getSelectedIndex();
 			selected_name = (String)selected.getSelectedValue();
 			board_design = InterfaceManager.level_manager.getLevel(selected_index+1);
-			//board_display.setBoard(board_design.getBoard());
-			//board_display.clearBoard();
-			//board_display.repaint();
-			//paintImmediately(0, 0, InterfaceManager.screenWidth(), InterfaceManager.screenHeight());
-			System.out.println("new board?");
+			refreshBoard();
 		}
 	}
 }

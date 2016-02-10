@@ -19,7 +19,6 @@ public class LevelManager {
 		levels = new ArrayList<Design>();
 		level_names = new ArrayList<String>();
 		searchForLevels();
-		System.out.println("found "+levels_so_far);
 	}
 	
 	private void searchForLevels(){
@@ -79,7 +78,6 @@ public class LevelManager {
 		try{
 			return levels.get(level_number-1);
 		} catch(IndexOutOfBoundsException e) {
-			System.out.println("Invalid level");
 			return null;
 		}
 	}
@@ -97,18 +95,21 @@ public class LevelManager {
 		//rename the files etc.
 		levels.remove(level_num-1);
 		level_names.remove(level_num-1);
+		
 		for(int n=level_num-1;n<level_names.size();n++){
-			String name_minus_num = "." + level_names.get(n).split("\\.")[1];
+			String name_minus_num = "." + level_names.get(n).split("\\.")[1] + suffix;
 			level_names.set(n, (n+1)+name_minus_num);
 			if(files!=null){
 				for(File f:files){
-					if(f.getName().startsWith(n+".")){
+					if(f.getName().startsWith((n+2)+".")){
 						boolean success = f.renameTo(new File(location+(n+1)+name_minus_num));
 						if(success)System.out.println("renamed to "+((n+1)+name_minus_num));
 					}
 				}
 			}
 		}
+		
+		levels_so_far--;
 	}
 	
     public static File createLocalFile (String fileName) throws IOException {
@@ -136,6 +137,8 @@ public class LevelManager {
 		} catch (NumberFormatException e){
 			System.err.println("error in file name");
 		}
+		
+		if(level_num == levels_so_far+1)levels_so_far++;
 		
 		//remove existing files with that number
 		File root = new File(location);
@@ -181,6 +184,14 @@ public class LevelManager {
 			return false;
 		}
 		return true;
+	}
+	
+	public void printNames(){
+		System.out.println("The list:");
+		for(String s:level_names){
+			System.out.println(s);
+		}
+		System.out.println();
 	}
 
 }

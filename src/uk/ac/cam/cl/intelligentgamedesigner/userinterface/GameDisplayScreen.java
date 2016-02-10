@@ -40,7 +40,7 @@ public abstract class GameDisplayScreen extends DisplayScreen{
 	protected GameMode game_mode;
 	protected int score;
 	protected Design level;
-	private final int wait_time = 400;
+	protected static final int wait_time = 400;
 	
 	//game stuff
 	GameState theGame;
@@ -85,6 +85,7 @@ public abstract class GameDisplayScreen extends DisplayScreen{
 	protected void update(){
 		theBoard = theGame.getBoard();
 		score = theGame.getScore();
+		moves_left = theGame.getMovesRemaining();
 		setInfo();
 	}
 	

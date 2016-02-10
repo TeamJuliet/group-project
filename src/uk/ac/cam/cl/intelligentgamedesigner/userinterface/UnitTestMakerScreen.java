@@ -120,6 +120,7 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 			board_before.setBoard(DisplayBoard.blank_board(width, height));
 			board_after.setBoard(DisplayBoard.blank_board(width, height));
 			board_above.setBoard(DisplayBoard.blank_board(width, above_screen));
+			board_before.watchBoard(board_after);
 			board_above.clearBoard();
 			board_before.setMove(new Move(new Position(0,0),new Position(0,0)));
 			game_state_stuff.setValueAt(100, 1, 1);
@@ -509,6 +510,20 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 	}
 	
 	private void makeAndSave(){
+		Object raw_before = game_state_stuff.getValueAt(1, 1);
+		Object raw_after = game_state_stuff.getValueAt(1, 2);
+		int score_before;
+		int score_after;
+		try{
+			score_before = Integer.parseInt(raw_before.toString());
+			score_after = Integer.parseInt(raw_after.toString());
+		} catch(NumberFormatException e) {
+			score_before = -1;
+			score_after = -1;
+			game_state_stuff.setValueAt(score_before, 1,1);
+			game_state_stuff.setValueAt(score_after, 1,2);
+		}
+		
 		TestLibrary.addTest(new TestCaseGame(
 				description.getText(),
 				test_name.getText(),
@@ -516,8 +531,8 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 				board_above.getBoard(), 
 				board_after.getBoard(), 
 				board_before.getMove(),
-				(int)game_state_stuff.getValueAt(1, 1),
-				(int)game_state_stuff.getValueAt(1, 2)
+				score_before,
+				score_after
 				));
 		JOptionPane.showMessageDialog(this,"Unit Test Saved!","Notification",JOptionPane.INFORMATION_MESSAGE);
 	}
