@@ -477,20 +477,18 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		dimensions_width.setValue(temp_width);
 		dimensions_height.setValue(temp_height);
 		
-//		int number_of_moves = 1;
-//		if (moves.getValue() instanceof Long) { 
-//			number_of_moves = ((Long) moves.getValue()).intValue();
-//		} else if (moves.getValue() instanceof Integer) { 
-//			number_of_moves = (int) moves.getValue(); 
-//		}
-		int number_of_moves = (int)((long) moves.getValue());
-//		int objective_value = 1;
-//		if (mode_objective.getValue() instanceof Long) { 
-//			objective_value = ((Long) mode_objective.getValue()).intValue();
-//		} else if (mode_objective.getValue() instanceof Integer) { 
-//			objective_value = (int) mode_objective.getValue(); 
-//		}
-		int objective_value = (int)((long) mode_objective.getValue());
+		int number_of_moves = 1;
+		if (moves.getValue() instanceof Long) { 
+			number_of_moves = ((Long) moves.getValue()).intValue();
+		} else if (moves.getValue() instanceof Integer) { 
+			number_of_moves = (int) moves.getValue(); 
+		}
+		int objective_value = 1;
+		if (mode_objective.getValue() instanceof Long) { 
+			objective_value = ((Long) mode_objective.getValue()).intValue();
+		} else if (mode_objective.getValue() instanceof Integer) { 
+			objective_value = (int) mode_objective.getValue(); 
+		}
 		
 		level.setBoard(board.getBoard());
 		level.setSize(temp_width, temp_height);
@@ -501,7 +499,7 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		if(success){
 			InterfaceManager.refreshLevelBrowser();
 		}
-		String message = success?(fileName+" Saved!"):("Failed to save.");
+		String message = success?(fileName+".lv Saved!"):("Failed to save.");
 		JOptionPane.showMessageDialog(this,message,"Notification",JOptionPane.INFORMATION_MESSAGE);
 	}
 }

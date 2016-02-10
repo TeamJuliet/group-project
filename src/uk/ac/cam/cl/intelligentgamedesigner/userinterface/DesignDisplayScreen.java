@@ -13,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.JTextField;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
@@ -25,7 +26,10 @@ import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.ScorePlayerGamma;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerBase;
 
 public class DesignDisplayScreen extends DisplayScreen{
-	private JLabel title;
+	private JPanel title;
+	private JLabel level_number;
+	private JTextField level_name;
+	
 	private DisplayBoard board;
 	private JButton play_level;
 	private JButton watch_level;
@@ -45,7 +49,6 @@ public class DesignDisplayScreen extends DisplayScreen{
 	int objective_value;
 	int number_of_candies;
 	Design level;
-	String name;
 	int level_num;
 
 	public DesignDisplayScreen(){
@@ -61,9 +64,8 @@ public class DesignDisplayScreen extends DisplayScreen{
 	public void reload(Design design, String name){
 		String[] split_name = name.split("\\.");
 		level_num = Integer.parseInt(split_name[0]);
-		this.name = split_name[1].trim();
-		System.out.println(this.name);
-		title.setText(name);
+		level_number.setText(level_num+". ");
+		level_name.setText(split_name[1].trim());
 		objective_value = design.getObjectiveTarget();
 		mode = design.getMode();
 		//TODO: Difficulty
@@ -92,7 +94,9 @@ public class DesignDisplayScreen extends DisplayScreen{
 	@Override
 	protected void makeItems() {
 		//initialise with some noncommittal information
-		title = new JLabel("title");
+		title = new JPanel();
+		level_number = new JLabel("1. ");
+		level_name = new JTextField("Level Design");
 		level = new Design();
 		board = new DisplayBoard(level);
 		play_level = new JButton("Play Level");
@@ -126,7 +130,8 @@ public class DesignDisplayScreen extends DisplayScreen{
 		back.setActionCommand("back");
 		
 		title.setAlignmentX(CENTER_ALIGNMENT);
-		title.setFont(new Font("Helvetica", Font.CENTER_BASELINE, 18));
+		level_number.setFont(new Font("Helvetica", Font.CENTER_BASELINE, 18));
+		level_name.setFont(new Font("Helvetica", Font.CENTER_BASELINE, 18));
 		
 		ai_strength.setValue(1);
 		ai_strength.setMajorTickSpacing(1);
@@ -138,6 +143,9 @@ public class DesignDisplayScreen extends DisplayScreen{
 	protected void placeItems() {
 		//sort out the window's layout settings:
 		setLayout(null);
+		
+		title.add(level_number);
+		title.add(level_name);
 		
 		//make a box with all the custom settings
 		JPanel details = new JPanel();
@@ -175,7 +183,7 @@ public class DesignDisplayScreen extends DisplayScreen{
 		add(board);
 		add(details);
 		
-		position(title, 0.5, 0.9, 400, 30);
+		position(title, 0.35, 0.9, 200, 30);
 		position(details, 0.7,0.4,300,300);
 		position(buttons,0.7,0.8,300,300);
 		position(board,0.4,0.3,800,800);
@@ -200,7 +208,7 @@ public class DesignDisplayScreen extends DisplayScreen{
 			makeAndSave();
 			break;
 		case "edit":
-			InterfaceManager.setSelectedCDesign(level, name, level_num);
+			InterfaceManager.setSelectedCDesign(level, level_name.getText(), level_num);
 			InterfaceManager.switchScreen(Windows.CREATE);
 			break;
 		}
@@ -232,9 +240,10 @@ public class DesignDisplayScreen extends DisplayScreen{
 	}
 	
 	private void makeAndSave(){
-		boolean success = InterfaceManager.level_manager.saveLevel(level_num+". "+name, level);
+		String fileName = level_num+". "+level_name.getText();
+		boolean success = InterfaceManager.level_manager.saveLevel(fileName, level);
 		InterfaceManager.refreshLevelBrowser();
-		String message = success?(title.getText()+" Saved!"):("Failed to save.");
+		String message = success?(fileName+".lv Saved!"):("Failed to save.");
 		JOptionPane.showMessageDialog(this,message,"Notification",JOptionPane.INFORMATION_MESSAGE);
 	}
 }
