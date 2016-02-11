@@ -33,9 +33,12 @@ public class GameState implements Cloneable, Serializable {
     private Design design;
 
     public boolean isGameOver() {
+    	return movesRemaining == 0 || isGameWon();
+    }
+    
+    public boolean isGameWon() {
     	GameMode gameMode = design.getMode();
-    	return movesRemaining == 0 || 
-    			(gameMode.equals(GameMode.JELLY) && jelliesRemaining == 0) ||
+    	return (gameMode.equals(GameMode.JELLY) && jelliesRemaining == 0) ||
     			(gameMode.equals(GameMode.HIGHSCORE) && score < targetScore) ||
     			(gameMode.equals(GameMode.INGREDIENTS) && ingredientsRemaining == 0);
     }
