@@ -53,7 +53,7 @@ public class DisplayBoard extends JComponent {
 			}
 		}
 		
-		tile_size = InterfaceManager.screenHeight()/15;
+		adjustSize(4);
 		
 	}
 	public DisplayBoard(Design design){
@@ -72,7 +72,7 @@ public class DisplayBoard extends JComponent {
 			height = design.getHeight();
 			board = design.getBoard();
 		}
-		tile_size = InterfaceManager.screenHeight()/15;
+		adjustSize(4);
 	}
 	
 	protected static Cell defaultCell(){

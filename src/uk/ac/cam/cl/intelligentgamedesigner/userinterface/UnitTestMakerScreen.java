@@ -34,6 +34,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
+import uk.ac.cam.cl.intelligentgamedesigner.testing.GameStateTestRunner;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.TestCaseGame;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.TestLibrary;
 
@@ -219,6 +220,12 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 		just_quit.setToolTipText("Warning: unsaved progress will be lost.");
 		just_quit.setActionCommand("quit");
 		just_quit.addActionListener(this);
+		load_test.setToolTipText("Select a unit test to edit.");
+		load_test.setActionCommand("load");
+		load_test.addActionListener(this);
+		run_tests.setToolTipText("Opens the unit tester");
+		run_tests.setActionCommand("run");
+		run_tests.addActionListener(this);
 		
 		high_score.setActionCommand("high score");
 		high_score.addActionListener(this);
@@ -339,6 +346,11 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 			break;
 		case "quit":
 			InterfaceManager.switchScreen(Windows.MAIN);
+			break;
+		case "load":
+			break;
+		case "run":
+			runUnitTests();
 			break;
 			
 		case "high score":
@@ -541,5 +553,15 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 				score_after
 				));
 		JOptionPane.showMessageDialog(this,"Unit Test Saved!","Notification",JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	private void runUnitTests(){
+		JOptionPane.showMessageDialog(this, new GameStateTestRunner(),"Unit Tester",JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	private void openLoader(){
+		UnitTestLoader loader = new UnitTestLoader();
+		JOptionPane.showMessageDialog(this, loader,"Load Unit Tests",JOptionPane.INFORMATION_MESSAGE);
+		reload(loader.getTest());
 	}
 }
