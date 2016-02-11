@@ -878,6 +878,8 @@ public class GameState implements Cloneable, Serializable {
     public void makeMove(Move move) throws InvalidMoveException {
         if (!isMoveValid(move))
             throw new InvalidMoveException(move);
+        // Reset the combo multiplier.
+        this.numberOfMatchedInRound = 0;
         // Record the last move.
         lastMove = move;
         swapCandies(move);
