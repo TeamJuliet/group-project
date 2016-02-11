@@ -323,11 +323,11 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 		//set the locations
 		position(settings,0.5,0.6,260,450);
 		position(controls,0.5,0.15,300,100);
-		position(infinite_lookahead,0.2,0.8,350,140);
+		position(infinite_lookahead,0.2,0.8,9*board_above.tile_size,140);
 		
 		positionBoard(board_before,0.2,0.4);
 		positionBoard(board_after,0.8,0.4);
-		position(gameStates,0.8,0.8,350,140);
+		position(gameStates,0.8,0.8,9*board_above.tile_size,140);
 	}
 
 	@Override
