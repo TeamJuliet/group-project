@@ -81,6 +81,11 @@ public class LevelDesigner {
     	System.out.println("Infeasible: " + infeasiblePopulation.size());
     	double time = (System.currentTimeMillis() - startTime) / 1000.0;
     	System.out.println("Time: " + time);
+    	
+    	LevelRepresentation fittest = feasiblePopulation.get(0).getLevelRepresentation();
+    	double difficulty = manager.getDifficultyFitness(fittest.getDesign());
+    	System.out.println(difficulty);
+    	
     }
 
 	private LevelDesignIndividual stochasticSelection(List<LevelDesignIndividual> population, double totalFitness) {
