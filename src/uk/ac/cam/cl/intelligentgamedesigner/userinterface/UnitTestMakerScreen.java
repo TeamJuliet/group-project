@@ -348,6 +348,7 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 			InterfaceManager.switchScreen(Windows.MAIN);
 			break;
 		case "load":
+			openLoader();
 			break;
 		case "run":
 			runUnitTests();

@@ -38,8 +38,10 @@ public class UnitTestLoader extends JPanel implements ActionListener, ListSelect
 	private JScrollPane test_list;
 	private JList<String> test_names;
 	
+	private String[] test_case_names;
+	private TestCaseGame[] test_cases;
+	
 	private int selected_index;
-	private String selected_name;
     
     public TestCaseGame getTest(){
     	return loaded_test;
@@ -54,9 +56,15 @@ public class UnitTestLoader extends JPanel implements ActionListener, ListSelect
         loadButton.setActionCommand("load");
         loadButton.addActionListener(this);
         loadButton.setEnabled(false);
-        
-        String[] names = new String[0];
-        test_names = new JList<String>(names);
+
+        //load all the levels (names) and add them to the list
+        test_cases = loadTests();
+        test_case_names = new String[test_cases.length];
+        for(int n=0;n<test_cases.length;n++){
+        	test_case_names[n] = test_cases[n].getFileName() + ": " + test_cases[n].getDescription();
+        }
+                
+        test_names = new JList<String>(test_case_names);
         test_list = new JScrollPane(test_names);
 
         JPanel panel = new JPanel();
@@ -67,6 +75,18 @@ public class UnitTestLoader extends JPanel implements ActionListener, ListSelect
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
     }
 
+	private TestCaseGame[] loadTests() {
+		ArrayList<TestCase> all_tests = TestLibrary.getTests();
+		ArrayList<TestCaseGame> game_tests = new ArrayList<TestCaseGame>();
+		for(TestCase t:all_tests){
+			if(t.getClass() == TestCaseGame.class){
+				System.out.println("Found a test case game!");
+				game_tests.add((TestCaseGame)t);
+			}
+		}
+		return game_tests.toArray(new TestCaseGame[game_tests.size()]);
+	}
+
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		// TODO Auto-generated method stub
@@ -75,8 +95,11 @@ public class UnitTestLoader extends JPanel implements ActionListener, ListSelect
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
-		
+		switch(arg0.getActionCommand()){
+		case "load":
+			loaded_test = test_cases[selected_index];
+			break;
+		}
 	}
 
     public static void main (String[] args) {

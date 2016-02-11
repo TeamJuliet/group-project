@@ -80,7 +80,7 @@ public class DisplayBoard extends JComponent {
 	}
 	
 	public void adjustSize(int scaleFactor) {
-		tile_size = InterfaceManager.screenHeight()/(60/scaleFactor);
+		tile_size = InterfaceManager.screenWidth()/(100/scaleFactor);
 	}
 	
 	public Cell[][] getBoard(){
