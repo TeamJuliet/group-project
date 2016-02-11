@@ -34,7 +34,8 @@ public class TestLevelDesigner {
 		{
 			Design design = levelRep.getDesign();
 			GameState state = new GameState(design);
-			state.debugBoard();
+			// THIS METHOD HAS BEEN DEPRECIATED
+			// state.debugBoard();
 			
 			levelRep.mutate();
 		}
