@@ -49,6 +49,7 @@ public class Design implements Serializable {
     	boardLayout = board;
         this.width = board.length;
         this.height = board[0].length;
+        System.err.println("w: " +width + " h:" + height);
     }
     
     public Cell[][] getBoard() {

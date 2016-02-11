@@ -4,35 +4,28 @@ import java.io.Serializable;
 
 public class Cell implements Cloneable, Serializable {
 
+	// TODO: Is there really a need for this?
     public static final int maxJellyLevel = 5;
+    
     public final boolean isIngredientSink;
     private CellType        cellType;
-    private Candy           candy = null;
-    private int             jellyLevel    = 0;
+    private Candy           candy;
+    private int             jellyLevel;
 
     public Cell(CellType cellType) {
-        this.cellType = cellType;
-        this.candy = null;
-        this.isIngredientSink = false;
+    	this(cellType, null, 0, false);
     }
 
     public Cell(CellType cellType, Candy candy) {
-        this.cellType = cellType;
-        this.candy = candy;
-        this.isIngredientSink = false;
+    	this(cellType, candy, 0, false);
     }
 
     public Cell(CellType cellType, int jellyLevel) {
-        this.cellType = cellType;
-        this.jellyLevel = jellyLevel;
-        this.isIngredientSink = false;
+    	this(cellType, null, jellyLevel, false);
     }
 
     public Cell(CellType cellType, Candy candy, int jellyLevel) {
-        this.cellType = cellType;
-        this.candy = candy;
-        this.jellyLevel = jellyLevel;
-        this.isIngredientSink = false;
+        this(cellType, candy, jellyLevel, false);
     }
 
     public Cell(CellType cellType, Candy candy, int jellyLevel, boolean isIngredientSink) {
@@ -53,6 +46,7 @@ public class Cell implements Cloneable, Serializable {
         this.jellyLevel = jellyLevel;
     }
 
+    // Sets the candy to the cell and changes its type appropriately.
     public void setCandy(Candy candy) {
         this.candy = candy;
         if (cellType.equals(CellType.EMPTY))
@@ -63,10 +57,10 @@ public class Cell implements Cloneable, Serializable {
         return candy;
     }
     
+    // Function that returns whether the current cell can be filled.
     public boolean isFillable() {
     	return (this.cellType.equals(CellType.EMPTY))
                 || (this.cellType.equals(CellType.LIQUORICE) && !this.hasCandy());
-                // || (this.cellType.equals(CellType.UNUSABLE)));
     }
 
     public boolean hasCandy() {
