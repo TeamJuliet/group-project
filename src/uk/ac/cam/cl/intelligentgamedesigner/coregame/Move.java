@@ -30,7 +30,8 @@ public class Move implements Serializable {
         return false;
     }
 
+    @Override
     public int hashCode() {
-        return p1.hashCode() + p2.hashCode();
+        return (p1.hashCode() + p2.hashCode())%7919;
     }
 }
