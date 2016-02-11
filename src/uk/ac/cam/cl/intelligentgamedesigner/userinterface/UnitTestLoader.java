@@ -20,6 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
@@ -66,6 +67,8 @@ public class UnitTestLoader extends JPanel implements ActionListener, ListSelect
                 
         test_names = new JList<String>(test_case_names);
         test_list = new JScrollPane(test_names);
+        test_names.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		test_names.addListSelectionListener(this);
 
         JPanel panel = new JPanel();
         panel.add(loadButton);
@@ -80,7 +83,6 @@ public class UnitTestLoader extends JPanel implements ActionListener, ListSelect
 		ArrayList<TestCaseGame> game_tests = new ArrayList<TestCaseGame>();
 		for(TestCase t:all_tests){
 			if(t.getClass() == TestCaseGame.class){
-				System.out.println("Found a test case game!");
 				game_tests.add((TestCaseGame)t);
 			}
 		}
@@ -89,8 +91,11 @@ public class UnitTestLoader extends JPanel implements ActionListener, ListSelect
 
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
-		// TODO Auto-generated method stub
-		
+		if(!e.getValueIsAdjusting()) {
+			JList selected = ((JList)e.getSource());
+			selected_index = selected.getSelectedIndex();
+			loadButton.setEnabled(true);
+		}
 	}
 
 	@Override
@@ -98,14 +103,17 @@ public class UnitTestLoader extends JPanel implements ActionListener, ListSelect
 		switch(arg0.getActionCommand()){
 		case "load":
 			loaded_test = test_cases[selected_index];
+			quit();
 			break;
 		}
 	}
 
+	private static JFrame frame;
     public static void main (String[] args) {
         //Create and set up the window.
-        JFrame frame = new JFrame("Loading Unit Tests");
+        frame = new JFrame("Loading Unit Tests");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         //Create and set up the content pane.
         JComponent newContentPane = new UnitTestLoader();
@@ -115,5 +123,9 @@ public class UnitTestLoader extends JPanel implements ActionListener, ListSelect
         //Display the window.
         frame.pack();
         frame.setVisible(true);
+    }
+    
+    private static void quit(){
+    	if(frame != null)frame.dispose();
     }
 }
