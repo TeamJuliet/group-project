@@ -63,11 +63,11 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 	
 	public void selectBoard(int selected){
 		if(selected>=0 && selected<boardCount){
-			view_level.setEnabled(true);
 			this.selected = selected;
 			for(int n=0;n<boardCount;n++){
 				topBoards[n].setSelected(n==selected);
 			}
+			view_level.setEnabled(topBoards[selected].hasDesign());
 		}
 	}
 	
@@ -84,7 +84,7 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 		for(int n=0;n<boardCount;n++){
 			boardDesigns[n] = new Design();
 			topBoards[n] = new SelectBoard(boardDesigns[n],n);
-			topBoards[n].adjustSize(2);
+			topBoards[n].adjustSize(1.75);
 			topBoards[n].setManager(this);
 		}
 	}
@@ -118,7 +118,7 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 		
 		for(int n=0;n<boardCount;n++){
 			add(topBoards[n]);
-			double x_offset = 0.5 + 0.95 * (n - 0.5*(boardCount - 1))/boardCount;
+			double x_offset = 0.5 + 0.9*(n - 0.5*(boardCount - 1))/boardCount;
 			positionBoard(topBoards[n],x_offset,0.45);
 		}
 

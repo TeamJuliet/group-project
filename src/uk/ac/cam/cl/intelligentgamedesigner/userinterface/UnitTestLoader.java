@@ -32,31 +32,24 @@ import uk.ac.cam.cl.intelligentgamedesigner.testing.TestCase;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.TestCaseGame;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.TestLibrary;
 
-public class UnitTestLoader extends JPanel implements ActionListener, ListSelectionListener {
+public class UnitTestLoader extends JPanel implements ListSelectionListener {
 
-    private JButton loadButton;
-    private TestCaseGame loaded_test;
 	private JScrollPane test_list;
 	private JList<String> test_names;
 	
 	private String[] test_case_names;
 	private TestCaseGame[] test_cases;
-	
-	private int selected_index;
+	private int selected_test;
     
     public TestCaseGame getTest(){
-    	return loaded_test;
+    	if(selected_test!= -1)return test_cases[selected_test];
+    	else return null;
     }
 
     public UnitTestLoader() {
         super(new BorderLayout());
 
         UIManager.put("ProgressBar.selectionForeground", Color.BLACK);
-        
-        loadButton = new JButton("Load Level");
-        loadButton.setActionCommand("load");
-        loadButton.addActionListener(this);
-        loadButton.setEnabled(false);
 
         //load all the levels (names) and add them to the list
         test_cases = loadTests();
@@ -69,13 +62,11 @@ public class UnitTestLoader extends JPanel implements ActionListener, ListSelect
         test_list = new JScrollPane(test_names);
         test_names.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		test_names.addListSelectionListener(this);
-
-        JPanel panel = new JPanel();
-        panel.add(loadButton);
         
         add(test_list,BorderLayout.CENTER);
-        add(panel, BorderLayout.PAGE_END);
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        
+        selected_test = -1;
     }
 
 	private TestCaseGame[] loadTests() {
@@ -93,18 +84,7 @@ public class UnitTestLoader extends JPanel implements ActionListener, ListSelect
 	public void valueChanged(ListSelectionEvent e) {
 		if(!e.getValueIsAdjusting()) {
 			JList selected = ((JList)e.getSource());
-			selected_index = selected.getSelectedIndex();
-			loadButton.setEnabled(true);
-		}
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		switch(arg0.getActionCommand()){
-		case "load":
-			loaded_test = test_cases[selected_index];
-			quit();
-			break;
+			selected_test = selected.getSelectedIndex();
 		}
 	}
 

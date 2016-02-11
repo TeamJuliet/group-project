@@ -563,6 +563,7 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 	private void openLoader(){
 		UnitTestLoader loader = new UnitTestLoader();
 		JOptionPane.showMessageDialog(this, loader,"Load Unit Tests",JOptionPane.INFORMATION_MESSAGE);
-		reload(loader.getTest());
+		TestCaseGame newTest = loader.getTest();
+		if(newTest != null)reload(loader.getTest());
 	}
 }
