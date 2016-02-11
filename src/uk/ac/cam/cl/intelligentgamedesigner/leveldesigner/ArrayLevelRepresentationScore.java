@@ -3,6 +3,7 @@ package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 import java.util.Random;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 
 public class ArrayLevelRepresentationScore extends ArrayLevelRepresentation {
 
@@ -32,7 +33,8 @@ public class ArrayLevelRepresentationScore extends ArrayLevelRepresentation {
     public Design getDesign() {
     	Design design = super.getDesign();
     
-    	// TODO: set other parameters
+    	design.setGameMode(GameMode.HIGHSCORE);
+        design.setObjectiveTarget(parameters.get(2).getValue());
     	
         return design;
     }

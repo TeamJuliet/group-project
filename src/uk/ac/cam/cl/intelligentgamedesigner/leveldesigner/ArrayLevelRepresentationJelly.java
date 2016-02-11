@@ -3,6 +3,7 @@ package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 import java.util.Random;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 
 public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
 	private static final int maxJellyLevel = 2;
@@ -70,7 +71,7 @@ public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
     public Design getDesign() {
     	Design design = super.getDesign();
     	
-    	// TODO: set other parameters
+    	design.setGameMode(GameMode.JELLY);
     	
     	return design;
     }
