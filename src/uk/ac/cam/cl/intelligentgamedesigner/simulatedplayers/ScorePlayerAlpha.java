@@ -19,6 +19,9 @@ public class ScorePlayerAlpha implements SimulatedPlayerBase {
             Move bestMove = calculateBestMove(level);
             try {
                 level.makeMove(bestMove);
+                while (level.makeSmallMove()) {
+
+                }
             } catch (InvalidMoveException e) {
                 printInvalidMoveError(e.invalidMove);
                 try { // TODO: this is horrible, fix it
