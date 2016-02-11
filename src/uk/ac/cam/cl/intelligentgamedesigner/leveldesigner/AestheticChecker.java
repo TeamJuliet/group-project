@@ -8,40 +8,55 @@ public class AestheticChecker {
 	public static double calculateFitness(RandomBoard<DesignCellType> board) {
 		double fitness = calculateSymmetryScore(board);
 		
-		return fitness * calculateDistributionScore(board);
+		return fitness * calculateDistributionScore(board) * calculateCentralDistance(board) * calculateConnectedFitness(board);
 	}
 	
 	private static double calculateDistributionScore(RandomBoard<DesignCellType> board) {
 		int[] counts = new int[DesignCellType.values().length];
-		int usableCount = 0;
+		int cellCount = board.height * board.width;
 		
 		for (int x = 0; x < board.width; x++) {
     		for (int y = 0; y < board.height; y++) {
     			DesignCellType type = board.get(x, y);
     			counts[type.ordinal()]++;
-    			if (type != DesignCellType.UNUSABLE) {
-    				usableCount++;
-    			}
     		}
     	}
 		
+		double[][] distributionDesired = new double[counts.length][2];
+		
+		distributionDesired[0][0] = 0.2;
+		distributionDesired[0][1] = 0.7;
+		
+		distributionDesired[1][0] = 0.4;
+		distributionDesired[1][1] = 1.0;
+		
+		distributionDesired[2][0] = 0.01;
+		distributionDesired[2][1] = 0.01;
+	
+		distributionDesired[3][0] = 0.01;
+		distributionDesired[3][1] = 0.01;
+		
 		double[] distributions = new double[counts.length];
 		for (int i = 0; i < counts.length; i++) {
-			distributions[i] = counts[i] / (double) usableCount;
+			distributions[i] = counts[i] / (double) cellCount;
 		}
 		
 		double score = 1.0;
 		
-		// Check icing distribution.
-		double icingPercentage = distributions[DesignCellType.ICING.ordinal()];
-		if (icingPercentage > 0.2) {
-			score -= 0.3 * icingPercentage;
-		}
-		
-		// Check icing distribution.
-		double liquoricePercentage = distributions[DesignCellType.LIQUORICE.ordinal()];
-		if (liquoricePercentage > 0.2) {
-			score -= 0.3 * liquoricePercentage;
+		for(int c = 0; c < distributionDesired.length; c++)
+		{
+			double diff = 0.0;
+			
+			if(distributions[c] < distributionDesired[c][0])
+			{
+				diff = (distributionDesired[c][0] - distributions[c]) / distributionDesired[c][0];  
+			}else
+			if(distributions[c] > distributionDesired[c][1])
+			{
+				diff = (distributions[c] - distributionDesired[c][1]) / (1.0 - distributionDesired[c][1]);  
+			}
+			
+			score -= diff / (counts.length);
 		}
 		
 		return score;
@@ -60,6 +75,63 @@ public class AestheticChecker {
     	
     	double perfectScore = maxX * board.height;
     	return score / perfectScore;
+	}
+	
+	private static double calculateCentralDistance(RandomBoard<DesignCellType> board)
+	{
+		int x_position = 0;
+		int y_position = 0;
+		
+		int emptyCells = 0;
+		
+		for(int i = 0; i < board.height; i++)
+		{
+			for(int j = 0; j < board.width; j++)
+			{
+				if(board.get(i, j) == DesignCellType.EMPTY)
+				{
+					x_position += i;
+					y_position += j;
+					emptyCells++;
+				}
+			}
+		}
+		
+		return Math.pow((Math.sqrt(8.0) - Math.sqrt(Math.pow(Math.floor((double)board.width / 2.0) - (x_position / emptyCells), 2.0) + Math.pow(Math.floor((double)board.height / 2.0) - (y_position / emptyCells), 2.0))) / Math.sqrt(8.0), 2.0);
+	}
+	
+	
+	private static double calculateConnectedFitness(RandomBoard<DesignCellType> board)
+	{
+		int meh = 0;
+		
+		for(int i = 1; i < board.height - 1; i++)
+		{
+			for(int j = 1; j < board.width - 1; j++)
+			{
+					if(board.get(i, j) != board.get(i, j+1))
+					{
+						meh++;
+					}
+								
+					if(board.get(i, j) != board.get(i+1, j))
+					{
+						meh++;
+					}
+								
+					if(board.get(i, j) != board.get(i, j-1))
+					{
+						meh++;
+					}
+								
+					if(board.get(i, j) != board.get(i-1, j))
+					{
+						meh++;
+					}
+			}
+		}
+		
+		return 1.0 - ((double)meh / (4 * board.width * board.height));
 	}
 	
 }
