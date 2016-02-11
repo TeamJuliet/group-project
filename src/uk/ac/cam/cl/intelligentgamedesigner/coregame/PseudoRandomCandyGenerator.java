@@ -24,9 +24,13 @@ public class PseudoRandomCandyGenerator extends CandyGenerator {
 				return new Candy(null, CandyType.INGREDIENT);
 			}
 		}
-
+		
+		
+		int num = nextPseudoRandom();
+		// This line just adds some bombs for testing.
+		// if (num % 23 == 2) return new Candy(null, CandyType.BOMB);
 		// If an ingredient wasn't dropped, then drop a normal candy
-		int result = nextPseudoRandom() % super.gameState.getNumberOfCandyColours();
+		int result = num % super.gameState.getNumberOfCandyColours();
 		return new Candy(CandyColour.values()[result], CandyType.NORMAL);
 	}
 }

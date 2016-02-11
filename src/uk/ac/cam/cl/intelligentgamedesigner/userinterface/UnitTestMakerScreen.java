@@ -130,7 +130,11 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 		dimensions_width.setValue(width);
 		dimensions_height.setValue(height);
 		dimensions_above.setValue(above_screen);
-		
+
+	    board_above.setPreferredSize(new Dimension(
+	    		board_above.tile_size*board_above.width,
+	    		board_above.tile_size*board_above.height));
+		board_above.revalidate();
 	}
 
 	@Override
@@ -317,12 +321,13 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 		add(infinite_lookahead);
 
 		//set the locations
-		position(settings,0.5,0.6,300,500);
-		position(controls,0.5,0.20,300,100);
-		position(infinite_lookahead,0.2,0.8,400,160);
-		position(board_before,0.2,0.4,400,400);
-		position(board_after,0.8,0.4,400,400);
-		position(gameStates,0.8,0.8,400,160);
+		position(settings,0.5,0.6,260,450);
+		position(controls,0.5,0.15,300,100);
+		position(infinite_lookahead,0.2,0.8,9*board_above.tile_size,140);
+		
+		positionBoard(board_before,0.2,0.4);
+		positionBoard(board_after,0.8,0.4);
+		position(gameStates,0.8,0.8,9*board_above.tile_size,140);
 	}
 
 	@Override
@@ -483,6 +488,7 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 	    board_before.changeSize(dimensions_width.getValue(), dimensions_height.getValue());
 	    board_after.changeSize(dimensions_width.getValue(), dimensions_height.getValue());
 	    board_above.changeSize(dimensions_width.getValue(), dimensions_above.getValue());
+	    board_above.revalidate();
 	}
 	
 	public boolean canFill() {

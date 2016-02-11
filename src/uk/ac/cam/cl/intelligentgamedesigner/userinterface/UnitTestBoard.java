@@ -1,6 +1,7 @@
 package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
@@ -44,6 +45,29 @@ public class UnitTestBoard extends CustomBoard {
 		if(type == 0){//before watches and updates after
 			watch_board = watch.getBoard();
 		}
+	}
+
+	@Override
+	public void changeSize(int new_w, int new_h){
+		Cell[][] new_board = new Cell[new_w][new_h];
+		//keep as much of the old board as possible
+		for(int x=0;x<new_w;x++){
+			for(int y=0;y<new_h;y++){
+				if(x<width && y<height)
+					new_board[x][y] = board[x][y];
+				else new_board[x][y] = differingDefaultCell();
+			}
+		}
+		//replace the old board
+		width = new_w;
+		height = new_h;
+		board = new_board;
+		
+		setPreferredSize(new Dimension(width*tile_size,height*tile_size));
+	}
+	protected Cell differingDefaultCell(){
+		if(type == 2)return new Cell(CellType.NORMAL,new Candy(CandyColour.RED,CandyType.NORMAL));
+		return new Cell(CellType.UNUSABLE);
 	}
 	
 	public Move getMove(){

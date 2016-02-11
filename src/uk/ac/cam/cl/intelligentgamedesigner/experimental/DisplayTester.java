@@ -15,11 +15,12 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.*;
 public class DisplayTester {	
 	
 	public static Design getSampleDesign() {
+		int sizeX = 15, sizeY = 15;
 		Design design = new Design();
-		Cell[][] boardLayout = new Cell[10][10];
-		for (int i = 0; i < 10; ++i) {
-			for (int j = 0; j < 10; ++j) {
-				if (j == 9) 
+		Cell[][] boardLayout = new Cell[sizeX][sizeY];
+		for (int i = 0; i < sizeX; ++i) {
+			for (int j = 0; j < sizeY; ++j) {
+				if (j == sizeY - 1) 
 					boardLayout[i][j] = new Cell(CellType.EMPTY, null, 0, true);
 				else boardLayout[i][j] = new Cell(CellType.EMPTY);
 				
@@ -72,7 +73,7 @@ public class DisplayTester {
 				boardLayout[x][y] = new Cell(CellType.EMPTY);
 			}
 		}
-
+		boardLayout[0][0] = new Cell(CellType.UNUSABLE);
 		// Check jelly layers aren't moved by the shuffle
 		boardLayout[1][0].setJellyLevel(1);
 		boardLayout[2][0].setJellyLevel(1);
@@ -89,7 +90,7 @@ public class DisplayTester {
 	public static void main(String[] args) {
 		JPanel generalPanel = new JPanel();
 		JFrame app = new JFrame();
-		GameState game = new GameState(getSampleDesign2());
+		GameState game = new GameState(getSampleDesign());
 		// game.changeCandyGenerator(new UnmoveableCandyGenerator(null));
 		CellChooser.game = game;
 		GameDisplay gamePanel = new GameDisplay(game.getWidth(), game.getHeight(), 50);

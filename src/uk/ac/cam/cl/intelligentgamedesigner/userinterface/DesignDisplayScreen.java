@@ -158,6 +158,8 @@ public class DesignDisplayScreen extends DisplayScreen{
 		details.add(Box.createRigidArea(new Dimension(0, 10)));
 		details.add(moves);
 		details.add(Box.createRigidArea(new Dimension(0, 10)));
+		details.add(candies);
+		details.add(Box.createRigidArea(new Dimension(0, 10)));
 		
 		//make a box with the options
 		JPanel buttons = new JPanel();
@@ -184,9 +186,9 @@ public class DesignDisplayScreen extends DisplayScreen{
 		add(details);
 		
 		position(title, 0.35, 0.9, 200, 30);
-		position(details, 0.7,0.4,300,300);
-		position(buttons,0.7,0.8,300,300);
-		position(board,0.4,0.3,800,800);
+		position(details, 0.7,0.3,250,150);
+		position(buttons,0.7,0.7,250,250);
+		positionBoard(board,0.35,0.5);
 		position(back,0.1,0.85,100,30);
 	}
 

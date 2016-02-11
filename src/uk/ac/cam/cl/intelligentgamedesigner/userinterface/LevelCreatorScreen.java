@@ -316,9 +316,9 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		add(board);
 
 		//set the locations
-		position(settings,0.15,0.5,300,600);
-		position(controls,0.85,0.5,300,300);
-		position(board,0.65,0.2,900,1000);
+		position(settings,0.15,0.5,250,500);
+		position(controls,0.85,0.5,250,250);
+		positionBoard(board,0.5,0.5);
 		position(title,0.5,0.9,200,40);
 	}
 

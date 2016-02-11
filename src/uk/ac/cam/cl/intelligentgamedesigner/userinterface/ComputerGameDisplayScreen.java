@@ -99,7 +99,7 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 		add(controls);
 
 		//set the locations
-		position(controls,0.85,0.3,300,100);
+		position(controls,0.75,0.4,300,100);
 	}
 	
 	@Override
@@ -111,6 +111,7 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 		case "mode":
 			auto_playing = auto_play.isSelected();
 			next_move.setEnabled(!auto_playing);
+			quit_button.setEnabled(!auto_playing);
 			if(auto_playing){
 				timer.setDelay(waitspeed);
 				timer.start();
@@ -126,7 +127,6 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 			if(auto_playing){
 				nextMove();
 			}
-			else System.out.println("Shouldn't be timing...");
 			timer.setDelay(waitspeed);
 			break;
 		}

@@ -49,7 +49,6 @@ public class MainMenuScreen extends DisplayScreen{
 	@Override
 	protected void setUpItems(){	
 		title_text.setFont(new Font("Helvetica", Font.CENTER_BASELINE, 22));
-		title_text.setAlignmentX(CENTER_ALIGNMENT);
 		publisher_text.setFont(new Font("Helvetica", Font.CENTER_BASELINE, 18));
 		
 		request_level.setActionCommand("request");
@@ -77,11 +76,11 @@ public class MainMenuScreen extends DisplayScreen{
 		
 		//set the locations
 		position(title_text,0.5,0.9,500,50);
-		position(publisher_text,0.5,0.8,200,50);
-		position(request_level,0.5,0.6,200,50);
-		position(create_level,0.5,0.45,200,50);
-		position(load_level,0.5,0.3,200,50);
-		position(unit_test,0.9,0.15,200,30);
+		position(publisher_text,0.5,0.75,200,50);
+		position(request_level,0.5,0.6,140,40);
+		position(create_level,0.5,0.45,140,40);
+		position(load_level,0.5,0.3,140,40);
+		position(unit_test,0.9,0.15,160,40);
 	}
 
 	@Override
