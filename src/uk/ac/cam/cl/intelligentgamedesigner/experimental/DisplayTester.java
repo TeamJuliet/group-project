@@ -60,11 +60,36 @@ public class DisplayTester {
         design.setRules(GameMode.INGREDIENTS, 10, 5, 6);
 		return design;
 	}
+
+	// This is for seeing the board do a shuffle (after making the only possible first move)
+	public static Design getSampleDesign2() {
+		Design design = new Design();
+		int dimension = 4;
+		Cell[][] boardLayout = new Cell[dimension][dimension];
+
+		for (int x = 0; x < dimension; x++) {
+			for (int y = 0; y < dimension; y++) {
+				boardLayout[x][y] = new Cell(CellType.EMPTY);
+			}
+		}
+
+		// Check jelly layers aren't moved by the shuffle
+		boardLayout[1][0].setJellyLevel(1);
+		boardLayout[2][0].setJellyLevel(1);
+
+		// Check liquorice locks aren't moved by the shuffle
+		boardLayout[2][3] = new Cell(CellType.LIQUORICE);
+		boardLayout[3][3] = new Cell(CellType.LIQUORICE);
+
+		design.setBoard(boardLayout);
+		design.setRules(GameMode.HIGHSCORE, 10, 5, 6);
+		return design;
+	}
 	
 	public static void main(String[] args) {
 		JPanel generalPanel = new JPanel();
 		JFrame app = new JFrame();
-		GameState game = new GameState(getSampleDesign());
+		GameState game = new GameState(getSampleDesign2());
 		// game.changeCandyGenerator(new UnmoveableCandyGenerator(null));
 		CellChooser.game = game;
 		GameDisplay gamePanel = new GameDisplay(game.getWidth(), game.getHeight(), 50);
