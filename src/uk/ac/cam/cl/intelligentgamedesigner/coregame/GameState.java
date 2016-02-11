@@ -40,9 +40,7 @@ public class GameState implements Cloneable, Serializable {
             }
         }
         recordIngredientSinks();
-        candyGenerator = new PseudoRandomCandyGenerator(new DesignParameters(design.getNumberOfCandyColours(),
-                                                        design.getMode(),
-                                                        design.getObjectiveTarget()));
+        candyGenerator = new PseudoRandomCandyGenerator(this);
         fillBoard();
 
         // Make sure the board is in a stable state
@@ -128,6 +126,14 @@ public class GameState implements Cloneable, Serializable {
     
     private void incrementScore(int addedScore) {
     	this.score += addedScore;
+    }
+
+    public GameMode getGameMode () {
+        return levelDesign.getMode();
+    }
+
+    public int getNumberOfCandyColours () {
+        return levelDesign.getNumberOfCandyColours();
     }
 
     @Override
