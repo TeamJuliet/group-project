@@ -122,9 +122,9 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
 
         design.setBoard(designBoard);
 
-        // TODO: set Max Moves
-
-        // TODO: set number of candy colours
+        // Set the general parameters
+        design.setNumberOfMovesAvailable(parameters.get(0).getValue());
+        design.setNumberOfCandyColours(parameters.get(1).getValue());
 
         return design;
     }
