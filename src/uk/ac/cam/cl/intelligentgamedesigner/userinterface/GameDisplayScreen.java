@@ -11,7 +11,9 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
@@ -102,6 +104,54 @@ public abstract class GameDisplayScreen extends DisplayScreen{
 		}catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		
+		endGameCheck();
+	}
+	
+	protected void endGameCheck(){
+		if(theGame.isGameOver()){
+			stopGame();
+			
+			//make a box with all the end game info
+			JPanel end_game_panel = new JPanel();
+			end_game_panel.setLayout(new BoxLayout(end_game_panel,BoxLayout.Y_AXIS));
+			if(theGame.isGameWon()){
+				end_game_panel.add(new JLabel("Congratulations!"),SwingConstants.CENTER);
+				//if(theGame.getGameMode() != GameMode.HIGHSCORE){
+					end_game_panel.add(Box.createRigidArea(new Dimension(0, 10)));
+					end_game_panel.add(new JLabel("You finished with "+theGame.getMovesRemaining()+ " moves remaining."));					
+				//}
+			}
+			else {
+				end_game_panel.add(new JLabel("Better Luck next time..."),SwingConstants.CENTER);
+				switch(theGame.getGameMode()){
+				case HIGHSCORE:
+					end_game_panel.add(Box.createRigidArea(new Dimension(0, 10)));
+					end_game_panel.add(new JLabel("You didn't reach the required score"));
+					break;
+				case JELLY:
+					end_game_panel.add(Box.createRigidArea(new Dimension(0, 10)));
+					end_game_panel.add(new JLabel("You didn't manage to clear the jellies fast enough."));
+					break;
+				case INGREDIENTS:
+					end_game_panel.add(Box.createRigidArea(new Dimension(0, 10)));
+					end_game_panel.add(new JLabel("You had another "+theGame.getIngredientsRemaining()+" left to collect."));
+					break;
+				}
+			}
+			end_game_panel.add(Box.createRigidArea(new Dimension(0, 20)));
+			end_game_panel.add(new JLabel("You finished with a score of "+theGame.getScore()));
+			end_game_panel.add(Box.createRigidArea(new Dimension(0, 20)));
+			end_game_panel.add(new JLabel("Taking you back to the level display menu."));
+			
+			JOptionPane.showMessageDialog(this,end_game_panel,"Game Over",JOptionPane.INFORMATION_MESSAGE);
+			
+			//after the message, quit the game
+			InterfaceManager.switchScreen(Windows.DISPLAY);
+		}
+	}
+	protected void stopGame(){
+		
 	}
 	
 	protected abstract GameBoard specificGameBoard();
