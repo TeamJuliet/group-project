@@ -28,11 +28,11 @@ public class SimulatedPlayersTestRunner {
         // TODO: make this work
         LevelManager manager = new LevelManager();
         GameState testLvl = new GameState(manager.getLevel(1));
-        Move suggestedMove = null;
+        Move suggestedMove;
         try {
-            ScorePlayerAlpha.calculateBestMove(testLvl);
+            suggestedMove = ScorePlayerAlpha.calculateBestMove(testLvl);
         } catch (NoMovesFoundException e) {
-            return;
+            suggestedMove = null;
         }
         boolean checkIfValid = testLvl.getValidMoves().contains(suggestedMove);
         assertTrue(checkIfValid);
