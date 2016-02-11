@@ -79,7 +79,7 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 		view_level = new JButton("View Level");
 		back_button = new JButton("Back");
 		
-		iterationLabel = new JLabel();
+		iterationLabel = new JLabel("",SwingConstants.CENTER);
 		
 		all_boards = new JPanel();
 		topBoards = new SelectBoard[boardCount];
@@ -122,10 +122,10 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 		add(all_boards);
 		
 		position(title,0.5,0.9,400,50);
-		position(iterationLabel,0.4,0.7,300,40);
+		position(iterationLabel,0.5,0.7,300,40);
 		position(view_level,0.5,0.2,200,50);
 		position(back_button,0.1,0.85,150,30);
-		position(all_boards,0.5,0.5,1250,250);
+		position(all_boards,0.5,0.45,1000,250);
 
 	}
 	

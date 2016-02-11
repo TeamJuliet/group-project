@@ -147,9 +147,9 @@ public abstract class GameDisplayScreen extends DisplayScreen{
 		add(quit_button);
 
 		//set the locations
-		position(stats,0.85,0.7,300,300);
-		position(board,0.4,0.3,800,800);
-		position(quit_button,0.1,0.9,150,40);
+		position(stats,0.75,0.6,300,160);
+		positionBoard(board,0.4,0.5);
+		position(quit_button,0.1,0.9,100,30);
 	}
 
 	@Override

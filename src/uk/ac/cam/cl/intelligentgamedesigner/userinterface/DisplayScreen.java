@@ -27,12 +27,32 @@ public abstract class DisplayScreen extends JPanel  implements ActionListener{
 	protected abstract void placeItems();
 	
 	//position the item relative to the total screen size
+	private static int screen_width = InterfaceManager.screenWidth();
+	private static int screen_height = InterfaceManager.screenHeight();
+	private static double scale_factor = 1600.0/screen_width;
 	protected void position(JComponent thing,double frac_w,double frac_h, int width, int height){
+		double scaled_width = scale_factor * width;
+		double scaled_height = scale_factor * height;
+		thing.setAlignmentX(CENTER_ALIGNMENT);
+		thing.setAlignmentY(CENTER_ALIGNMENT);
 		thing.setBounds(
-				(int)(InterfaceManager.screenWidth()*frac_w - width/2), 
-				(int)(InterfaceManager.screenHeight()*(1-frac_h) - height/2),
-				width, 
-				height
+				(int)(screen_width*frac_w - scaled_width/2), 
+				(int)(screen_height*(1-frac_h) - scaled_height/2),
+				(int) scaled_width, 
+				(int) scaled_height
+				);
+	}
+	protected void positionBoard(DisplayBoard board, double frac_w, double frac_h){
+		board.setAlignmentX(CENTER_ALIGNMENT);
+		board.setAlignmentY(CENTER_ALIGNMENT);
+		int width = 10 * board.tile_size;
+		double scaled_width = scale_factor * width;
+		double offset = -scale_factor * 4.25 * board.tile_size;
+		board.setBounds(
+				(int)(screen_width*frac_w + offset), 
+				(int)(screen_height*(1-frac_h) + offset),
+				(int) scaled_width, 
+				(int) scaled_width
 				);
 	}
 }

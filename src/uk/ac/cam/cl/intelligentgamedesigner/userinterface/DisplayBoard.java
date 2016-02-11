@@ -55,8 +55,6 @@ public class DisplayBoard extends JComponent {
 		
 		tile_size = InterfaceManager.screenHeight()/15;
 		
-		setPreferredSize(new Dimension(width*tile_size,height*tile_size));
-		
 	}
 	public DisplayBoard(Design design){
 		if(design == null){

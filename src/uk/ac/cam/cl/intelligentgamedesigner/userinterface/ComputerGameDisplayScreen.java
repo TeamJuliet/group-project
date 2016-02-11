@@ -99,7 +99,7 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 		add(controls);
 
 		//set the locations
-		position(controls,0.85,0.3,300,100);
+		position(controls,0.75,0.4,300,100);
 	}
 	
 	@Override

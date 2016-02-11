@@ -1,8 +1,10 @@
 package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -10,6 +12,7 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -69,7 +72,7 @@ public class LevelBrowserScreen extends DisplayScreen implements ListSelectionLi
 		edit_button = new JButton("View Level Options");
 		delete_button = new JButton("Delete Selected Level");
 		
-		title = new JLabel("Select A Level Design:");
+		title = new JLabel("Select A Level Design:",SwingConstants.CENTER);
 	}
 	
 	@Override
@@ -112,10 +115,10 @@ public class LevelBrowserScreen extends DisplayScreen implements ListSelectionLi
 		
 		position(title,0.5,0.9,300,50);
 		position(edit_button,0.75,0.6,150,20);
-		position(delete_button,0.2,0.6,180,20);
-		position(level_list,0.5,0.2,300,50);
+		position(delete_button,0.25,0.6,180,20);
+		position(level_list,0.5,0.2,300,70);
 		position(back_button,0.1,0.9,80,20);
-		position(board_display,0.5,0.50,500,500);
+		positionBoard(board_display,0.5,0.55);
 		
 	}
 

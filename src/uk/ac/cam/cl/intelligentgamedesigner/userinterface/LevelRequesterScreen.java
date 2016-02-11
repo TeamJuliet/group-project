@@ -130,7 +130,7 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		
 		//set the locations
 		position(title,0.5,0.9,400,50);
-		position(go_button,0.5,0.3,200,50);
+		position(go_button,0.5,0.3,100,40);
 		position(back_button,0.1,0.85,150,30);
 		position(settings,0.5,0.5,400,400);
 	}
