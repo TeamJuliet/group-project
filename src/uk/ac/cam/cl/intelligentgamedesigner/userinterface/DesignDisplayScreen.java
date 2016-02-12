@@ -23,7 +23,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.ScorePlayerAlpha;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.ScorePlayerBeta;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.ScorePlayerGamma;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.DepthPotentialScorePlayer;
-import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerBase1;
+import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerBase;
 
 public class DesignDisplayScreen extends DisplayScreen{
 	private JPanel title;
@@ -216,7 +216,7 @@ public class DesignDisplayScreen extends DisplayScreen{
 		}
 	}
 	
-	private Class<? extends SimulatedPlayerBase1> getPlayerClass(){
+	private Class<? extends SimulatedPlayerBase> getPlayerClass(){
 		//TODO
 		switch(mode){
 		case HIGHSCORE:

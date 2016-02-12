@@ -20,7 +20,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.NoMovesFoundException;
-import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerBase1;
+import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerBase;
 
 //defines the functionality specific to the Simulated Player viewer
 public class ComputerGameDisplayScreen extends GameDisplayScreen{
@@ -44,7 +44,7 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 	}
 	
 	//get the static method for invoking
-	public void getMethodFromClass(Class<? extends SimulatedPlayerBase1> player_class){
+	public void getMethodFromClass(Class<? extends SimulatedPlayerBase> player_class){
 		 try {
 			 Class[] cArg = new Class[1];
 		     cArg[0] = GameState.class;

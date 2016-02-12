@@ -74,8 +74,8 @@ public class GameState implements Cloneable, Serializable {
     }
 
     public GameState(GameState original, CandyGenerator candyGenerator) {
-    	this(original);
-    	this.candyGenerator = candyGenerator;
+        this(original);
+        this.candyGenerator = candyGenerator;
     }
 
     // This constructor is for testing purposes
@@ -116,23 +116,23 @@ public class GameState implements Cloneable, Serializable {
         return score;
     }
 
-    public int getIngredientsRemaining () {
+    public int getIngredientsRemaining() {
         return ingredientsRemaining;
     }
 
     public int getMovesRemaining() {
         return movesRemaining;
     }
-    
+
     private void incrementScore(int addedScore) {
-    	this.score += addedScore;
+        this.score += addedScore;
     }
 
-    public GameMode getGameMode () {
+    public GameMode getGameMode() {
         return levelDesign.getMode();
     }
 
-    public int getNumberOfCandyColours () {
+    public int getNumberOfCandyColours() {
         return levelDesign.getNumberOfCandyColours();
     }
 
@@ -310,17 +310,18 @@ public class GameState implements Cloneable, Serializable {
         if (!inBoard(new Position(x, y)))
             return;
         Cell current = board[x][y];
-        if (current.getCellType().equals(CellType.UNUSABLE)) return;
-        
+        if (current.getCellType().equals(CellType.UNUSABLE))
+            return;
+
         touchNeighbours(x, y);
         // There is no additional score for LIQUORICE lock.
         if (current.getCellType().equals(CellType.LIQUORICE)) {
-        	current.setCellType(CellType.NORMAL);
-        	// Should not remove any jelly layer if the cell type is liquorice.
-        	return;
+            current.setCellType(CellType.NORMAL);
+            // Should not remove any jelly layer if the cell type is liquorice.
+            return;
         }
         if (current.removeJellyLayer()) {
-        	incrementScore(Scoring.MATCHED_A_JELLY);
+            incrementScore(Scoring.MATCHED_A_JELLY);
         }
         if (current.hasCandy() && current.getCandy().isDetonated())
             return;
@@ -339,22 +340,25 @@ public class GameState implements Cloneable, Serializable {
             wasSomethingPopped = true;
         }
     }
-    
+
     private void touch(int x, int y) {
-    	if (!inBoard(new Position(x, y))) return;
-    	Cell current = board[x][y];
-    	if (current.getCellType().equals(CellType.ICING)) {
-    		//  TODO: Score here is where an icing is removed.
-    		current.setCellType(CellType.EMPTY);
-    	}
-    }    
+        if (!inBoard(new Position(x, y)))
+            return;
+        Cell current = board[x][y];
+        if (current.getCellType().equals(CellType.ICING)) {
+            // TODO: Score here is where an icing is removed.
+            current.setCellType(CellType.EMPTY);
+        }
+    }
+
     // Function that touches the neighbours of a triggered cell.
     private void touchNeighbours(int x, int y) {
-    	if (!inBoard(new Position(x, y))) return;
-    	touch(x + 1, y);
-    	touch(x - 1, y);
-    	touch(x, y + 1);
-    	touch(x, y - 1);
+        if (!inBoard(new Position(x, y)))
+            return;
+        touch(x + 1, y);
+        touch(x - 1, y);
+        touch(x, y + 1);
+        touch(x, y - 1);
     }
 
     // Check if any of the two positions is in the horizontal range.
@@ -366,25 +370,26 @@ public class GameState implements Cloneable, Serializable {
     private boolean moveInVerticalRange(Move move, int startY, int endY) {
         return inRange(lastMove.p1.y, startY, endY) || inRange(lastMove.p2.y, startY, endY);
     }
-    
+
     private void makeCellBomb(int x, int y) {
-    	incrementScore(Scoring.MADE_BOMB);
-    	board[x][y].setCandy(new Candy(null, CandyType.BOMB));
+        incrementScore(Scoring.MADE_BOMB);
+        board[x][y].setCandy(new Candy(null, CandyType.BOMB));
     }
-    
+
     private void makeWrapped(int x, int y, CandyColour clr) {
-    	incrementScore(Scoring.MADE_WRAPPED_CANDY);
-    	board[x][y].setCandy(new Candy(clr, CandyType.WRAPPED));
+        incrementScore(Scoring.MADE_WRAPPED_CANDY);
+        board[x][y].setCandy(new Candy(clr, CandyType.WRAPPED));
     }
-    
+
     private void makeStripped(int x, int y, CandyColour clr, boolean isVertical) {
-    	incrementScore(Scoring.MADE_STRIPPED_CANDY);
-    	board[x][y].setCandy(new Candy(clr, isVertical ? CandyType.VERTICALLY_STRIPPED : CandyType.HORIZONTALLY_STRIPPED));
+        incrementScore(Scoring.MADE_STRIPPED_CANDY);
+        board[x][y]
+                .setCandy(new Candy(clr, isVertical ? CandyType.VERTICALLY_STRIPPED : CandyType.HORIZONTALLY_STRIPPED));
     }
-    
-    private static boolean VERTICAL = true;
+
+    private static boolean VERTICAL   = true;
     private static boolean HORIZONTAL = false;
-    
+
     // Function that replaces all the matched tiles with their respective
     // Candy (either empty or special is some cases).
     private void markAndReplaceMatchingTiles() {
@@ -392,7 +397,8 @@ public class GameState implements Cloneable, Serializable {
         for (int x = 0; x < width; ++x) {
             for (int y = 0; y < height; ++y) {
                 // Do not consider cells with no candy.
-                if (!board[x][y].hasCandy()) continue;
+                if (!board[x][y].hasCandy())
+                    continue;
                 CandyColour colour = board[x][y].getCandy().getColour();
                 SingleTileAnalysis analysis = analyzeTile(new Position(x, y));
                 // In case there is a horizontal match.
@@ -427,17 +433,17 @@ public class GameState implements Cloneable, Serializable {
                         }
                     }
                     if (analysis.getLengthX() == 3) {
-                    	incrementScore(Scoring.MATCHED_3);
-                    	continue;
+                        incrementScore(Scoring.MATCHED_3);
+                        continue;
                     }
-                        
+
                     else if (!foundVertical) {
 
                         // If last move is in the range we went through,
                         // then make that one the stripped candy.
                         if (lastMove == null || !moveInHorizontalRange(lastMove, analysis.start_x, analysis.end_x)) {
                             // Make the middle candy vertically stripped.
-                        	makeStripped(x+1, y, colour, VERTICAL);
+                            makeStripped(x + 1, y, colour, VERTICAL);
                         } else {
                             int coordinate;
                             // If one of the positions has the same
@@ -450,9 +456,10 @@ public class GameState implements Cloneable, Serializable {
                         }
 
                     } else {
-                        // The bomb created will be aligned with the first move since it will always be the middle one.
+                        // The bomb created will be aligned with the first move
+                        // since it will always be the middle one.
                         if (analysis.getLengthX() >= 5) {
-                        	makeCellBomb(x+2, y);
+                            makeCellBomb(x + 2, y);
                         }
                     }
 
@@ -488,16 +495,15 @@ public class GameState implements Cloneable, Serializable {
                             trigger(x, k, Scoring.NO_ADDITIONAL_SCORE);
                         }
                     }
-                    if (analysis.getLengthY() == 3){
-                    	incrementScore(Scoring.MATCHED_3);
+                    if (analysis.getLengthY() == 3) {
+                        incrementScore(Scoring.MATCHED_3);
                         continue;
-                    }
-                    else if (!foundHorizontal) {
+                    } else if (!foundHorizontal) {
                         // If last move is in the range we went through,
                         // then make that one the stripped candy.
                         if (lastMove == null || !moveInVerticalRange(lastMove, analysis.start_y, analysis.end_y)) {
                             // Make the middle candy vertically stripped.
-                        	makeStripped(x, y+1, colour, HORIZONTAL);
+                            makeStripped(x, y + 1, colour, HORIZONTAL);
                         } else {
                             int coordinate;
                             // If one of the positions has the same
@@ -510,7 +516,7 @@ public class GameState implements Cloneable, Serializable {
                         }
                     } else {
                         if (analysis.getLengthY() >= 5) {
-                        	makeCellBomb(x, y+2);
+                            makeCellBomb(x, y + 2);
                         }
                     }
                 }
@@ -521,8 +527,8 @@ public class GameState implements Cloneable, Serializable {
 
     // Function that triggers all cells in the cross around position.
     private void detonateWrappedWrapped(Position pos) {
-    	incrementScore(Scoring.DETONATE_WRAPPED_CANDY);
-    	incrementScore(Scoring.DETONATE_WRAPPED_CANDY);
+        incrementScore(Scoring.DETONATE_WRAPPED_CANDY);
+        incrementScore(Scoring.DETONATE_WRAPPED_CANDY);
         int yWindow;
         for (int x = pos.x - 3; x < pos.x + 3; ++x) {
             if (inRange(x, pos.x - 1, pos.x))
@@ -537,19 +543,19 @@ public class GameState implements Cloneable, Serializable {
 
     // Function that performs the operation for combining two bombs.
     private void detonateBombBomb() {
-    	incrementScore(Scoring.DETONATE_BOMB);
-    	incrementScore(Scoring.DETONATE_BOMB);
+        incrementScore(Scoring.DETONATE_BOMB);
+        incrementScore(Scoring.DETONATE_BOMB);
         for (int x = 0; x < width; ++x) {
             for (int y = 0; y < height; ++y) {
-            	// TODO: Check if this is the case
+                // TODO: Check if this is the case
                 trigger(x, y, Scoring.BOMB_INDIVIDUAL);
             }
         }
     }
-    
+
     // Function that will detonate a wrapped candy.
     private void detonateWrapped(Position wrapped) {
-    	incrementScore(Scoring.DETONATE_WRAPPED_CANDY);
+        incrementScore(Scoring.DETONATE_WRAPPED_CANDY);
         for (int i = wrapped.x - 1; i <= wrapped.x + 1; ++i) {
             for (int j = wrapped.y - 1; j <= wrapped.y + 1; ++j) {
                 if (i == wrapped.x && j == wrapped.y) {
@@ -563,7 +569,7 @@ public class GameState implements Cloneable, Serializable {
     // Function that performs the clearing of the vertical line for the stripped
     // candy.
     private void detonateVerticallyStripped(Position vStripped) {
-    	incrementScore(Scoring.DETONATE_STRIPPED_CANDY);
+        incrementScore(Scoring.DETONATE_STRIPPED_CANDY);
         for (int y = 0; y < height; ++y) {
             trigger(vStripped.x, y, Scoring.STRIPPED_INDIVIDUAL);
         }
@@ -573,11 +579,12 @@ public class GameState implements Cloneable, Serializable {
     // stripped candy.
     private void detonateHorizontallyStripped(Position hStripped) {
         for (int x = 0; x < width; ++x) {
-            trigger(x, hStripped.y,Scoring.STRIPPED_INDIVIDUAL);
+            trigger(x, hStripped.y, Scoring.STRIPPED_INDIVIDUAL);
         }
     }
 
-    // Function that creates a cross of width 3 around the locations that were swapped.
+    // Function that creates a cross of width 3 around the locations that were
+    // swapped.
     private void detonateWrappedStripped(Position pos) {
         for (int x = pos.x - 1; x <= pos.x + 1; ++x) {
             for (int y = 0; y < height; ++y) {
@@ -619,47 +626,48 @@ public class GameState implements Cloneable, Serializable {
         }
     }
 
-
     private List<Position> ingredientSinkPositions = new ArrayList<Position>();
-    
+
     private boolean hasIngredient(Position pos) {
-    	Cell cell = getCell(pos);
-    	return cell.hasCandy() && cell.getCandy().getCandyType().equals(CandyType.INGREDIENT); 
+        Cell cell = getCell(pos);
+        return cell.hasCandy() && cell.getCandy().getCandyType().equals(CandyType.INGREDIENT);
     }
-    
+
     private void recordIngredientSinks() {
-    	for (int x = 0; x < width; ++x) {
-    		for (int y = 0; y < height; ++y) {
-    			Position current = new Position(x, y);
-    			if (getCell(current).isIngredientSink) ingredientSinkPositions.add(current);  
-    		}
-    	}
+        for (int x = 0; x < width; ++x) {
+            for (int y = 0; y < height; ++y) {
+                Position current = new Position(x, y);
+                if (getCell(current).isIngredientSink)
+                    ingredientSinkPositions.add(current);
+            }
+        }
     }
-    
+
     private void decreaseRemainingIngredients() {
-    	incrementScore(Scoring.BROUGHT_INGREDIENT_DOWN);
-    	--this.ingredientsRemaining;
+        incrementScore(Scoring.BROUGHT_INGREDIENT_DOWN);
+        --this.ingredientsRemaining;
     }
-    
+
     // Function that passes ingredients through the sink.
     private boolean passIngredients() {
-    	boolean passedIngredient = false;
-    	for (Position ingredientSink : ingredientSinkPositions) {
-    		// System.err.println("Hello " + ingredientSink.x + ingredientSink.y);
-    		if (hasIngredient(ingredientSink)) {
-    			System.err.println("Enter");
-    			Cell cell = getCell(ingredientSink);
-    			cell.setCellType(CellType.EMPTY);
-    			decreaseRemainingIngredients();
-    			passedIngredient = true;
-    		}
-    	}
-    	return passedIngredient;
+        boolean passedIngredient = false;
+        for (Position ingredientSink : ingredientSinkPositions) {
+            // System.err.println("Hello " + ingredientSink.x +
+            // ingredientSink.y);
+            if (hasIngredient(ingredientSink)) {
+                System.err.println("Enter");
+                Cell cell = getCell(ingredientSink);
+                cell.setCellType(CellType.EMPTY);
+                decreaseRemainingIngredients();
+                passedIngredient = true;
+            }
+        }
+        return passedIngredient;
     }
-    
+
     // Brings candies down.
     private void bringDownCandies() {
-    	passIngredients();
+        passIngredients();
         detonated = new ArrayList<Position>();
         for (int i = 0; i < width; ++i) {
             for (int j = height - 1; j >= 1; --j) {
@@ -680,7 +688,7 @@ public class GameState implements Cloneable, Serializable {
                 }
             }
         }
-        
+
     }
 
     // Function that fills the board by requesting candies from the
@@ -884,33 +892,37 @@ public class GameState implements Cloneable, Serializable {
             System.out.println("3: Bringing down some candies (and filling board).");
             bringDownCandies();
             if (passIngredients()) {
-            	proceedState = 1;
+                proceedState = 1;
             } else {
-	            fillBoard();
-	            if (detonated.isEmpty()) {
-	                wasSomethingPopped = false;
-	            } else {
-	                proceedState = 0;
-	            }
+                fillBoard();
+                if (detonated.isEmpty()) {
+                    wasSomethingPopped = false;
+                } else {
+                    proceedState = 0;
+                }
             }
         }
         proceedState = (proceedState + 1) % 3;
         return true;
     }
 
-    // TODO: Handle case in which no amount of shuffling can introduce a possible move - i.e. we have need some
+    // TODO: Handle case in which no amount of shuffling can introduce a
+    // possible move - i.e. we have need some
     // concept of "GAME OVER"
-    private boolean candiesNeededShuffling () {
+    private boolean candiesNeededShuffling() {
         boolean didShuffle = false;
 
-        // It is quite complicated (and expensive to compute) whether there exists a shuffle which introduces a
-        // possible move, so for now I think we should just shuffle up to some limit, at which point we declare that
+        // It is quite complicated (and expensive to compute) whether there
+        // exists a shuffle which introduces a
+        // possible move, so for now I think we should just shuffle up to some
+        // limit, at which point we declare that
         // the game is over
         int movesAvailable;
         int shuffleLimit = 5;
         int shuffleCount = 0;
 
-        // While there are no available moves, we need to shuffle the normal (non-special) candies on the board
+        // While there are no available moves, we need to shuffle the normal
+        // (non-special) candies on the board
         while ((movesAvailable = getValidMoves().size()) == 0 && shuffleCount < shuffleLimit) {
 
             System.out.println("No moves available: Shuffling candies...");
@@ -926,7 +938,8 @@ public class GameState implements Cloneable, Serializable {
                 }
             }
 
-            // Shuffle the colours - the reason I'm shuffling colours and not candies is so that jelly blocks aren't
+            // Shuffle the colours - the reason I'm shuffling colours and not
+            // candies is so that jelly blocks aren't
             // moved around
             Collections.shuffle(normalCandyColours);
 
@@ -945,8 +958,10 @@ public class GameState implements Cloneable, Serializable {
         }
 
         if (movesAvailable == 0) {
-            // TODO: Handle the case where we give up shuffling and declare the game over
-            // Perhaps we could throw an exception at this point, such as NoAvailableMovesException or GameOverException
+            // TODO: Handle the case where we give up shuffling and declare the
+            // game over
+            // Perhaps we could throw an exception at this point, such as
+            // NoAvailableMovesException or GameOverException
         }
 
         return didShuffle;

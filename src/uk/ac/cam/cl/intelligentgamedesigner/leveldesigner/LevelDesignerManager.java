@@ -4,7 +4,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.ScorePlayerAlpha;
-import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerBase1;
+import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerBase;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -82,7 +82,7 @@ public class LevelDesignerManager extends SwingWorker {
         int numberOfSimulations = 1;
 
         GameState[] gameStates = new GameState[numberOfSimulations];
-        SimulatedPlayerBase1[] simulatedPlayers = new SimulatedPlayerBase1[numberOfSimulations];
+        SimulatedPlayerBase[] simulatedPlayers = new SimulatedPlayerBase[numberOfSimulations];
         Thread[] simulationThreads = new Thread[numberOfSimulations];
 
         for (int t = 0; t < numberOfSimulations; t++) {
@@ -90,7 +90,7 @@ public class LevelDesignerManager extends SwingWorker {
 
             switch (design.getMode()) {
                 case HIGHSCORE:
-                    simulatedPlayers[t] = new ScorePlayerAlpha(gameStates[t]);
+                    simulatedPlayers[t] = new ScorePlayerAlpha();
                     break;
                 case JELLY:
                     System.err.println("Jelly level players are not yet supported.");
@@ -100,7 +100,7 @@ public class LevelDesignerManager extends SwingWorker {
                     return 0;
             }
 
-            simulationThreads[t] = new Thread(new SimulationThread(simulatedPlayers[t]));
+            simulationThreads[t] = new Thread(new SimulationThread(simulatedPlayers[t], gameStates[t]));
 
             simulationThreads[t].setDaemon(true);
             simulationThreads[t].start();

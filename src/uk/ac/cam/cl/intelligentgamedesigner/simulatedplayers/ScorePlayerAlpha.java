@@ -3,7 +3,6 @@ package uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
 
 //Very basic player, simply search for first available move and make it
 public class ScorePlayerAlpha extends SimulatedPlayerBase {

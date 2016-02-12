@@ -5,7 +5,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 
 public class ScorePlayerGamma extends SimulatedPlayerBase {
-    
+
     @Override
     public void solve(GameState level) throws NoMovesFoundException {
         while (level.getMovesRemaining() > 0) {
@@ -27,7 +27,7 @@ public class ScorePlayerGamma extends SimulatedPlayerBase {
         // Look through all possible moves and try to make special candies if
         // possible
         // Try to bring special candies together and combine them
-        // 
+        //
         return null;
     }
 

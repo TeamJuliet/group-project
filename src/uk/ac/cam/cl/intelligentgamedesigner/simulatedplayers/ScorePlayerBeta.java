@@ -9,7 +9,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.UnmoveableCandyGenerator;
 
 public class ScorePlayerBeta extends SimulatedPlayerBase {
-    
+
     private void printInvalidMoveError(Move move) {
         System.err.println("WARNING! ScorePlayerBeta has suggested an invalidMove " + move + ".");
     }
