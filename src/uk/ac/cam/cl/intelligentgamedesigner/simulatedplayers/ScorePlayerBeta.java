@@ -8,35 +8,13 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.MatchAnalysis;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.UnmoveableCandyGenerator;
 
-public class ScorePlayerBeta implements SimulatedPlayerBase {
-    GameState level;
-
-    public ScorePlayerBeta(GameState level) {
-        this.level = level;
-    }
-
-    @Override
-    public void solve() {
-        while (level.getMovesRemaining() > 0) {
-            Move bestMove = calculateBestMove(level);
-            try {
-                level.makeMove(bestMove);
-            } catch (InvalidMoveException e) {
-                printInvalidMoveError(e.invalidMove);
-                try { // TODO: this is horrible, fix it
-                    level.makeMove(level.getValidMoves().get(0));
-                } catch (InvalidMoveException exception) {
-                    return;
-                }
-            }
-        }
-    }
-
+public class ScorePlayerBeta extends SimulatedPlayerBase {
+    
     private void printInvalidMoveError(Move move) {
         System.err.println("WARNING! ScorePlayerBeta has suggested an invalidMove " + move + ".");
     }
 
-    public static Move calculateBestMove(GameState currentState) {
+    public Move calculateBestMove(GameState currentState) {
         GameState original = new GameState(currentState, new UnmoveableCandyGenerator());
         List<Move> validMoves = original.getValidMoves();
         int largestMatch = 0;

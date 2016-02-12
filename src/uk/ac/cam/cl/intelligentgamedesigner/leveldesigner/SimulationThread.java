@@ -1,13 +1,13 @@
 package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.NoMovesFoundException;
-import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerBase;
+import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerBase1;
 
 public class SimulationThread implements Runnable {
 
-    private SimulatedPlayerBase simulatedPlayer;
+    private SimulatedPlayerBase1 simulatedPlayer;
 
-    public SimulationThread (SimulatedPlayerBase simulatedPlayer) {
+    public SimulationThread (SimulatedPlayerBase1 simulatedPlayer) {
         this.simulatedPlayer = simulatedPlayer;
     }
 

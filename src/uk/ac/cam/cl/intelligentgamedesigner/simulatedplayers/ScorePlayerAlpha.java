@@ -6,15 +6,10 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
 
 //Very basic player, simply search for first available move and make it
-public class ScorePlayerAlpha implements SimulatedPlayerBase {
-    GameState level;
-
-    public ScorePlayerAlpha(GameState level) {
-        this.level = level;
-    }
+public class ScorePlayerAlpha extends SimulatedPlayerBase {
 
     @Override
-    public void solve() throws NoMovesFoundException {
+    public void solve(GameState level) throws NoMovesFoundException {
         while (level.getMovesRemaining() > 0) {
             Move bestMove = calculateBestMove(level);
             try {
@@ -34,7 +29,7 @@ public class ScorePlayerAlpha implements SimulatedPlayerBase {
         System.err.println("WARNING! ScorePlayerAlpha has suggested an invalidMove " + move + ".");
     }
 
-    public static Move calculateBestMove(GameState currentState) throws NoMovesFoundException {
+    public Move calculateBestMove(GameState currentState) throws NoMovesFoundException {
         if (currentState.getValidMoves().size() > 0)
             return currentState.getValidMoves().get(0);
         throw new NoMovesFoundException(currentState);

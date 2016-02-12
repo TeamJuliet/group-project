@@ -4,7 +4,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.ScorePlayerAlpha;
-import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerBase;
+import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerBase1;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -82,7 +82,7 @@ public class LevelDesignerManager extends SwingWorker {
         int numberOfSimulations = 1;
 
         GameState[] gameStates = new GameState[numberOfSimulations];
-        SimulatedPlayerBase[] simulatedPlayers = new SimulatedPlayerBase[numberOfSimulations];
+        SimulatedPlayerBase1[] simulatedPlayers = new SimulatedPlayerBase1[numberOfSimulations];
         Thread[] simulationThreads = new Thread[numberOfSimulations];
 
         for (int t = 0; t < numberOfSimulations; t++) {

@@ -4,14 +4,10 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 
-public class ScorePlayerGamma implements SimulatedPlayerBase {
-    GameState level;
+public class ScorePlayerGamma extends SimulatedPlayerBase {
     
-    public ScorePlayerGamma(GameState level){
-        this.level = level;
-    }
     @Override
-    public void solve() throws NoMovesFoundException {
+    public void solve(GameState level) throws NoMovesFoundException {
         while (level.getMovesRemaining() > 0) {
             Move bestMove = calculateBestMove(level);
             try {
@@ -27,7 +23,7 @@ public class ScorePlayerGamma implements SimulatedPlayerBase {
         }
     }
 
-    public static Move calculateBestMove(GameState currentState) throws NoMovesFoundException {
+    public Move calculateBestMove(GameState currentState) throws NoMovesFoundException {
         // Look through all possible moves and try to make special candies if
         // possible
         // Try to bring special candies together and combine them

@@ -7,7 +7,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 
-abstract class DepthPotentialPlayer implements SimulatedPlayerBase {
+abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
 	// The number of states that the Player should look ahead at each move.
 	// Note: when this is -1, it generates all possible moves.
 	protected final int numOfStatesAhead;
@@ -18,9 +18,6 @@ abstract class DepthPotentialPlayer implements SimulatedPlayerBase {
 	
 	private PriorityQueue<GameStateWithCombinedMetric> pool;  
 	private PriorityQueue<GameStateWithCombinedMetric> results;
-	
-	//hold the current state of the level
-	protected GameState level;
 	
 	// Function that evaluates the current game state based on the knowledge
 	// at that particular state.
@@ -64,6 +61,10 @@ abstract class DepthPotentialPlayer implements SimulatedPlayerBase {
 			if (moves.isEmpty()) results.add(current);
 		}
 	}
+	
+	private void printInvalidMoveError(Move move) {
+        System.err.format("WARNING! DepthPotentialPlayer with settings (%d,%d)has suggested an invalidMove " + move + ".", numOfStatesAhead, numOfStatesInPool);
+    }
 	
 	public Move calculateBestMove(GameState currentState) throws NoMovesFoundException {
 		List<Move> moves = currentState.getValidMoves();

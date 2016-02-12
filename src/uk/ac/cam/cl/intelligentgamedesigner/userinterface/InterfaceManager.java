@@ -14,7 +14,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 import uk.ac.cam.cl.intelligentgamedesigner.leveldesigner.Specification;
-import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerBase;
+import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerBase1;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.TestCaseGame;
 
 //This will be used to navigate between the menu screens
@@ -93,7 +93,7 @@ public class InterfaceManager extends JFrame {
 		((HumanGameDisplayScreen)human_game_display_screen).giveInfo(design);
 		((HumanGameDisplayScreen)human_game_display_screen).setInfo();
 	}
-	public static void setSelectedComputerGame(Design design,Class<? extends SimulatedPlayerBase> player_class){
+	public static void setSelectedComputerGame(Design design,Class<? extends SimulatedPlayerBase1> player_class){
 		((ComputerGameDisplayScreen)computer_game_display_screen).giveInfo(design);
 		((ComputerGameDisplayScreen)computer_game_display_screen).getMethodFromClass(player_class);
 		((ComputerGameDisplayScreen)computer_game_display_screen).setInfo();
