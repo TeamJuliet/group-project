@@ -37,19 +37,48 @@ public class GameState implements Cloneable, Serializable {
         this.board = new Cell[width][height];
         this.progress = new GameStateProgress(design);
 
+        // Initially create an empty board, see (***) for why.
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 Cell cellToCopy = design.getCell(x, y);
-                board[x][y] = new Cell(cellToCopy);
+                board[x][y] = new Cell(CellType.EMPTY);
             }
         }
-        
-        recordIngredientSinks();
+
         candyGenerator = new PseudoRandomCandyGenerator(this);
         fillBoard();
 
         // Make sure the board is in a stable state
         while (makeSmallMove());
+
+        // *** Copy the design elements AFTER filling the board with normal candies. The reason for this is that if we
+        // add the design elements (icing, liquorice, etc) BEFORE the normal candies, then the normal candies may
+        // introduce an unstable state and destroy some of the design elements, which means the game will start with
+        // some of the desired design elements missing (e.g. an icing block missing).
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                Cell cellToCopy = design.getCell(x, y);
+                CellType cellType = cellToCopy.getCellType();
+
+                // For ICING and UNUSABLEs, we can just replace the cell with the design element
+                if (cellType == CellType.ICING || cellType == CellType.UNUSABLE) {
+                    board[x][y] = new Cell(cellToCopy);
+                }
+                // For LIQUORICE, we want to replace everything except for the normal underlying candy
+                else if (cellType == CellType.LIQUORICE) {
+                    board[x][y] = new Cell(cellType,
+                            board[x][y].getCandy(),
+                            cellToCopy.getJellyLevel(),
+                            cellToCopy.isIngredientSink);
+                }
+                // For EMPTY cells, we don't need to do anything
+            }
+        }
+
+        recordIngredientSinks();
+
+        // The score may have been prematurely increased from initial reductions, so we reset it to 0
+        this.progress.resetScore();
         this.design = design;
     }
 
