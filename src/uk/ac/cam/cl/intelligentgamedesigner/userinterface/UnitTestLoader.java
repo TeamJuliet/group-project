@@ -32,10 +32,12 @@ import uk.ac.cam.cl.intelligentgamedesigner.testing.TestCase;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.TestCaseGame;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.TestLibrary;
 
-public class UnitTestLoader extends JPanel implements ListSelectionListener {
+public class UnitTestLoader extends JPanel implements ActionListener,ListSelectionListener {
 
 	private JScrollPane test_list;
 	private JList<String> test_names;
+	
+	private JButton cancel_button;
 	
 	private String[] test_case_names;
 	private TestCaseGame[] test_cases;
@@ -62,8 +64,13 @@ public class UnitTestLoader extends JPanel implements ListSelectionListener {
         test_list = new JScrollPane(test_names);
         test_names.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		test_names.addListSelectionListener(this);
+		
+		cancel_button = new JButton("Cancel Selection");
+		cancel_button.addActionListener(this);
+		cancel_button.setActionCommand("cancel");
         
         add(test_list,BorderLayout.CENTER);
+        add(cancel_button,BorderLayout.PAGE_END);
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         
         selected_test = -1;
@@ -108,4 +115,18 @@ public class UnitTestLoader extends JPanel implements ListSelectionListener {
     private static void quit(){
     	if(frame != null)frame.dispose();
     }
+    
+    private void cancel(){
+    	test_names.clearSelection();
+    	selected_test = -1;
+    }
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		switch(e.getActionCommand()){
+		case "cancel":
+			cancel();
+			break;
+		}
+	}
 }
