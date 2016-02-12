@@ -3,7 +3,11 @@ package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 
@@ -18,6 +22,19 @@ public class DisplayBoard extends JComponent {
 	protected int width;
 	protected int height;
 	protected Cell[][] board;
+	
+	protected static boolean using_textures;
+	private static BufferedImage candy_red;
+	
+	public static void loadTextures(){
+//	       try {                
+//	           candy_red = ImageIO.read(new File("image name and path"));
+//	           using_textures = true;
+//	        } catch (IOException ex) {
+//	        	System.out.println("Error in loading textures");
+//	        	using_textures = false;
+//	        }
+	}
 	
 	public static Cell[][] blank_board(){
 		Cell[][] new_board = new Cell[10][10];

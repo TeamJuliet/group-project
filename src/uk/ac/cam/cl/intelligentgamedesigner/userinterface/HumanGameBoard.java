@@ -34,6 +34,11 @@ public class HumanGameBoard extends GameBoard implements MouseListener{
 		screen = watcher;
 	}
 	
+	public void setTimer(boolean on){
+		if(!on)timer.cancel();
+		else timer = new Timer();
+	}
+	
 	public void updateClickPos(){
 		//convert to coordinates
 		Point pos = getMousePosition();
