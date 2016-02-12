@@ -111,6 +111,19 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 			width = board_before.width;
 			height = board_before.height;
 			above_screen = board_above.height;
+
+//			switch(test.getGameMode()){
+//			case HIGHSCORE:
+//				high_score.setSelected(true);
+//				break;
+//			case JELLY:
+//				jelly.setSelected(true);
+//				break;
+//			case INGREDIENTS:
+//				ingredients.setSelected(true);
+//				break;
+//			}
+			high_score.setSelected(true);
 		} else {
 			width = 10;
 			height = 10;
@@ -126,6 +139,8 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 			board_before.setMove(new Move(new Position(0,0),new Position(0,0)));
 			game_state_stuff.setValueAt(100, 1, 1);
 			game_state_stuff.setValueAt(200, 1, 2);
+
+			high_score.setSelected(true);
 		}
 
 		dimensions_width.setValue(width);
@@ -136,6 +151,8 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 	    		board_above.tile_size*board_above.width,
 	    		board_above.tile_size*board_above.height));
 		board_above.revalidate();
+		
+		selection.setSelectedIndex(0);
 	}
 
 	@Override
