@@ -58,6 +58,9 @@ public class GameStateProgress {
 	public int getMovesRemaining() {
 		return movesRemaining;
 	}
+
+	public void resetScore () {
+		score = 0; }
 	
 	public void incrementScore(int amount) {
 		score += amount;
