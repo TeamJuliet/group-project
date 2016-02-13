@@ -15,7 +15,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.*;
 public class DisplayTester {	
 	
 	public static Design getSampleDesign() {
-		int sizeX = 20, sizeY = 20;
+		int sizeX = 16, sizeY = 16;
 		Design design = new Design();
 		Cell[][] boardLayout = new Cell[sizeX][sizeY];
 		for (int i = 0; i < sizeX; ++i) {

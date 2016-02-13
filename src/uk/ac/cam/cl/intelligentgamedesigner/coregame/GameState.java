@@ -256,6 +256,16 @@ public class GameState implements Cloneable, Serializable {
         }
     }
 
+    private void findDetonated() {
+        detonated = new ArrayList<Position>();
+        for (int i = 0; i < width; ++i) {
+            for (int j = 0; j < height; ++j) {
+                if (board[i][j].hasCandy() && board[i][j].getCandy().isDetonated())
+                    this.detonated.add(new Position(i, j));
+            }
+        }
+    }
+    
     /**
      * Once the makeMove has been called this takes care of making the small
      * steps in the boards.
@@ -271,15 +281,18 @@ public class GameState implements Cloneable, Serializable {
             if (!wasSomethingPopped && !candiesNeededShuffling())
                 return false;
         } else if (proceedState == 1) {
+            findDetonated();
             detonateAllPending();
             System.out.println("2: Detonating all pending.");
         } else if (proceedState == 2) {
             System.out.println("3: Bringing down some candies (and filling board).");
             bringDownCandies();
             if (passIngredients()) {
+                System.out.println("PassedIngredients");
                 proceedState = 1;
             } else {
                 fillBoard();
+                findDetonated();
                 if (detonated.isEmpty()) {
                     wasSomethingPopped = false;
                 } else {
@@ -287,6 +300,7 @@ public class GameState implements Cloneable, Serializable {
                 }
             }
         }
+        // System.err.println("There are " + countDetonated() + " detonated cells");
         proceedState = (proceedState + 1) % 3;
         return true;
     }
@@ -727,6 +741,8 @@ public class GameState implements Cloneable, Serializable {
         detonated = new ArrayList<Position>();
         for (Position d : oldDetonated) {
             Cell detonatingCell = getCell(d);
+            if (!detonatingCell.hasCandy()) continue;
+            if (detonatingCell.getCandy().getCandyType() == null ) detonatingCell.removeCandy();
             switch (detonatingCell.getCandy().getCandyType()) {
             case WRAPPED:
                 detonateWrapped(d);
@@ -757,17 +773,17 @@ public class GameState implements Cloneable, Serializable {
 
         for (int i = 0; i < width; ++i) {
             for (int j = height - 1; j >= 1; --j) {
-                if (board[i][j].getCellType().equals(CellType.EMPTY)) {
+                if (board[i][j].getCellType().equals(CellType.EMPTY) && !board[i][j].blocksCandies()) {
                     int y = Integer.min(prev[i], j - 1);
                     while (y >= 0 && !board[i][y].canDropCandy()) {
-                        if (board[i][y].getCellType().blocksCandies()) {
+                        if (board[i][y].blocksCandies()) {
                             prev[i] = y;
                             break;
                         }
                         y--;
                     }
 
-                    if (y >= 0 && board[i][y].getCellType().blocksCandies())
+                    if (y >= 0 && board[i][y].blocksCandies())
                         break;
 
                     // Replacement was found.
@@ -775,14 +791,10 @@ public class GameState implements Cloneable, Serializable {
                         board[i][j].setCandy(board[i][y].getCandy());
                         board[i][y].removeCandy();
                     }
-                }
-                if (board[i][j].hasCandy() && board[i][j].getCandy().isDetonated()) {
-                    // System.out.println("Moved Detonating Candy.");
-                    detonated.add(new Position(i, j));
+                    
                 }
             }
         }
-
     }
 
     // Function that fills the board by requesting candies from the
@@ -794,7 +806,7 @@ public class GameState implements Cloneable, Serializable {
                 if (cell.isFillable()) {
 
                     int cur_y = y - 1;
-                    while (cur_y >= 0 && !board[x][cur_y].getCellType().blocksCandies()) {
+                    while (cur_y >= 0 && !board[x][cur_y].blocksCandies()) {
                         cur_y--;
                     }
                     if (cur_y < 0)
