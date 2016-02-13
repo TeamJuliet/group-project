@@ -13,7 +13,6 @@ public class ClickDrag extends TimerTask{
 	@Override
 	public void run() {
 		if(board instanceof CustomBoard)((CustomBoard)board).changeTile();
-		if(board instanceof HumanGameBoard)((HumanGameBoard)board).updateClickPos();
 	}
 
 }

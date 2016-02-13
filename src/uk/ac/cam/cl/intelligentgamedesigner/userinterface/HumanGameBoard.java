@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -12,11 +13,8 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
 
-public class HumanGameBoard extends GameBoard implements MouseListener{
+public class HumanGameBoard extends GameBoard implements MouseListener, MouseMotionListener {
 
-	protected Timer timer;
-	protected TimerTask task;
-	protected final int refresh_rate = 10;
 	protected GameDisplayScreen screen;
 	private Position move_from;
 	private Position move_to;
@@ -28,33 +26,15 @@ public class HumanGameBoard extends GameBoard implements MouseListener{
 		move_from = new Position(0,0);
 		move_to = move_from;
 		addMouseListener(this);
-		timer = new Timer();
+		addMouseMotionListener(this);
 	}
 	public void watchGameDisplay(GameDisplayScreen watcher){
 		screen = watcher;
 	}
-	
-	public void setTimer(boolean on){
-		if(!on)timer.cancel();
-		else timer = new Timer();
-	}
-	
-	public void updateClickPos(){
-		//convert to coordinates
-		Point pos = getMousePosition();
-		int x = pos.x/tile_size;
-		int y = pos.y/tile_size;
-		move_to = new Position(x,y);
-	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		task = new ClickDrag(this);
-		timer.scheduleAtFixedRate(task, 0, refresh_rate); // Time is in milliseconds
-		// The second parameter is delay before the first run
-		// The third is how often to run it
-		
-		Point pos = getMousePosition();
+		Point pos = e.getPoint();
 		int posx = (pos.x/tile_size);
 		if(posx>=width)posx = (width-1);
 		int posy = (pos.y/tile_size);
@@ -66,12 +46,8 @@ public class HumanGameBoard extends GameBoard implements MouseListener{
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		task.cancel();
-		// Will not stop execution of task.run() if it is midway
-		// But will guarantee that after this call it runs no more than one more time
 		selecting = false;
 		screen.playMove(new Move(move_from,move_to));
-		
 	}
 	
 	@Override
@@ -103,4 +79,18 @@ public class HumanGameBoard extends GameBoard implements MouseListener{
 	public void mouseExited(MouseEvent arg0) {
 	}
 
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		if (selecting) {
+			Point pos = e.getPoint();
+			int x = pos.x/tile_size;
+			int y = pos.y/tile_size;
+			move_to = new Position(x,y);
+		}
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+
+	}
 }
