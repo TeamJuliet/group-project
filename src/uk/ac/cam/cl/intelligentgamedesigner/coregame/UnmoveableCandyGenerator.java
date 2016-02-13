@@ -4,7 +4,7 @@ package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 public class UnmoveableCandyGenerator extends CandyGenerator {
 	
 	public UnmoveableCandyGenerator() {
-		super(null);
+		super();
 	}
 	
 	@Override

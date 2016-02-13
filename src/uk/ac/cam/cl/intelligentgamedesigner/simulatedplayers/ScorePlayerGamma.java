@@ -17,7 +17,7 @@ public class ScorePlayerGamma implements SimulatedPlayerBase {
     
     @Override
     public void solve() {
-        while (level.getMovesRemaining() > 0) {
+        while (level.getGameProgress().movesRemaining > 0) {
             Move bestMove = calculateBestMove(level);
             try {
                 level.makeMove(bestMove);

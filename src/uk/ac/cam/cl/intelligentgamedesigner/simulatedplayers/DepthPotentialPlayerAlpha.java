@@ -18,7 +18,7 @@ public class DepthPotentialPlayerAlpha extends DepthPotentialPlayer {
     
     @Override
     public void solve() throws NoMovesFoundException {
-        while (level.getMovesRemaining() > 0) {
+        while (level.getGameProgress().movesRemaining > 0) {
             Move bestMove = calculateBestMove(level);
             try {
                 level.makeMove(bestMove);
@@ -39,7 +39,7 @@ public class DepthPotentialPlayerAlpha extends DepthPotentialPlayer {
 
     @Override
     GameStateMetric getGameStateMetric(GameState gameState) {
-        return new GameStateMetric(gameState.getScore());
+        return new GameStateMetric(gameState.getGameProgress().score);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class DepthPotentialPlayerAlpha extends DepthPotentialPlayer {
                 continue;
             }
             
-            int increase = tmp.getScore() - original.getScore();
+            int increase = tmp.getGameProgress().score - original.getGameProgress().score;
             if(increase > highestIncrease) highestIncrease = increase;
         }
         return new GameStatePotential(highestIncrease);

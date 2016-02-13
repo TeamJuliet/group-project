@@ -93,7 +93,7 @@ public class DisplayTester {
 		GameState game = new GameState(getSampleDesign());
 		// game.changeCandyGenerator(new UnmoveableCandyGenerator(null));
 		CellChooser.game = game;
-		GameDisplay gamePanel = new GameDisplay(game.getWidth(), game.getHeight(), 50);
+		GameDisplay gamePanel = new GameDisplay(game.width, game.height, 50);
 		CellChooser.display = gamePanel;
 		
 		gamePanel.setBoard(game.getBoard());
@@ -123,7 +123,7 @@ public class DisplayTester {
 		JPanel scorePanel = new JPanel();
 		scorePanel.setBorder(BorderFactory.createTitledBorder(
 				BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), "Score Panel"));
-		JLabel scoreLabel = new JLabel("Score: " + game.getScore());
+		JLabel scoreLabel = new JLabel("Score: " + game.getGameProgress().score);
 		scoreLabel.setPreferredSize(new Dimension(100, 22));
 		scorePanel.add(scoreLabel);
 		generalPanel.add(scorePanel);
