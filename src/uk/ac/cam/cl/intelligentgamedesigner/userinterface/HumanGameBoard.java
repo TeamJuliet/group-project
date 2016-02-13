@@ -6,8 +6,6 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
@@ -49,6 +47,16 @@ public class HumanGameBoard extends GameBoard implements MouseListener, MouseMot
 		selecting = false;
 		screen.playMove(new Move(move_from,move_to));
 	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		if (selecting) {
+			Point pos = e.getPoint();
+			int x = pos.x/tile_size;
+			int y = pos.y/tile_size;
+			move_to = new Position(x,y);
+		}
+	}
 	
 	@Override
 	public void paint(Graphics g){
@@ -77,16 +85,6 @@ public class HumanGameBoard extends GameBoard implements MouseListener, MouseMot
 	}
 	@Override
 	public void mouseExited(MouseEvent arg0) {
-	}
-
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		if (selecting) {
-			Point pos = e.getPoint();
-			int x = pos.x/tile_size;
-			int y = pos.y/tile_size;
-			move_to = new Position(x,y);
-		}
 	}
 
 	@Override
