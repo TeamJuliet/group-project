@@ -14,15 +14,4 @@ public class HumanGameDisplayScreen extends GameDisplayScreen{
 	protected GameBoard specificGameBoard() {
 		return new HumanGameBoard(new Design());
 	}
-	
-	@Override
-	protected void stopGame(){
-		((HumanGameBoard)board).setTimer(false);
-	}
-	
-	@Override
-	protected void initialiseGame(){
-		super.initialiseGame();
-		((HumanGameBoard)board).setTimer(true);
-	}
 }
