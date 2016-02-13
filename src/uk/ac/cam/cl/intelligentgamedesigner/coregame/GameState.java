@@ -218,10 +218,10 @@ public class GameState implements Cloneable, Serializable {
         } else if (hasBomb(cell2) && hasSpecial(cell1)) {
             cell2.removeCandy();
             replaceWithSpecialAllOf(cell1.getCandy().getColour(), cell1.getCandy().getCandyType());
-        } else if (hasBomb(cell1)) {
+        } else if (hasBomb(cell1) && hasNormal(cell2)) {
             cell1.removeCandy();
             breakAllOf(cell2.getCandy().getColour());
-        } else if (hasBomb(cell2)) {
+        } else if (hasBomb(cell2) && hasNormal(cell1)) {
             cell2.removeCandy();
             breakAllOf(cell1.getCandy().getColour());
         } else if (hasHorizontallyStripped(cell1) && hasVerticallyStripped(cell2)) {
@@ -287,7 +287,7 @@ public class GameState implements Cloneable, Serializable {
             System.out.println("3: Bringing down some candies (and filling board).");
             bringDownCandies();
             if (passIngredients()) {
-                System.out.println("PassedIngredients");
+                System.err.println("PassedIngredients");
                 proceedState = 1;
             } else {
                 fillBoard();
@@ -344,12 +344,13 @@ public class GameState implements Cloneable, Serializable {
         if (Math.abs(move.p1.x - move.p2.x) + Math.abs(move.p1.y - move.p2.y) != 1)
             return false;
         Cell cell1 = getCell(move.p1), cell2 = getCell(move.p2);
+        if (hasIngredient(cell1) || hasIngredient(cell2)) return false;
         if (cell1.getCandy().getCandyType().isSpecial() && cell2.getCandy().getCandyType().isSpecial())
             return true;
         // Exchanging a Bomb with a cell that has a moveable item is a valid
         // move.
-        else if (cell1.getCandy().getCandyType().equals(CandyType.BOMB)
-                || cell2.getCandy().getCandyType().equals(CandyType.BOMB))
+        else if (cell1.getCandy().getCandyType().equals(CandyType.BOMB) && (hasSpecial(cell2) || hasNormal(cell2))
+                || cell2.getCandy().getCandyType().equals(CandyType.BOMB) && (hasSpecial(cell1) || hasNormal(cell1)))
             return true;
 
         swapCandies(move);
@@ -426,6 +427,10 @@ public class GameState implements Cloneable, Serializable {
         if (current.removeJellyLayer()) {
             incrementScore(Scoring.MATCHED_A_JELLY);
         }
+        
+        if(current.hasCandy() && current.getCandy().getCandyType().equals(CandyType.INGREDIENT))
+            return;
+        
         if (current.hasCandy() && current.getCandy().isDetonated())
             return;
         if (current.hasCandy() && current.getCandy().getCandyType().isSpecial()) {
@@ -706,6 +711,11 @@ public class GameState implements Cloneable, Serializable {
     private void detonateVerticallyStripped(Position vStripped) {
         incrementScore(Scoring.DETONATE_STRIPPED_CANDY);
         for (int y = 0; y < height; ++y) {
+            Cell current = getCell(new Position(vStripped.x, y));
+            if (hasVerticallyStripped(current) && !current.getCandy().isDetonated()) {
+                current.removeCandy();
+                continue;
+            }
             trigger(vStripped.x, y, Scoring.STRIPPED_INDIVIDUAL);
         }
     }
@@ -714,6 +724,11 @@ public class GameState implements Cloneable, Serializable {
     // stripped candy.
     private void detonateHorizontallyStripped(Position hStripped) {
         for (int x = 0; x < width; ++x) {
+            Cell current = getCell(new Position(x, hStripped.y));
+            if (hasHorizontallyStripped(current) && !current.getCandy().isDetonated()) {
+                current.removeCandy();
+                continue;
+            }
             trigger(x, hStripped.y, Scoring.STRIPPED_INDIVIDUAL);
         }
     }
@@ -830,6 +845,7 @@ public class GameState implements Cloneable, Serializable {
     // Function that passes ingredients through the sink.
     private boolean passIngredients() {
         boolean passedIngredient = false;
+        // System.err.print("There are " + ingredientSinkPositions.size() + " sinks");
         for (Position ingredientSink : ingredientSinkPositions) {
             // System.err.println("Hello " + ingredientSink.x +
             // ingredientSink.y);

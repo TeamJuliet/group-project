@@ -104,6 +104,10 @@ public class GameStateAuxiliaryFunctions {
         return hasVerticallyStripped(cell) || hasHorizontallyStripped(cell);
     }
     
+    public static boolean hasNormal(Cell cell) {
+        return cell.hasCandy() && cell.getCandy().getCandyType().equals(CandyType.NORMAL);
+    }
+    
     // Function that returns whether the tile at position forms a match.
     public static boolean tileFormsMatch(Cell[][] board, Position position) {
         SingleTileAnalysis analysis = analyzeTile(position, board);
