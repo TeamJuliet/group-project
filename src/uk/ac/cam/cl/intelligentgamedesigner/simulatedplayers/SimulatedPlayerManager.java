@@ -13,10 +13,10 @@ public class SimulatedPlayerManager {
             player = new ScorePlayerBeta();
             break;
         case 2:
-            player = new ScorePlayerGamma();
+            player = new DepthPotentialScorePlayer(2,4);
             break;
         case 3:
-            player = new DepthPotentialScorePlayer(4, 4);
+            player = new DepthPotentialScorePlayer(4, 8);
             break;
         default:
             player = new ScorePlayerAlpha();
