@@ -72,16 +72,15 @@ public class GameState implements Cloneable, Serializable {
 
                 // For ICING and UNUSABLEs, we can just replace the cell with
                 // the design element
-                if (cellType == CellType.ICING || cellType == CellType.UNUSABLE) {
+                if (cellType == CellType.UNUSABLE) {
                     board[x][y] = new Cell(cellToCopy);
                 }
-                // For LIQUORICE, we want to replace everything except for the
+                // For LIQUORICE and EMPTY cells, we want to replace everything except for the
                 // normal underlying candy
-                else if (cellType == CellType.LIQUORICE) {
+                else if (cellType == CellType.LIQUORICE || cellType == CellType.EMPTY) {
                     board[x][y] = new Cell(cellType, board[x][y].getCandy(), cellToCopy.getJellyLevel(),
                             cellToCopy.isIngredientSink);
                 }
-                // For EMPTY cells, we don't need to do anything
             }
         }
 
@@ -857,7 +856,7 @@ public class GameState implements Cloneable, Serializable {
         return board[pos.x][pos.y];
     }
 
-    private void swapCandies(Move move) {
+    protected void swapCandies(Move move) {
         Cell cell1 = getCell(move.p1), cell2 = getCell(move.p2);
         // Swap values and check if the tiles form a match.
         Candy tmp = cell1.getCandy();
