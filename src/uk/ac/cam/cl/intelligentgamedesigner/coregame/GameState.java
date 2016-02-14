@@ -74,10 +74,13 @@ public class GameState implements Cloneable, Serializable {
             for (int y = 0; y < height; y++) {
                 Cell cellToCopy = design.getCell(x, y);
                 CellType cellType = cellToCopy.getCellType();
+                Candy cellCandy = cellToCopy.getCandy();
 
                 // For ICING and UNUSABLEs, we can just replace the cell with
                 // the design element
-                if (cellType == CellType.ICING || cellType == CellType.UNUSABLE) {
+                if (cellType == CellType.ICING
+                        || cellType == CellType.UNUSABLE
+                        || (cellCandy != null && cellCandy.getCandyType() == CandyType.INGREDIENT)) {
                     board[x][y] = new Cell(cellToCopy);
                 }
                 // For LIQUORICE and EMPTY cells, we want to replace everything
@@ -950,10 +953,6 @@ public class GameState implements Cloneable, Serializable {
         }
     }
 
-    // Random generator used to replace the stripped candies when triggered from
-    // a bomb.
-    private static Random random = new Random();
-
     // Function that performs the combination of a bomb and a Special Candy.
     private void replaceWithSpecialAllOf(CandyColour colourMatched, CandyType typeToReplace) {
         for (int i = 0; i < width; ++i) {
@@ -961,7 +960,7 @@ public class GameState implements Cloneable, Serializable {
                 if (sameColourWithCell(board[i][j], colourMatched)) {
                     if (typeToReplace.equals(CandyType.HORIZONTALLY_STRIPPED)
                             || typeToReplace.equals(CandyType.VERTICALLY_STRIPPED)) {
-                        if (random.nextInt(2) == 0)
+                        if ((i % 2) != (j % 2))
                             makeStripped(i, j, colourMatched, HORIZONTAL);
                         else
                             makeStripped(i, j, colourMatched, VERTICAL);

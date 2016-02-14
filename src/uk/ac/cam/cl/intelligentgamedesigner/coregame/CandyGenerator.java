@@ -15,7 +15,19 @@ public abstract class CandyGenerator implements Cloneable, Serializable {
     // TODO: Maybe this should be Design rather than gameState
     public CandyGenerator (GameState gameState) {
     	this.gameState = gameState;
-        this.ingredientsToDrop = gameState.getGameProgress().ingredientsRemaining;
+
+        Cell[][] board = gameState.getLevelDesign().getBoard();
+        int numberOfInitialIngredients = 0;
+        for (int x = 0; x < gameState.width; x++) {
+            for (int y = 0; y < gameState.height; y++) {
+                Candy candy = board[x][y].getCandy();
+                if (candy != null && candy.getCandyType() == CandyType.INGREDIENT) {
+                    numberOfInitialIngredients++;
+                }
+            }
+        }
+
+        this.ingredientsToDrop = gameState.getGameProgress().ingredientsRemaining - numberOfInitialIngredients;
     }
     
     public abstract Candy generateCandy(int x);
