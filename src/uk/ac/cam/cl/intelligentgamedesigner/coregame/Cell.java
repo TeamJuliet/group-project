@@ -6,8 +6,7 @@ public class Cell implements Cloneable, Serializable {
 
     // TODO: Is there really a need for this?
     public static final int maxJellyLevel = 5;
-
-    public final boolean    isIngredientSink;
+    private boolean         isIngredientSink;
     private CellType        cellType;
     private Candy           candy;
     private int             jellyLevel;
@@ -84,6 +83,14 @@ public class Cell implements Cloneable, Serializable {
     // block.
     public boolean isMoveable() {
         return cellType == CellType.NORMAL && !(hasCandy() && candy.getCandyType().equals(CandyType.UNMOVEABLE));
+    }
+
+    public void setIngredientSink () {
+        this.isIngredientSink = true;
+    }
+
+    public boolean isIngredientSink() {
+        return isIngredientSink;
     }
 
     public CellType getCellType() {

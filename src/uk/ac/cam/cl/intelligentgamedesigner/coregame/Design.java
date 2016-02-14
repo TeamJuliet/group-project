@@ -49,7 +49,15 @@ public class Design implements Serializable {
     	boardLayout = board;
         this.width = board.length;
         this.height = board[0].length;
-        System.err.println("w: " +width + " h:" + height);
+
+        // Currently, the default ingredient sinks are set to the bottom-most cells in each column
+        for (int x = 0; x < width; x++) {
+            int y = height - 1;
+            while (y >= 0 && board[x][y].getCellType() == CellType.UNUSABLE) {
+                y--;
+            }
+            if (y >= 0) board[x][y].setIngredientSink();
+        }
     }
     
     public Cell[][] getBoard() {

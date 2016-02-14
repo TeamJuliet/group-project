@@ -55,7 +55,7 @@ public class GameState implements Serializable {
             }
         }
 
-        candyGenerator = new PseudoRandomCandyGenerator(this);
+        candyGenerator = new PseudoRandomCandyGenerator(design, this.progress);
         fillBoard();
 
         // Make sure the board is in a stable state
@@ -88,7 +88,7 @@ public class GameState implements Serializable {
                 // normal underlying candy
                 else if (cellType == CellType.LIQUORICE || cellType == CellType.EMPTY) {
                     board[x][y] = new Cell(cellType.equals(CellType.EMPTY) ? CellType.NORMAL : cellType,
-                            board[x][y].getCandy(), cellToCopy.getJellyLevel(), cellToCopy.isIngredientSink);
+                            board[x][y].getCandy(), cellToCopy.getJellyLevel(), cellToCopy.isIngredientSink());
                 }
             }
         }
@@ -892,7 +892,7 @@ public class GameState implements Serializable {
     private void recordIngredientSinks() {
         for (int x = 0; x < width; ++x) {
             for (int y = 0; y < height; ++y) {
-                if (board[x][y].isIngredientSink)
+                if (board[x][y].isIngredientSink())
                     ingredientSinkPositions.add(new Position(x, y));
             }
         }
