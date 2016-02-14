@@ -38,10 +38,20 @@ public class LevelBrowserScreen extends DisplayScreen implements ListSelectionLi
 		identifier = "Level Browser";
 	}
 	public void refreshList(){
-		level_names.setListData(InterfaceManager.level_manager.getLevelNames());
+		String[] ln = InterfaceManager.level_manager.getLevelNames();
+		if(ln.length>0) {
+			board_design = InterfaceManager.level_manager.getLevel(1);
+			level_names.setEnabled(true);
+		} else {
+			ln = new String[]{"<No Levels Saved>"};
+			board_design = new Design();
+			System.out.println("no levels");
+			level_names.setEnabled(false);
+		}
+		System.out.println(level_names == null);
+		level_names.setListData(ln);
 		board_design = InterfaceManager.level_manager.getLevel(1);
 		refreshBoard();
-		board_display.setBoard(board_design.getBoard());
 		
 		selected_name = null;
 	}
@@ -51,19 +61,23 @@ public class LevelBrowserScreen extends DisplayScreen implements ListSelectionLi
 		} catch(NullPointerException e){
 			board_design = new Design();
 			board_display.setBoard(board_design.getBoard());
+			board_display.clearBoard();
 		}
 	}
 	
 	@Override
 	protected void makeItems() {
 		String[] ln = InterfaceManager.level_manager.getLevelNames();
+		level_names = new JList<String>();
 		if(ln.length>0) {
-			level_names = new JList<String>(ln);
+			level_names.setListData(ln);
 			level_list = new JScrollPane(level_names);
+			level_names.setEnabled(true);
 			board_design = InterfaceManager.level_manager.getLevel(1);
 		} else {
-			level_list = new JScrollPane(new JLabel("<No Levels Saved>"));
-			System.out.println("new Design");
+			level_names.setListData(new String[]{"<No Levels Saved>"});
+			level_list = new JScrollPane(level_names);
+			level_names.setEnabled(false);
 			board_design = new Design();
 		}
 

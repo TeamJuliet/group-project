@@ -102,7 +102,7 @@ public class GameStateTestRunner extends JPanel implements ActionListener, Prope
             setCursor(null); //turn off the wait cursor
 
             if (numPassed == numTests) {
-                taskOutput.append("Wohoo! All tests passed :)\n");
+                taskOutput.append("Woohoo! All tests passed :)\n");
             } else {
                 taskOutput.append(numPassed + "/" + numTests + " tests passed.\n");
             }

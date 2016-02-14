@@ -122,9 +122,9 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
 
         design.setBoard(designBoard);
 
-        // TODO: set Max Moves
-
-        // TODO: set number of candy colours
+        // Set the general parameters
+        design.setNumberOfMovesAvailable(parameters.get(0).getValue());
+        design.setNumberOfCandyColours(parameters.get(1).getValue());
 
         return design;
     }
@@ -143,7 +143,7 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
     @Override
     public String representationToString() {
         String result = "";
-        String[] r = {"□", " ", "I", "L"};
+        String[] r = {"X", " ", "I", "L"};
         for (int y = 0; y < board.height; y++) {
             for (int x = 0; x < board.width; x++) {
                 int t = board.get(x, y).ordinal();

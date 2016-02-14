@@ -21,7 +21,7 @@ public class DepthPotentialScorePlayer extends DepthPotentialPlayer {
 
     @Override
     GameStateMetric getGameStateMetric(GameState gameState) {
-        return new GameStateMetric(gameState.getScore());
+        return new GameStateMetric(gameState.getGameProgress().score);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class DepthPotentialScorePlayer extends DepthPotentialPlayer {
                 continue;
             }
             
-            int increase = tmp.getScore() - original.getScore();
+            int increase = tmp.getGameProgress().score - original.getGameProgress().score;
             if(increase > highestIncrease) highestIncrease = increase;
         }
         return new GameStatePotential(highestIncrease);

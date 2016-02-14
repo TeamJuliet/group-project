@@ -154,11 +154,11 @@ public class LevelManager {
 		if(level_num>0){ //update the manager's list of levels
 			if(levels.size()>level_num-1){
 				levels.set(level_num-1, level);
-				level_names.set(level_num-1, fileName);
+				level_names.set(level_num-1, fileName+suffix);
 			}
 			else {
 				levels.add(level);
-				level_names.add(fileName);
+				level_names.add(fileName+suffix);
 			}
 		}
 		

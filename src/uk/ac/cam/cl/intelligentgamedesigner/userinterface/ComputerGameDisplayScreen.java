@@ -61,6 +61,16 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 		super.initialiseGame();
 		
 	}
+	
+	@Override
+	protected void stopGame(){
+		super.stopGame();
+		next_move.setEnabled(!auto_playing);
+		quit_button.setEnabled(!auto_playing);
+		auto_play.setSelected(false);
+		auto_playing = false;
+		timer.stop();
+	}
 
 	@Override
 	protected GameBoard specificGameBoard() {
@@ -111,6 +121,7 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 		case "mode":
 			auto_playing = auto_play.isSelected();
 			next_move.setEnabled(!auto_playing);
+			quit_button.setEnabled(!auto_playing);
 			if(auto_playing){
 				timer.setDelay(waitspeed);
 				timer.start();
@@ -126,14 +137,12 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 			if(auto_playing){
 				nextMove();
 			}
-			else System.out.println("Shouldn't be timing...");
 			timer.setDelay(waitspeed);
 			break;
 		}
 	}
 	
 	private void nextMove(){
-		System.out.println("trying to find next move...");
 		try{
 			Move next = (Move)next_move_method.invoke(null, theGame);
 
@@ -142,20 +151,16 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 			((ComputerGameBoard)board).hideMove();
 
 			playMove(next);
-			System.out.println("move found!");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (NullPointerException e){
-			System.out.println("the next move method failed to load");
+			e.printStackTrace();
 		}
 		
 	}

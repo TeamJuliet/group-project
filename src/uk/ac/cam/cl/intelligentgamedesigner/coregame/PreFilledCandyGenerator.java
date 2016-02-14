@@ -33,7 +33,7 @@ public class PreFilledCandyGenerator extends CandyGenerator {
 
         // Otherwise just return a random Candy
         Random random = new Random();
-        int result = random.nextInt(super.gameState.getNumberOfCandyColours());
+        int result = random.nextInt(super.gameState.getLevelDesign().getNumberOfCandyColours());
         return new Candy(CandyColour.values()[result], CandyType.NORMAL);
     }
 }

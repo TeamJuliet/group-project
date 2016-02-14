@@ -121,10 +121,13 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		}
 		this.level_on = level_on;
 		level_on_label.setText(level_on+". ");
+		
 		width = board.width;
 		height = board.height;
 		dimensions_width.setValue(width);
 		dimensions_height.setValue(height);
+		
+		selection.setSelectedIndex(0);
 	}
 
 	@Override

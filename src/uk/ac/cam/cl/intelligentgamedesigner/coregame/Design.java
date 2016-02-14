@@ -49,6 +49,7 @@ public class Design implements Serializable {
     	boardLayout = board;
         this.width = board.length;
         this.height = board[0].length;
+        System.err.println("w: " +width + " h:" + height);
     }
     
     public Cell[][] getBoard() {
@@ -60,6 +61,22 @@ public class Design implements Serializable {
     	this.numberOfMovesAvailable = numberOfMovesAvailable;
     	this.objectiveTarget        = objectiveTarget;
         this.numberOfCandyColours   = numberOfCandyColours;
+    }
+
+    public void setGameMode (GameMode gameMode) {
+        this.gameMode = gameMode;
+    }
+
+    public void setNumberOfMovesAvailable (int numberOfMovesAvailable) {
+        this.numberOfMovesAvailable = numberOfMovesAvailable;
+    }
+
+    public void setObjectiveTarget (int objectiveTarget) {
+        this.objectiveTarget = objectiveTarget;
+    }
+
+    public void setNumberOfCandyColours (int numberOfCandyColours) {
+        this.numberOfCandyColours = numberOfCandyColours;
     }
     
     public int getWidth(){

@@ -6,12 +6,12 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 
 public abstract class SimulatedPlayerBase {
     public void solve(GameState level) throws NoMovesFoundException {
-        while (level.getMovesRemaining() > 0) {
+        while (level.getGameProgress().movesRemaining > 0) {
             Move bestMove = calculateBestMove(level);
             try {
                 level.makeMove(bestMove);
             } catch (InvalidMoveException e) {
-                printInvalidMoveError(e.invalidMove);
+                this.printInvalidMoveError(e.invalidMove);
                 try { // TODO: this is horrible, fix it
                     level.makeMove(level.getValidMoves().get(0));
                 } catch (InvalidMoveException exception) {
