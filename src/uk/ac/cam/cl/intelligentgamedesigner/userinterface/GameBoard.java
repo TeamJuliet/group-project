@@ -12,9 +12,11 @@ public class GameBoard extends DisplayBoard{
 
 	public GameBoard(Design design) {
 		super(design);
+		showing_unusables = false;
 	}
 	public GameBoard(int width, int height) {
 		super(width,height);
+		showing_unusables = false;
 	}
 
 	//drawing the screen
@@ -125,16 +127,6 @@ public class GameBoard extends DisplayBoard{
 			g.drawLine(x*tile_size, y*tile_size+ tile_size/2, x*tile_size + tile_size , y*tile_size + tile_size/2);
 			g.drawLine(x*tile_size+ tile_size/2, y*tile_size , x*tile_size + tile_size/2, y*tile_size  + tile_size);
 			
-		}
-	}
-	
-	@Override
-	public void paint(Graphics g){
-		setBorder(BorderFactory.createLineBorder(Color.black));
-		for(int x=0;x<width;x++){
-			for(int y=0;y<height;y++){
-				draw_cell(x,y,g);
-			}
 		}
 	}
 }

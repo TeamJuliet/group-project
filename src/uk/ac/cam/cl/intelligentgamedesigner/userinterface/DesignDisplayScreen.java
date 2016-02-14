@@ -104,7 +104,7 @@ public class DesignDisplayScreen extends DisplayScreen{
 		watch_level = new JButton("Watch Level");
 		save_level = new JButton("Save Level");
 		edit_level = new JButton("Edit Level");
-		back = new JButton("back");
+		back = new JButton("Back");
 		game_mode = new JLabel("Game Mode");
 		moves = new JLabel("moves");
 		target = new JLabel("goal");
