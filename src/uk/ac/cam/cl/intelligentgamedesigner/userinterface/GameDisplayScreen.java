@@ -2,28 +2,24 @@ package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.TextField;
 import java.awt.event.ActionEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import javax.swing.border.EtchedBorder;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateProgressView;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
-import uk.ac.cam.cl.intelligentgamedesigner.experimental.CellChooser;
-import uk.ac.cam.cl.intelligentgamedesigner.experimental.GameDisplay;
 
 //Defines functionality shared by the human and simulated player games
 //Displays the game, score and how to handle animations etc.
@@ -86,8 +82,9 @@ public abstract class GameDisplayScreen extends DisplayScreen{
 	
 	protected void update(){
 		theBoard = theGame.getBoard();
-		score = theGame.getScore();
-		moves_left = theGame.getMovesRemaining();
+		GameStateProgressView progress = theGame.getGameProgress();
+		score = progress.score;
+		moves_left = progress.movesRemaining;
 		setInfo();
 	}
 	
@@ -115,16 +112,17 @@ public abstract class GameDisplayScreen extends DisplayScreen{
 			//make a box with all the end game info
 			JPanel end_game_panel = new JPanel();
 			end_game_panel.setLayout(new BoxLayout(end_game_panel,BoxLayout.Y_AXIS));
+			GameStateProgressView progress = theGame.getGameProgress();
 			if(theGame.isGameWon()){
 				end_game_panel.add(new JLabel("Congratulations!"),SwingConstants.CENTER);
 				//if(theGame.getGameMode() != GameMode.HIGHSCORE){
 					end_game_panel.add(Box.createRigidArea(new Dimension(0, 10)));
-					end_game_panel.add(new JLabel("You finished with "+theGame.getMovesRemaining()+ " moves remaining."));					
+					end_game_panel.add(new JLabel("You finished with " + progress.movesRemaining+ " moves remaining."));					
 				//}
 			}
 			else {
 				end_game_panel.add(new JLabel("Better Luck next time..."),SwingConstants.CENTER);
-				switch(theGame.getGameMode()){
+				switch(theGame.getLevelDesign().getMode()){
 				case HIGHSCORE:
 					end_game_panel.add(Box.createRigidArea(new Dimension(0, 10)));
 					end_game_panel.add(new JLabel("You didn't reach the required score"));
@@ -135,12 +133,12 @@ public abstract class GameDisplayScreen extends DisplayScreen{
 					break;
 				case INGREDIENTS:
 					end_game_panel.add(Box.createRigidArea(new Dimension(0, 10)));
-					end_game_panel.add(new JLabel("You had another "+theGame.getIngredientsRemaining()+" left to collect."));
+					end_game_panel.add(new JLabel("You had another " + progress.ingredientsRemaining + " left to collect."));
 					break;
 				}
 			}
 			end_game_panel.add(Box.createRigidArea(new Dimension(0, 20)));
-			end_game_panel.add(new JLabel("You finished with a score of "+theGame.getScore()));
+			end_game_panel.add(new JLabel("You finished with a score of " + progress.score));
 			end_game_panel.add(Box.createRigidArea(new Dimension(0, 20)));
 			end_game_panel.add(new JLabel("Taking you back to the level display menu."));
 			

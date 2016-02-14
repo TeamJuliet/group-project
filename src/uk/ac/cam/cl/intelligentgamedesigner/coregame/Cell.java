@@ -114,6 +114,11 @@ public class Cell implements Cloneable, Serializable {
     	return hasCandy() && (!cellType.equals(CellType.LIQUORICE));
     }
     
+    public boolean blocksCandies() {
+        return cellType.blocksCandies() || 
+                (hasCandy() && candy.isDetonated() && candy.getCandyType().isStripped());
+    }
+    
     @Override
     public boolean equals(Object toCompare) {
         Cell cellToCompare = (Cell) toCompare;
