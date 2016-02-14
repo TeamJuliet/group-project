@@ -1,5 +1,15 @@
 package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
+/**
+ * 
+ * Class that contains statistics that concern the:
+ *      - number of valid moves.
+ *      - number of transitions in the states.
+ *      - number of passed ingredients.
+ *      - number of icing blockers removed.
+ *      - pair of swapped candies.
+ *
+ */
 public class ProcessStateStats {
     private boolean wasShuffled            = false;
     private int     numOfTransitions       = 0;

@@ -1,10 +1,14 @@
 package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
+import java.io.Serializable;
+
 /**
  * Class that is used to provide an immutable view on a GameStateProgress.
  */
-public class GameStateProgressView {
-	public final int score;
+public class GameStateProgressView implements Serializable {
+    private static final long serialVersionUID = 1L;
+    
+    public final int score;
 	public final int jelliesRemaining;
 	public final int ingredientsRemaining;
 	public final int movesRemaining;

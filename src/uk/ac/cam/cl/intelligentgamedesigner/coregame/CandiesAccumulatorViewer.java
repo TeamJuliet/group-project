@@ -1,6 +1,15 @@
 package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
-public class CandiesAccumulatorViewer {
+import java.io.Serializable;
+
+/**
+ * 
+ * Immutable class version of CandiesAccumulator.
+ *
+ */
+public class CandiesAccumulatorViewer implements Serializable {
+    private static final long serialVersionUID = 1L;
+    
     public final int normalCandies;
     public final int horizontallyStrippedCandies;
     public final int verticallyStrippedCandies;

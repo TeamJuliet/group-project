@@ -1,6 +1,15 @@
 package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
-public class ProcessStateStatsViewer {
+import java.io.Serializable;
+
+/**
+ * 
+ * Immutable version of the class ProcessStateStats. 
+ *
+ */
+public class ProcessStateStatsViewer implements Serializable {
+    private static final long serialVersionUID = 1L;
+    
     public final boolean wasShuffled;
     public final int     numOfTransitions;
     public final int     numOfValidMoves;

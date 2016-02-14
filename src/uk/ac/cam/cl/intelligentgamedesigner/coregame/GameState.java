@@ -274,16 +274,7 @@ public class GameState implements Cloneable, Serializable {
         }
     }
     
-    private boolean hasDetonated() {
-        for (int i = 0; i < width; ++i) {
-            for (int j = 0; j < height; ++j) {
-                if (board[i][j].hasCandy() && board[i][j].getCandy().isDetonated())
-                    return true;
-            }
-        }
-        return false;
-    }
-    
+
     /**
      * Once the makeMove has been called this takes care of making the small
      * steps in the boards.
@@ -330,7 +321,7 @@ public class GameState implements Cloneable, Serializable {
             break;
         case FILL_BOARD:
             fillBoard();
-            if (hasDetonated()) currentProcessState = ProcessState.DETONATE_PENDING;
+            if (hasDetonated(board)) currentProcessState = ProcessState.DETONATE_PENDING;
             else {
                 wasSomethingPopped = false;
                 currentProcessState = ProcessState.MATCH_AND_REPLACE;

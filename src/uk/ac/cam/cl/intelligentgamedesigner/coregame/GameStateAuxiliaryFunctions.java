@@ -144,4 +144,13 @@ public class GameStateAuxiliaryFunctions {
         return new MatchAnalysis(positions, specials, getSpecialCandyFormed(analysis));
     }
     
+    public static boolean hasDetonated(Cell[][] board) {
+        for (int i = 0; i < board.length; ++i) {
+            for (int j = 0; j < board[0].length; ++j) {
+                if (board[i][j].hasCandy() && board[i][j].getCandy().isDetonated())
+                    return true;
+            }
+        }
+        return false;
+    }
 }
