@@ -61,12 +61,6 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
         }
     }
 
-    private void printInvalidMoveError(Move move) {
-        System.err.format(
-                "WARNING! DepthPotentialPlayer with settings (%d,%d)has suggested an invalidMove " + move + ".",
-                numOfStatesAhead, numOfStatesInPool);
-    }
-
     public Move calculateBestMove(GameState currentState) throws NoMovesFoundException {
         List<Move> moves = currentState.getValidMoves();
         if (moves.size() == 0)
@@ -91,5 +85,16 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
     DepthPotentialPlayer(int numOfStatesAhead, int numOfStatesInPool) {
         this.numOfStatesAhead = numOfStatesAhead;
         this.numOfStatesInPool = numOfStatesInPool;
+    }
+
+    protected void printInvalidMoveError(GameState level, Move move) {
+        System.err.format(
+                "WARNING! %s with settings (%d,%d) has suggested an invalidMove:\n" + level + "\n" + move + ".\n",
+                this.getClass().getSimpleName(), this.numOfStatesAhead, this.numOfStatesInPool);
+    }
+
+    protected void printInvalidSuggestionError(GameState level, Move move) {
+        System.err.format("WARNING! Invalid move suggested in %s (%d,%d) evaluation:\n" + level + "\n" + move + ".\n",
+                this.getClass().getSimpleName(), this.numOfStatesAhead, this.numOfStatesInPool);
     }
 }

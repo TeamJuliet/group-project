@@ -21,13 +21,14 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.NoMovesFoundException;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerBase;
+import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerManager;
 
 //defines the functionality specific to the Simulated Player viewer
 public class ComputerGameDisplayScreen extends GameDisplayScreen{
 	private JRadioButton auto_play;
 	private JButton next_move;
 	private boolean auto_playing; 
-	private Method next_move_method;
+	private int ability;
 	
 	Timer timer;
 	private static final int waitspeed = 500;
@@ -44,16 +45,8 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 	}
 	
 	//get the static method for invoking
-	public void getMethodFromClass(Class<? extends SimulatedPlayerBase> player_class){
-		 try {
-			 Class[] cArg = new Class[1];
-		     cArg[0] = GameState.class;
-		     next_move_method = player_class.getMethod("calculateBestMove",cArg);
-		} catch (NoSuchMethodException e) {
-			System.out.println("Couldn't find the method");
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		}
+	public void setAbility(int ability){
+		this.ability = ability;
 	}
 	
 	@Override
@@ -144,7 +137,7 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 	
 	private void nextMove(){
 		try{
-			Move next = (Move)next_move_method.invoke(null, theGame);
+			Move next = SimulatedPlayerManager.calculateBestMove(theGame, ability);
 
 			((ComputerGameBoard)board).showMove(next);
 			Thread.sleep(wait_time*2);
@@ -153,13 +146,9 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 			playMove(next);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
 		} catch (NullPointerException e){
+			e.printStackTrace();
+		} catch (NoMovesFoundException e) {
 			e.printStackTrace();
 		}
 		

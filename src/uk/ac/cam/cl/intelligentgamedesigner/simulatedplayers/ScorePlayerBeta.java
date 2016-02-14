@@ -10,17 +10,14 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.UnmoveableCandyGenerator;
 
 public class ScorePlayerBeta extends SimulatedPlayerBase {
 
-    private void printInvalidMoveError(Move move) {
-        System.err.println("WARNING! ScorePlayerBeta has suggested an invalidMove " + move + ".");
-    }
-
+    @Override
     public Move calculateBestMove(GameState currentState) {
         GameState original = new GameState(currentState, new UnmoveableCandyGenerator());
         List<Move> validMoves = original.getValidMoves();
         int largestMatch = 0;
         Move bestMove = null;
         for (Move candidateMove : validMoves) {
-            SimGS tmp = (SimGS) original;
+            GameState tmp = original;
             List<MatchAnalysis> matches = tmp.getMatchAnalysis(candidateMove);
             int numberOfCellsMathed = 0;
             for (MatchAnalysis match : matches) {
