@@ -8,8 +8,8 @@ public class PreFilledCandyGenerator extends CandyGenerator {
 
     private ArrayList<Stack<Cell>> lookahead;
 
-    public PreFilledCandyGenerator (GameState gameState, Cell[][] lookahead) {
-        super(gameState);
+    public PreFilledCandyGenerator (Cell[][] lookahead) {
+        super(null, null);
 
         this.lookahead = new ArrayList<>(lookahead.length);
 
@@ -33,7 +33,7 @@ public class PreFilledCandyGenerator extends CandyGenerator {
 
         // Otherwise just return a random Candy
         Random random = new Random();
-        int result = random.nextInt(super.gameState.getLevelDesign().getNumberOfCandyColours());
+        int result = random.nextInt(6);
         return new Candy(CandyColour.values()[result], CandyType.NORMAL);
     }
 }
