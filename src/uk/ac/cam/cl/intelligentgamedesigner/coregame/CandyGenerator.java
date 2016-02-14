@@ -2,7 +2,7 @@ package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
 import java.io.Serializable;
 
-public abstract class CandyGenerator implements Cloneable, Serializable {
+public abstract class CandyGenerator implements Serializable {
     
     protected GameState gameState;
     protected int ingredientsToDrop;

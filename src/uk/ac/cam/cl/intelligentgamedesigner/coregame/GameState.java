@@ -9,7 +9,7 @@ import java.util.Random;
 
 import static uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions.*;
 
-public class GameState implements Cloneable, Serializable {
+public class GameState implements Serializable {
     private Cell[][]           board;
     public final Design        levelDesign;
     public final int           width, height;
@@ -450,21 +450,6 @@ public class GameState implements Cloneable, Serializable {
         }
 
         return isEqual;
-    }
-
-    @Override
-    public GameState clone() {
-        GameState clone = new GameState(levelDesign);
-
-        clone.progress = new GameStateProgress(progress);
-
-        // Copy the candies on the board
-        for (int row = 0; row < height; row++) {
-            for (int col = 0; col < width; col++) {
-                clone.board[row][col] = (Cell) this.board[row][col].clone();
-            }
-        }
-        return clone;
     }
 
     // Function that adds the tile to detonated (the ones that are going to
