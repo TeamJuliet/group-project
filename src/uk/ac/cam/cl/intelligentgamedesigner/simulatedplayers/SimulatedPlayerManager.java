@@ -27,7 +27,10 @@ public class SimulatedPlayerManager {
 
     public static Move calculateBestMove(GameState level, int ability) throws NoMovesFoundException {
         SimulatedPlayerBase player = makeSimulatedPlayer(ability);
-        return player.calculateBestMove(level);
+        Move move = player.calculateBestMove(level);
+        if (move != null) return move;
+        player.noMovesFound();
+        return level.getValidMoves().get(0);
     }
 
     public static int getMaxAbilityLevel() {

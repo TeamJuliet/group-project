@@ -23,6 +23,10 @@ public abstract class SimulatedPlayerBase {
 
     public abstract Move calculateBestMove(GameState currentState) throws NoMovesFoundException;
 
+    public void noMovesFound() {
+        System.err.format("WARNING! %s didn't return a valid move!\n", this.getClass().getSimpleName());
+    }
+
     private void printInvalidMoveError(Move move) {
     }
 }
