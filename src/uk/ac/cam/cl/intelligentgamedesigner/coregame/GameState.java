@@ -173,6 +173,10 @@ public class GameState implements Serializable {
         return progress.isGameWon(design);
     }
 
+    public boolean didFailShuffle () {
+        return progress.didFailShuffle();
+    }
+
     // **** GETTER METHODS END ****
 
     public Design getLevelDesign() {
@@ -1013,10 +1017,7 @@ public class GameState implements Serializable {
         }
 
         if (movesAvailable == 0) {
-            // TODO: Handle the case where we give up shuffling and declare the
-            // game over
-            // Perhaps we could throw an exception at this point, such as
-            // NoAvailableMovesException or GameOverException
+            progress.setDidFailShuffle();
         }
 
         return didShuffle;

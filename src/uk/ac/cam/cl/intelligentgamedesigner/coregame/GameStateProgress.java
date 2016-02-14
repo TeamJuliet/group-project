@@ -6,6 +6,7 @@ public class GameStateProgress {
     private int jelliesRemaining;
     private int ingredientsRemaining;
     private int movesRemaining;
+    private boolean didFailShuffle = false;
 
     public GameStateProgress(int score, int jellies, int ingredients, int moves) {
         this.score = score;
@@ -35,7 +36,7 @@ public class GameStateProgress {
     }
 
     public boolean isGameOver(Design design) {
-        return movesRemaining == 0 || isGameWon(design);
+        return movesRemaining == 0 || isGameWon(design) || didFailShuffle;
     }
 
     public boolean isGameWon(Design design) {
@@ -43,6 +44,10 @@ public class GameStateProgress {
         return (gameMode.equals(GameMode.JELLY) && jelliesRemaining == 0)
                 || (gameMode.equals(GameMode.HIGHSCORE) && score >= design.getObjectiveTarget())
                 || (gameMode.equals(GameMode.INGREDIENTS) && ingredientsRemaining == 0);
+    }
+
+    public boolean didFailShuffle () {
+        return didFailShuffle;
     }
 
     public int getScore() {
@@ -79,6 +84,10 @@ public class GameStateProgress {
 
     public void decreaseIngredientsRemaining() {
         --ingredientsRemaining;
+    }
+
+    public void setDidFailShuffle () {
+        didFailShuffle = true;
     }
 
     @Override
