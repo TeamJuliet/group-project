@@ -95,9 +95,9 @@ public class InterfaceManager extends JFrame {
 		((HumanGameDisplayScreen)human_game_display_screen).giveInfo(design);
 		((HumanGameDisplayScreen)human_game_display_screen).setInfo();
 	}
-	public static void setSelectedComputerGame(Design design,Class<? extends SimulatedPlayerBase> player_class){
+	public static void setSelectedComputerGame(Design design,int ability){
 		((ComputerGameDisplayScreen)computer_game_display_screen).giveInfo(design);
-		((ComputerGameDisplayScreen)computer_game_display_screen).getMethodFromClass(player_class);
+		((ComputerGameDisplayScreen)computer_game_display_screen).setAbility(ability);
 		((ComputerGameDisplayScreen)computer_game_display_screen).setInfo();
 	}
 	public static void setPreviousScreen(Windows window){

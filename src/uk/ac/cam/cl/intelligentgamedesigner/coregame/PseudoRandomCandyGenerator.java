@@ -32,12 +32,6 @@ public class PseudoRandomCandyGenerator extends CandyGenerator {
 		// If an ingredient wasn't dropped, then drop a normal candy
 		int result = num % super.gameState.getLevelDesign().getNumberOfCandyColours();
 		CandyType type = CandyType.NORMAL;
-		if (num % 95 == 2) {
-		    type = CandyType.VERTICALLY_STRIPPED;
-		}
-		else if (num % 95 == 1) {
-		    type = CandyType.HORIZONTALLY_STRIPPED;
-		}
 		return new Candy(CandyColour.values()[result], type);
 	}
 }
