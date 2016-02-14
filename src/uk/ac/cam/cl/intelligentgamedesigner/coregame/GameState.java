@@ -72,7 +72,7 @@ public class GameState implements Cloneable, Serializable {
 
                 // For ICING and UNUSABLEs, we can just replace the cell with
                 // the design element
-                if (cellType == CellType.UNUSABLE) {
+                if (cellType == CellType.ICING || cellType == CellType.UNUSABLE) {
                     board[x][y] = new Cell(cellToCopy);
                 }
                 // For LIQUORICE and EMPTY cells, we want to replace everything except for the
