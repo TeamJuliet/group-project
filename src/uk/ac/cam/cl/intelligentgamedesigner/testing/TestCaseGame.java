@@ -3,6 +3,7 @@ package uk.ac.cam.cl.intelligentgamedesigner.testing;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.*;
 
 public class TestCaseGame extends TestCase {
+    private GameMode gameMode;
     private Cell[][] before;
     private Cell[][] lookahead;
     private Cell[][] after;
@@ -26,8 +27,21 @@ public class TestCaseGame extends TestCase {
                          Move moveMade,
                          int scoreBefore,
                          int scoreAfter) {
+        this(description, fileName, GameMode.HIGHSCORE, before, lookahead, after, moveMade, scoreBefore, scoreAfter);
+    }
+
+    public TestCaseGame (String description,
+                         String fileName,
+                         GameMode gameMode,
+                         Cell[][] before,
+                         Cell[][] lookahead,
+                         Cell[][] after,
+                         Move moveMade,
+                         int scoreBefore,
+                         int scoreAfter) {
         super(description, fileName);
 
+        this.gameMode = gameMode;
         this.before = before;
         this.lookahead = lookahead;
         this.after = after;

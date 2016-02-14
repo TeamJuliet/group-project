@@ -9,7 +9,7 @@ import java.util.Random;
 
 import static uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions.*;
 
-public class GameState implements Cloneable, Serializable {
+public class GameState implements Serializable {
     private Cell[][]           board;
     public final Design        levelDesign;
     public final int           width, height;
@@ -74,10 +74,13 @@ public class GameState implements Cloneable, Serializable {
             for (int y = 0; y < height; y++) {
                 Cell cellToCopy = design.getCell(x, y);
                 CellType cellType = cellToCopy.getCellType();
+                Candy cellCandy = cellToCopy.getCandy();
 
                 // For ICING and UNUSABLEs, we can just replace the cell with
                 // the design element
-                if (cellType == CellType.ICING || cellType == CellType.UNUSABLE) {
+                if (cellType == CellType.ICING
+                        || cellType == CellType.UNUSABLE
+                        || (cellCandy != null && cellCandy.getCandyType() == CandyType.INGREDIENT)) {
                     board[x][y] = new Cell(cellToCopy);
                 }
                 // For LIQUORICE and EMPTY cells, we want to replace everything
@@ -447,21 +450,6 @@ public class GameState implements Cloneable, Serializable {
         }
 
         return isEqual;
-    }
-
-    @Override
-    public GameState clone() {
-        GameState clone = new GameState(levelDesign);
-
-        clone.progress = new GameStateProgress(progress);
-
-        // Copy the candies on the board
-        for (int row = 0; row < height; row++) {
-            for (int col = 0; col < width; col++) {
-                clone.board[row][col] = (Cell) this.board[row][col].clone();
-            }
-        }
-        return clone;
     }
 
     // Function that adds the tile to detonated (the ones that are going to
@@ -950,10 +938,6 @@ public class GameState implements Cloneable, Serializable {
         }
     }
 
-    // Random generator used to replace the stripped candies when triggered from
-    // a bomb.
-    private static Random random = new Random();
-
     // Function that performs the combination of a bomb and a Special Candy.
     private void replaceWithSpecialAllOf(CandyColour colourMatched, CandyType typeToReplace) {
         for (int i = 0; i < width; ++i) {
@@ -961,7 +945,7 @@ public class GameState implements Cloneable, Serializable {
                 if (sameColourWithCell(board[i][j], colourMatched)) {
                     if (typeToReplace.equals(CandyType.HORIZONTALLY_STRIPPED)
                             || typeToReplace.equals(CandyType.VERTICALLY_STRIPPED)) {
-                        if (random.nextInt(2) == 0)
+                        if ((i % 2) != (j % 2))
                             makeStripped(i, j, colourMatched, HORIZONTAL);
                         else
                             makeStripped(i, j, colourMatched, VERTICAL);
