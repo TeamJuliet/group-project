@@ -9,32 +9,14 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.UnmoveableCandyGenerator;
 
 
 //Simple Evaluation: Metric = current score, Potential = best score after one move
-public class DepthPotentialPlayerAlpha extends DepthPotentialPlayer {
+public class DepthPotentialScorePlayer extends DepthPotentialPlayer {
     
-    public DepthPotentialPlayerAlpha(GameState level, int numOfStatesAhead, int numOfStatesInPool) {
+    public DepthPotentialScorePlayer(int numOfStatesAhead, int numOfStatesInPool) {
         super(numOfStatesAhead, numOfStatesInPool);
-        this.level = level;
-    }
-    
-    @Override
-    public void solve() throws NoMovesFoundException {
-        while (level.getGameProgress().movesRemaining > 0) {
-            Move bestMove = calculateBestMove(level);
-            try {
-                level.makeMove(bestMove);
-            } catch (InvalidMoveException e) {
-                printInvalidMoveError(e.invalidMove);
-                try { // TODO: this is horrible, fix it
-                    level.makeMove(level.getValidMoves().get(0));
-                } catch (InvalidMoveException exception) {
-                    return;
-                }
-            }
-        }
     }
 
     private void printInvalidMoveError(Move move) {
-        System.err.println("WARNING! DepthPotentialPlayerAlpha has suggested an invalidMove " + move + ".");
+        System.err.format("WARNING! DepthPotentialScorePlayer with settings (%d,%d)has suggested an invalidMove " + move + ".", numOfStatesAhead, numOfStatesInPool);
     }
 
     @Override

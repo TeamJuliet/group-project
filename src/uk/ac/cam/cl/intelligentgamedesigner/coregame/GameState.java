@@ -10,30 +10,30 @@ import java.util.Random;
 import static uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions.*;
 
 public class GameState implements Cloneable, Serializable {
-    private Cell[][]          board;
-    public final Design       levelDesign;
-    public final int          width, height;
-    CandyGenerator            candyGenerator;
+    private Cell[][]           board;
+    public final Design        levelDesign;
+    public final int           width, height;
+    CandyGenerator             candyGenerator;
 
-    private List<Position>    detonated               = new ArrayList<Position>();
-    private Move              lastMove;
-    private GameStateProgress progress;
-    private int               proceedState            = 0;
-    private boolean           wasSomethingPopped      = false;
-    private List<Position>    ingredientSinkPositions = new ArrayList<Position>();
-    private boolean           shouldShuffle           = true;
-    private ProcessState currentProcessState = ProcessState.AWAITING_MOVE;
-    
+    private List<Position>     detonated               = new ArrayList<Position>();
+    private Move               lastMove;
+    private GameStateProgress  progress;
+    private int                proceedState            = 0;
+    private boolean            wasSomethingPopped      = false;
+    private List<Position>     ingredientSinkPositions = new ArrayList<Position>();
+    private boolean            shouldShuffle           = true;
+    private ProcessState       currentProcessState     = ProcessState.AWAITING_MOVE;
+
     // Statistics accumulators.
-    private CandiesAccumulator statCandiesRemoved = new CandiesAccumulator();
-    private CandiesAccumulator statCandiesFormed = new CandiesAccumulator();
-    private ProcessStateStats statProcess = new ProcessStateStats();
+    private CandiesAccumulator statCandiesRemoved      = new CandiesAccumulator();
+    private CandiesAccumulator statCandiesFormed       = new CandiesAccumulator();
+    private ProcessStateStats  statProcess             = new ProcessStateStats();
 
     // This number will be used to get the scoring due to multiple matches in
     // a single round.
-    private int               numberOfMatchedInRound  = 0;
+    private int                numberOfMatchedInRound  = 0;
     // The design used when the game state was constructed.
-    private Design            design;
+    private Design             design;
 
     /**
      * GameState creation using the design specification.
@@ -80,11 +80,12 @@ public class GameState implements Cloneable, Serializable {
                 if (cellType == CellType.ICING || cellType == CellType.UNUSABLE) {
                     board[x][y] = new Cell(cellToCopy);
                 }
-                // For LIQUORICE and EMPTY cells, we want to replace everything except for the
+                // For LIQUORICE and EMPTY cells, we want to replace everything
+                // except for the
                 // normal underlying candy
                 else if (cellType == CellType.LIQUORICE || cellType == CellType.EMPTY) {
-                    board[x][y] = new Cell(cellType.equals(CellType.EMPTY) ? CellType.NORMAL : cellType, board[x][y].getCandy(), cellToCopy.getJellyLevel(),
-                            cellToCopy.isIngredientSink);
+                    board[x][y] = new Cell(cellType.equals(CellType.EMPTY) ? CellType.NORMAL : cellType,
+                            board[x][y].getCandy(), cellToCopy.getJellyLevel(), cellToCopy.isIngredientSink);
                 }
             }
         }
@@ -154,7 +155,7 @@ public class GameState implements Cloneable, Serializable {
     public GameStateProgressView getGameProgress() {
         return new GameStateProgressView(progress);
     }
-    
+
     public RoundStatistics getRoundStatistics() {
         return new RoundStatistics(this.progress, this.statCandiesRemoved, this.statCandiesFormed, this.statProcess);
     }
@@ -204,10 +205,10 @@ public class GameState implements Cloneable, Serializable {
             throw new InvalidMoveException(move);
         // Record the last move.
         lastMove = move;
-        
+
         this.statProcess.setCandySwapped1(getCell(move.p1).getCandy());
         this.statProcess.setCandySwapped2(getCell(move.p2).getCandy());
-        
+
         swapCandies(move);
 
         // Reduce the number of remaining moves available
@@ -273,7 +274,6 @@ public class GameState implements Cloneable, Serializable {
             }
         }
     }
-    
 
     /**
      * Once the makeMove has been called this takes care of making the small
@@ -292,8 +292,10 @@ public class GameState implements Cloneable, Serializable {
         case MATCH_AND_REPLACE:
             markAndReplaceMatchingTiles();
             lastMove = null;
-            if (!wasSomethingPopped) currentProcessState = ProcessState.SHUFFLE;
-            else currentProcessState = ProcessState.DETONATE_PENDING;
+            if (!wasSomethingPopped)
+                currentProcessState = ProcessState.SHUFFLE;
+            else
+                currentProcessState = ProcessState.DETONATE_PENDING;
             break;
         case SHUFFLE:
             if (!candiesNeededShuffling()) {
@@ -316,12 +318,15 @@ public class GameState implements Cloneable, Serializable {
             currentProcessState = ProcessState.PASSING_INGREDIENTS;
             break;
         case PASSING_INGREDIENTS:
-            if (passIngredients()) currentProcessState = ProcessState.BRING_DOWN_CANDIES;
-            else currentProcessState = ProcessState.FILL_BOARD;
+            if (passIngredients())
+                currentProcessState = ProcessState.BRING_DOWN_CANDIES;
+            else
+                currentProcessState = ProcessState.FILL_BOARD;
             break;
         case FILL_BOARD:
             fillBoard();
-            if (hasDetonated(board)) currentProcessState = ProcessState.DETONATE_PENDING;
+            if (hasDetonated(board))
+                currentProcessState = ProcessState.DETONATE_PENDING;
             else {
                 wasSomethingPopped = false;
                 currentProcessState = ProcessState.MATCH_AND_REPLACE;
@@ -371,12 +376,13 @@ public class GameState implements Cloneable, Serializable {
         if (Math.abs(move.p1.x - move.p2.x) + Math.abs(move.p1.y - move.p2.y) != 1)
             return false;
         Cell cell1 = getCell(move.p1), cell2 = getCell(move.p2);
-        
-        if (hasIngredient(cell1) || hasIngredient(cell2)) return false;
-        
+
+        if (hasIngredient(cell1) || hasIngredient(cell2))
+            return false;
+
         if (cell1.getCandy().getCandyType().isSpecial() && cell2.getCandy().getCandyType().isSpecial())
             return true;
-        
+
         // Exchanging a Bomb with a cell that has a movable item is a valid
         // move (i.e. it is either special or normal candy type).
         else if (cell1.getCandy().getCandyType().equals(CandyType.BOMB) && (hasSpecial(cell2) || hasNormal(cell2))
@@ -411,7 +417,7 @@ public class GameState implements Cloneable, Serializable {
         }
         return moves;
     }
-    
+
     // **** FUNCIONS THAT MONITOR PROGRESS ****
     private void incrementScore(int addedScore) {
         progress.incrementScore(addedScore);
@@ -479,10 +485,10 @@ public class GameState implements Cloneable, Serializable {
         if (current.removeJellyLayer()) {
             incrementScore(Scoring.MATCHED_A_JELLY);
         }
-        
-        if(current.hasCandy() && current.getCandy().getCandyType().equals(CandyType.INGREDIENT))
+
+        if (current.hasCandy() && current.getCandy().getCandyType().equals(CandyType.INGREDIENT))
             return;
-        
+
         if (current.hasCandy() && current.getCandy().isDetonated())
             return;
         if (current.hasCandy() && current.getCandy().getCandyType().isSpecial()) {
@@ -508,6 +514,7 @@ public class GameState implements Cloneable, Serializable {
     // Function that executes what should happen to board[x][y] when a
     // neighbouring
     // cell was triggered.
+
     private void touch(int x, int y) {
         if (!inBoard(new Position(x, y)))
             return;
@@ -567,7 +574,7 @@ public class GameState implements Cloneable, Serializable {
                 .setCandy(new Candy(clr, isVertical ? CandyType.VERTICALLY_STRIPPED : CandyType.HORIZONTALLY_STRIPPED));
         this.statCandiesFormed.candyProcessed(board[x][y].getCandy());
     }
-    
+
     // **** MARK AND REPLACE STAGE ****
 
     // Function that replaces all the matched tiles with their respective
@@ -578,7 +585,6 @@ public class GameState implements Cloneable, Serializable {
                 // Do not consider cells with no candy.
                 if (!board[x][y].hasCandy())
                     continue;
-
                 markAndReplaceForTile(x, y);
             }
         }
@@ -811,8 +817,10 @@ public class GameState implements Cloneable, Serializable {
         detonated = new ArrayList<Position>();
         for (Position d : oldDetonated) {
             Cell detonatingCell = getCell(d);
-            if (!detonatingCell.hasCandy()) continue;
-            if (detonatingCell.getCandy().getCandyType() == null ) detonatingCell.removeCandy();
+            if (!detonatingCell.hasCandy())
+                continue;
+            if (detonatingCell.getCandy().getCandyType() == null)
+                detonatingCell.removeCandy();
             switch (detonatingCell.getCandy().getCandyType()) {
             case WRAPPED:
                 detonateWrapped(d);
@@ -861,7 +869,7 @@ public class GameState implements Cloneable, Serializable {
                         board[i][j].setCandy(board[i][y].getCandy());
                         board[i][y].removeCandy();
                     }
-                    
+
                 }
             }
         }
@@ -878,7 +886,7 @@ public class GameState implements Cloneable, Serializable {
                     int cur_y = y - 1;
                     while (cur_y >= 0 && !board[x][cur_y].blocksCandies()) {
                         cur_y--;
-                    } 
+                    }
                     if (cur_y < 0)
                         cell.setCandy(candyGenerator.generateCandy(x));
                 }
@@ -975,7 +983,7 @@ public class GameState implements Cloneable, Serializable {
         boolean didShuffle = false;
 
         this.statProcess.setShuffled(true);
-        
+
         // It is quite complicated (and expensive to compute) whether there
         // exists a shuffle which introduces a possible move, so for now I think
         // we should just shuffle up to some limit, at which point we declare

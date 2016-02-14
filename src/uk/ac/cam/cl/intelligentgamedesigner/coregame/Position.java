@@ -38,6 +38,6 @@ public class Position implements Serializable {
 
     @Override
     public int hashCode() {
-        return x + y;
+        return (x*2729 + y*3547)%4397;
     }
 }
