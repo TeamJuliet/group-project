@@ -616,7 +616,7 @@ public class GameState implements Cloneable, Serializable {
                 trigger(k, y, Scoring.NO_ADDITIONAL_SCORE);
             }
         }
-        if (analysis.getLengthX() == 3) {
+        if (analysis.getLengthX() == 3 && !foundVertical) {
             matched3();
             return;
         }
@@ -678,7 +678,7 @@ public class GameState implements Cloneable, Serializable {
                 trigger(x, k, Scoring.NO_ADDITIONAL_SCORE);
             }
         }
-        if (analysis.getLengthY() == 3) {
+        if (analysis.getLengthY() == 3 && !foundHorizontal) {
             matched3();
             return;
         } else if (!foundHorizontal) {
@@ -844,7 +844,7 @@ public class GameState implements Cloneable, Serializable {
         for (int i = 0; i < width; ++i) {
             for (int j = height - 1; j >= 1; --j) {
                 if (board[i][j].getCellType().equals(CellType.EMPTY) && !board[i][j].blocksCandies()) {
-                    int y = Integer.min(prev[i], j - 1);
+                    int y = Math.min(prev[i], j - 1);
                     while (y >= 0 && !board[i][y].canDropCandy()) {
                         if (board[i][y].blocksCandies()) {
                             prev[i] = y;
