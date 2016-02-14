@@ -6,6 +6,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.NoMovesFoundException;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.ScorePlayerAlpha;
+import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerManager;
 import uk.ac.cam.cl.intelligentgamedesigner.userinterface.LevelManager;
 
 import static org.junit.Assert.assertEquals;
@@ -30,7 +31,7 @@ public class SimulatedPlayersTestRunner {
         GameState testLvl = new GameState(manager.getLevel(1));
         Move suggestedMove;
         try {
-            suggestedMove = ScorePlayerAlpha.calculateBestMove(testLvl);
+            suggestedMove = SimulatedPlayerManager.calculateBestMove(testLvl,1);
         } catch (NoMovesFoundException e) {
             suggestedMove = null;
         }

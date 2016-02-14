@@ -90,7 +90,7 @@ public class LevelDesignerManager extends SwingWorker {
 
             switch (design.getMode()) {
                 case HIGHSCORE:
-                    simulatedPlayers[t] = new ScorePlayerAlpha(gameStates[t]);
+                    simulatedPlayers[t] = new ScorePlayerAlpha();
                     break;
                 case JELLY:
                     System.err.println("Jelly level players are not yet supported.");
@@ -100,7 +100,7 @@ public class LevelDesignerManager extends SwingWorker {
                     return 0;
             }
 
-            simulationThreads[t] = new Thread(new SimulationThread(simulatedPlayers[t]));
+            simulationThreads[t] = new Thread(new SimulationThread(simulatedPlayers[t], gameStates[t]));
 
             simulationThreads[t].setDaemon(true);
             simulationThreads[t].start();
