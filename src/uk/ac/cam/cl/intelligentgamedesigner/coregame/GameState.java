@@ -16,13 +16,13 @@ public class GameState implements Cloneable, Serializable {
     CandyGenerator            candyGenerator;
 
     private List<Position>    detonated               = new ArrayList<Position>();
-    private List<Position>    popped                  = new ArrayList<Position>();
     private Move              lastMove;
     private GameStateProgress progress;
     private int               proceedState            = 0;
     private boolean           wasSomethingPopped      = false;
     private List<Position>    ingredientSinkPositions = new ArrayList<Position>();
     private boolean           shouldShuffle           = true;
+    private ProcessState currentProcessState = ProcessState.AWAITING_MOVE;
     
     // Statistics accumulators.
     private CandiesAccumulator statCandiesRemoved = new CandiesAccumulator();
@@ -112,8 +112,6 @@ public class GameState implements Cloneable, Serializable {
         this.candyGenerator = original.candyGenerator;
         for (Position p : original.detonated)
             this.detonated.add(new Position(p));
-        for (Position p : original.popped)
-            this.popped.add(new Position(p));
         this.lastMove = original.lastMove;
         this.proceedState = original.proceedState;
         this.design = original.design;
@@ -276,6 +274,16 @@ public class GameState implements Cloneable, Serializable {
         }
     }
     
+    private boolean hasDetonated() {
+        for (int i = 0; i < width; ++i) {
+            for (int j = 0; j < height; ++j) {
+                if (board[i][j].hasCandy() && board[i][j].getCandy().isDetonated())
+                    return true;
+            }
+        }
+        return false;
+    }
+    
     /**
      * Once the makeMove has been called this takes care of making the small
      * steps in the boards.
@@ -283,36 +291,52 @@ public class GameState implements Cloneable, Serializable {
      * @return whether there is no other step in to be made.
      */
     public boolean makeSmallMove() {
-        if (proceedState == 0) {
-            System.out.println("1: Mark and replace tiles on");
+        this.statProcess.incrementTransitions();
+        System.out.println("Current state is " + this.currentProcessState);
+        switch (currentProcessState) {
+        case AWAITING_MOVE:
+            currentProcessState = ProcessState.MATCH_AND_REPLACE;
+            resetRound();
+            break;
+        case MATCH_AND_REPLACE:
             markAndReplaceMatchingTiles();
             lastMove = null;
-            if (!wasSomethingPopped && !candiesNeededShuffling()) {
+            if (!wasSomethingPopped) currentProcessState = ProcessState.SHUFFLE;
+            else currentProcessState = ProcessState.DETONATE_PENDING;
+            break;
+        case SHUFFLE:
+            if (!candiesNeededShuffling()) {
+                currentProcessState = ProcessState.AWAITING_MOVE;
+                // Move has ended.
                 this.statProcess.setValidMoves(this.getValidMoves().size());
                 return false;
+            } else {
+                wasSomethingPopped = false;
+                currentProcessState = ProcessState.MATCH_AND_REPLACE;
             }
-        } else if (proceedState == 1) {
+            break;
+        case DETONATE_PENDING:
             findDetonated();
             detonateAllPending();
-            System.out.println("2: Detonating all pending.");
-        } else if (proceedState == 2) {
-            System.out.println("3: Bringing down some candies (and filling board).");
+            currentProcessState = ProcessState.BRING_DOWN_CANDIES;
+            break;
+        case BRING_DOWN_CANDIES:
             bringDownCandies();
-            if (passIngredients()) {
-                System.err.println("PassedIngredients");
-                proceedState = 1;
-            } else {
-                fillBoard();
-                findDetonated();
-                if (detonated.isEmpty()) {
-                    wasSomethingPopped = false;
-                } else {
-                    proceedState = 0;
-                }
+            currentProcessState = ProcessState.PASSING_INGREDIENTS;
+            break;
+        case PASSING_INGREDIENTS:
+            if (passIngredients()) currentProcessState = ProcessState.BRING_DOWN_CANDIES;
+            else currentProcessState = ProcessState.FILL_BOARD;
+            break;
+        case FILL_BOARD:
+            fillBoard();
+            if (hasDetonated()) currentProcessState = ProcessState.DETONATE_PENDING;
+            else {
+                wasSomethingPopped = false;
+                currentProcessState = ProcessState.MATCH_AND_REPLACE;
             }
+            break;
         }
-        this.statProcess.incrementTransitions();
-        proceedState = (proceedState + 1) % 3;
         return true;
     }
 
@@ -973,7 +997,7 @@ public class GameState implements Cloneable, Serializable {
         // (non-special) candies on the board
         while ((movesAvailable = getValidMoves().size()) == 0 && shuffleCount < shuffleLimit) {
 
-            System.out.println("No moves available: Shuffling candies...");
+            // System.out.println("No moves available: Shuffling candies...");
 
             // Collect all of the colours of the normal candies
             LinkedList<CandyColour> normalCandyColours = new LinkedList<>();
