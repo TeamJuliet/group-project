@@ -85,6 +85,7 @@ public abstract class GameDisplayScreen extends DisplayScreen{
 		GameStateProgressView progress = theGame.getGameProgress();
 		score = progress.score;
 		moves_left = progress.movesRemaining;
+		if(game_mode == GameMode.INGREDIENTS)objective = progress.ingredientsRemaining;
 		setInfo();
 	}
 	
