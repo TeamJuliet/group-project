@@ -13,10 +13,10 @@ public class SimulatedPlayerManager {
             player = new ScorePlayerBeta();
             break;
         case 2:
-            player = new ScorePlayerGamma();
+            player = new DepthPotentialScorePlayer(2,4);
             break;
         case 3:
-            player = new DepthPotentialScorePlayer(4, 4);
+            player = new DepthPotentialScorePlayer(4, 8);
             break;
         default:
             player = new ScorePlayerAlpha();
@@ -27,7 +27,10 @@ public class SimulatedPlayerManager {
 
     public static Move calculateBestMove(GameState level, int ability) throws NoMovesFoundException {
         SimulatedPlayerBase player = makeSimulatedPlayer(ability);
-        return player.calculateBestMove(level);
+        Move move = player.calculateBestMove(level);
+        if (move != null) return move;
+        player.noMovesFound();
+        return level.getValidMoves().get(0);
     }
 
     public static int getMaxAbilityLevel() {

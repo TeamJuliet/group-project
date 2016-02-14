@@ -4,24 +4,24 @@ import java.io.Serializable;
 
 public class Cell implements Cloneable, Serializable {
 
-	// TODO: Is there really a need for this?
+    // TODO: Is there really a need for this?
     public static final int maxJellyLevel = 5;
-    
-    public final boolean isIngredientSink;
+
+    public final boolean    isIngredientSink;
     private CellType        cellType;
     private Candy           candy;
     private int             jellyLevel;
 
     public Cell(CellType cellType) {
-    	this(cellType, null, 0, false);
+        this(cellType, null, 0, false);
     }
 
     public Cell(CellType cellType, Candy candy) {
-    	this(cellType, candy, 0, false);
+        this(cellType, candy, 0, false);
     }
 
     public Cell(CellType cellType, int jellyLevel) {
-    	this(cellType, null, jellyLevel, false);
+        this(cellType, null, jellyLevel, false);
     }
 
     public Cell(CellType cellType, Candy candy, int jellyLevel) {
@@ -29,12 +29,12 @@ public class Cell implements Cloneable, Serializable {
     }
 
     public Cell(CellType cellType, Candy candy, int jellyLevel, boolean isIngredientSink) {
-    	this.cellType = cellType;
+        this.cellType = cellType;
         this.candy = candy;
         this.jellyLevel = jellyLevel;
         this.isIngredientSink = isIngredientSink;
     }
-    
+
     public Cell(Cell original) {
         this.cellType = original.cellType;
         this.candy = original.candy;
@@ -56,11 +56,10 @@ public class Cell implements Cloneable, Serializable {
     public Candy getCandy() {
         return candy;
     }
-    
+
     // Function that returns whether the current cell can be filled.
     public boolean isFillable() {
-    	return (this.cellType.equals(CellType.EMPTY))
-                || (this.cellType.equals(CellType.LIQUORICE) && !this.hasCandy());
+        return (this.cellType.equals(CellType.EMPTY)) || (this.cellType.equals(CellType.LIQUORICE) && !this.hasCandy());
     }
 
     public boolean hasCandy() {
@@ -84,7 +83,7 @@ public class Cell implements Cloneable, Serializable {
     // Function that returns whether it is possible to move the contents of the
     // block.
     public boolean isMoveable() {
-    	return cellType == CellType.NORMAL && !(hasCandy() && candy.getCandyType().equals(CandyType.UNMOVEABLE));
+        return cellType == CellType.NORMAL && !(hasCandy() && candy.getCandyType().equals(CandyType.UNMOVEABLE));
     }
 
     public CellType getCellType() {
@@ -94,38 +93,37 @@ public class Cell implements Cloneable, Serializable {
     // added a setter for customisation purposes
     public void setCellType(CellType cellType) {
         this.cellType = cellType;
-        if (!cellType.equals(CellType.NORMAL)) this.candy = null;
+        if (!cellType.equals(CellType.NORMAL))
+            this.candy = null;
     }
 
     public int getJellyLevel() {
         return jellyLevel;
     }
-    
+
     public boolean removeJellyLayer() {
-    	boolean removedJelly = false;
-    	if (jellyLevel > 0) {
-    		--jellyLevel;
-    		removedJelly = true;
-    	}
-    	return removedJelly;
+        boolean removedJelly = false;
+        if (jellyLevel > 0) {
+            --jellyLevel;
+            removedJelly = true;
+        }
+        return removedJelly;
     }
-    
+
     public boolean canDropCandy() {
-    	return hasCandy() && (!cellType.equals(CellType.LIQUORICE));
+        return hasCandy() && (!cellType.equals(CellType.LIQUORICE));
     }
-    
+
     public boolean blocksCandies() {
-        return cellType.blocksCandies() || 
-                (hasCandy() && candy.isDetonated() && candy.getCandyType().isStripped());
+        return cellType.blocksCandies() || (hasCandy() && candy.isDetonated() && candy.getCandyType().isStripped());
     }
-    
+
     @Override
     public boolean equals(Object toCompare) {
         Cell cellToCompare = (Cell) toCompare;
 
         if (this.candy == null) {
-            return (cellToCompare.candy == null
-                    && this.cellType == cellToCompare.cellType
+            return (cellToCompare.candy == null && this.cellType == cellToCompare.cellType
                     && this.jellyLevel == cellToCompare.jellyLevel);
         }
 
@@ -144,5 +142,72 @@ public class Cell implements Cloneable, Serializable {
             System.err.println("Could not clone Cell");
             return null;
         }
+    }
+
+    @Override
+    public String toString() {
+        String result = "";
+        switch (cellType) {
+        case UNUSABLE:
+            return "XXX";
+        case EMPTY:
+            return "EEE";
+        case ICING:
+            result += "I";
+            break;
+        case NORMAL:
+            result += "N";
+            break;
+        case LIQUORICE:
+            result += "L";
+        case DONT_CARE:
+            return "D_C";
+        }
+
+        switch (candy.getCandyType()) {
+        case NORMAL:
+            result += "N";
+            break;
+        case BOMB:
+            result += "B";
+            break;
+        case INGREDIENT:
+            result += "I";
+            break;
+        case UNMOVEABLE:
+            return "UNM";
+        case WRAPPED:
+            result += "W";
+            break;
+        case HORIZONTALLY_STRIPPED:
+            result += "H";
+            break;
+        case VERTICALLY_STRIPPED:
+            result += "V";
+            break;
+        }
+
+        switch (candy.getColour()) {
+        case BLUE:
+            result += "B";
+            break;
+        case GREEN:
+            result += "G";
+            break;
+        case ORANGE:
+            result += "O";
+            break;
+        case PURPLE:
+            result += "P";
+            break;
+        case RED:
+            result += "R";
+            break;
+        case YELLOW:
+            result += "Y";
+            break;
+        }
+
+        return result;
     }
 }

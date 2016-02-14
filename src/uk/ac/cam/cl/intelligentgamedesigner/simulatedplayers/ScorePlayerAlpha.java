@@ -11,10 +11,10 @@ public class ScorePlayerAlpha extends SimulatedPlayerBase {
         System.err.println("WARNING! ScorePlayerAlpha has suggested an invalidMove " + move + ".");
     }
 
+    @Override
     public Move calculateBestMove(GameState currentState) throws NoMovesFoundException {
         if (currentState.getValidMoves().size() > 0)
             return currentState.getValidMoves().get(0);
         throw new NoMovesFoundException(currentState);
     }
-
 }

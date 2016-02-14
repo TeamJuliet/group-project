@@ -21,7 +21,6 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.ScorePlayerAlpha;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.ScorePlayerBeta;
-import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.ScorePlayerGamma;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.DepthPotentialScorePlayer;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerBase;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerManager;

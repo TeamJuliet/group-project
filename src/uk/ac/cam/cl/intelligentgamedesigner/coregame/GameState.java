@@ -1045,4 +1045,23 @@ public class GameState implements Cloneable, Serializable {
         this.statCandiesRemoved.reset();
         this.statProcess.reset();
     }
+    
+    @Override
+    public String toString(){
+        //TODO: make this more descriptive
+        String result = "";
+        Cell[][] tmp = new Cell[height][width];
+        for(int x = 0; x < width; x++){
+            for(int y = 0; y < height; y++){
+                tmp[y][x] = board[x][y]; 
+            }
+        }
+        for(Cell[] row: tmp){
+            for(Cell cell: row){
+                result += cell.toString() + " ";
+            }
+            result += "\n";
+        }
+        return result;
+    }
 }
