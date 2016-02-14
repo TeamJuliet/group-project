@@ -1,30 +1,20 @@
 package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.awt.event.MouseMotionListener;
 
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
-
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.Candy;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CandyType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 
-public class CustomBoard extends DisplayBoard implements MouseListener{
-	
-	protected Timer timer;
-	protected TimerTask task;
-	protected final int refresh_rate = 10;
-	
+public class CustomBoard extends DisplayBoard implements MouseListener, MouseMotionListener{
+		
 	protected DisplayScreen watch_creator;
+	protected boolean mouse_down;
 	
 	public CustomBoard(int width, int height)	{
 		super(width, height);
@@ -32,7 +22,8 @@ public class CustomBoard extends DisplayBoard implements MouseListener{
 		tile_size = InterfaceManager.screenHeight()/15;
 		
 		addMouseListener(this);
-		timer = new Timer();
+		addMouseMotionListener(this);
+		mouse_down = false;
 	}
 	public void watchLevelCreator(DisplayScreen level_creator){
 		watch_creator = level_creator;
@@ -90,41 +81,48 @@ public class CustomBoard extends DisplayBoard implements MouseListener{
 		}
 	}
 
-	public void changeTile(){
-		Point pos = getMousePosition();
-		if(pos != null){
-			//convert to coordinates
-			int x = pos.x/tile_size;
-			int y = pos.y/tile_size;
-			if(x>=0 && x<width && y>=0 && y<height){				
-				if(watch_creator.identifier.equals("Level Creator")){ //check is level creator
-					if(board[x][y].getCellType() != ((LevelCreatorScreen)watch_creator).getReplacer()){
-						board[x][y] = new Cell(((LevelCreatorScreen)watch_creator).getReplacer());						
-					}
-				}				
-			}
+	public void changeTile(int x, int y){
+		if(x>=0 && x<width && y>=0 && y<height){				
+			if(watch_creator.identifier.equals("Level Creator")){ //check is level creator
+				if(board[x][y].getCellType() != ((LevelCreatorScreen)watch_creator).getReplacer()){
+					board[x][y] = new Cell(((LevelCreatorScreen)watch_creator).getReplacer());						
+				}
+			}				
 		}
 	}
 
+	@Override
 	public void mousePressed(MouseEvent e) {
 		if(watch_creator.identifier.equals("Level Creator")){ //check is level creator
 			if(((LevelCreatorScreen)watch_creator).fillingCells()){
-				task = new ClickDrag(this);
-		    	timer.scheduleAtFixedRate(task, 0, refresh_rate); // Time is in milliseconds
-		    	// The second parameter is delay before the first run
-		    	// The third is how often to run it
+				mouse_down = true;
+				Point pos = e.getPoint();
+				if(pos != null){
+					//convert to coordinates
+					int x = pos.x/tile_size;
+					int y = pos.y/tile_size;
+					changeTile(x,y);
+				}
+			}
+		}
+	}
+	
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		if(mouse_down){
+			Point pos = e.getPoint();
+			if(pos != null){
+				//convert to coordinates
+				int x = pos.x/tile_size;
+				int y = pos.y/tile_size;
+				changeTile(x,y);
 			}
 		}
 	}
 
+	@Override
 	public void mouseReleased(MouseEvent e) {
-		if(watch_creator.identifier.equals("Level Creator")){ //check is level creator
-			if(((LevelCreatorScreen)watch_creator).fillingCells()){
-				task.cancel();
-				// Will not stop execution of task.run() if it is midway
-				// But will guarantee that after this call it runs no more than one more time
-			}
-		}
+		mouse_down = false;
 	}
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -168,5 +166,8 @@ public class CustomBoard extends DisplayBoard implements MouseListener{
 	}
 	@Override
 	public void mouseExited(MouseEvent arg0) {
+	}
+	@Override
+	public void mouseMoved(MouseEvent e) {
 	}
 }

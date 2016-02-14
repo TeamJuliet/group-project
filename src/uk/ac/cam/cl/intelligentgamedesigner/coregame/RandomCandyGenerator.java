@@ -14,7 +14,7 @@ public class RandomCandyGenerator extends CandyGenerator {
 		// This ensures ingredients are dropped evenly over the course of the game, and also ensures all ingredients
 		// are dropped before the number of moves runs out.
 		if (super.ingredientsToDrop > 0) {
-			if (random.nextInt(gameState.getMovesRemaining()) < ingredientsToDrop) {
+			if (random.nextInt(gameState.getGameProgress().movesRemaining) < ingredientsToDrop) {
 				ingredientsToDrop--;
 				return new Candy(null, CandyType.INGREDIENT);
 			}
@@ -22,7 +22,7 @@ public class RandomCandyGenerator extends CandyGenerator {
 
 		// If an ingredient wasn't dropped, then drop a normal candy
 
-		int result = random.nextInt(super.gameState.getNumberOfCandyColours());
+		int result = random.nextInt(super.gameState.getLevelDesign().getNumberOfCandyColours());
 		return new Candy(CandyColour.values()[result], CandyType.NORMAL);
 	}
 

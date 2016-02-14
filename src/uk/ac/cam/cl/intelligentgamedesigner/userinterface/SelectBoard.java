@@ -13,6 +13,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.ButtonModel;
 import javax.swing.event.ChangeListener;
 
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 
 public class SelectBoard extends DisplayBoard implements MouseListener{
@@ -33,6 +34,15 @@ public class SelectBoard extends DisplayBoard implements MouseListener{
 	}
 	public void setSelected(boolean selected) {
 		this.selected = selected;
+	}
+	
+	public boolean hasDesign(){//prevent you from clicking on a level that isn't there
+		for(int x=0;x<width;x++){
+			for(int y=0;y<height;y++){
+				if(board[x][y].getCellType() != CellType.UNUSABLE)return true;
+			}
+		}
+		return false;
 	}
 	
 	@Override

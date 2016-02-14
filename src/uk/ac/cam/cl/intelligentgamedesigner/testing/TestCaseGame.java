@@ -41,7 +41,7 @@ public class TestCaseGame extends TestCase {
         try {
             // Construct GameState representing game before
             GameState gameStateBefore = new GameState(before,
-                    scoreBefore,
+                    new GameStateProgress(scoreBefore, 100, 100, 100),
                     new PreFilledCandyGenerator(null, lookahead));
 
             // Make the test move
@@ -50,7 +50,7 @@ public class TestCaseGame extends TestCase {
 
             // Construct GameState representing game after
             GameState gameStateAfter = new GameState(after,
-                    scoreAfter,
+                    new GameStateProgress(scoreAfter, 100, 100, 100),
                     new PreFilledCandyGenerator(null, lookahead));
 
             // Check the GameStates match

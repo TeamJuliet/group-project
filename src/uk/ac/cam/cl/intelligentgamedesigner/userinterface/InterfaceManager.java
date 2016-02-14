@@ -51,6 +51,8 @@ public class InterfaceManager extends JFrame {
 		screen.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		screen.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
+		DisplayBoard.loadTextures();
+		
 		//using CardLayout to allow for switching between screens
 		screens.add(main_menu_screen, main_menu_screen.getIdentifier());
 		screens.add(level_requester_screen, level_requester_screen.getIdentifier());

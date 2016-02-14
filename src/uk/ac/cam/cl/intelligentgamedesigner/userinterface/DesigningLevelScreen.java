@@ -38,6 +38,7 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 	//functional
     private LevelDesignerManager levelDesignerManager;
     private static final int boardCount = 5;
+    private int currentBoardCount = 0;
     private Design[] boardDesigns;
     private int selected;
 	
@@ -55,6 +56,9 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 			topBoards[n].setSelected(false);
 		}
 		selected = -1;
+		
+		currentBoardCount = 0;
+		positionBoards();
 	
         levelDesignerManager = new LevelDesignerManager(specification);
         levelDesignerManager.addPropertyChangeListener(this);
@@ -63,11 +67,19 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 	
 	public void selectBoard(int selected){
 		if(selected>=0 && selected<boardCount){
-			view_level.setEnabled(true);
 			this.selected = selected;
 			for(int n=0;n<boardCount;n++){
 				topBoards[n].setSelected(n==selected);
 			}
+			view_level.setEnabled(topBoards[selected].hasDesign());
+		}
+	}
+	
+	protected void positionBoards(){
+		for(int n=0;n<boardCount;n++){
+			double x_offset = 0.5 + 0.9*(n - 0.5*(currentBoardCount - 1))/boardCount;
+			if(n<currentBoardCount)positionBoard(topBoards[n],x_offset,0.45);
+			else positionBoard(topBoards[n],x_offset,-1);
 		}
 	}
 	
@@ -84,7 +96,7 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 		for(int n=0;n<boardCount;n++){
 			boardDesigns[n] = new Design();
 			topBoards[n] = new SelectBoard(boardDesigns[n],n);
-			topBoards[n].adjustSize(2);
+			topBoards[n].adjustSize(1.75);
 			topBoards[n].setManager(this);
 		}
 	}
@@ -118,9 +130,9 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 		
 		for(int n=0;n<boardCount;n++){
 			add(topBoards[n]);
-			double x_offset = 0.5 + 0.95 * (n - 0.5*(boardCount - 1))/boardCount;
-			positionBoard(topBoards[n],x_offset,0.45);
 		}
+		
+		positionBoards();
 
 	}
 	
@@ -147,12 +159,15 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 		switch(evt.getPropertyName()){
 		case PropertyChanges.PROPERTY_CHANGE_DESIGNS:
             List<LevelRepresentation> topDesigns = (List<LevelRepresentation>) evt.getNewValue();
-            
-            for(int n=0;n<boardCount;n++){
-            	if(n>=topDesigns.size())break;
+            int prevMost = currentBoardCount;
+            currentBoardCount = topDesigns.size();
+            if(currentBoardCount > boardCount) currentBoardCount = boardCount;
+            for(int n=0;n<currentBoardCount;n++){
             	boardDesigns[n] = topDesigns.get(n).getDesign();
             	topBoards[n].setBoard(boardDesigns[n].getBoard());
             }
+            if(currentBoardCount < prevMost)currentBoardCount = prevMost;
+            positionBoards();
 			break;
 		case PropertyChanges.PROPERTY_CHANGE_PROGRESS:
             int iterationNumber = (int) evt.getNewValue();

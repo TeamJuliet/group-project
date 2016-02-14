@@ -79,56 +79,47 @@ public class UnitTestBoard extends CustomBoard {
 	}
 
 	@Override
-	public void changeTile(){
-		Point pos = getMousePosition();
-		if(pos != null){
-			//convert to coordinates
-			int x = pos.x/tile_size;
-			int y = pos.y/tile_size;
-			if(x>=0 && x<width && y>=0 && y<height){
-				if(watch_creator.identifier.equals("Unit Test Maker")){ //if instead unit test maker	
-					if(type==2){//can only fill with regular candies
-						if(watch_creator.identifier.equals("Unit Test Maker")){ //if instead unit test maker
-							if(((UnitTestMakerScreen)watch_creator).fillingCandies()){
-								if(board[x][y].getCandy() == null || 
-										board[x][y].getCandy().getColour() != 
-										((UnitTestMakerScreen)watch_creator).getReplacerCandy().getColour()){
-									board[x][y].setCandy(((UnitTestMakerScreen)watch_creator).getReplacerCandy());
-								}
-							}
-						}
-						return;
-					}
+	public void changeTile(int x, int y){
+		if(x>=0 && x<width && y>=0 && y<height){
+			if(watch_creator.identifier.equals("Unit Test Maker")){ //if instead unit test maker	
+				if(type==2){//can only fill with regular candies
 					if(((UnitTestMakerScreen)watch_creator).fillingCandies()){
 						if(board[x][y].getCandy() == null || 
 								board[x][y].getCandy().getColour() != 
 								((UnitTestMakerScreen)watch_creator).getReplacerCandy().getColour()){
-							CellType background = CellType.NORMAL;//to keep the correct background type
-							if(board[x][y].getCellType() == CellType.LIQUORICE)background = CellType.LIQUORICE;
 							board[x][y].setCandy(((UnitTestMakerScreen)watch_creator).getReplacerCandy());
-							board[x][y].setCellType(background);
-							//remove the double click issue
-							if(!just_clicked){
-								just_clicked = true;
-							}
-						}
-					} else if(((UnitTestMakerScreen)watch_creator).placingMove()) {
-						move_to = new Position(x*tile_size,y*tile_size);
-					} else {
-						CellType watch_type = ((UnitTestMakerScreen)watch_creator).getReplacer();
-						if(type == 1 || watch_type != CellType.DONT_CARE){ //can only don't care for 'after' board
-							if(board[x][y].getCellType() != watch_type){
-								board[x][y] = new Cell(watch_type);						
-							}							
 						}
 					}
-					if(watch_board != null){
-						watch_board[x][y] = board[x][y];
-						System.out.println("Doing both");
+					return;
+				}
+				if(((UnitTestMakerScreen)watch_creator).fillingCandies()){
+					if(board[x][y].getCandy() == null || 
+							board[x][y].getCandy().getColour() != 
+							((UnitTestMakerScreen)watch_creator).getReplacerCandy().getColour()){
+						CellType background = CellType.NORMAL;//to keep the correct background type
+						if(board[x][y].getCellType() == CellType.LIQUORICE)background = CellType.LIQUORICE;
+						board[x][y].setCandy(((UnitTestMakerScreen)watch_creator).getReplacerCandy());
+						board[x][y].setCellType(background);
+						//remove the double click issue
+						if(!just_clicked){
+							just_clicked = true;
+						}
+					}
+				} else if(((UnitTestMakerScreen)watch_creator).placingMove()) {
+					move_to = new Position(x*tile_size,y*tile_size);
+				} else {
+					CellType watch_type = ((UnitTestMakerScreen)watch_creator).getReplacer();
+					if(type == 1 || watch_type != CellType.DONT_CARE){ //can only don't care for 'after' board
+						if(board[x][y].getCellType() != watch_type){
+							board[x][y] = new Cell(watch_type);						
+						}							
 					}
 				}
-				
+				if(watch_board != null){
+					watch_board[x][y] = board[x][y];
+				}
 			}
+			
 		}
 	}
 
@@ -139,35 +130,23 @@ public class UnitTestBoard extends CustomBoard {
 			if(((UnitTestMakerScreen)watch_creator).fillingCells() || 
 					((UnitTestMakerScreen)watch_creator).fillingCandies() ||
 					((UnitTestMakerScreen)watch_creator).placingMove()){
-				task = new ClickDrag(this);
-		    	timer.scheduleAtFixedRate(task, 0, refresh_rate); // Time is in milliseconds
-		    	// The second parameter is delay before the first run
-		    	// The third is how often to run it
+
+				Point pos = getMousePosition();
+				int posx = (pos.x/tile_size);
+				if(posx>=width*tile_size)posx = (width-1);
+				int posy = (pos.y/tile_size);
+				if(posy>=height*tile_size)posy = (height-1);
+				mouse_down = true;
+				
 				if(((UnitTestMakerScreen)watch_creator).placingMove()){
-					Point pos = getMousePosition();
-					int posx = (pos.x/tile_size)*tile_size;
-					if(posx>=width*tile_size)posx = (width-1)*tile_size;
-					int posy = (pos.y/tile_size)*tile_size;
-					if(posy>=height*tile_size)posy = (height-1)*tile_size;
-					move_from = new Position(posx,posy);
+					move_from = new Position(posx*tile_size,posy*tile_size);
 					move_to = move_from;
 				}
+				else changeTile(posx,posy);
 			}
 		}
 	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		if(watch_creator.identifier.equals("Unit Test Maker")){ //check is unit test maker
-			if(((UnitTestMakerScreen)watch_creator).fillingCells() || 
-					((UnitTestMakerScreen)watch_creator).fillingCandies() ||
-					((UnitTestMakerScreen)watch_creator).placingMove()){
-				task.cancel();
-				// Will not stop execution of task.run() if it is midway
-				// But will guarantee that after this call it runs no more than one more time
-			}
-		}
-	}
+	
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		//click for special candies
@@ -192,15 +171,18 @@ public class UnitTestBoard extends CustomBoard {
 					//make the candy special (toggle level)
 					if(((UnitTestMakerScreen)watch_creator).fillingCandies()) {
 						Candy replacement = ((UnitTestMakerScreen)watch_creator).getReplacerCandy();
-						CandyType upgrade = board[x][y].getCandy().getCandyType();
-						int n = upgrade.ordinal()+1;
-						if(n == CandyType.INGREDIENT.ordinal())n=0;
-						upgrade = CandyType.values()[n];
-						if(board[x][y].getCandy().getColour() == replacement.getColour()){
-							CellType background = CellType.NORMAL;//to keep the correct background type
-							if(board[x][y].getCellType() == CellType.LIQUORICE)background = CellType.LIQUORICE;
-							board[x][y].setCandy(new Candy(replacement.getColour(), upgrade));
-							board[x][y].setCellType(background);
+						CandyType upgrade;
+						if(board[x][y].getCandy() != null){
+							upgrade = board[x][y].getCandy().getCandyType();
+							int n = upgrade.ordinal()+1;
+							if(n == CandyType.INGREDIENT.ordinal())n=0;
+							upgrade = CandyType.values()[n];
+							if(board[x][y].getCandy().getColour() == replacement.getColour()){
+								CellType background = CellType.NORMAL;//to keep the correct background type
+								if(board[x][y].getCellType() == CellType.LIQUORICE)background = CellType.LIQUORICE;
+								board[x][y].setCandy(new Candy(replacement.getColour(), upgrade));
+								board[x][y].setCellType(background);
+							}
 						}
 					}
 					else {

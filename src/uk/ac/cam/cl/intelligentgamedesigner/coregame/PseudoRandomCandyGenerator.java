@@ -19,7 +19,7 @@ public class PseudoRandomCandyGenerator extends CandyGenerator {
 		// This ensures ingredients are dropped evenly over the course of the game, and also ensures all ingredients
 		// are dropped before the number of moves runs out.
 		if (super.ingredientsToDrop > 0) {
-			if (nextPseudoRandom() % gameState.getMovesRemaining() < ingredientsToDrop) {
+			if (nextPseudoRandom() % gameState.getGameProgress().movesRemaining < ingredientsToDrop) {
 				ingredientsToDrop--;
 				return new Candy(null, CandyType.INGREDIENT);
 			}
@@ -30,7 +30,14 @@ public class PseudoRandomCandyGenerator extends CandyGenerator {
 		// This line just adds some bombs for testing.
 		// if (num % 23 == 2) return new Candy(null, CandyType.BOMB);
 		// If an ingredient wasn't dropped, then drop a normal candy
-		int result = num % super.gameState.getNumberOfCandyColours();
-		return new Candy(CandyColour.values()[result], CandyType.NORMAL);
+		int result = num % super.gameState.getLevelDesign().getNumberOfCandyColours();
+		CandyType type = CandyType.NORMAL;
+		if (num % 95 == 2) {
+		    type = CandyType.VERTICALLY_STRIPPED;
+		}
+		else if (num % 95 == 1) {
+		    type = CandyType.HORIZONTALLY_STRIPPED;
+		}
+		return new Candy(CandyColour.values()[result], type);
 	}
 }
