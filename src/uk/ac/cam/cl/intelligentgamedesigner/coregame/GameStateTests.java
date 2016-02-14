@@ -75,10 +75,8 @@ public class GameStateTests {
 		};
 		
 		// Checks whether it forms a horizontal move.
-		assertTrue(areSame(gameState,
-				new GameStateProgress(Scoring.MATCHED_3, NO_JELLIES, NO_INGREDIENTS, TWO_MOVES_LEFT),
-				cellBoardFromCandies(correctBoard)));
-		
+	       assertTrue(haveSameBoard(gameState, cellBoardFromCandies(correctBoard)));
+	       assertTrue(haveSameProgress(gameState, new GameStateProgress(Scoring.MATCHED_3, NO_JELLIES, NO_INGREDIENTS, TWO_MOVES_LEFT)));
 	}
 	
    @Test
@@ -105,10 +103,8 @@ public class GameStateTests {
                 { UNMOVEABLE_CANDY, GREEN_CANDY, YELLOW_CANDY } 
         };
         
-        // Checks whether it forms a vertical move.
-        assertTrue(areSame(gameState,
-                new GameStateProgress(Scoring.MATCHED_3, NO_JELLIES, NO_INGREDIENTS, TWO_MOVES_LEFT),
-                cellBoardFromCandies(correctBoard)));
+        assertTrue(haveSameBoard(gameState, cellBoardFromCandies(correctBoard)));
+        assertTrue(haveSameProgress(gameState, new GameStateProgress(Scoring.MATCHED_3, NO_JELLIES, NO_INGREDIENTS, TWO_MOVES_LEFT)));
         
     }
    
@@ -139,10 +135,8 @@ public class GameStateTests {
        };
        
        
-       // Checks whether it forms a vertical move.
-       assertTrue(areSame(gameState,
-               new GameStateProgress(Scoring.MATCHED_4, NO_JELLIES, NO_INGREDIENTS, TWO_MOVES_LEFT),
-               cellBoardFromCandies(correctBoard)));
+       assertTrue(haveSameBoard(gameState, cellBoardFromCandies(correctBoard)));
+       assertTrue(haveSameProgress(gameState, new GameStateProgress(Scoring.MATCHED_4, NO_JELLIES, NO_INGREDIENTS, TWO_MOVES_LEFT)));
        
    }
    
@@ -172,11 +166,10 @@ public class GameStateTests {
                { RED_CANDY, YELLOW_CANDY, GREEN_CANDY, GREEN_CANDY }
        };
        
-       
+         
        // Checks whether it forms a vertical move.
-       assertTrue(areSame(gameState,
-               new GameStateProgress(Scoring.MATCHED_4, NO_JELLIES, NO_INGREDIENTS, TWO_MOVES_LEFT),
-               cellBoardFromCandies(correctBoard)));
+       assertTrue(haveSameBoard(gameState, cellBoardFromCandies(correctBoard)));
+       assertTrue(haveSameProgress(gameState, new GameStateProgress(Scoring.MATCHED_4, NO_JELLIES, NO_INGREDIENTS, TWO_MOVES_LEFT)));
        
    }
    
@@ -209,14 +202,18 @@ public class GameStateTests {
        }
    }
 
-   public boolean areSame(GameState gameState, GameStateProgress progress, Cell[][] board) {
+   public boolean haveSameBoard(GameState gameState, Cell[][] board) {
        boolean areEqual = true;
        for (int i = 0; i < board.length; ++i) {
            for (int j = 0; j < board[0].length; ++j) {
                areEqual = areEqual && board[i][j].equals(gameState.getCell(i, j));
            }
        }
-       return areEqual && progress.equals(gameState.getGameProgress());
+       return areEqual ; 
+   }
+   
+   public boolean haveSameProgress(GameState gameState, GameStateProgress progress) {
+       return progress.equals(gameState.getGameProgress());
    }
 
    public  Cell[][] copyBoard(Cell[][] board) {

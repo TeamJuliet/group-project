@@ -15,4 +15,10 @@ public class GameStateProgressView {
 		this.movesRemaining = progress.getMovesRemaining();
 		this.ingredientsRemaining = progress.getIngredientsRemaining();
 	}
+	
+    @Override
+    public String toString() {
+        return new String("Score: " + this.score + "\n" + "Ingredients: " + this.ingredientsRemaining + "\n"
+                + "Moves: " + this.movesRemaining + "\n" + "Jellies: " + this.jelliesRemaining + "\n");
+    }
 }

@@ -82,6 +82,12 @@ public class GameStateProgress {
     }
 
     @Override
+    public String toString() {
+        return new String("Score: " + this.score + "\n" + "Ingredients: " + this.ingredientsRemaining + "\n"
+                + "Moves: " + this.movesRemaining + "\n" + "Jellies: " + this.jelliesRemaining + "\n");
+    }
+    
+    @Override
     public boolean equals(Object toCompare) {
         if (toCompare instanceof GameStateProgress) {
             GameStateProgress progress = (GameStateProgress) toCompare;
