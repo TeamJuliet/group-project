@@ -24,15 +24,20 @@ public class GameStateProgress {
 
     public GameStateProgress(Design design) {
         this.movesRemaining = design.getNumberOfMovesAvailable();
+
         if (design.getMode() == GameMode.INGREDIENTS) {
             this.ingredientsRemaining = design.getObjectiveTarget();
         } else
             this.ingredientsRemaining = 0;
 
+        this.jelliesRemaining = 0;
         if (design.getMode() == GameMode.JELLY) {
-            this.jelliesRemaining = design.getObjectiveTarget();
-        } else
-            this.jelliesRemaining = 0;
+            for (int x = 0; x < design.getWidth(); x++) {
+                for (int y = 0; y < design.getHeight(); y++) {
+                    this.jelliesRemaining += design.getBoard()[x][y].getJellyLevel();
+                }
+            }
+        }
     }
 
     public boolean isGameOver(Design design) {

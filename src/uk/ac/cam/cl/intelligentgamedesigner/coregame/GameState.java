@@ -476,6 +476,7 @@ public class GameState implements Serializable {
         }
         if (current.removeJellyLayer()) {
             incrementScore(Scoring.MATCHED_A_JELLY);
+            progress.decreaseJelliesRemaining();
         }
 
         if (current.hasCandy() && current.getCandy().getCandyType().equals(CandyType.INGREDIENT))
