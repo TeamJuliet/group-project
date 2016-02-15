@@ -109,13 +109,13 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 			GameMode obj = design.getMode();
 			switch(obj){
 			case HIGHSCORE:
-				high_score.setSelected(true);
+				high_score.doClick();
 				break;
 			case JELLY:
-				jelly.setSelected(true);
+				jelly.doClick();
 				break;
 			case INGREDIENTS:
-				ingredients.setSelected(true);
+				ingredients.doClick();
 				break;
 			}
 		}

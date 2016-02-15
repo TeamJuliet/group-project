@@ -100,7 +100,7 @@ public class Cell implements Cloneable, Serializable {
     // added a setter for customisation purposes
     public void setCellType(CellType cellType) {
         this.cellType = cellType;
-        if (!cellType.equals(CellType.NORMAL))
+        if (!cellType.equals(CellType.NORMAL) && !cellType.equals(CellType.LIQUORICE))
             this.candy = null;
     }
 
