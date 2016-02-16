@@ -57,7 +57,7 @@ public class LevelDesigner {
 			infeasiblePopulation = newInfeasible;
 
 			for (LevelDesignIndividual individual : newFeasible) {
-				individual.setDifficultyFitness(0.0);//manager.getDifficultyFitness(individual.getDesign()));
+				individual.setDifficultyFitness(0.0);//manager.getGameplayFitness(individual.getDesign()));
 			}
 			
 			// Sort the individuals so they are in descending order of fitness.

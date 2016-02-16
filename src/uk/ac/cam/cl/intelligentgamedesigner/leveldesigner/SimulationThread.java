@@ -3,21 +3,22 @@ package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.NoMovesFoundException;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerBase;
+import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerManager;
 
 public class SimulationThread implements Runnable {
 
-    private SimulatedPlayerBase simulatedPlayer;
     private GameState level;
+    private int playerAbility;
 
-    public SimulationThread (SimulatedPlayerBase simulatedPlayer, GameState level) {
-        this.simulatedPlayer = simulatedPlayer;
+    public SimulationThread (GameState level, int playerAbility) {
         this.level = level;
+        this.playerAbility = playerAbility;
     }
 
     @Override
     public void run() {
         try {
-            simulatedPlayer.solve(level);
+            SimulatedPlayerManager.solve(level, playerAbility);
         } catch (NoMovesFoundException e) {
             // This should never occur
             e.printStackTrace();
