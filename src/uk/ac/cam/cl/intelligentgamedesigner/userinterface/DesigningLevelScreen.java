@@ -18,6 +18,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 import uk.ac.cam.cl.intelligentgamedesigner.leveldesigner.LevelDesignerManager;
 import uk.ac.cam.cl.intelligentgamedesigner.leveldesigner.LevelRepresentation;
 import uk.ac.cam.cl.intelligentgamedesigner.leveldesigner.PropertyChanges;
@@ -34,6 +35,7 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
     private JButton back_button;
     
     private SelectBoard[] topBoards;
+    private DesignDetails[] topBoardsDetails;
 	
 	//functional
     private LevelDesignerManager levelDesignerManager;
@@ -48,6 +50,11 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 	}
 	
 	public void startDesign(Specification specification){
+		String objective_text = specification.getGameMode() == GameMode.HIGHSCORE?"High Score":
+			specification.getGameMode() == GameMode.JELLY?"Jelly Clear":
+				"Ingredients";
+		title.setText("Generating "+objective_text+" Levels...");
+		
         view_level.setEnabled(false);
 		for(int n=0;n<boardCount;n++){
 			boardDesigns[n] = new Design();
@@ -78,8 +85,14 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 	protected void positionBoards(){
 		for(int n=0;n<boardCount;n++){
 			double x_offset = 0.5 + 0.9*(n - 0.5*(currentBoardCount - 1))/boardCount;
-			if(n<currentBoardCount)positionBoard(topBoards[n],x_offset,0.45);
-			else positionBoard(topBoards[n],x_offset,-1);
+			if(n<currentBoardCount){
+				positionBoard(topBoards[n],x_offset,0.55);
+				position(topBoardsDetails[n],x_offset,0.3,200,80);
+			}
+			else {
+				positionBoard(topBoards[n],x_offset,-1);
+				position(topBoardsDetails[n],x_offset,-1,200,80);
+			}
 		}
 	}
 	
@@ -92,18 +105,21 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 		iterationLabel = new JLabel("",SwingConstants.CENTER);
 		
 		topBoards = new SelectBoard[boardCount];
+		topBoardsDetails = new DesignDetails[boardCount];
 		boardDesigns = new Design[5];
 		for(int n=0;n<boardCount;n++){
 			boardDesigns[n] = new Design();
 			topBoards[n] = new SelectBoard(boardDesigns[n],n);
 			topBoards[n].adjustSize(1.75);
 			topBoards[n].setManager(this);
+			topBoardsDetails[n] = new DesignDetails();
 		}
 	}
 	
 	@Override
 	protected void setUpItems() {
 		title.setFont(new Font("Helvetica", Font.CENTER_BASELINE, 22));
+		iterationLabel.setFont(new Font("Helvetica", Font.CENTER_BASELINE, 18));
 		
 		view_level.setEnabled(false);
 		view_level.setActionCommand("view");
@@ -124,12 +140,13 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 		add(iterationLabel);
 		
 		position(title,0.5,0.9,400,50);
-		position(iterationLabel,0.5,0.7,300,40);
+		position(iterationLabel,0.5,0.8,300,40);
 		position(view_level,0.5,0.2,200,50);
 		position(back_button,0.1,0.85,150,30);
 		
 		for(int n=0;n<boardCount;n++){
 			add(topBoards[n]);
+			add(topBoardsDetails[n]);
 		}
 		
 		positionBoards();
@@ -165,8 +182,10 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
             for(int n=0;n<currentBoardCount;n++){
             	boardDesigns[n] = topDesigns.get(n).getDesign();
             	topBoards[n].setBoard(boardDesigns[n].getBoard());
+            	topBoardsDetails[n].setDetails(boardDesigns[n]);
             }
             if(currentBoardCount < prevMost)currentBoardCount = prevMost;
+            
             positionBoards();
 			break;
 		case PropertyChanges.PROPERTY_CHANGE_PROGRESS:
