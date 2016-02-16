@@ -72,11 +72,11 @@ public class DisplayBoard extends JComponent {
 	    	   //load the objective pieces
 	    	   objective_piece = new BufferedImage[6];
 	    	   objective_piece[0] = ImageIO.read(new File(prefix + "ingredient" + suffix));
-	    	   objective_piece[1] = ImageIO.read(new File(prefix + "jelly1" + suffix));
-	    	   objective_piece[2] = ImageIO.read(new File(prefix + "jelly2" + suffix));
-	    	   objective_piece[3] = ImageIO.read(new File(prefix + "jelly3" + suffix));
-	    	   objective_piece[4] = ImageIO.read(new File(prefix + "jelly4" + suffix));
-	    	   objective_piece[5] = ImageIO.read(new File(prefix + "jelly5" + suffix));
+	    	   objective_piece[1] = ImageIO.read(new File(prefix + "Jelly1" + suffix));
+	    	   objective_piece[2] = ImageIO.read(new File(prefix + "Jelly2" + suffix));
+	    	   objective_piece[3] = ImageIO.read(new File(prefix + "Jelly3" + suffix));
+	    	   objective_piece[4] = ImageIO.read(new File(prefix + "Jelly4" + suffix));
+	    	   objective_piece[5] = ImageIO.read(new File(prefix + "Jelly5" + suffix));
 	    	   
 	           using_textures = true;
 	        } catch (IOException ex) {
