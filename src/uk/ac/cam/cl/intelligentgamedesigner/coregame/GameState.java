@@ -390,9 +390,10 @@ public class GameState implements Serializable {
         if (hasIngredient(cell1) || hasIngredient(cell2))
             return false;
 
+        
         if (cell1.getCandy().getCandyType().isSpecial() && cell2.getCandy().getCandyType().isSpecial())
             return true;
-
+        
         // Exchanging a Bomb with a cell that has a movable item is a valid
         // move (i.e. it is either special or normal candy type).
         else if (cell1.getCandy().getCandyType().equals(CandyType.BOMB) && (hasSpecial(cell2) || hasNormal(cell2))
@@ -781,6 +782,7 @@ public class GameState implements Serializable {
     // Function that performs the clearing of the horizontal line for the
     // stripped candy.
     private void detonateHorizontallyStripped(Position hStripped) {
+    	incrementScore(Scoring.DETONATE_STRIPPED_CANDY);
         for (int x = 0; x < width; ++x) {
             Cell current = getCell(new Position(x, hStripped.y));
             if (hasHorizontallyStripped(current) && !current.getCandy().isDetonated()) {
@@ -794,6 +796,8 @@ public class GameState implements Serializable {
     // Function that creates a cross of width 3 around the locations that were
     // swapped and triggers all cells inside there.
     private void detonateWrappedStripped(Position pos) {
+    	incrementScore(Scoring.DETONATE_WRAPPED_CANDY);
+    	incrementScore(Scoring.DETONATE_STRIPPED_CANDY);
         for (int x = pos.x - 1; x <= pos.x + 1; ++x) {
             for (int y = 0; y < height; ++y) {
                 trigger(x, y, Scoring.WRAPPED_STRIPPED_INDIVIDUAL);
@@ -950,18 +954,21 @@ public class GameState implements Serializable {
 
     // Function that performs the combination of a bomb and a Special Candy.
     private void replaceWithSpecialAllOf(CandyColour colourMatched, CandyType typeToReplace) {
+    	incrementScore(Scoring.DETONATE_BOMB);
         for (int i = 0; i < width; ++i) {
             for (int j = 0; j < height; ++j) {
-                if (sameColourWithCell(board[i][j], colourMatched) && !board[i][j].getCandy().getCandyType().isSpecial()) {
-                    if (typeToReplace.equals(CandyType.HORIZONTALLY_STRIPPED)
-                            || typeToReplace.equals(CandyType.VERTICALLY_STRIPPED)) {
-                        if ((i % 2) != (j % 2))
-                            makeStripped(i, j, colourMatched, HORIZONTAL);
-                        else
-                            makeStripped(i, j, colourMatched, VERTICAL);
-                    } else if (typeToReplace.equals(CandyType.WRAPPED)) {
-                        makeWrapped(i, j, colourMatched);
-                    }
+                if (sameColourWithCell(board[i][j], colourMatched) ) {
+                	if (!board[i][j].getCandy().getCandyType().isSpecial()) {
+	                    if (typeToReplace.equals(CandyType.HORIZONTALLY_STRIPPED)
+	                            || typeToReplace.equals(CandyType.VERTICALLY_STRIPPED)) {
+	                        if ((i % 2) != (j % 2))
+	                            makeStripped(i, j, colourMatched, HORIZONTAL);
+	                        else
+	                            makeStripped(i, j, colourMatched, VERTICAL);
+	                    } else if (typeToReplace.equals(CandyType.WRAPPED)) {
+	                        makeWrapped(i, j, colourMatched);
+	                    }
+                	}
                     trigger(i, j, Scoring.NO_ADDITIONAL_SCORE);
                 }
             }
