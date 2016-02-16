@@ -160,8 +160,7 @@ public class Cell implements Cloneable, Serializable {
         case EMPTY:
             return "EEE";
         case ICING:
-            result += "I";
-            break;
+            return "ICE";
         case NORMAL:
             result += "N";
             break;
