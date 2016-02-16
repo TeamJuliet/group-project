@@ -13,9 +13,13 @@ public class TestHelpers {
 	public static final Candy WRAPPED_RED = new Candy(CandyColour.RED, CandyType.WRAPPED);
 	public static final Candy COLOR_BOMB = new Candy(null, CandyType.BOMB);
 	public static final int NO_JELLIES = 0;
+	public static final int ONE_JELLY = 1;
+	public static final int TWO_JELLIES = 2;
 	public static final int NO_INGREDIENTS = 0;
 	public static final int TWO_MOVES_LEFT = 2;
 	public static final int THREE_MOVES_LEFT = 3;
 	public static final GameStateProgress NORMAL_INITIAL_PROGRESS = 
 			new GameStateProgress(ZERO_SCORE, NO_JELLIES, NO_INGREDIENTS, THREE_MOVES_LEFT); 
+	public static final GameStateProgress INITIAL_PROGRESS_WITH_2_JELLIES = 
+			new GameStateProgress(ZERO_SCORE, TWO_JELLIES, NO_INGREDIENTS, THREE_MOVES_LEFT);
 }

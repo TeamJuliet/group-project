@@ -2,7 +2,6 @@ package uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
-import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.*;
 
 public class SimulatedPlayerManager {
 
