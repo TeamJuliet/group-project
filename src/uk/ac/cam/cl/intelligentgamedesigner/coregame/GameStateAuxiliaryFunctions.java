@@ -12,6 +12,7 @@ import java.util.List;
 public class GameStateAuxiliaryFunctions {
     public static final boolean VERTICAL   = true;
     public static final boolean HORIZONTAL = false;
+    public static final Candy COLOR_BOMB = new Candy(null, CandyType.BOMB);
 
     /**
      * Function that is used to determine what special candy will be formed by a

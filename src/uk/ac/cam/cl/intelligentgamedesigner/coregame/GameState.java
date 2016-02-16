@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
+
 
 import static uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions.*;
 
@@ -18,7 +18,6 @@ public class GameState implements Serializable {
     private List<Position>     detonated               = new ArrayList<Position>();
     private Move               lastMove;
     private GameStateProgress  progress;
-    private int                proceedState            = 0;
     private boolean            wasSomethingPopped      = false;
     private List<Position>     ingredientSinkPositions = new ArrayList<Position>();
     private boolean            shouldShuffle           = true;
@@ -34,7 +33,7 @@ public class GameState implements Serializable {
     private int                numberOfMatchedInRound  = 0;
     // The design used when the game state was constructed.
     private Design             design;
-
+    
     /**
      * GameState creation using the design specification.
      * 
@@ -146,8 +145,13 @@ public class GameState implements Serializable {
 
     // **** GETTER FUNCTIONS START *****
 
+    // TODO: Consider returning a copy of the board.
     public Cell[][] getBoard() {
         return board;
+    }
+    
+    public ProcessState getCurrentProcessState() {
+    	return this.currentProcessState;
     }
 
     // Returns a copy of the cell at that position.
@@ -935,6 +939,8 @@ public class GameState implements Serializable {
 
     // Function that performs the combination of a bomb and a Normal Candy.
     private void breakAllOf(CandyColour colour) {
+    	incrementScore(Scoring.DETONATE_BOMB);
+    	this.statCandiesRemoved.candyProcessed(COLOR_BOMB);
         for (int i = 0; i < width; ++i) {
             for (int j = 0; j < height; ++j) {
                 if (sameColourWithCell(board[i][j], colour))
@@ -947,7 +953,7 @@ public class GameState implements Serializable {
     private void replaceWithSpecialAllOf(CandyColour colourMatched, CandyType typeToReplace) {
         for (int i = 0; i < width; ++i) {
             for (int j = 0; j < height; ++j) {
-                if (sameColourWithCell(board[i][j], colourMatched)) {
+                if (sameColourWithCell(board[i][j], colourMatched) && !board[i][j].getCandy().getCandyType().isSpecial()) {
                     if (typeToReplace.equals(CandyType.HORIZONTALLY_STRIPPED)
                             || typeToReplace.equals(CandyType.VERTICALLY_STRIPPED)) {
                         if ((i % 2) != (j % 2))
