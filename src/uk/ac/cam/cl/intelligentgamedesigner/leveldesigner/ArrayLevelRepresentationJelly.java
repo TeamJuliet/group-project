@@ -2,6 +2,7 @@ package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
 import java.util.Random;
 
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 
@@ -72,6 +73,13 @@ public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
     	Design design = super.getDesign();
     	
     	design.setGameMode(GameMode.JELLY);
+
+		Cell[][] board = design.getBoard();
+		for (int x = 0; x < design.getWidth(); x++) {
+			for (int y = 0; y < design.getHeight(); y++) {
+				board[x][y].setJellyLevel(jellyLevels.get(x, y));
+			}
+		}
     	
     	return design;
     }
