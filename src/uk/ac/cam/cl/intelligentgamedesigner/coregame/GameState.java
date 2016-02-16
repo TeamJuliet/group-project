@@ -116,7 +116,6 @@ public class GameState implements Serializable {
         for (Position p : original.detonated)
             this.detonated.add(new Position(p));
         this.lastMove = original.lastMove;
-        this.proceedState = original.proceedState;
         this.design = original.design;
         recordIngredientSinks();
     }
