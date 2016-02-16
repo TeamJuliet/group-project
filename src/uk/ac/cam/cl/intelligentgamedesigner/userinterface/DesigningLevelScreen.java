@@ -87,7 +87,7 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 			double x_offset = 0.5 + 0.9*(n - 0.5*(currentBoardCount - 1))/boardCount;
 			if(n<currentBoardCount){
 				positionBoard(topBoards[n],x_offset,0.55);
-				position(topBoardsDetails[n],x_offset,0.3,200,80);
+				position(topBoardsDetails[n],x_offset,0.33,200,80);
 			}
 			else {
 				positionBoard(topBoards[n],x_offset,-1);
