@@ -9,7 +9,7 @@ import java.util.Random;
 
 import static uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions.*;
 
-public class GameState implements Cloneable, Serializable {
+public class GameState implements Serializable {
     private Cell[][]           board;
     public final Design        levelDesign;
     public final int           width, height;
@@ -55,7 +55,7 @@ public class GameState implements Cloneable, Serializable {
             }
         }
 
-        candyGenerator = new PseudoRandomCandyGenerator(this);
+        candyGenerator = new PseudoRandomCandyGenerator(design, this.progress);
         fillBoard();
 
         // Make sure the board is in a stable state
@@ -74,10 +74,13 @@ public class GameState implements Cloneable, Serializable {
             for (int y = 0; y < height; y++) {
                 Cell cellToCopy = design.getCell(x, y);
                 CellType cellType = cellToCopy.getCellType();
+                Candy cellCandy = cellToCopy.getCandy();
 
                 // For ICING and UNUSABLEs, we can just replace the cell with
                 // the design element
-                if (cellType == CellType.ICING || cellType == CellType.UNUSABLE) {
+                if (cellType == CellType.ICING
+                        || cellType == CellType.UNUSABLE
+                        || (cellCandy != null && cellCandy.getCandyType() == CandyType.INGREDIENT)) {
                     board[x][y] = new Cell(cellToCopy);
                 }
                 // For LIQUORICE and EMPTY cells, we want to replace everything
@@ -85,7 +88,7 @@ public class GameState implements Cloneable, Serializable {
                 // normal underlying candy
                 else if (cellType == CellType.LIQUORICE || cellType == CellType.EMPTY) {
                     board[x][y] = new Cell(cellType.equals(CellType.EMPTY) ? CellType.NORMAL : cellType,
-                            board[x][y].getCandy(), cellToCopy.getJellyLevel(), cellToCopy.isIngredientSink);
+                            board[x][y].getCandy(), cellToCopy.getJellyLevel(), cellToCopy.isIngredientSink());
                 }
             }
         }
@@ -168,6 +171,10 @@ public class GameState implements Cloneable, Serializable {
 
     public boolean isGameWon() {
         return progress.isGameWon(design);
+    }
+
+    public boolean didFailShuffle () {
+        return progress.didFailShuffle();
     }
 
     // **** GETTER METHODS END ****
@@ -449,21 +456,6 @@ public class GameState implements Cloneable, Serializable {
         return isEqual;
     }
 
-    @Override
-    public GameState clone() {
-        GameState clone = new GameState(levelDesign);
-
-        clone.progress = new GameStateProgress(progress);
-
-        // Copy the candies on the board
-        for (int row = 0; row < height; row++) {
-            for (int col = 0; col < width; col++) {
-                clone.board[row][col] = (Cell) this.board[row][col].clone();
-            }
-        }
-        return clone;
-    }
-
     // Function that adds the tile to detonated (the ones that are going to
     // break on the next state).
     // If the cell contains a normal candy then amount will be added to score.
@@ -484,6 +476,7 @@ public class GameState implements Cloneable, Serializable {
         }
         if (current.removeJellyLayer()) {
             incrementScore(Scoring.MATCHED_A_JELLY);
+            progress.decreaseJelliesRemaining();
         }
 
         if (current.hasCandy() && current.getCandy().getCandyType().equals(CandyType.INGREDIENT))
@@ -622,7 +615,7 @@ public class GameState implements Cloneable, Serializable {
                 trigger(k, y, Scoring.NO_ADDITIONAL_SCORE);
             }
         }
-        if (analysis.getLengthX() == 3) {
+        if (analysis.getLengthX() == 3 && !foundVertical) {
             matched3();
             return;
         }
@@ -684,7 +677,7 @@ public class GameState implements Cloneable, Serializable {
                 trigger(x, k, Scoring.NO_ADDITIONAL_SCORE);
             }
         }
-        if (analysis.getLengthY() == 3) {
+        if (analysis.getLengthY() == 3 && !foundHorizontal) {
             matched3();
             return;
         } else if (!foundHorizontal) {
@@ -852,7 +845,7 @@ public class GameState implements Cloneable, Serializable {
         for (int i = 0; i < width; ++i) {
             for (int j = height - 1; j >= 1; --j) {
                 if (board[i][j].getCellType().equals(CellType.EMPTY) && !board[i][j].blocksCandies()) {
-                    int y = Integer.min(prev[i], j - 1);
+                    int y = Math.min(prev[i], j - 1);
                     while (y >= 0 && !board[i][y].canDropCandy()) {
                         if (board[i][y].blocksCandies()) {
                             prev[i] = y;
@@ -900,7 +893,7 @@ public class GameState implements Cloneable, Serializable {
     private void recordIngredientSinks() {
         for (int x = 0; x < width; ++x) {
             for (int y = 0; y < height; ++y) {
-                if (board[x][y].isIngredientSink)
+                if (board[x][y].isIngredientSink())
                     ingredientSinkPositions.add(new Position(x, y));
             }
         }
@@ -950,10 +943,6 @@ public class GameState implements Cloneable, Serializable {
         }
     }
 
-    // Random generator used to replace the stripped candies when triggered from
-    // a bomb.
-    private static Random random = new Random();
-
     // Function that performs the combination of a bomb and a Special Candy.
     private void replaceWithSpecialAllOf(CandyColour colourMatched, CandyType typeToReplace) {
         for (int i = 0; i < width; ++i) {
@@ -961,7 +950,7 @@ public class GameState implements Cloneable, Serializable {
                 if (sameColourWithCell(board[i][j], colourMatched)) {
                     if (typeToReplace.equals(CandyType.HORIZONTALLY_STRIPPED)
                             || typeToReplace.equals(CandyType.VERTICALLY_STRIPPED)) {
-                        if (random.nextInt(2) == 0)
+                        if ((i % 2) != (j % 2))
                             makeStripped(i, j, colourMatched, HORIZONTAL);
                         else
                             makeStripped(i, j, colourMatched, VERTICAL);
@@ -1029,10 +1018,7 @@ public class GameState implements Cloneable, Serializable {
         }
 
         if (movesAvailable == 0) {
-            // TODO: Handle the case where we give up shuffling and declare the
-            // game over
-            // Perhaps we could throw an exception at this point, such as
-            // NoAvailableMovesException or GameOverException
+            progress.setDidFailShuffle();
         }
 
         return didShuffle;

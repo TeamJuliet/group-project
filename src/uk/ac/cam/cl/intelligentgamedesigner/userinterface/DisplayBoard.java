@@ -183,6 +183,9 @@ public class DisplayBoard extends JComponent {
 			if(showing_unusables){
 				g.drawImage(cell[0]
 						, x*tile_size, y*tile_size, (x+1)*tile_size, (y+1)*tile_size, 0, 0, image_size, image_size, null);
+				//outline the tiles
+				g.setColor(Color.BLACK);
+				g.drawRect(x*tile_size, y*tile_size, tile_size, tile_size);	
 			}
 			break;
 		default:

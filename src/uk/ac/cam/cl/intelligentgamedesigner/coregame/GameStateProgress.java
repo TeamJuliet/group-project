@@ -6,6 +6,7 @@ public class GameStateProgress {
     private int jelliesRemaining;
     private int ingredientsRemaining;
     private int movesRemaining;
+    private boolean didFailShuffle = false;
 
     public GameStateProgress(int score, int jellies, int ingredients, int moves) {
         this.score = score;
@@ -23,19 +24,24 @@ public class GameStateProgress {
 
     public GameStateProgress(Design design) {
         this.movesRemaining = design.getNumberOfMovesAvailable();
+
         if (design.getMode() == GameMode.INGREDIENTS) {
             this.ingredientsRemaining = design.getObjectiveTarget();
         } else
             this.ingredientsRemaining = 0;
 
+        this.jelliesRemaining = 0;
         if (design.getMode() == GameMode.JELLY) {
-            this.jelliesRemaining = design.getObjectiveTarget();
-        } else
-            this.jelliesRemaining = 0;
+            for (int x = 0; x < design.getWidth(); x++) {
+                for (int y = 0; y < design.getHeight(); y++) {
+                    this.jelliesRemaining += design.getBoard()[x][y].getJellyLevel();
+                }
+            }
+        }
     }
 
     public boolean isGameOver(Design design) {
-        return movesRemaining == 0 || isGameWon(design);
+        return movesRemaining == 0 || isGameWon(design) || didFailShuffle;
     }
 
     public boolean isGameWon(Design design) {
@@ -43,6 +49,10 @@ public class GameStateProgress {
         return (gameMode.equals(GameMode.JELLY) && jelliesRemaining == 0)
                 || (gameMode.equals(GameMode.HIGHSCORE) && score >= design.getObjectiveTarget())
                 || (gameMode.equals(GameMode.INGREDIENTS) && ingredientsRemaining == 0);
+    }
+
+    public boolean didFailShuffle () {
+        return didFailShuffle;
     }
 
     public int getScore() {
@@ -79,6 +89,10 @@ public class GameStateProgress {
 
     public void decreaseIngredientsRemaining() {
         --ingredientsRemaining;
+    }
+
+    public void setDidFailShuffle () {
+        didFailShuffle = true;
     }
 
     @Override

@@ -9,6 +9,9 @@ public class TestHelpers {
 	public static final Candy UNMOVEABLE_CANDY = new Candy(null, CandyType.UNMOVEABLE);
 	public static final Candy HORIZONTAL_RED = new Candy(CandyColour.RED, CandyType.HORIZONTALLY_STRIPPED);
 	public static final Candy VERTICAL_RED = new Candy(CandyColour.RED, CandyType.VERTICALLY_STRIPPED);
+	public static final Candy VERTICAL_GREEN = new Candy(CandyColour.RED, CandyType.VERTICALLY_STRIPPED);
+	public static final Candy WRAPPED_RED = new Candy(CandyColour.RED, CandyType.WRAPPED);
+	public static final Candy COLOR_BOMB = new Candy(null, CandyType.BOMB);
 	public static final int NO_JELLIES = 0;
 	public static final int NO_INGREDIENTS = 0;
 	public static final int TWO_MOVES_LEFT = 2;
