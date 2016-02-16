@@ -231,6 +231,7 @@ public class DisplayBoard extends JComponent {
 			g.drawImage(cell[board[x][y].getCellType().ordinal()]
 					, x*tile_size, y*tile_size, (x+1)*tile_size, (y+1)*tile_size, 0, 0, image_size, image_size, null);
 			break;
+		default: break;
 		}
 		
 	}
