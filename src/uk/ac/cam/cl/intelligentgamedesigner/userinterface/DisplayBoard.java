@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.CandyColour;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CandyType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
@@ -24,16 +25,64 @@ public class DisplayBoard extends JComponent {
 	protected Cell[][] board;
 	
 	protected static boolean using_textures;
-	private static BufferedImage candy_red;
+	protected boolean showing_unusables;
+	private static BufferedImage[][] candy;//[candy colour][candy type
+	private static BufferedImage colour_bomb;
+	private static BufferedImage[] cell;
+	private static BufferedImage[] objective_piece;//ingredient, then jelly levels
+	private static final String prefix = System.getProperty("user.dir") + File.separator + "images" + File.separator;
+	private static final String suffix = ".png";
+	private static final int image_size = 100;
 	
 	public static void loadTextures(){
-//	       try {                
-//	           candy_red = ImageIO.read(new File("image name and path"));
-//	           using_textures = true;
-//	        } catch (IOException ex) {
-//	        	System.out.println("Error in loading textures");
-//	        	using_textures = false;
-//	        }
+	       try {     
+	    	   
+	    	   //load the candies
+	    	   candy = new BufferedImage[CandyColour.values().length][4];
+	    	   for(int c=0;c<6;c++){
+	    		   for(int t=0;t<4;t++){
+	    			   String name = "";
+	    			   switch(c){
+	    			   case 0: name = "red"; break;
+	    			   case 1: name = "blue"; break;
+	    			   case 2: name = "green"; break;
+	    			   case 3: name = "yellow"; break;
+	    			   case 4: name = "purple"; break;
+	    			   case 5: name = "orange"; break;
+	    			   }
+	    			   switch(t){
+	    			   case 1: name+="_vs"; break;
+	    			   case 2: name+="_hs"; break;
+	    			   case 3: name+="_w"; break;
+	    			   }
+	    			   candy[c][t] = ImageIO.read(new File(prefix + name + suffix));
+	    		   }
+	    	   }
+	    	   colour_bomb = ImageIO.read(new File(prefix + "bomb" + suffix));
+	    	   
+	    	   //load the cells
+	    	   cell = new BufferedImage[CellType.values().length+1];
+	    	   cell[0] = ImageIO.read(new File(prefix + "unusable" + suffix));
+	    	   cell[1] = ImageIO.read(new File(prefix + "normal_o" + suffix));
+	    	   cell[2] = ImageIO.read(new File(prefix + "icing" + suffix));
+	    	   cell[3] = ImageIO.read(new File(prefix + "normal_e" + suffix));
+	    	   cell[4] = ImageIO.read(new File(prefix + "liquorice" + suffix));
+	    	   cell[5] = ImageIO.read(new File(prefix + "dontcare" + suffix));
+	    	   
+	    	   //load the objective pieces
+	    	   objective_piece = new BufferedImage[6];
+	    	   objective_piece[0] = ImageIO.read(new File(prefix + "ingredient" + suffix));
+	    	   objective_piece[1] = ImageIO.read(new File(prefix + "jelly1" + suffix));
+	    	   objective_piece[2] = ImageIO.read(new File(prefix + "jelly2" + suffix));
+	    	   objective_piece[3] = ImageIO.read(new File(prefix + "jelly3" + suffix));
+	    	   objective_piece[4] = ImageIO.read(new File(prefix + "jelly4" + suffix));
+	    	   objective_piece[5] = ImageIO.read(new File(prefix + "jelly5" + suffix));
+	    	   
+	           using_textures = true;
+	        } catch (IOException ex) {
+	        	System.out.println("Error in loading textures");
+	        	using_textures = false;
+	        }
 	}
 	
 	public static Cell[][] blank_board(){
@@ -72,6 +121,7 @@ public class DisplayBoard extends JComponent {
 		
 		adjustSize(4);
 		
+		showing_unusables = true;
 	}
 	public DisplayBoard(Design design){
 		if(design == null){
@@ -90,6 +140,8 @@ public class DisplayBoard extends JComponent {
 			board = design.getBoard();
 		}
 		adjustSize(4);
+		
+		showing_unusables = true;
 	}
 	
 	protected static Cell defaultCell(){
@@ -122,6 +174,66 @@ public class DisplayBoard extends JComponent {
 	}
 
 	//drawing the screen
+	private void draw_textured_cell(int x, int y, Graphics g){
+		BufferedImage item = null;
+		
+		//before the candy
+		switch(board[x][y].getCellType()){
+		case UNUSABLE:
+			if(showing_unusables){
+				g.drawImage(cell[0]
+						, x*tile_size, y*tile_size, (x+1)*tile_size, (y+1)*tile_size, 0, 0, image_size, image_size, null);
+				//outline the tiles
+				g.setColor(Color.BLACK);
+				g.drawRect(x*tile_size, y*tile_size, tile_size, tile_size);	
+			}
+			break;
+		default:
+			if((x+y)%2 == 0){
+				g.drawImage(cell[1]
+						, x*tile_size, y*tile_size, (x+1)*tile_size, (y+1)*tile_size, 0, 0, image_size, image_size, null);
+			}
+			else {
+				g.drawImage(cell[3]
+					, x*tile_size, y*tile_size, (x+1)*tile_size, (y+1)*tile_size, 0, 0, image_size, image_size, null);
+			}
+			break;
+		}
+		
+		if(board[x][y].getCandy() != null){
+			switch(board[x][y].getCandy().getCandyType()){
+			case BOMB:
+				item = colour_bomb;
+				break;
+			case INGREDIENT:
+				item = objective_piece[0];
+				break;
+			case UNMOVEABLE:
+				break;
+			default:
+				item = candy[board[x][y].getCandy().getColour().ordinal()][board[x][y].getCandy().getCandyType().ordinal()];
+				break;
+			}
+		}
+
+		int jl = board[x][y].getJellyLevel();
+		if(jl>0){
+			g.drawImage(objective_piece[jl], x*tile_size, y*tile_size, (x+1)*tile_size, (y+1)*tile_size, 0, 0, image_size, image_size, null);
+		}
+		
+		if(item != null)g.drawImage(item, x*tile_size, y*tile_size, (x+1)*tile_size, (y+1)*tile_size, 0, 0, image_size, image_size, null);
+		
+		//after the candy
+		switch(board[x][y].getCellType()){
+		case DONT_CARE:
+		case LIQUORICE:
+		case ICING:
+			g.drawImage(cell[board[x][y].getCellType().ordinal()]
+					, x*tile_size, y*tile_size, (x+1)*tile_size, (y+1)*tile_size, 0, 0, image_size, image_size, null);
+			break;
+		}
+		
+	}
 	private void draw_cell(int x, int y, Graphics g){
 		
 		//draw the cell
@@ -233,7 +345,8 @@ public class DisplayBoard extends JComponent {
 		setBorder(BorderFactory.createLineBorder(Color.black));
 		for(int x=0;x<width;x++){
 			for(int y=0;y<height;y++){
-				draw_cell(x,y,g);
+				if(using_textures)draw_textured_cell(x,y,g);
+				else draw_cell(x,y,g);
 			}
 		}
 	}

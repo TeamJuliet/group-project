@@ -64,7 +64,7 @@ public abstract class GameDisplayScreen extends DisplayScreen{
 			break;
 		case JELLY:
 			game_mode_text.setText("Jelly Clear Mode");
-			objective_text.setText("Clear all the jellies!");
+			objective_text.setText("Clear "+objective+" more jelly layers!");
 			break;
 		case INGREDIENTS:
 			game_mode_text.setText("Ingredients Mode");
@@ -85,6 +85,8 @@ public abstract class GameDisplayScreen extends DisplayScreen{
 		GameStateProgressView progress = theGame.getGameProgress();
 		score = progress.score;
 		moves_left = progress.movesRemaining;
+		if(game_mode == GameMode.INGREDIENTS)objective = progress.ingredientsRemaining;
+		if(game_mode == GameMode.JELLY)objective = progress.jelliesRemaining;
 		setInfo();
 	}
 	

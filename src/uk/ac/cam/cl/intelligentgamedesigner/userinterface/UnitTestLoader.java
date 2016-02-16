@@ -79,9 +79,11 @@ public class UnitTestLoader extends JPanel implements ActionListener,ListSelecti
 	private TestCaseGame[] loadTests() {
 		ArrayList<TestCase> all_tests = TestLibrary.getTests();
 		ArrayList<TestCaseGame> game_tests = new ArrayList<TestCaseGame>();
-		for(TestCase t:all_tests){
-			if(t.getClass() == TestCaseGame.class){
-				game_tests.add((TestCaseGame)t);
+		if(all_tests != null){
+			for(TestCase t:all_tests){
+				if(t.getClass() == TestCaseGame.class){
+					game_tests.add((TestCaseGame)t);
+				}
 			}
 		}
 		return game_tests.toArray(new TestCaseGame[game_tests.size()]);
