@@ -1,5 +1,8 @@
 package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -293,7 +296,7 @@ public class GameState implements Serializable {
      */
     public boolean makeSmallMove() {
         this.statProcess.incrementTransitions();
-        System.out.println("Current state is " + this.currentProcessState);
+        DebugFilter.println("Current state is " + this.currentProcessState, DebugFilterKey.GAME_IMPLEMENTATION);
         switch (currentProcessState) {
         case AWAITING_MOVE:
             currentProcessState = ProcessState.MATCH_AND_REPLACE;
