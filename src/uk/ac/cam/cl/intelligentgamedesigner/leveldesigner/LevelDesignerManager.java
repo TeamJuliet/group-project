@@ -90,7 +90,7 @@ public class LevelDesignerManager extends SwingWorker {
 
             switch (design.getMode()) {
                 case HIGHSCORE:
-                    simulatedPlayers[t] = new ScorePlayerAlpha(gameStates[t]);
+                    simulatedPlayers[t] = new ScorePlayerAlpha();
                     break;
                 case JELLY:
                     System.err.println("Jelly level players are not yet supported.");
@@ -100,7 +100,7 @@ public class LevelDesignerManager extends SwingWorker {
                     return 0;
             }
 
-            simulationThreads[t] = new Thread(new SimulationThread(simulatedPlayers[t]));
+            simulationThreads[t] = new Thread(new SimulationThread(simulatedPlayers[t], gameStates[t]));
 
             simulationThreads[t].setDaemon(true);
             simulationThreads[t].start();
@@ -153,7 +153,7 @@ public class LevelDesignerManager extends SwingWorker {
      */
     private double evaluateScoreLevelPerformance (GameState gameState, Design design) {
         double center = design.getObjectiveTarget();
-        double x = gameState.getScore();
+        double x = gameState.getGameProgress().score;
 
         return 1 - (1 / (1 + (Math.exp(-(x - center) / center))));
     }
@@ -174,8 +174,8 @@ public class LevelDesignerManager extends SwingWorker {
         Cell[][] gameBoard = gameState.getBoard();
         double numberOfJelliesRemaining = 0;
 
-        for (int x = 0; x < gameState.getWidth(); x++) {
-            for (int y = 0; y < gameState.getHeight(); y++) {
+        for (int x = 0; x < gameState.width; x++) {
+            for (int y = 0; y < gameState.height; y++) {
                 numberOfJelliesRemaining += gameBoard[x][y].getJellyLevel();
             }
         }
@@ -196,6 +196,6 @@ public class LevelDesignerManager extends SwingWorker {
      */
     private double evaluateIngredientsLevelPerformance (GameState gameState, Design design) {
 
-        return 1 - Math.exp(-(gameState.getIngredientsRemaining() / 2.0));
+        return 1 - Math.exp(-(gameState.getGameProgress().ingredientsRemaining / 2.0));
     }
 }

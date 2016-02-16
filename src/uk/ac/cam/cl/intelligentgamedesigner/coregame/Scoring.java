@@ -11,12 +11,13 @@ public class Scoring {
 	static final int DETONATE_BOMB            = 3000;	// When a bomb is activated
 	static final int DETONATE_STRIPPED_CANDY = 0;
 	static final int BROUGHT_INGREDIENT_DOWN  = 10000;// When an ingredient reaches the bottom
-	static final int MADE_BOMB = 1;
-	static final int MADE_WRAPPED_CANDY = 1;
-	static final int MADE_STRIPPED_CANDY = 1;
+	static final int MADE_BOMB = 200;
+	static final int MADE_WRAPPED_CANDY = 200;
+	static final int MADE_STRIPPED_CANDY = 120;
 	static final int NO_ADDITIONAL_SCORE = 0;
 	static final int STRIPPED_INDIVIDUAL = 60;
 	static final int WRAPPED_INDIVIDUAL = 60;
 	static final int BOMB_INDIVIDUAL = 60;
 	static final int WRAPPED_STRIPPED_INDIVIDUAL = 60;
+	static final int ICING_CLEARED = 20; 
 }

@@ -11,4 +11,8 @@ public enum CellType {
     public boolean needsCandy() {
     	return this.equals(NORMAL);
     }
+    
+    public boolean blocksCandies() {
+        return this.equals(ICING) || this.equals(LIQUORICE);
+    }
 }

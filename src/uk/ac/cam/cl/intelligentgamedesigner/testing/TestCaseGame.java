@@ -3,6 +3,7 @@ package uk.ac.cam.cl.intelligentgamedesigner.testing;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.*;
 
 public class TestCaseGame extends TestCase {
+    private GameMode gameMode;
     private Cell[][] before;
     private Cell[][] lookahead;
     private Cell[][] after;
@@ -26,8 +27,21 @@ public class TestCaseGame extends TestCase {
                          Move moveMade,
                          int scoreBefore,
                          int scoreAfter) {
+        this(description, fileName, GameMode.HIGHSCORE, before, lookahead, after, moveMade, scoreBefore, scoreAfter);
+    }
+
+    public TestCaseGame (String description,
+                         String fileName,
+                         GameMode gameMode,
+                         Cell[][] before,
+                         Cell[][] lookahead,
+                         Cell[][] after,
+                         Move moveMade,
+                         int scoreBefore,
+                         int scoreAfter) {
         super(description, fileName);
 
+        this.gameMode = gameMode;
         this.before = before;
         this.lookahead = lookahead;
         this.after = after;
@@ -41,8 +55,8 @@ public class TestCaseGame extends TestCase {
         try {
             // Construct GameState representing game before
             GameState gameStateBefore = new GameState(before,
-                    scoreBefore,
-                    new PreFilledCandyGenerator(null, lookahead));
+                    new GameStateProgress(scoreBefore, 100, 100, 100),
+                    new PreFilledCandyGenerator(lookahead));
 
             // Make the test move
             gameStateBefore.makeMove(moveMade);
@@ -50,8 +64,8 @@ public class TestCaseGame extends TestCase {
 
             // Construct GameState representing game after
             GameState gameStateAfter = new GameState(after,
-                    scoreAfter,
-                    new PreFilledCandyGenerator(null, lookahead));
+                    new GameStateProgress(scoreAfter, 100, 100, 100),
+                    new PreFilledCandyGenerator(lookahead));
 
             // Check the GameStates match
             return after.equals(before);

@@ -34,6 +34,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
+import uk.ac.cam.cl.intelligentgamedesigner.testing.GameStateTestRunner;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.TestCaseGame;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.TestLibrary;
 
@@ -110,6 +111,19 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 			width = board_before.width;
 			height = board_before.height;
 			above_screen = board_above.height;
+
+//			switch(test.getGameMode()){
+//			case HIGHSCORE:
+//				high_score.setSelected(true);
+//				break;
+//			case JELLY:
+//				jelly.setSelected(true);
+//				break;
+//			case INGREDIENTS:
+//				ingredients.setSelected(true);
+//				break;
+//			}
+			high_score.setSelected(true);
 		} else {
 			width = 10;
 			height = 10;
@@ -125,6 +139,8 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 			board_before.setMove(new Move(new Position(0,0),new Position(0,0)));
 			game_state_stuff.setValueAt(100, 1, 1);
 			game_state_stuff.setValueAt(200, 1, 2);
+
+			high_score.setSelected(true);
 		}
 
 		dimensions_width.setValue(width);
@@ -135,6 +151,8 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 	    		board_above.tile_size*board_above.width,
 	    		board_above.tile_size*board_above.height));
 		board_above.revalidate();
+		
+		selection.setSelectedIndex(0);
 	}
 
 	@Override
@@ -219,6 +237,12 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 		just_quit.setToolTipText("Warning: unsaved progress will be lost.");
 		just_quit.setActionCommand("quit");
 		just_quit.addActionListener(this);
+		load_test.setToolTipText("Select a unit test to edit.");
+		load_test.setActionCommand("load");
+		load_test.addActionListener(this);
+		run_tests.setToolTipText("Opens the unit tester");
+		run_tests.setActionCommand("run");
+		run_tests.addActionListener(this);
 		
 		high_score.setActionCommand("high score");
 		high_score.addActionListener(this);
@@ -323,11 +347,11 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 		//set the locations
 		position(settings,0.5,0.6,260,450);
 		position(controls,0.5,0.15,300,100);
-		position(infinite_lookahead,0.2,0.8,350,140);
+		position(infinite_lookahead,0.2,0.8,9*board_above.tile_size,140);
 		
 		positionBoard(board_before,0.2,0.4);
 		positionBoard(board_after,0.8,0.4);
-		position(gameStates,0.8,0.8,350,140);
+		position(gameStates,0.8,0.8,9*board_above.tile_size,140);
 	}
 
 	@Override
@@ -339,6 +363,12 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 			break;
 		case "quit":
 			InterfaceManager.switchScreen(Windows.MAIN);
+			break;
+		case "load":
+			openLoader();
+			break;
+		case "run":
+			runUnitTests();
 			break;
 			
 		case "high score":
@@ -541,5 +571,16 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 				score_after
 				));
 		JOptionPane.showMessageDialog(this,"Unit Test Saved!","Notification",JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	private void runUnitTests(){
+		JOptionPane.showMessageDialog(this, new GameStateTestRunner(),"Unit Tester",JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	private void openLoader(){
+		UnitTestLoader loader = new UnitTestLoader();
+		JOptionPane.showMessageDialog(this, loader,"Load Unit Tests",JOptionPane.INFORMATION_MESSAGE);
+		TestCaseGame newTest = loader.getTest();
+		if(newTest != null)reload(loader.getTest());
 	}
 }

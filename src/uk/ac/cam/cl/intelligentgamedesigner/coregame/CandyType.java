@@ -14,6 +14,10 @@ public enum CandyType {
 		return this != NORMAL;
 	}
 	
+	public boolean isStripped() {
+	    return this == VERTICALLY_STRIPPED || this == HORIZONTALLY_STRIPPED;
+	}
+	
 	// Returns the number a certain type of candy detonates.
 	public int getDetonations() {
 		switch (this) {

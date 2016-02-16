@@ -51,6 +51,8 @@ public class InterfaceManager extends JFrame {
 		screen.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		screen.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
+		DisplayBoard.loadTextures();
+		
 		//using CardLayout to allow for switching between screens
 		screens.add(main_menu_screen, main_menu_screen.getIdentifier());
 		screens.add(level_requester_screen, level_requester_screen.getIdentifier());
@@ -93,9 +95,9 @@ public class InterfaceManager extends JFrame {
 		((HumanGameDisplayScreen)human_game_display_screen).giveInfo(design);
 		((HumanGameDisplayScreen)human_game_display_screen).setInfo();
 	}
-	public static void setSelectedComputerGame(Design design,Class<? extends SimulatedPlayerBase> player_class){
+	public static void setSelectedComputerGame(Design design,int ability){
 		((ComputerGameDisplayScreen)computer_game_display_screen).giveInfo(design);
-		((ComputerGameDisplayScreen)computer_game_display_screen).getMethodFromClass(player_class);
+		((ComputerGameDisplayScreen)computer_game_display_screen).setAbility(ability);
 		((ComputerGameDisplayScreen)computer_game_display_screen).setInfo();
 	}
 	public static void setPreviousScreen(Windows window){

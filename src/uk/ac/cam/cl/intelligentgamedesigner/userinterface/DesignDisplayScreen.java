@@ -21,9 +21,9 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.ScorePlayerAlpha;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.ScorePlayerBeta;
-import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.ScorePlayerDelta;
-import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.ScorePlayerGamma;
+import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.DepthPotentialScorePlayer;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerBase;
+import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerManager;
 
 public class DesignDisplayScreen extends DisplayScreen{
 	private JPanel title;
@@ -80,7 +80,7 @@ public class DesignDisplayScreen extends DisplayScreen{
 			break;
 		case INGREDIENTS:
 			game_mode.setText("Game Mode: Ingredients");
-			target.setText("Gather all "+objective_value+" ingrediens!");
+			target.setText(objective_value==1?"Gather all "+objective_value+" ingredients!":"Gather 1 ingredient!");
 			break;
 		}
 		number_of_moves = design.getNumberOfMovesAvailable();
@@ -103,13 +103,13 @@ public class DesignDisplayScreen extends DisplayScreen{
 		watch_level = new JButton("Watch Level");
 		save_level = new JButton("Save Level");
 		edit_level = new JButton("Edit Level");
-		back = new JButton("back");
+		back = new JButton("Back");
 		game_mode = new JLabel("Game Mode");
 		moves = new JLabel("moves");
 		target = new JLabel("goal");
 		difficulty = new JLabel("Difficulty: Unknown");
 		candies = new JLabel("Candies in play");
-		ai_strength = new JSlider(1,4);
+		ai_strength = new JSlider(1,SimulatedPlayerManager.getMaxAbilityLevel()+1);
 	}
 
 	@Override
@@ -203,7 +203,7 @@ public class DesignDisplayScreen extends DisplayScreen{
 			InterfaceManager.switchScreen(Windows.HUMAN);
 			break;
 		case "watch":
-			InterfaceManager.setSelectedComputerGame(level,getPlayerClass());
+			InterfaceManager.setSelectedComputerGame(level,ai_strength.getValue()-1);
 			InterfaceManager.switchScreen(Windows.SIMULATED);
 			break;
 		case "save":
@@ -214,31 +214,6 @@ public class DesignDisplayScreen extends DisplayScreen{
 			InterfaceManager.switchScreen(Windows.CREATE);
 			break;
 		}
-	}
-	
-	private Class<? extends SimulatedPlayerBase> getPlayerClass(){
-		//TODO
-		switch(mode){
-		case HIGHSCORE:
-			switch(ai_strength.getValue()){
-			case 1:
-				return ScorePlayerAlpha.class;
-			case 2:
-				return ScorePlayerBeta.class;
-			case 3:
-				return ScorePlayerGamma.class;
-			case 4:
-				return ScorePlayerDelta.class;
-			}
-			break;
-		case JELLY:
-			//TODO
-			break;
-		case INGREDIENTS:
-			//TODO
-			break;
-		}
-		return ScorePlayerAlpha.class;
 	}
 	
 	private void makeAndSave(){
