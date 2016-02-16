@@ -12,11 +12,13 @@ import java.util.List;
 public class GameStateAuxiliaryFunctions {
     public static final boolean VERTICAL   = true;
     public static final boolean HORIZONTAL = false;
-    
-    
+
     /**
-     * Function that is used to determine what special candy will be formed by a certain pattern.
-     * @param analysis the single tile analysis of a cell
+     * Function that is used to determine what special candy will be formed by a
+     * certain pattern.
+     * 
+     * @param analysis
+     *            the single tile analysis of a cell
      * @return the candyType that should be formed by this match.
      */
     public static CandyType getSpecialCandyFormed(SingleTileAnalysis analysis) {
@@ -32,13 +34,13 @@ public class GameStateAuxiliaryFunctions {
         else
             return CandyType.WRAPPED;
     }
-    
+
     public static boolean sameColourWithCell(Cell c, CandyColour colour) {
         if (c.getCandy() == null || c.getCandy().getColour() == null)
             return false;
         return c.getCandy().getColour().equals(colour);
     }
-    
+
     public static SingleTileAnalysis analyzeTile(Position pos, Cell[][] board) {
         int x = pos.x, y = pos.y;
         CandyColour cellColour = board[x][y].getCandy().getColour();
@@ -53,7 +55,7 @@ public class GameStateAuxiliaryFunctions {
             ++end_y;
         return new SingleTileAnalysis(start_x + 1, end_x - 1, start_y + 1, end_y - 1);
     }
-    
+
     // Check if any of the two positions is in the horizontal range.
     public static boolean moveInHorizontalRange(Move move, int startX, int endX) {
         return inRange(move.p1.x, startX, endX) || inRange(move.p2.x, startX, endX);
@@ -63,16 +65,16 @@ public class GameStateAuxiliaryFunctions {
     public static boolean moveInVerticalRange(Move move, int startY, int endY) {
         return inRange(move.p1.y, startY, endY) || inRange(move.p2.y, startY, endY);
     }
-    
+
     // Auxiliary function to check a <= x <= b
     public static boolean inRange(int x, int a, int b) {
         return x >= a && x <= b;
     }
-    
+
     public static boolean hasIngredient(Cell cell) {
         return cell.hasCandy() && cell.getCandy().getCandyType().equals(CandyType.INGREDIENT);
     }
-    
+
     // Function that checks whether the position contains a special candy.
     public static boolean hasSpecial(Cell cell) {
         return cell.hasCandy() && cell.getCandy().getCandyType().isSpecial();
@@ -91,10 +93,9 @@ public class GameStateAuxiliaryFunctions {
     // Function that checks whether the position contains a horizontally
     // stripped.
     public static boolean hasHorizontallyStripped(Cell cell) {
-        return cell.hasCandy()
-                && cell.getCandy().getCandyType().equals(CandyType.HORIZONTALLY_STRIPPED);
+        return cell.hasCandy() && cell.getCandy().getCandyType().equals(CandyType.HORIZONTALLY_STRIPPED);
     }
-    
+
     // Function that checks whether the position contains a wrapped candy.
     public static boolean hasWrapped(Cell cell) {
         return cell.hasCandy() && cell.getCandy().getCandyType().equals(CandyType.WRAPPED);
@@ -103,20 +104,20 @@ public class GameStateAuxiliaryFunctions {
     public static boolean hasStripped(Cell cell) {
         return hasVerticallyStripped(cell) || hasHorizontallyStripped(cell);
     }
-    
+
     public static boolean hasNormal(Cell cell) {
         return cell.hasCandy() && cell.getCandy().getCandyType().equals(CandyType.NORMAL);
     }
-    
+
     // Function that returns whether the tile at position forms a match.
     public static boolean tileFormsMatch(Cell[][] board, Position position) {
         SingleTileAnalysis analysis = analyzeTile(position, board);
         return analysis.getLengthX() > 2 || analysis.getLengthY() > 2;
     }
-    
+
     // Function that creates the match analysis for a single tile.
     public static MatchAnalysis getSingleMatchAnalysis(Cell[][] board, Position pos) {
-        if (tileFormsMatch(board, pos))
+        if (!tileFormsMatch(board, pos))
             return null;
         SingleTileAnalysis analysis = analyzeTile(pos, board);
         List<Position> positions = new LinkedList<Position>();
@@ -143,7 +144,7 @@ public class GameStateAuxiliaryFunctions {
         }
         return new MatchAnalysis(positions, specials, getSpecialCandyFormed(analysis));
     }
-    
+
     public static boolean hasDetonated(Cell[][] board) {
         for (int i = 0; i < board.length; ++i) {
             for (int j = 0; j < board[0].length; ++j) {
