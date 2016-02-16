@@ -9,6 +9,8 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 
 public class GameBoard extends DisplayBoard{
+	
+	private AnimationType animationType;
 
 	public GameBoard(Design design) {
 		super(design);
