@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import sun.security.krb5.internal.crypto.Des;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.*;
 import uk.ac.cam.cl.intelligentgamedesigner.leveldesigner.ArrayLevelRepresentationJelly;
 import uk.ac.cam.cl.intelligentgamedesigner.leveldesigner.ArrayLevelRepresentationScore;
