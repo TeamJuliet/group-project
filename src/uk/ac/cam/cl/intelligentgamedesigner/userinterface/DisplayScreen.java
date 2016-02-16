@@ -30,6 +30,7 @@ public abstract class DisplayScreen extends JPanel  implements ActionListener{
 	private static int screen_width = InterfaceManager.screenWidth();
 	private static int screen_height = InterfaceManager.screenHeight();
 	public static double scale_factor = 1600.0/screen_width;
+	
 	protected void position(JComponent thing,double frac_w,double frac_h, int width, int height){
 		double scaled_width = scale_factor * width;
 		double scaled_height = scale_factor * height;
