@@ -175,8 +175,7 @@ public class Cell implements Cloneable, Serializable {
             result += "N";
             break;
         case BOMB:
-            result += "B";
-            break;
+            return "BMB";
         case INGREDIENT:
             result += "I";
             break;
