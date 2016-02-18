@@ -1063,7 +1063,14 @@ public class GameState implements Serializable {
             }
         }
 
+        for(int i = 0; i < this.width; i++){
+            result += " " + i + "  ";
+        }
+        result += "\n";
+        int rowNum = 0;
         for (Cell[] row : tmp) {
+            result += rowNum + " ";
+            rowNum++;
             for (Cell cell : row) {
                 result += cell.toString() + " ";
             }
