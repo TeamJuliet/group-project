@@ -29,7 +29,7 @@ public abstract class DisplayScreen extends JPanel  implements ActionListener{
 	//position the item relative to the total screen size
 	private static int screen_width = InterfaceManager.screenWidth();
 	private static int screen_height = InterfaceManager.screenHeight();
-	public static double scale_factor = 1600.0/screen_width;
+	public static double scale_factor = ((double)screen_width)/1200;
 	
 	protected void position(JComponent thing,double frac_w,double frac_h, int width, int height){
 		double scaled_width = scale_factor * width;

@@ -2,13 +2,8 @@ package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Insets;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -17,17 +12,13 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import uk.ac.cam.cl.intelligentgamedesigner.testing.GameStateTestRunner;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.TestCase;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.TestCaseGame;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.TestLibrary;

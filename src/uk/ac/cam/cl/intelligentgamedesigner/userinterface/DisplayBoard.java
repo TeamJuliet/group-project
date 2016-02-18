@@ -1,7 +1,6 @@
 package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -12,7 +11,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CandyColour;
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.CandyType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
