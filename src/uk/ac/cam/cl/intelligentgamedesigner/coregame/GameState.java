@@ -1039,6 +1039,7 @@ public class GameState implements Serializable {
 
         if (movesAvailable == 0) {
             progress.setDidFailShuffle();
+            return false;
         }
 
         return didShuffle;
