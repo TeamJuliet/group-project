@@ -20,4 +20,5 @@ public class Scoring {
 	static final int BOMB_INDIVIDUAL = 60;
 	static final int WRAPPED_STRIPPED_INDIVIDUAL = 60;
 	static final int ICING_CLEARED = 20; 
+	// No score for liquorice.
 }

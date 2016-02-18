@@ -9,7 +9,7 @@ public class Cell implements Cloneable, Serializable {
     private boolean         isIngredientSink;
     private CellType        cellType;
     private Candy           candy;
-    private int             jellyLevel;
+    private int             jellyLevel = 0;
 
     public Cell(CellType cellType) {
         this(cellType, null, 0, false);
@@ -36,7 +36,7 @@ public class Cell implements Cloneable, Serializable {
 
     public Cell(Cell original) {
         this.cellType = original.cellType;
-        this.candy = original.candy;
+        this.candy = original.candy == null ? null : new Candy(original.candy);
         this.jellyLevel = original.jellyLevel;
         this.isIngredientSink = original.isIngredientSink;
     }
