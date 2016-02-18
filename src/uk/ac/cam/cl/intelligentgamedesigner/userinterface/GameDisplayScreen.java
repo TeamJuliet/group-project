@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -24,6 +25,8 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateProgressView;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.ProcessState;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.RoundStatistics;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.RoundStatisticsManager;
 
 //Defines functionality shared by the human and simulated player games
 //Displays the game, score and how to handle animations etc.
@@ -48,6 +51,8 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 	protected int score;
 	protected Design level;
 	protected static final int wait_time = 400;
+	
+	protected ArrayList<RoundStatistics> stats;
 	
 	//game stuff
 	boolean show_animations;
@@ -90,6 +95,7 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 		theGame = new GameState(level);
 		toggle_animations.setSelected(true);
 		show_animations = true;
+		stats = new ArrayList<RoundStatistics>();
 		update();
 	}
 	
@@ -231,10 +237,6 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 		positionBoard(board,0.4,0.5);
 		position(quit_button,0.1,0.9,100,30);
 	}
-	
-	protected String saveRounds(){
-		return null;
-	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -248,7 +250,7 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 			show_animations = toggle_animations.isSelected();
 			break;
 		case "save":
-			String name = saveRounds();
+			String name = RoundStatisticsManager.saveStats(stats, game_mode, isHuman());
 			if(name != null){
 				JOptionPane.showMessageDialog(this,name+" saved!","Round Statistics",JOptionPane.INFORMATION_MESSAGE);
 			} else { //failed to save
@@ -270,11 +272,14 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 			case AnimationThread.FINISHED:
 				playing_move = false;
 				theGame = (GameState)evt.getNewValue();
+				stats.add(theGame.getRoundStatistics());
 				update();
 				endGameCheck();
 				break;
 			}
 		}
 	}
+	
+	protected abstract boolean isHuman();
 }
 

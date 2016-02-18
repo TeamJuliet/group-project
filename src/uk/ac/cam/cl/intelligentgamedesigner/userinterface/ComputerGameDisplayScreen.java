@@ -163,4 +163,7 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 			}
 		}
 	}
+	
+	@Override
+	protected boolean isHuman(){return false;}
 }
