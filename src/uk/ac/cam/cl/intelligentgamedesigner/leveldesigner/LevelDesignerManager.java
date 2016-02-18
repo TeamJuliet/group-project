@@ -1,11 +1,11 @@
 package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
-import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.ScorePlayerAlpha;
-import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerBase;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.RoundStatistics;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerManager;
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ public class LevelDesignerManager extends SwingWorker {
     }
 
     @Override
-    protected Void doInBackground() throws Exception {
+    protected Void doInBackground() throws InterruptedException {
         this.levelDesigner.run();
 
         return null;
@@ -82,33 +82,46 @@ public class LevelDesignerManager extends SwingWorker {
         // TODO: advanced ones (which are likely to be more expensive to run)
 
         // For now, just create one player of each ability
-        int numberOfSimulations = 1;//SimulatedPlayerManager.getMaxAbilityLevel();
+        int numberOfSimulations = SimulatedPlayerManager.getMaxAbilityLevel();
 
+        // The games to be played
         GameState[] gameStates = new GameState[numberOfSimulations];
+
+        // The different abilities of players we want for each simulation
         int[] abilityDistribution = new int[numberOfSimulations];
+
+        // Each simulation will add information to each list in this list of lists
+        List<List<RoundStatistics>> gameStatistics = new ArrayList<>(numberOfSimulations);
+
+        // The actual threads to run the simulations
         Thread[] simulationThreads = new Thread[numberOfSimulations];
 
         for (int t = 0; t < numberOfSimulations; t++) {
             // Generate a new game
             gameStates[t] = new GameState(design);
 
+            // Generate a reference to a list of statistics which can be passed to a simulation
+            gameStatistics.add(new ArrayList<>());
+
             // Generate an ability level you'd like for testing that game
             abilityDistribution[t] = t;
 
             // Create and start a thread for running that simulation
-            simulationThreads[t] = new Thread(new SimulationThread(gameStates[t], abilityDistribution[t]));
+            simulationThreads[t] = new Thread(new SimulationThread(gameStates[t], abilityDistribution[t],
+                    gameStatistics.get(t)));
 
             simulationThreads[t].setDaemon(true);
             simulationThreads[t].start();
         }
 
-        // Wait for all of the players to finish playing
-        for (int t = 0; t < numberOfSimulations; t++) {
-            try {
+        try {
+            // Wait for all of the players to finish playing
+            for (int t = 0; t < numberOfSimulations; t++) {
                 simulationThreads[t].join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
+        } catch (InterruptedException e) {
+            // If the user clicks 'Back' during the level generation process, the simulations may be interrupted
+            DebugFilter.println("Simulation interrupted.", DebugFilterKey.LEVEL_DESIGN);
         }
 
         // Evaluate the performance of the players, and how 'fun' the simulations were
@@ -116,13 +129,11 @@ public class LevelDesignerManager extends SwingWorker {
         double totalFun = 0;
         for (int t = 0; t < numberOfSimulations; t++) {
             totalDifficulty += DifficultyChecker.estimateDifficulty(gameStates[t], design);
-            // TODO: Get a list of ProcessStateStatsViewer and CandiesAccumulatorView for FunChecker
-            totalFun += FunChecker.getFunFitness(null);
+            totalFun += FunChecker.getFunFitness(gameStatistics.get(t));
         }
 
         double estimatedDifficulty = totalDifficulty / (double) numberOfSimulations;
-        double difficultyFitness = Math.abs(estimatedDifficulty - specification.getTargetDifficulty());
-
+        double difficultyFitness = 1 - Math.abs(estimatedDifficulty - specification.getTargetDifficulty());
         double funFitness = totalFun / (double) numberOfSimulations;
 
         return (difficultyFitness + funFitness) / 2.0;
