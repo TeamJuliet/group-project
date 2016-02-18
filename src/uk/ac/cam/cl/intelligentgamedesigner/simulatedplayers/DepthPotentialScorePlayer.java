@@ -28,7 +28,7 @@ public class DepthPotentialScorePlayer extends DepthPotentialPlayer {
         for (Move move : moves) {
             GameState tmp = original;
             try {
-                tmp.makeMove(move);
+                tmp.makeInitialMove(move);
             } catch (InvalidMoveException e) {
                 // Just eat the exception since we don't care if wrong move is
                 // suggested

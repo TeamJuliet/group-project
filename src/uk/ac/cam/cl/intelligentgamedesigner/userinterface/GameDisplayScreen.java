@@ -92,7 +92,7 @@ public abstract class GameDisplayScreen extends DisplayScreen{
 	
 	public void playMove(Move move){
 		try {
-			theGame.makeMove(move);
+			theGame.makeInitialMove(move);
 			while(theGame.makeSmallMove()) {
 				update();		
 				board.paintImmediately(0,0,InterfaceManager.screenWidth(),InterfaceManager.screenHeight());

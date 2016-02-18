@@ -203,7 +203,7 @@ public class GameState implements Serializable {
      *             in case it is not a legitimate move.
      */
     public void makeFullMove(Move move) throws InvalidMoveException {
-        makeMove(move);
+        makeInitialMove(move);
         while (makeSmallMove())
             ;
     }
@@ -218,7 +218,7 @@ public class GameState implements Serializable {
      * @throws InvalidMoveException
      *             in case it is not a legitimate move.
      */
-    public void makeMove(Move move) throws InvalidMoveException {
+    public void makeInitialMove(Move move) throws InvalidMoveException {
         if (!isMoveValid(move))
             throw new InvalidMoveException(move);
         // Record the last move.
@@ -294,7 +294,7 @@ public class GameState implements Serializable {
     }
 
     /**
-     * Once the makeMove has been called this takes care of making the small
+     * Once the makeInitialMove has been called this takes care of making the small
      * steps in the boards.
      * 
      * @return whether there is no other step in to be made.

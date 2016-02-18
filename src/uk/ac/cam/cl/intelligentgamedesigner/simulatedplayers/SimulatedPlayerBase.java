@@ -9,11 +9,11 @@ public abstract class SimulatedPlayerBase {
         while (level.getGameProgress().movesRemaining > 0) {
             Move bestMove = calculateBestMove(level);
             try {
-                level.makeMove(bestMove);
+                level.makeFullMove(bestMove);
             } catch (InvalidMoveException e) {
                 this.printInvalidMoveError(e.invalidMove);
                 try { // TODO: this is horrible, fix it
-                    level.makeMove(level.getValidMoves().get(0));
+                    level.makeFullMove(level.getValidMoves().get(0));
                 } catch (InvalidMoveException exception) {
                     return;
                 }
