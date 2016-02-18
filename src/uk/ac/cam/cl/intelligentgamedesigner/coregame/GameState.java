@@ -101,6 +101,11 @@ public class GameState implements Serializable {
         // reductions, so we reset it to 0
         this.progress.resetScore();
         this.design = design;
+
+        // For really shit levels, there won't even be a possible move from the start - we need to check for this
+        if (getValidMoves().size() == 0) {
+            progress.setDidFailShuffle();
+        }
     }
 
     // Copy constructor

@@ -82,7 +82,7 @@ public class LevelDesignerManager extends SwingWorker {
         // TODO: advanced ones (which are likely to be more expensive to run)
 
         // For now, just create one player of each ability
-        int numberOfSimulations = SimulatedPlayerManager.getMaxAbilityLevel();
+        int numberOfSimulations = 1; //SimulatedPlayerManager.getMaxAbilityLevel();
 
         GameState[] gameStates = new GameState[numberOfSimulations];
         int[] abilityDistribution = new int[numberOfSimulations];
