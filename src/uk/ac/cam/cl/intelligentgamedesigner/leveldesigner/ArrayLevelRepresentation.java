@@ -8,10 +8,9 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public abstract class ArrayLevelRepresentation extends LevelRepresentation {
-    protected RandomBoard<DesignCellType> board;
+    protected DesignBoard board;
     protected static int maxWidth = 9;
     protected static int maxHeight = 9;
-    protected static int cellModulo = 4;
     protected ArrayList<Parameter> parameters;
 
     /*
@@ -43,7 +42,7 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
         // TODO: The above initialisations are just guesses at the moment. We may need to refine them
 
         // Initialise the board
-        board = new RandomBoard<>(maxWidth, maxHeight, random, DesignCellType.values());
+        board = new DesignBoard(maxWidth, maxHeight, random);
     }
     
     @Override
@@ -51,7 +50,7 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
     	ArrayLevelRepresentation clone = (ArrayLevelRepresentation) super.clone();
     	
     	// Copy the board.
-    	clone.board = new RandomBoard<>(board);
+    	clone.board = new DesignBoard (board);
     	
     	// Copy the list of parameters.
     	int length = parameters.size();
@@ -66,7 +65,7 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
     public void mutate() {
         if (random.nextDouble() < 0.75) {
             // Mutate the board (75% probability).
-        	board.mutate();
+        	board.mutateCellType();
         } else {
             // Mutate a parameter (25% probability).
             Parameter p = parameters.get(random.nextInt(parameters.size()));
@@ -103,18 +102,18 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
 
         for (int x = 0; x < board.width; x++) {
             for (int y = 0; y < board.height; y++) {
-                switch (board.get(x, y)) {
+                switch (board.get(x, y).getDesignCellType()) {
                     case UNUSABLE:
-                        designBoard[x][y] = new Cell(CellType.UNUSABLE);
+                        designBoard[x][y] = new Cell(CellType.UNUSABLE, board.get(x, y).getJellyLevel());
                         break;
                     case EMPTY:
-                        designBoard[x][y] = new Cell(CellType.EMPTY);
+                        designBoard[x][y] = new Cell(CellType.EMPTY, board.get(x, y).getJellyLevel());
                         break;
                     case ICING:
-                        designBoard[x][y] = new Cell(CellType.ICING);
+                        designBoard[x][y] = new Cell(CellType.ICING, board.get(x, y).getJellyLevel());
                         break;
                     case LIQUORICE:
-                        designBoard[x][y] = new Cell(CellType.LIQUORICE);
+                        designBoard[x][y] = new Cell(CellType.LIQUORICE, board.get(x, y).getJellyLevel());
                         break;
                 }
             }
@@ -146,7 +145,7 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
         String[] r = {"X", " ", "I", "L"};
         for (int y = 0; y < board.height; y++) {
             for (int x = 0; x < board.width; x++) {
-                int t = board.get(x, y).ordinal();
+                int t = board.get(x, y).getDesignCellType().ordinal();
                 result += (r[t] + ' ');
             }
             result += "\n";

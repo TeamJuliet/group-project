@@ -156,7 +156,7 @@ public class Cell implements Cloneable, Serializable {
         String result = "";
         switch (cellType) {
         case UNUSABLE:
-            return "XXX";
+            return "   ";
         case EMPTY:
             return "EEE";
         case ICING:
@@ -166,6 +166,7 @@ public class Cell implements Cloneable, Serializable {
             break;
         case LIQUORICE:
             result += "L";
+            break;
         case DONT_CARE:
             return "D_C";
         }

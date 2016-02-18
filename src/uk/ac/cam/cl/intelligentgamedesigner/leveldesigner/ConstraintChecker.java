@@ -2,24 +2,24 @@ package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
 public class ConstraintChecker {
 
-	public static boolean checkHorizontalSpace(RandomBoard<DesignCellType> board)
+	public static boolean checkHorizontalSpace(DesignBoard board)
 	{
 
         for(int i = 0; i < board.height; i++)
         {
-        	int lenght = 0;
+        	int length = 0;
         	
         	for(int j = 0; j < board.width; j++)
         	{
-        		if(board.get(j,i) == DesignCellType.EMPTY)
+        		if(board.get(j,i).getDesignCellType() == DesignCellType.EMPTY)
         		{
-        			lenght++;
+					length++;
         		}else{
-        			lenght = 0;
+					length = 0;
         		}
         	}
         	
-        	if(lenght > 3)
+        	if(length > 3)
         	{
         		return true;
         	}
@@ -28,24 +28,24 @@ public class ConstraintChecker {
         return false;
 	}
 	
-	public static boolean checkVerticalSpace(RandomBoard<DesignCellType> board)
+	public static boolean checkVerticalSpace(DesignBoard board)
 	{
 
         for(int i = 0; i < board.width; i++)
         {
-        	int lenght = 0;
+        	int length = 0;
         	
         	for(int j = 0; j < board.height; j++)
         	{
-        		if(board.get(i,j) == DesignCellType.EMPTY)
+        		if(board.get(i,j).getDesignCellType() == DesignCellType.EMPTY)
         		{
-        			lenght++;
+					length++;
         		}else{
-        			lenght = 0;
+					length = 0;
         		}
         	}
         	
-        	if(lenght > 3)
+        	if(length > 3)
         	{
         		return true;
         	}
@@ -54,7 +54,7 @@ public class ConstraintChecker {
         return false;
 	}
 	
-	public static int checkConnected(int i, int j, RandomBoard<DesignCellType> board)
+	public static int checkConnected(int i, int j, DesignBoard board)
 	{/*
 		for(int i = 0; i < board.width; i++)
 		{
@@ -67,7 +67,7 @@ public class ConstraintChecker {
 		return 0;
 	}
 	
-    public static double calculateFitness(RandomBoard<DesignCellType> board) {
+    public static double calculateFitness(DesignBoard board) {
      
     	if(checkVerticalSpace(board) && checkHorizontalSpace(board))
     	{

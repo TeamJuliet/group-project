@@ -1,11 +1,14 @@
 package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
+
 
 import static uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions.*;
 
@@ -18,7 +21,6 @@ public class GameState implements Serializable {
     private List<Position>     detonated               = new ArrayList<Position>();
     private Move               lastMove;
     private GameStateProgress  progress;
-    private int                proceedState            = 0;
     private boolean            wasSomethingPopped      = false;
     private List<Position>     ingredientSinkPositions = new ArrayList<Position>();
     private boolean            shouldShuffle           = true;
@@ -34,7 +36,7 @@ public class GameState implements Serializable {
     private int                numberOfMatchedInRound  = 0;
     // The design used when the game state was constructed.
     private Design             design;
-
+    
     /**
      * GameState creation using the design specification.
      * 
@@ -99,6 +101,11 @@ public class GameState implements Serializable {
         // reductions, so we reset it to 0
         this.progress.resetScore();
         this.design = design;
+
+        // For really shit levels, there won't even be a possible move from the start - we need to check for this
+        if (getValidMoves().size() == 0) {
+            progress.setDidFailShuffle();
+        }
     }
 
     // Copy constructor
@@ -117,7 +124,6 @@ public class GameState implements Serializable {
         for (Position p : original.detonated)
             this.detonated.add(new Position(p));
         this.lastMove = original.lastMove;
-        this.proceedState = original.proceedState;
         this.design = original.design;
         recordIngredientSinks();
     }
@@ -146,8 +152,13 @@ public class GameState implements Serializable {
 
     // **** GETTER FUNCTIONS START *****
 
+    // TODO: Consider returning a copy of the board.
     public Cell[][] getBoard() {
         return board;
+    }
+    
+    public ProcessState getCurrentProcessState() {
+    	return this.currentProcessState;
     }
 
     // Returns a copy of the cell at that position.
@@ -192,7 +203,7 @@ public class GameState implements Serializable {
      *             in case it is not a legitimate move.
      */
     public void makeFullMove(Move move) throws InvalidMoveException {
-        makeMove(move);
+        makeInitialMove(move);
         while (makeSmallMove())
             ;
     }
@@ -207,7 +218,7 @@ public class GameState implements Serializable {
      * @throws InvalidMoveException
      *             in case it is not a legitimate move.
      */
-    public void makeMove(Move move) throws InvalidMoveException {
+    public void makeInitialMove(Move move) throws InvalidMoveException {
         if (!isMoveValid(move))
             throw new InvalidMoveException(move);
         // Record the last move.
@@ -283,14 +294,14 @@ public class GameState implements Serializable {
     }
 
     /**
-     * Once the makeMove has been called this takes care of making the small
+     * Once the makeInitialMove has been called this takes care of making the small
      * steps in the boards.
      * 
      * @return whether there is no other step in to be made.
      */
     public boolean makeSmallMove() {
         this.statProcess.incrementTransitions();
-        System.out.println("Current state is " + this.currentProcessState);
+        DebugFilter.println("Current state is " + this.currentProcessState, DebugFilterKey.GAME_IMPLEMENTATION);
         switch (currentProcessState) {
         case AWAITING_MOVE:
             currentProcessState = ProcessState.MATCH_AND_REPLACE;
@@ -387,9 +398,10 @@ public class GameState implements Serializable {
         if (hasIngredient(cell1) || hasIngredient(cell2))
             return false;
 
+        
         if (cell1.getCandy().getCandyType().isSpecial() && cell2.getCandy().getCandyType().isSpecial())
             return true;
-
+        
         // Exchanging a Bomb with a cell that has a movable item is a valid
         // move (i.e. it is either special or normal candy type).
         else if (cell1.getCandy().getCandyType().equals(CandyType.BOMB) && (hasSpecial(cell2) || hasNormal(cell2))
@@ -778,6 +790,7 @@ public class GameState implements Serializable {
     // Function that performs the clearing of the horizontal line for the
     // stripped candy.
     private void detonateHorizontallyStripped(Position hStripped) {
+    	incrementScore(Scoring.DETONATE_STRIPPED_CANDY);
         for (int x = 0; x < width; ++x) {
             Cell current = getCell(new Position(x, hStripped.y));
             if (hasHorizontallyStripped(current) && !current.getCandy().isDetonated()) {
@@ -791,6 +804,8 @@ public class GameState implements Serializable {
     // Function that creates a cross of width 3 around the locations that were
     // swapped and triggers all cells inside there.
     private void detonateWrappedStripped(Position pos) {
+    	incrementScore(Scoring.DETONATE_WRAPPED_CANDY);
+    	incrementScore(Scoring.DETONATE_STRIPPED_CANDY);
         for (int x = pos.x - 1; x <= pos.x + 1; ++x) {
             for (int y = 0; y < height; ++y) {
                 trigger(x, y, Scoring.WRAPPED_STRIPPED_INDIVIDUAL);
@@ -935,6 +950,8 @@ public class GameState implements Serializable {
 
     // Function that performs the combination of a bomb and a Normal Candy.
     private void breakAllOf(CandyColour colour) {
+    	incrementScore(Scoring.DETONATE_BOMB);
+    	this.statCandiesRemoved.candyProcessed(COLOR_BOMB);
         for (int i = 0; i < width; ++i) {
             for (int j = 0; j < height; ++j) {
                 if (sameColourWithCell(board[i][j], colour))
@@ -945,18 +962,21 @@ public class GameState implements Serializable {
 
     // Function that performs the combination of a bomb and a Special Candy.
     private void replaceWithSpecialAllOf(CandyColour colourMatched, CandyType typeToReplace) {
+    	incrementScore(Scoring.DETONATE_BOMB);
         for (int i = 0; i < width; ++i) {
             for (int j = 0; j < height; ++j) {
-                if (sameColourWithCell(board[i][j], colourMatched)) {
-                    if (typeToReplace.equals(CandyType.HORIZONTALLY_STRIPPED)
-                            || typeToReplace.equals(CandyType.VERTICALLY_STRIPPED)) {
-                        if ((i % 2) != (j % 2))
-                            makeStripped(i, j, colourMatched, HORIZONTAL);
-                        else
-                            makeStripped(i, j, colourMatched, VERTICAL);
-                    } else if (typeToReplace.equals(CandyType.WRAPPED)) {
-                        makeWrapped(i, j, colourMatched);
-                    }
+                if (sameColourWithCell(board[i][j], colourMatched) ) {
+                	if (!board[i][j].getCandy().getCandyType().isSpecial()) {
+	                    if (typeToReplace.equals(CandyType.HORIZONTALLY_STRIPPED)
+	                            || typeToReplace.equals(CandyType.VERTICALLY_STRIPPED)) {
+	                        if ((i % 2) != (j % 2))
+	                            makeStripped(i, j, colourMatched, HORIZONTAL);
+	                        else
+	                            makeStripped(i, j, colourMatched, VERTICAL);
+	                    } else if (typeToReplace.equals(CandyType.WRAPPED)) {
+	                        makeWrapped(i, j, colourMatched);
+	                    }
+                	}
                     trigger(i, j, Scoring.NO_ADDITIONAL_SCORE);
                 }
             }

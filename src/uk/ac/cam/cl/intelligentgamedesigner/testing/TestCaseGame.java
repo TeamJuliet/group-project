@@ -59,8 +59,7 @@ public class TestCaseGame extends TestCase {
                     new PreFilledCandyGenerator(lookahead));
 
             // Make the test move
-            gameStateBefore.makeMove(moveMade);
-            while(gameStateBefore.makeSmallMove()) {}
+            gameStateBefore.makeFullMove(moveMade);
 
             // Construct GameState representing game after
             GameState gameStateAfter = new GameState(after,

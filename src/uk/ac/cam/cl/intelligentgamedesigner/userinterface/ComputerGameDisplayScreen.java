@@ -16,6 +16,7 @@ import javax.swing.JRadioButton;
 import javax.swing.Timer;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
@@ -25,6 +26,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerMana
 
 //defines the functionality specific to the Simulated Player viewer
 public class ComputerGameDisplayScreen extends GameDisplayScreen{
+	private JLabel ai_name;
 	private JRadioButton auto_play;
 	private JButton next_move;
 	private boolean auto_playing; 
@@ -47,6 +49,10 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 	//get the static method for invoking
 	public void setAbility(int ability){
 		this.ability = ability;
+		String game_mode_text = "High Score";
+		if(game_mode == GameMode.JELLY)game_mode_text = "Jelly Clear";
+		if(game_mode == GameMode.INGREDIENTS)game_mode_text = "Ingredients";
+		ai_name.setText(game_mode_text + " player, Ability Level "+(ability+1)+":");
 	}
 	
 	@Override
@@ -75,6 +81,7 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 		super.makeItems();
 		auto_play = new JRadioButton("Auto-play Simulated Player Moves");
 		next_move = new JButton("Play Next Move");
+		ai_name = new JLabel();
 	}
 
 	@Override
@@ -95,6 +102,8 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 		controls.setLayout(new BoxLayout(controls,BoxLayout.Y_AXIS));
 		controls.setBorder(BorderFactory.createLineBorder(Color.black));
 		controls.add(Box.createRigidArea(new Dimension(0, 20)));
+		controls.add(ai_name);
+		controls.add(Box.createRigidArea(new Dimension(0, 20)));
 		controls.add(auto_play);
 		controls.add(Box.createRigidArea(new Dimension(0, 20)));
 		controls.add(next_move);
@@ -102,7 +111,7 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 		add(controls);
 
 		//set the locations
-		position(controls,0.75,0.4,300,100);
+		position(controls,0.75,0.38,300,120);
 	}
 	
 	@Override

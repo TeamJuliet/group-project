@@ -5,7 +5,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 
 public class SimulatedPlayerManager {
 
-    private static SimulatedPlayerBase makeSimulatedPlayer(int ability) {
+    public static SimulatedPlayerBase makeSimulatedPlayer(int ability) {
         SimulatedPlayerBase player;
         switch (ability) {
         case 1:
