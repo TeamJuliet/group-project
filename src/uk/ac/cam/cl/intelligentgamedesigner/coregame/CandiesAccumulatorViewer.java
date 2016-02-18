@@ -25,4 +25,12 @@ public class CandiesAccumulatorViewer implements Serializable {
         this.wrappedCandies = wrappedCandies; 
     }
 
+    @Override
+    public String toString () {
+        return    "Normal candies:                " + normalCandies +
+                "\nHorizontally stripped candies: " + horizontallyStrippedCandies +
+                "\nVertically stripped candies:   " + verticallyStrippedCandies +
+                "\nWrapped candies:               " + wrappedCandies +
+                "\nColour bombs:                  " + colourBombs + "\n";
+    }
 }

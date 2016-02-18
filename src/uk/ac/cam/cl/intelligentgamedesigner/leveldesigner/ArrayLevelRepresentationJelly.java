@@ -2,7 +2,6 @@ package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
 import java.util.Random;
 
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 

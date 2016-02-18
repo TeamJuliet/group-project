@@ -918,6 +918,74 @@ public class GameStateTests {
        assertTrue(haveSameProgress(gameState, new GameStateProgress(Scoring.MATCHED_3 * 3, NO_JELLIES, NO_INGREDIENTS, TWO_MOVES_LEFT)));
    }
    
+   @Test
+   public void removesLiquoriceNormally() {
+
+       Candy[][] board = { 
+    		   {GREEN_CANDY, BLUE_CANDY, YELLOW_CANDY, YELLOW_CANDY},
+    		   {BLUE_CANDY, RED_CANDY, BLUE_CANDY, RED_CANDY},
+    		   {GREEN_CANDY, BLUE_CANDY, BLUE_CANDY, GREEN_CANDY},
+       };
+       
+       Cell[][] cellBoard = cellBoardFromCandies(board);
+       cellBoard[0][1] = new Cell(CellType.LIQUORICE, cellBoard[0][1].getCandy());
+       
+       GameState gameState = new GameState(cellBoard, NORMAL_INITIAL_PROGRESS,
+               new UnmoveableCandyGenerator());
+       
+       try {
+           gameState.makeFullMove(new Move(new Position(1, 0), new Position(1, 1)));
+       } catch (InvalidMoveException e) {
+           assertTrue(false);
+       } 
+     
+       Candy[][] correctBoard = { 
+    		   {GREEN_CANDY, UNMOVEABLE_CANDY, UNMOVEABLE_CANDY, YELLOW_CANDY},
+    		   {BLUE_CANDY, RED_CANDY, YELLOW_CANDY, RED_CANDY},
+    		   {GREEN_CANDY, BLUE_CANDY, BLUE_CANDY, GREEN_CANDY},
+       };
+       // displayCellBoard(gameState.getBoard());
+       // Checks whether it forms a vertical move.
+       assertTrue(haveSameBoard(gameState, cellBoardFromCandies(correctBoard)));
+       assertTrue(haveSameProgress(gameState, new GameStateProgress(Scoring.MATCHED_3, NO_JELLIES, NO_INGREDIENTS, TWO_MOVES_LEFT)));
+   }
+   
+   @Test
+   public void removesLiquoriceLockOnCombo() {
+
+       Candy[][] board = { 
+    		   {GREEN_CANDY, BLUE_CANDY, BLUE_CANDY, YELLOW_CANDY},
+    		   {BLUE_CANDY, RED_CANDY, GREEN_CANDY, RED_CANDY},
+    		   {GREEN_CANDY, BLUE_CANDY, BLUE_CANDY, GREEN_CANDY},
+    		   {BLUE_CANDY, GREEN_CANDY, RED_CANDY, BLUE_CANDY},
+    		   {GREEN_CANDY, YELLOW_CANDY, BLUE_CANDY, YELLOW_CANDY},
+       };
+       
+       Cell[][] cellBoard = cellBoardFromCandies(board);
+       cellBoard[0][1] = new Cell(CellType.LIQUORICE, cellBoard[0][1].getCandy());
+       
+       GameState gameState = new GameState(cellBoard, NORMAL_INITIAL_PROGRESS,
+               new UnmoveableCandyGenerator());
+               
+       try {
+           gameState.makeFullMove(new Move(new Position(3, 2), new Position(3, 3)));
+       } catch (InvalidMoveException e) {
+           assertTrue(false);
+       } 
+     
+       Candy[][] correctBoard = { 
+    		   {GREEN_CANDY, UNMOVEABLE_CANDY, UNMOVEABLE_CANDY, UNMOVEABLE_CANDY},
+    		   {BLUE_CANDY, UNMOVEABLE_CANDY, UNMOVEABLE_CANDY, YELLOW_CANDY},
+    		   {GREEN_CANDY, RED_CANDY, GREEN_CANDY, RED_CANDY},
+    		   {BLUE_CANDY, GREEN_CANDY, RED_CANDY, GREEN_CANDY},
+    		   {GREEN_CANDY, YELLOW_CANDY, BLUE_CANDY, YELLOW_CANDY},
+       };
+             
+       // Checks whether it forms a vertical move.
+       assertTrue(haveSameBoard(gameState, cellBoardFromCandies(correctBoard)));
+       assertTrue(haveSameProgress(gameState, new GameStateProgress(Scoring.MATCHED_3 * 3 , NO_JELLIES, NO_INGREDIENTS, TWO_MOVES_LEFT)));
+   }
+   
    public  Cell[][] cellBoardFromCandies(Candy[][] candies) {
        Cell[][] cellBoard = new Cell[candies[0].length][candies.length];
        for (int i = 0; i < candies.length; ++i) {
