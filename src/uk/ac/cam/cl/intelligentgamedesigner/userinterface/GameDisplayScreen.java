@@ -103,7 +103,6 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 		
 		animation.initialise(theGame, move, board);
         animation.execute();	
-		
 	}
 	
 	protected void endGameCheck(){

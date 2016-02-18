@@ -59,6 +59,7 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
             if (moves.isEmpty())
                 results.add(current);
         }
+        pool = nextPool;
     }
 
     public Move calculateBestMove(GameState currentState) throws NoMovesFoundException {

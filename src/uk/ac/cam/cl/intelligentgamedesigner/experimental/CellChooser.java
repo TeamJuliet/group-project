@@ -41,7 +41,7 @@ public class CellChooser {
 			d.setSelected(true);
 			// reset();
 			try {
-				game.makeMove(new Move(p1, p2));
+				game.makeInitialMove(new Move(p1, p2));
 				movesRecord.setText(movesRecord.getText() + "|" + positionToString(p1) + positionToString(p2));
 				while(game.makeSmallMove()) {
 					// System.err.println("Moving on");

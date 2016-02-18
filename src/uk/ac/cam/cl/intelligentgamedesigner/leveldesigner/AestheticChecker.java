@@ -5,19 +5,19 @@ public class AestheticChecker {
 	// Currently the methods in this class were created for some quick testing,
 	// and so are pretty rubbish.
 	
-	public static double calculateFitness(RandomBoard<DesignCellType> board) {
+	public static double calculateFitness(DesignBoard board) {
 		double fitness = calculateSymmetryScore(board);
 		
 		return fitness * calculateDistributionScore(board) * calculateCentralDistance(board) * calculateConnectedFitness(board);
 	}
 	
-	private static double calculateDistributionScore(RandomBoard<DesignCellType> board) {
+	private static double calculateDistributionScore(DesignBoard board) {
 		int[] counts = new int[DesignCellType.values().length];
 		int cellCount = board.height * board.width;
 		
 		for (int x = 0; x < board.width; x++) {
     		for (int y = 0; y < board.height; y++) {
-    			DesignCellType type = board.get(x, y);
+    			DesignCellType type = board.get(x, y).getDesignCellType();
     			counts[type.ordinal()]++;
     		}
     	}
@@ -62,12 +62,12 @@ public class AestheticChecker {
 		return score;
 	}
 	
-	private static double calculateSymmetryScore(RandomBoard<DesignCellType> board) {
+	private static double calculateSymmetryScore(DesignBoard board) {
 		int maxX = board.width / 2;
     	int score = 0;
     	for (int x = 0; x < maxX; x++) {
     		for (int y = 0; y < board.height; y++) {
-    			if (board.get(x, y) == board.get(board.width - x - 1, y)) {
+    			if (board.get(x, y).equals(board.get(board.width - x - 1, y))) {
     				score++;
     			}
     		}
@@ -77,7 +77,7 @@ public class AestheticChecker {
     	return score / perfectScore;
 	}
 	
-	private static double calculateCentralDistance(RandomBoard<DesignCellType> board)
+	private static double calculateCentralDistance(DesignBoard board)
 	{
 		int x_position = 0;
 		int y_position = 0;
@@ -88,7 +88,7 @@ public class AestheticChecker {
 		{
 			for(int j = 0; j < board.width; j++)
 			{
-				if(board.get(i, j) == DesignCellType.EMPTY)
+				if(board.get(i, j).getDesignCellType() == DesignCellType.EMPTY)
 				{
 					x_position += i;
 					y_position += j;
@@ -101,7 +101,7 @@ public class AestheticChecker {
 	}
 	
 	
-	private static double calculateConnectedFitness(RandomBoard<DesignCellType> board)
+	private static double calculateConnectedFitness(DesignBoard board)
 	{
 		int meh = 0;
 		
@@ -109,22 +109,22 @@ public class AestheticChecker {
 		{
 			for(int j = 1; j < board.width - 1; j++)
 			{
-					if(board.get(i, j) != board.get(i, j+1))
+					if(!board.get(i, j).equals(board.get(i, j+1)))
 					{
 						meh++;
 					}
 								
-					if(board.get(i, j) != board.get(i+1, j))
+					if(!board.get(i, j).equals(board.get(i+1, j)))
 					{
 						meh++;
 					}
 								
-					if(board.get(i, j) != board.get(i, j-1))
+					if(!board.get(i, j).equals(board.get(i, j-1)))
 					{
 						meh++;
 					}
 								
-					if(board.get(i, j) != board.get(i-1, j))
+					if(!board.get(i, j).equals(board.get(i-1, j)))
 					{
 						meh++;
 					}
