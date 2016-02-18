@@ -13,6 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.SwingConstants;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
@@ -29,11 +30,14 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.ProcessState;
 public abstract class GameDisplayScreen extends DisplayScreen implements PropertyChangeListener{
 	
 	protected JButton quit_button;
+	protected JRadioButton toggle_animations;
 	protected GameBoard board;
 	protected JLabel objective_text;
 	protected JLabel moves_left_text;
 	protected JLabel game_mode_text;
 	protected JLabel score_text;
+	
+	protected JButton save_statistics;
 	
 	//internal state/info
 	protected boolean playing_move;
@@ -46,6 +50,7 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 	protected static final int wait_time = 400;
 	
 	//game stuff
+	boolean show_animations;
 	GameState theGame;
 	AnimationThread animation;
 	
@@ -83,6 +88,8 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 	
 	protected void initialiseGame(){
 		theGame = new GameState(level);
+		toggle_animations.setSelected(true);
+		show_animations = true;
 		update();
 	}
 	
@@ -100,7 +107,7 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 		if(!playing_move){
 			playing_move = true;
 			
-			animation = new AnimationThread(theGame, move, board);
+			animation = new AnimationThread(theGame, move, board, show_animations);
 	        animation.addPropertyChangeListener(this);
 	        animation.execute();	
 		}
@@ -150,6 +157,9 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 			end_game_panel.add(Box.createRigidArea(new Dimension(0, 20)));
 			end_game_panel.add(new JLabel("You finished with a score of " + progress.score));
 			end_game_panel.add(Box.createRigidArea(new Dimension(0, 20)));
+			save_statistics.setEnabled(true);
+			end_game_panel.add(save_statistics);
+			end_game_panel.add(Box.createRigidArea(new Dimension(0, 20)));
 			end_game_panel.add(new JLabel("Taking you back to the level display menu."));
 			
 			JOptionPane.showMessageDialog(this,end_game_panel,"Game Over",JOptionPane.INFORMATION_MESSAGE);
@@ -168,18 +178,27 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 	@Override
 	protected void makeItems() {
 		quit_button = new JButton("Quit Game");
+		toggle_animations = new JRadioButton("Display Animations");
 		board = specificGameBoard();
 		objective_text = new JLabel();
 		game_mode_text = new JLabel();
 		moves_left_text = new JLabel();
 		score_text = new JLabel();
+
+		save_statistics = new JButton("Save round statistics");
 	}
 
 	@Override
 	protected void setUpItems() {
 		quit_button.setToolTipText("Quit playing the level and go back to the level display");
 		quit_button.setActionCommand("quit");
-		quit_button.addActionListener(this);		
+		quit_button.addActionListener(this);
+		
+		toggle_animations.setActionCommand("toggle");
+		toggle_animations.addActionListener(this);
+
+		save_statistics.addActionListener(this);
+		save_statistics.setActionCommand("save");
 	}
 
 	@Override
@@ -191,6 +210,8 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 		JPanel stats = new JPanel();
 		stats.setLayout(new BoxLayout(stats,BoxLayout.Y_AXIS));
 		stats.setBorder(BorderFactory.createLineBorder(Color.black));
+		stats.add(Box.createRigidArea(new Dimension(0, 20)));
+		stats.add(toggle_animations);
 		stats.add(Box.createRigidArea(new Dimension(0, 20)));
 		stats.add(score_text);
 		stats.add(Box.createRigidArea(new Dimension(0, 20)));
@@ -206,9 +227,13 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 		add(quit_button);
 
 		//set the locations
-		position(stats,0.75,0.6,300,160);
+		position(stats,0.75,0.62,300,180);
 		positionBoard(board,0.4,0.5);
 		position(quit_button,0.1,0.9,100,30);
+	}
+	
+	protected String saveRounds(){
+		return null;
 	}
 
 	@Override
@@ -218,6 +243,18 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 		case "quit":
 			playing_move = false;
 			InterfaceManager.switchScreen(Windows.DISPLAY);
+			break;
+		case "toggle":
+			show_animations = toggle_animations.isSelected();
+			break;
+		case "save":
+			String name = saveRounds();
+			if(name != null){
+				JOptionPane.showMessageDialog(this,name+" saved!","Round Statistics",JOptionPane.INFORMATION_MESSAGE);
+			} else { //failed to save
+				JOptionPane.showMessageDialog(this,"Failed to save","Round Statistics",JOptionPane.ERROR_MESSAGE);
+			}
+			save_statistics.setEnabled(false);
 			break;
 		}
 	}

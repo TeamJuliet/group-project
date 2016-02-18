@@ -18,23 +18,29 @@ public class AnimationThread extends SwingWorker{
 	private GameState theGame;
 	private Move move;
 	private GameBoard board;
+	private boolean animated;
 	
-	public AnimationThread(GameState gameState, Move madeMove, GameBoard gameBoard){
+	public AnimationThread(GameState gameState, Move madeMove, GameBoard gameBoard, boolean shows_animation){
 		theGame = gameState;
 		move = madeMove;
 		board = gameBoard;
+		animated = shows_animation;
 	}
 
 	@Override
 	protected Object doInBackground() throws Exception {
 
 		try {
-			theGame.makeInitialMove(move);
-			while(theGame.makeSmallMove()) {
-				animate(theGame.getCurrentProcessState());
-				update();		
-			}
-			
+			if(animated){
+				theGame.makeInitialMove(move);
+				while(theGame.makeSmallMove()) {
+					animate(theGame.getCurrentProcessState());
+					update();	
+				}
+			} else {
+				theGame.makeFullMove(move);
+				update();
+			}	
 		} catch (InvalidMoveException ex) {
 			DebugFilter.println("Invalid move",DebugFilterKey.GAME_IMPLEMENTATION);
 		}catch (InterruptedException e) {
