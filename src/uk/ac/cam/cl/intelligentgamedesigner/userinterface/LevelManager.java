@@ -4,6 +4,8 @@ import java.io.*;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.ArrayList;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
 
 public class LevelManager {
 	static int levels_so_far;
@@ -29,7 +31,6 @@ public class LevelManager {
 			while(!foundEnd){
 				foundEnd = true;
 				for(File f:files) {
-					//System.out.println("found "+f.getName());
 					if(f.getName().startsWith((levels_so_far+1)+". ")){
 						//add the latest numbered level to the list
 						Design latest;
@@ -43,15 +44,15 @@ public class LevelManager {
 							foundEnd = false;
 							levels_so_far++;
 			            } catch (EOFException e) {
-			            	DebugFilter.println("Error in reading file (End of file)");
+			            	DebugFilter.println("Error in reading file (End of file)",DebugFilterKey.USER_INTERFACE);
 			            } catch (FileNotFoundException e) {
-			            	DebugFilter.println("Error in reading file (File not found)");
+			            	DebugFilter.println("Error in reading file (File not found)",DebugFilterKey.USER_INTERFACE);
 						} catch (InvalidClassException e) {
-			            	DebugFilter.println("Error in reading file (Invalid Class)");
+			            	DebugFilter.println("Error in reading file (Invalid Class)",DebugFilterKey.USER_INTERFACE);
 						}catch (IOException e) {
-			            	DebugFilter.println("Error in reading file (IO)");
+			            	DebugFilter.println("Error in reading file (IO)",DebugFilterKey.USER_INTERFACE);
 						} catch (ClassNotFoundException e) {
-			            	System.err.println("Error in reading file (Class not found)");
+			            	DebugFilter.println("Error in reading file (Class not found)",DebugFilterKey.USER_INTERFACE);
 						} 
 						break;
 					}
@@ -103,7 +104,7 @@ public class LevelManager {
 				for(File f:files){
 					if(f.getName().startsWith((n+2)+".")){
 						boolean success = f.renameTo(new File(location+(n+1)+name_minus_num));
-						if(success)DebugFilter.println("renamed to "+((n+1)+name_minus_num));
+						if(success)DebugFilter.println("renamed to "+((n+1)+name_minus_num),DebugFilterKey.USER_INTERFACE);
 					}
 				}
 			}
@@ -118,13 +119,13 @@ public class LevelManager {
         // This will return a SecurityException is sudo/admin access is required!
         if (!unitTestDirectory.exists()){
         	unitTestDirectory.mkdir();
-        	DebugFilter.out.println("New directory made");
+        	DebugFilter.println("New directory made",DebugFilterKey.USER_INTERFACE);
         }
         File file = new File(location + fileName + suffix);
 
         //All files of that number deleted
         file.createNewFile();
-        .out.println("Made file");
+        DebugFilter.println("Made file",DebugFilterKey.USER_INTERFACE);
 
         return file;
     }
@@ -135,7 +136,7 @@ public class LevelManager {
 		try{
 			level_num = Integer.parseInt(fileName.split("\\.")[0]);
 		} catch (NumberFormatException e){
-			DebugFilter.println("error in file name");
+			DebugFilter.println("error in file name",DebugFilterKey.USER_INTERFACE);
 		}
 		
 		if(level_num == levels_so_far+1)levels_so_far++;
@@ -166,7 +167,7 @@ public class LevelManager {
 		File file;
 		try {
 			file = createLocalFile(fileName);
-			DebugFilter.println("made!");
+			DebugFilter.println("made!",DebugFilterKey.USER_INTERFACE);
 	        //save the new file
 	        try {
 	            ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(file));
@@ -187,11 +188,11 @@ public class LevelManager {
 	}
 	
 	public void printNames(){
-		DebugFilter.println("The list:");
+		DebugFilter.println("The list:",DebugFilterKey.USER_INTERFACE);
 		for(String s:level_names){
-			DebugFilter.println(s);
+			DebugFilter.println(s,DebugFilterKey.USER_INTERFACE);
 		}
-		DebugFilter.println();
+		DebugFilter.println("",DebugFilterKey.USER_INTERFACE);
 	}
 
 }

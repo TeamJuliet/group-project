@@ -7,6 +7,8 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.ProcessState;
 import uk.ac.cam.cl.intelligentgamedesigner.leveldesigner.PropertyChanges;
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
 
 public class AnimationThread extends SwingWorker{
 	
@@ -17,7 +19,7 @@ public class AnimationThread extends SwingWorker{
 	private Move move;
 	private GameBoard board;
 	
-	public void initialise(GameState gameState, Move madeMove, GameBoard gameBoard){
+	public AnimationThread(GameState gameState, Move madeMove, GameBoard gameBoard){
 		theGame = gameState;
 		move = madeMove;
 		board = gameBoard;
@@ -27,16 +29,16 @@ public class AnimationThread extends SwingWorker{
 	protected Object doInBackground() throws Exception {
 
 		try {
-			theGame.makeMove(move);
+			theGame.makeInitialMove(move);
 			while(theGame.makeSmallMove()) {
 				animate(theGame.getCurrentProcessState());
 				update();		
 			}
 			
 		} catch (InvalidMoveException ex) {
-			System.err.println("Invalid move");
+			DebugFilter.println("Invalid move",DebugFilterKey.GAME_IMPLEMENTATION);
 		}catch (InterruptedException e) {
-			e.printStackTrace();
+			DebugFilter.println("Stopped the animation", DebugFilterKey.USER_INTERFACE);
 		}
 		endGame();	
 			
@@ -46,7 +48,7 @@ public class AnimationThread extends SwingWorker{
 		
 	public void animate(ProcessState gameState) throws InterruptedException{
 		if(gameState != ProcessState.AWAITING_MOVE)board.doAnimation(gameState);
-		board.paintImmediately(0,0,InterfaceManager.screenWidth(),InterfaceManager.screenHeight());
+		Thread.sleep(200);
 	}
 
 	private void update() {

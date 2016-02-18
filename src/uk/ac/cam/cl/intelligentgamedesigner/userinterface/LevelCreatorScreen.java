@@ -430,7 +430,6 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 								
 				break;
 			}
-			//System.out.println((String)fill_type.getSelectedItem());
 			break;
 		case "new selection":
 			switch((String)fill_type.getSelectedItem()){

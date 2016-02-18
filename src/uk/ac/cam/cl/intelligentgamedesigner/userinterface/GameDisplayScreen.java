@@ -83,8 +83,6 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 	
 	protected void initialiseGame(){
 		theGame = new GameState(level);
-		animation = new AnimationThread();
-        animation.addPropertyChangeListener(this);
 		update();
 	}
 	
@@ -99,10 +97,13 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 	}
 	
 	public void playMove(Move move){
-		playing_move = true;
-		
-		animation.initialise(theGame, move, board);
-        animation.execute();	
+		if(!playing_move){
+			playing_move = true;
+			
+			animation = new AnimationThread(theGame, move, board);
+	        animation.addPropertyChangeListener(this);
+	        animation.execute();	
+		}
 	}
 	
 	protected void endGameCheck(){
@@ -158,7 +159,8 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 		}
 	}
 	protected void stopGame(){
-		animation = null;
+		animation.cancel(true);
+		animation.removePropertyChangeListener(this);
 	}
 	
 	protected abstract GameBoard specificGameBoard();

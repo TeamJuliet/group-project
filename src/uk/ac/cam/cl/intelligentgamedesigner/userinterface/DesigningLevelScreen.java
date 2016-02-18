@@ -1,6 +1,5 @@
 package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,14 +7,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
@@ -23,6 +17,8 @@ import uk.ac.cam.cl.intelligentgamedesigner.leveldesigner.LevelDesignerManager;
 import uk.ac.cam.cl.intelligentgamedesigner.leveldesigner.LevelRepresentation;
 import uk.ac.cam.cl.intelligentgamedesigner.leveldesigner.PropertyChanges;
 import uk.ac.cam.cl.intelligentgamedesigner.leveldesigner.Specification;
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
 
 //The screen while the level designer is working
 //will give stats on the progress etc.
@@ -153,15 +149,22 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 
 	}
 	
+	private void stopDesigning(){
+		levelDesignerManager.cancel(true);
+		levelDesignerManager.removePropertyChangeListener(this);
+		DebugFilter.print("Should have stopped", DebugFilterKey.USER_INTERFACE);
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		switch(e.getActionCommand()){
 		case "back":
-			levelDesignerManager = null;//TODO: delete the thread
+			stopDesigning();
 	    	InterfaceManager.switchScreen(Windows.REQUEST);
 			break;
 		case "view":
 			if(selected!=-1){
+				stopDesigning();
 				String level_name = InterfaceManager.level_manager.get_next_num()+". Designed Level "+(selected+1)+".lv";
 				InterfaceManager.setSelectedDDesign(boardDesigns[selected],level_name);
 				InterfaceManager.setPreviousScreen(Windows.REQUESTING);

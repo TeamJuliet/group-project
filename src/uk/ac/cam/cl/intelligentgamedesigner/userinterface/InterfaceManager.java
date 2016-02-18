@@ -47,6 +47,7 @@ public class InterfaceManager extends JFrame {
 	}
 	
 	static void initialise(){
+		
 		//setting the screen properties
 		screen.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		screen.setExtendedState(JFrame.MAXIMIZED_BOTH);

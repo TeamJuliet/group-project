@@ -145,21 +145,22 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 	}
 	
 	private void nextMove(){
-		try{
-			Move next = SimulatedPlayerManager.calculateBestMove(theGame, ability);
+		if(!playing_move){
+			try{
+				Move next = SimulatedPlayerManager.calculateBestMove(theGame, ability);
 
-			((ComputerGameBoard)board).showMove(next);
-			Thread.sleep(wait_time*2);
-			((ComputerGameBoard)board).hideMove();
+				((ComputerGameBoard)board).showMove(next);
+				Thread.sleep(wait_time*2);
+				((ComputerGameBoard)board).hideMove();
 
-			playMove(next);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (NullPointerException e){
-			e.printStackTrace();
-		} catch (NoMovesFoundException e) {
-			e.printStackTrace();
+				playMove(next);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (NullPointerException e){
+				e.printStackTrace();
+			} catch (NoMovesFoundException e) {
+				e.printStackTrace();
+			}
 		}
-		
 	}
 }
