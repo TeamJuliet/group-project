@@ -3,7 +3,6 @@ package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.RoundStatistics;
-import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerManager;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
 
@@ -82,7 +81,7 @@ public class LevelDesignerManager extends SwingWorker {
         // TODO: advanced ones (which are likely to be more expensive to run)
 
         // For now, just create one player of each ability
-        int numberOfSimulations = SimulatedPlayerManager.getMaxAbilityLevel();
+        int numberOfSimulations = 1;//SimulatedPlayerManager.getMaxAbilityLevel();
 
         // The games to be played
         GameState[] gameStates = new GameState[numberOfSimulations];

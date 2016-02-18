@@ -223,6 +223,8 @@ public class GameState implements Serializable {
         if (!isMoveValid(move))
             throw new InvalidMoveException(move);
         // Record the last move.
+
+        resetRound();
         lastMove = move;
 
         this.statProcess.setCandySwapped1(getCell(move.p1).getCandy());
@@ -306,7 +308,6 @@ public class GameState implements Serializable {
         switch (currentProcessState) {
         case AWAITING_MOVE:
             currentProcessState = ProcessState.MATCH_AND_REPLACE;
-            resetRound();
             break;
         case MATCH_AND_REPLACE:
             markAndReplaceMatchingTiles();
