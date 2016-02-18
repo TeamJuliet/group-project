@@ -1,11 +1,5 @@
 package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
-import java.awt.Color;
-import java.awt.Graphics;
-
-import javax.swing.BorderFactory;
-
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.ProcessState;
 

@@ -1,7 +1,6 @@
 package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
 import java.io.*;
-import java.nio.file.FileAlreadyExistsException;
 import java.util.ArrayList;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;

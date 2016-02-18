@@ -3,7 +3,6 @@ package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -12,8 +11,6 @@ import java.util.ArrayList;
 
 import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
-import uk.ac.cam.cl.intelligentgamedesigner.testing.NoSuchUnitTest;
-import uk.ac.cam.cl.intelligentgamedesigner.testing.TestCase;
 
 public class RoundStatisticsManager {
 	static final String location = System.getProperty("user.dir") + File.separator + "round_statistics" + File.separator;
