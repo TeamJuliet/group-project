@@ -3,6 +3,8 @@ package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -20,10 +22,12 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateProgressView;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.ProcessState;
 
 //Defines functionality shared by the human and simulated player games
 //Displays the game, score and how to handle animations etc.
-public abstract class GameDisplayScreen extends DisplayScreen{
+public abstract class GameDisplayScreen extends DisplayScreen implements PropertyChangeListener{
+	
 	protected JButton quit_button;
 	protected GameBoard board;
 	protected JLabel objective_text;
@@ -32,6 +36,7 @@ public abstract class GameDisplayScreen extends DisplayScreen{
 	protected JLabel score_text;
 	
 	//internal state/info
+	protected boolean playing_move;
 	protected Cell[][] theBoard;
 	protected int objective;
 	protected int moves_left;
@@ -42,6 +47,7 @@ public abstract class GameDisplayScreen extends DisplayScreen{
 	
 	//game stuff
 	GameState theGame;
+	AnimationThread animation;
 	
 	public GameDisplayScreen(){
 		super();
@@ -77,6 +83,8 @@ public abstract class GameDisplayScreen extends DisplayScreen{
 	
 	protected void initialiseGame(){
 		theGame = new GameState(level);
+		animation = new AnimationThread();
+        animation.addPropertyChangeListener(this);
 		update();
 	}
 	
@@ -91,20 +99,11 @@ public abstract class GameDisplayScreen extends DisplayScreen{
 	}
 	
 	public void playMove(Move move){
-		try {
-			theGame.makeMove(move);
-			while(theGame.makeSmallMove()) {
-				update();		
-				board.paintImmediately(0,0,InterfaceManager.screenWidth(),InterfaceManager.screenHeight());
-				Thread.sleep(wait_time);
-			}
-		} catch (InvalidMoveException ex) {
-			System.err.println("Invalid move");
-		}catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		playing_move = true;
 		
-		endGameCheck();
+		animation.initialise(theGame, move, board);
+        animation.execute();	
+		
 	}
 	
 	protected void endGameCheck(){
@@ -123,20 +122,29 @@ public abstract class GameDisplayScreen extends DisplayScreen{
 				//}
 			}
 			else {
-				end_game_panel.add(new JLabel("Better Luck next time..."),SwingConstants.CENTER);
-				switch(theGame.getLevelDesign().getMode()){
-				case HIGHSCORE:
+				if(theGame.didFailShuffle()){
+					stopGame();
+
+					end_game_panel.add(new JLabel("Sorry, game over..."),SwingConstants.CENTER);
 					end_game_panel.add(Box.createRigidArea(new Dimension(0, 10)));
-					end_game_panel.add(new JLabel("You didn't reach the required score"));
-					break;
-				case JELLY:
-					end_game_panel.add(Box.createRigidArea(new Dimension(0, 10)));
-					end_game_panel.add(new JLabel("You didn't manage to clear the jellies fast enough."));
-					break;
-				case INGREDIENTS:
-					end_game_panel.add(Box.createRigidArea(new Dimension(0, 10)));
-					end_game_panel.add(new JLabel("You had another " + progress.ingredientsRemaining + " left to collect."));
-					break;
+					end_game_panel.add(new JLabel("The board could not be reshuffled to make any matches"));
+				}
+				else {
+					end_game_panel.add(new JLabel("Better luck next time..."),SwingConstants.CENTER);
+					switch(theGame.getLevelDesign().getMode()){
+					case HIGHSCORE:
+						end_game_panel.add(Box.createRigidArea(new Dimension(0, 10)));
+						end_game_panel.add(new JLabel("You didn't reach the required score"));
+						break;
+					case JELLY:
+						end_game_panel.add(Box.createRigidArea(new Dimension(0, 10)));
+						end_game_panel.add(new JLabel("You didn't manage to clear the jellies fast enough."));
+						break;
+					case INGREDIENTS:
+						end_game_panel.add(Box.createRigidArea(new Dimension(0, 10)));
+						end_game_panel.add(new JLabel("You had another " + progress.ingredientsRemaining + " left to collect."));
+						break;
+					}
 				}
 			}
 			end_game_panel.add(Box.createRigidArea(new Dimension(0, 20)));
@@ -151,7 +159,7 @@ public abstract class GameDisplayScreen extends DisplayScreen{
 		}
 	}
 	protected void stopGame(){
-		
+		animation = null;
 	}
 	
 	protected abstract GameBoard specificGameBoard();
@@ -207,8 +215,27 @@ public abstract class GameDisplayScreen extends DisplayScreen{
 		switch(e.getActionCommand()){
 		
 		case "quit":
+			playing_move = false;
 			InterfaceManager.switchScreen(Windows.DISPLAY);
 			break;
+		}
+	}
+	
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {	
+		if(playing_move){
+			switch(evt.getPropertyName()){
+			case AnimationThread.NEW_STATE:
+				theGame = (GameState)evt.getNewValue();
+				update();
+				break;
+			case AnimationThread.FINISHED:
+				playing_move = false;
+				theGame = (GameState)evt.getNewValue();
+				update();
+				endGameCheck();
+				break;
+			}
 		}
 	}
 }

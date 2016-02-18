@@ -43,13 +43,13 @@ public class LevelManager {
 							foundEnd = false;
 							levels_so_far++;
 			            } catch (EOFException e) {
-			            	System.err.println("Error in reading file (End of file)");
+			            	DebugFilter.println("Error in reading file (End of file)");
 			            } catch (FileNotFoundException e) {
-			            	System.err.println("Error in reading file (File not found)");
+			            	DebugFilter.println("Error in reading file (File not found)");
 						} catch (InvalidClassException e) {
-			            	System.err.println("Error in reading file (Invalid Class)");
+			            	DebugFilter.println("Error in reading file (Invalid Class)");
 						}catch (IOException e) {
-			            	System.err.println("Error in reading file (IO)");
+			            	DebugFilter.println("Error in reading file (IO)");
 						} catch (ClassNotFoundException e) {
 			            	System.err.println("Error in reading file (Class not found)");
 						} 
@@ -103,7 +103,7 @@ public class LevelManager {
 				for(File f:files){
 					if(f.getName().startsWith((n+2)+".")){
 						boolean success = f.renameTo(new File(location+(n+1)+name_minus_num));
-						if(success)System.out.println("renamed to "+((n+1)+name_minus_num));
+						if(success)DebugFilter.println("renamed to "+((n+1)+name_minus_num));
 					}
 				}
 			}
@@ -118,13 +118,13 @@ public class LevelManager {
         // This will return a SecurityException is sudo/admin access is required!
         if (!unitTestDirectory.exists()){
         	unitTestDirectory.mkdir();
-        	System.out.println("New directory made");
+        	DebugFilter.out.println("New directory made");
         }
         File file = new File(location + fileName + suffix);
 
         //All files of that number deleted
         file.createNewFile();
-        System.out.println("Made file");
+        .out.println("Made file");
 
         return file;
     }
@@ -135,7 +135,7 @@ public class LevelManager {
 		try{
 			level_num = Integer.parseInt(fileName.split("\\.")[0]);
 		} catch (NumberFormatException e){
-			System.err.println("error in file name");
+			DebugFilter.println("error in file name");
 		}
 		
 		if(level_num == levels_so_far+1)levels_so_far++;
@@ -166,7 +166,7 @@ public class LevelManager {
 		File file;
 		try {
 			file = createLocalFile(fileName);
-			System.out.println("made!");
+			DebugFilter.println("made!");
 	        //save the new file
 	        try {
 	            ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(file));
@@ -187,11 +187,11 @@ public class LevelManager {
 	}
 	
 	public void printNames(){
-		System.out.println("The list:");
+		DebugFilter.println("The list:");
 		for(String s:level_names){
-			System.out.println(s);
+			DebugFilter.println(s);
 		}
-		System.out.println();
+		DebugFilter.println();
 	}
 
 }
