@@ -14,7 +14,7 @@ public class test {
         int i = 0;
         while(i < 10){
             try {
-                suggestedMove = SimulatedPlayerManager.calculateBestMove(testLvl, 2);
+                suggestedMove = SimulatedPlayerManager.calculateBestMove(testLvl, 3);
             } catch (NoMovesFoundException e) {
                 suggestedMove = null;
             }
