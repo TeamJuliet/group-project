@@ -17,7 +17,7 @@ public class ScorePlayerBeta extends SimulatedPlayerBase {
         int largestMatch = 0;
         Move bestMove = null;
         for (Move candidateMove : validMoves) {
-            GameState tmp = original;
+            GameState tmp = new GameState(original);
             List<MatchAnalysis> matches = tmp.getMatchAnalysis(candidateMove);
             int numberOfCellsMathed = 0;
             for (MatchAnalysis match : matches) {

@@ -6,6 +6,6 @@ public class NoMovesFoundException extends Exception {
     GameState state;
 
     public NoMovesFoundException(GameState state) {
-        this.state = state;
+        this.state = new GameState(state);
     }
 }
