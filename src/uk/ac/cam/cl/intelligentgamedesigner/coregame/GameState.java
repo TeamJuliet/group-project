@@ -1065,6 +1065,7 @@ public class GameState implements Serializable {
             }
         }
 
+        result += "  ";
         for(int i = 0; i < this.width; i++){
             result += " " + i + "  ";
         }

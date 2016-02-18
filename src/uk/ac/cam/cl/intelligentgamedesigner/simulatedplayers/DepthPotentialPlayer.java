@@ -6,6 +6,7 @@ import java.util.PriorityQueue;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.UnmoveableCandyGenerator;
 
 abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
     // The number of states that the Player should look ahead at each move.
@@ -35,7 +36,7 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
     private GameStateWithCombinedMetric generateCombinedMetric(GameStateWithCombinedMetric state, Move move) {
         GameState nextState;
         try {
-            nextState = SimulatedPlayersHelpers.simulateNextMove(state.gameState, move);
+            nextState = simulateNextMove(state.gameState, move);
         } catch (InvalidMoveException e) {
             System.err.println("Some of the moves generated are not possible.");
             e.printStackTrace();
@@ -97,5 +98,12 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
     protected void printInvalidSuggestionError(GameState level, Move move) {
         System.err.format("WARNING! Invalid move suggested in %s (%d,%d) evaluation:\n" + level + "\n" + move + ".\n",
                 this.getClass().getSimpleName(), this.numOfStatesAhead, this.numOfStatesInPool);
+        System.err.println(level.getValidMoves());
+    }
+    
+    private GameState simulateNextMove(GameState gameState, Move move) throws InvalidMoveException {
+        GameState nextState = new GameState(gameState, new UnmoveableCandyGenerator());
+        nextState.makeFullMove(move);
+        return nextState;
     }
 }
