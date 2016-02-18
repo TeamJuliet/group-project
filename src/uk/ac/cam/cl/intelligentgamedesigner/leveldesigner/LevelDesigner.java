@@ -7,7 +7,7 @@ import java.util.Random;
 
 public class LevelDesigner {
 	private static final int populationSize = 100;
-	private static final int iterations = 2000;
+	private static final int iterations = 200;
 	private static final double elitePercentage = 0.05;
 	private static final double feasibleThreshold = 0.4;
 	private static final double crossoverProbability = 0.8;
@@ -57,13 +57,13 @@ public class LevelDesigner {
 			infeasiblePopulation = newInfeasible;
 
 			for (LevelDesignIndividual individual : newFeasible) {
-				individual.setDifficultyFitness(0.0);//manager.getGameplayFitness(individual.getDesign()));
+				individual.setDifficultyFitness(manager.getGameplayFitness(individual.getDesign()));
 			}
 			
 			// Sort the individuals so they are in descending order of fitness.
 			Collections.sort(feasiblePopulation, Collections.reverseOrder());
 			
-			if (i % 100 == 0) {
+			if (i % 10 == 0) {
 				System.out.println("Iteration " + i);
 				List<LevelRepresentation> l = new ArrayList<>();
 				int max = Math.min(feasiblePopulation.size(), maxTopLevels);
