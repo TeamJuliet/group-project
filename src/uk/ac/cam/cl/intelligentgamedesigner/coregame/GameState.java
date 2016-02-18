@@ -148,6 +148,7 @@ public class GameState implements Serializable {
         // Make sure the board is in a stable state
         while (makeSmallMove())
             ;
+        recordIngredientSinks();
     }
 
     // **** GETTER FUNCTIONS START *****
@@ -394,18 +395,14 @@ public class GameState implements Serializable {
         if (Math.abs(move.p1.x - move.p2.x) + Math.abs(move.p1.y - move.p2.y) != 1)
             return false;
         Cell cell1 = getCell(move.p1), cell2 = getCell(move.p2);
-
-        if (hasIngredient(cell1) || hasIngredient(cell2))
-            return false;
-
-        
-        if (cell1.getCandy().getCandyType().isSpecial() && cell2.getCandy().getCandyType().isSpecial())
+      
+        if (hasSpecial(cell1) && hasSpecial(cell2))
             return true;
         
         // Exchanging a Bomb with a cell that has a movable item is a valid
         // move (i.e. it is either special or normal candy type).
-        else if (cell1.getCandy().getCandyType().equals(CandyType.BOMB) && (hasSpecial(cell2) || hasNormal(cell2))
-                || cell2.getCandy().getCandyType().equals(CandyType.BOMB) && (hasSpecial(cell1) || hasNormal(cell1)))
+        else if (hasBomb(cell1) && (hasSpecial(cell2) || hasNormal(cell2))
+                || hasBomb(cell2) && (hasSpecial(cell1) || hasNormal(cell1)))
             return true;
 
         swapCandies(move);
