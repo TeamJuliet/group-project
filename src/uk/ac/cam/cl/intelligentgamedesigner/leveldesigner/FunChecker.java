@@ -60,7 +60,7 @@ public class FunChecker {
                     roundStatistics.candiesRemoved.verticallyStrippedCandies;
         }
 
-        int[] scoreDifferences = new int[Math.max(statList.size() - 1, 0)];
+        int[] scoreDifferences = new int[statList.size() - 1];
         for (int i = 1; i < statList.size(); i++) {
             scoreDifferences[i - 1] = statList.get(i).progress.score - statList.get(i - 1).progress.score;
         }
