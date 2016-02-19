@@ -33,6 +33,7 @@ public class SimulatedPlayerManager {
             break;
         default:
             player = new DepthPotentialScorePlayer(lookAhead, poolSize);
+            break;
         }
         return player;
     }
