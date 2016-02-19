@@ -3,7 +3,6 @@ package uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers;
 import java.util.List;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.MatchAnalysis;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.UnmoveableCandyGenerator;
