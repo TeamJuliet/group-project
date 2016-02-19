@@ -27,11 +27,38 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
     // Function that evaluates the current game state based on its potential
     // of making progress towards the goal. (e.g. if there is a large number
     // of cells containing jellies refreshed, etc).
-    abstract GameStatePotential getGameStatePotential(GameState gameState);
+    GameStatePotential getGameStatePotential(GameState gameState) {
+        // Return the highest increase in score of all possible matches
+        GameState original = new GameState(gameState, new UnmoveableCandyGenerator());
+        int highestMetricAfterOneMove = 0;
+        List<Move> moves = original.getValidMoves();
+        for (Move move : moves) {
+            GameState tmp = new GameState(original);
+            try {
+                tmp.makeFullMove(move);
+            } catch (InvalidMoveException e) {
+                // Just eat the exception since we don't care if wrong move is
+                // suggested
+                printInvalidSuggestionError(tmp, move);
+                continue;
+            }
 
-    abstract GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential);
+            int nextMetric = getGameStateMetric(tmp).score;
+            if (nextMetric > highestMetricAfterOneMove)
+                highestMetricAfterOneMove = nextMetric;
+        }
+        return new GameStatePotential(highestMetricAfterOneMove);
+    }
 
-    abstract List<Move> selectMoves(GameState gameState);
+    GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {
+        // Value metric and potential equally for now and find arithmetic mean
+        return new GameStateCombinedMetric(metric, potential, (metric.score + potential.potential) / 2);
+    }
+
+    List<Move> selectMoves(GameState gameState) {
+        // TODO: look more into filtering moves
+        return gameState.getValidMoves();
+    }
 
     private GameStateWithCombinedMetric generateCombinedMetric(GameStateWithCombinedMetric state, Move move) {
         GameState nextState;
@@ -87,9 +114,13 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
         return moveMake;
     }
 
-    DepthPotentialPlayer(int numOfStatesAhead, int numOfStatesInPool) {
+    public DepthPotentialPlayer(int numOfStatesAhead, int numOfStatesInPool) {
         this.numOfStatesAhead = numOfStatesAhead;
         this.numOfStatesInPool = numOfStatesInPool;
+    }
+
+    public DepthPotentialPlayer() {
+        this(2, 4);
     }
 
     protected void printInvalidMoveError(GameState level, Move move) {
@@ -103,7 +134,7 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
                 this.getClass().getSimpleName(), this.numOfStatesAhead, this.numOfStatesInPool);
         System.err.println(level.getValidMoves());
     }
-    
+
     private GameState simulateNextMove(GameState gameState, Move move) throws InvalidMoveException {
         GameState nextState = new GameState(gameState, new UnmoveableCandyGenerator());
         nextState.makeFullMove(move);
