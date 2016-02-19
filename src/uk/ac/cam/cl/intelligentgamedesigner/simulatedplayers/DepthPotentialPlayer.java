@@ -39,6 +39,8 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
             nextState = simulateNextMove(state.gameState, move);
         } catch (InvalidMoveException e) {
             System.err.println("Some of the moves generated are not possible.");
+            System.out.println(state.gameState);
+            System.out.println(state.gameState.getValidMoves());
             e.printStackTrace();
             return null;
         }
@@ -69,6 +71,7 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
             throw new NoMovesFoundException(currentState);
         pool = new PriorityQueue<GameStateWithCombinedMetric>();
         results = new PriorityQueue<GameStateWithCombinedMetric>();
+        // Add the current game state with the
         pool.add(new GameStateWithCombinedMetric(currentState, new GameStateCombinedMetric(), null));
         int stages = 0;
         // TODO: Add handling for -1.

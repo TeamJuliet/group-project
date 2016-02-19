@@ -2,9 +2,6 @@ package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
 public class AestheticChecker {
 	
-	// Currently the methods in this class were created for some quick testing,
-	// and so are pretty rubbish.
-	
 	public static double calculateFitness(DesignBoard board) {
 		double fitness = calculateSymmetryScore(board);
 		
@@ -72,9 +69,30 @@ public class AestheticChecker {
     			}
     		}
     	}
-    	
-    	double perfectScore = maxX * board.height;
-    	return score / perfectScore;
+    	double vertical = score / (double) (maxX * board.height);
+
+    	int maxY = board.height / 2;
+    	score = 0;
+    	for (int x = 0; x < board.width; x++) {
+    		for (int y = 0; y < maxY; y++) {
+    			if (board.get(x, y).equals(board.get(x, board.height - y - 1))) {
+    				score++;
+    			}
+    		}
+    	}
+    	double horizontal = score / (double) (maxY * board.width);
+
+    	score = 0;
+    	for (int x = 0; x < board.width; x++) {
+    		for (int y = 0; y < maxY; y++) {
+    			if (board.get(x, y).equals(board.get(board.width - x - 1, board.height - y - 1))) {
+    				score++;
+    			}
+    		}
+    	}
+    	double rotational = score / (double) (maxY * board.width);
+
+    	return Math.max(rotational, Math.max(vertical, horizontal));
 	}
 	
 	private static double calculateCentralDistance(DesignBoard board)

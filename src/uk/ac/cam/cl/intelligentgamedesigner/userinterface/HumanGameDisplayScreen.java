@@ -14,4 +14,7 @@ public class HumanGameDisplayScreen extends GameDisplayScreen{
 	protected GameBoard specificGameBoard() {
 		return new HumanGameBoard(new Design());
 	}
+	
+	@Override
+	protected boolean isHuman(){return true;}
 }

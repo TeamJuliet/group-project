@@ -89,7 +89,7 @@ public class GameState implements Serializable {
                 // except for the
                 // normal underlying candy
                 else if (cellType == CellType.LIQUORICE || cellType == CellType.EMPTY) {
-                    board[x][y] = new Cell(cellType.equals(CellType.EMPTY) ? CellType.NORMAL : cellType,
+                    board[x][y] = new Cell((cellType.equals(CellType.EMPTY) & board[x][y].hasCandy()) ? CellType.NORMAL : cellType,
                             board[x][y].getCandy(), cellToCopy.getJellyLevel(), cellToCopy.isIngredientSink());
                 }
             }
@@ -148,6 +148,7 @@ public class GameState implements Serializable {
         // Make sure the board is in a stable state
         while (makeSmallMove())
             ;
+        recordIngredientSinks();
     }
 
     // **** GETTER FUNCTIONS START *****
@@ -222,6 +223,8 @@ public class GameState implements Serializable {
         if (!isMoveValid(move))
             throw new InvalidMoveException(move);
         // Record the last move.
+
+        resetRound();
         lastMove = move;
 
         this.statProcess.setCandySwapped1(getCell(move.p1).getCandy());
@@ -305,7 +308,6 @@ public class GameState implements Serializable {
         switch (currentProcessState) {
         case AWAITING_MOVE:
             currentProcessState = ProcessState.MATCH_AND_REPLACE;
-            resetRound();
             break;
         case MATCH_AND_REPLACE:
             markAndReplaceMatchingTiles();
@@ -394,18 +396,14 @@ public class GameState implements Serializable {
         if (Math.abs(move.p1.x - move.p2.x) + Math.abs(move.p1.y - move.p2.y) != 1)
             return false;
         Cell cell1 = getCell(move.p1), cell2 = getCell(move.p2);
-
-        if (hasIngredient(cell1) || hasIngredient(cell2))
-            return false;
-
-        
-        if (cell1.getCandy().getCandyType().isSpecial() && cell2.getCandy().getCandyType().isSpecial())
+      
+        if (hasSpecial(cell1) && hasSpecial(cell2))
             return true;
         
         // Exchanging a Bomb with a cell that has a movable item is a valid
         // move (i.e. it is either special or normal candy type).
-        else if (cell1.getCandy().getCandyType().equals(CandyType.BOMB) && (hasSpecial(cell2) || hasNormal(cell2))
-                || cell2.getCandy().getCandyType().equals(CandyType.BOMB) && (hasSpecial(cell1) || hasNormal(cell1)))
+        else if (hasBomb(cell1) && (hasSpecial(cell2) || hasNormal(cell2))
+                || hasBomb(cell2) && (hasSpecial(cell1) || hasNormal(cell1)))
             return true;
 
         swapCandies(move);
@@ -499,6 +497,7 @@ public class GameState implements Serializable {
         if (current.hasCandy() && current.getCandy().getCandyType().isSpecial()) {
             if (current.getCandy().getCandyType().equals(CandyType.BOMB)) {
                 current.removeCandy();
+                wasSomethingPopped = true;
                 return;
             }
             if (!current.getCandy().isDetonated()) {
@@ -991,8 +990,6 @@ public class GameState implements Serializable {
             return false;
         boolean didShuffle = false;
 
-        this.statProcess.setShuffled(true);
-
         // It is quite complicated (and expensive to compute) whether there
         // exists a shuffle which introduces a possible move, so for now I think
         // we should just shuffle up to some limit, at which point we declare
@@ -1005,7 +1002,7 @@ public class GameState implements Serializable {
         // (non-special) candies on the board
         while ((movesAvailable = getValidMoves().size()) == 0 && shuffleCount < shuffleLimit) {
 
-            // System.out.println("No moves available: Shuffling candies...");
+            DebugFilter.println("No moves available: Shuffling candies...", DebugFilterKey.GAME_IMPLEMENTATION);
 
             // Collect all of the colours of the normal candies
             LinkedList<CandyColour> normalCandyColours = new LinkedList<>();
@@ -1034,6 +1031,7 @@ public class GameState implements Serializable {
             }
 
             didShuffle = true;
+            this.statProcess.setShuffled(true);
             shuffleCount++;
         }
 
