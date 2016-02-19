@@ -305,7 +305,6 @@ public class GameState implements Serializable {
     public boolean makeSmallMove() {
         this.statProcess.incrementTransitions();
         DebugFilter.println("Current state is " + this.currentProcessState, DebugFilterKey.GAME_IMPLEMENTATION);
-        System.out.println("Current state is " + this.currentProcessState);
         switch (currentProcessState) {
         case AWAITING_MOVE:
             currentProcessState = ProcessState.MATCH_AND_REPLACE;
@@ -1003,7 +1002,7 @@ public class GameState implements Serializable {
         // (non-special) candies on the board
         while ((movesAvailable = getValidMoves().size()) == 0 && shuffleCount < shuffleLimit) {
 
-            System.out.println("No moves available: Shuffling candies...");
+            DebugFilter.println("No moves available: Shuffling candies...", DebugFilterKey.GAME_IMPLEMENTATION);
 
             // Collect all of the colours of the normal candies
             LinkedList<CandyColour> normalCandyColours = new LinkedList<>();
