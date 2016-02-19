@@ -1,6 +1,6 @@
 package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
-enum ProcessState {
+public enum ProcessState {
     MATCH_AND_REPLACE,
     SHUFFLE,
     DETONATE_PENDING,

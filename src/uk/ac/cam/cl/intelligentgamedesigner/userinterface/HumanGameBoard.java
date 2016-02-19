@@ -7,6 +7,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
@@ -65,14 +66,20 @@ public class HumanGameBoard extends GameBoard implements MouseListener, MouseMot
 		//draw the cursor	
 		g.setColor(Color.WHITE);
 		if(selecting){
-			g.drawRect(move_from.x*tile_size, move_from.y*tile_size, tile_size, tile_size);
-			g.drawRect(move_to.x*tile_size, move_to.y*tile_size, tile_size, tile_size);
+			boolean draw_from = 
+					move_from.x<width && move_from.y<height &&
+					board[move_from.x][move_from.y].getCellType()!=CellType.UNUSABLE;
+			boolean draw_to = 
+					move_to.x<width && move_to.y<height &&
+					board[move_to.x][move_to.y].getCellType()!=CellType.UNUSABLE;
+			if(draw_from)g.drawRect(move_from.x*tile_size, move_from.y*tile_size, tile_size, tile_size);
+			if(draw_to)g.drawRect(move_to.x*tile_size, move_to.y*tile_size, tile_size, tile_size);
 			g.setColor(Color.BLACK);
-			g.drawRect(move_from.x*tile_size+1, move_from.y*tile_size+1, tile_size-2, tile_size-2);
-			g.drawRect(move_to.x*tile_size+1, move_to.y*tile_size+1, tile_size-2, tile_size-2);
+			if(draw_from)g.drawRect(move_from.x*tile_size+1, move_from.y*tile_size+1, tile_size-2, tile_size-2);
+			if(draw_to)g.drawRect(move_to.x*tile_size+1, move_to.y*tile_size+1, tile_size-2, tile_size-2);
 			g.setColor(Color.WHITE);
-			g.drawRect(move_from.x*tile_size+2, move_from.y*tile_size+2, tile_size-4, tile_size-4);
-			g.drawRect(move_to.x*tile_size+2, move_to.y*tile_size+2, tile_size-4, tile_size-4);
+			if(draw_from)g.drawRect(move_from.x*tile_size+2, move_from.y*tile_size+2, tile_size-4, tile_size-4);
+			if(draw_to)g.drawRect(move_to.x*tile_size+2, move_to.y*tile_size+2, tile_size-4, tile_size-4);
 		}
 	}
 

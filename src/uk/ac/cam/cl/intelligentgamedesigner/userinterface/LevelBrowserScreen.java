@@ -1,12 +1,9 @@
 package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -17,6 +14,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
 
 //loads the saved levels and allows you to scroll between them and select one
 public class LevelBrowserScreen extends DisplayScreen implements ListSelectionListener{
@@ -45,10 +44,9 @@ public class LevelBrowserScreen extends DisplayScreen implements ListSelectionLi
 		} else {
 			ln = new String[]{"<No Levels Saved>"};
 			board_design = new Design();
-			System.out.println("no levels");
+			DebugFilter.println("no levels",DebugFilterKey.USER_INTERFACE);
 			level_names.setEnabled(false);
 		}
-		System.out.println(level_names == null);
 		level_names.setListData(ln);
 		board_design = InterfaceManager.level_manager.getLevel(1);
 		refreshBoard();

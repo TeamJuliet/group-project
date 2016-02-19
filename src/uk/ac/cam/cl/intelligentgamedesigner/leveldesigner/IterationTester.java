@@ -1,11 +1,7 @@
 package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.List;
 import java.util.Random;
 
 public class IterationTester {

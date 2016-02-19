@@ -6,6 +6,13 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 
 public class DifficultyChecker {
 
+    /**
+     * This is a wrapper for each of the difficulty estimation functions presented below.
+     *
+     * @param gameState     The game on which the simulated player has played
+     * @param design        The design of the game level
+     * @return              The estimated difficulty of the level
+     */
     public static double estimateDifficulty (GameState gameState, Design design) {
         switch (design.getMode()) {
             case HIGHSCORE:
