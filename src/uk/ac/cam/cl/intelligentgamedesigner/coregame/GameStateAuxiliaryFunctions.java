@@ -155,4 +155,37 @@ public class GameStateAuxiliaryFunctions {
         }
         return false;
     }
+    
+    public static int getJellyNumber(GameState state){
+        Cell[][] board = state.getBoard();
+        int totalJellies = 0;
+        for(Cell[] row: board){
+            for(Cell cell: row){
+                totalJellies += cell.getJellyLevel();
+            }
+        }
+        return totalJellies;
+    }
+    
+    public static int getIcingNumber(GameState state){
+        Cell[][] board = state.getBoard();
+        int totalIcing = 0;
+        for(Cell[] row: board){
+            for(Cell cell: row){
+                if(cell.getCellType() == CellType.ICING) totalIcing++;
+            }
+        }
+        return totalIcing;
+    }
+    
+    public static int getLiquoriceNumber(GameState state){
+        Cell[][] board = state.getBoard();
+        int totalLiquorice = 0;
+        for(Cell[] row: board){
+            for(Cell cell: row){
+                if(cell.getCellType() == CellType.LIQUORICE) totalLiquorice++;
+            }
+        }
+        return totalLiquorice;
+    }
 }

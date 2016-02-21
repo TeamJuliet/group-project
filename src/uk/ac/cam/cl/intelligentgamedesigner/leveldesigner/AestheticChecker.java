@@ -70,7 +70,7 @@ public class AestheticChecker {
     		}
     	}
     	double vertical = score / (double) (maxX * board.height);
-    	
+
     	int maxY = board.height / 2;
     	score = 0;
     	for (int x = 0; x < board.width; x++) {
@@ -81,7 +81,7 @@ public class AestheticChecker {
     		}
     	}
     	double horizontal = score / (double) (maxY * board.width);
-    	
+
     	score = 0;
     	for (int x = 0; x < board.width; x++) {
     		for (int y = 0; y < maxY; y++) {
@@ -91,7 +91,7 @@ public class AestheticChecker {
     		}
     	}
     	double rotational = score / (double) (maxY * board.width);
-    	
+
     	return Math.max(rotational, Math.max(vertical, horizontal));
 	}
 	
