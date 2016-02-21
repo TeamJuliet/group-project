@@ -17,7 +17,7 @@ public class TestLevelDesigner {
 		
 		Random random = new Random();
 		
-		LevelRepresentation levelRep = new ArrayLevelRepresentationScore(random);
+		LevelRepresentation levelRep = new ArrayLevelRepresentationScore(random, 6);
 
 		LevelDesignerManager ldm = new LevelDesignerManager(new Specification(1, GameMode.HIGHSCORE));
 		

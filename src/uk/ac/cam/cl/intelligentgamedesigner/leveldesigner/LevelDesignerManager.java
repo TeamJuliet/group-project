@@ -45,26 +45,49 @@ public class LevelDesignerManager extends SwingWorker {
     }
 
     public List<LevelRepresentation> getPopulation(int size) {
+
+        // Calculate the number of candy colours to be used
+        int numberOfCandyColours = getNumberOfCandyColours();
+
         List<LevelRepresentation> population = new ArrayList<>();
 
         switch (specification.getGameMode()) {
             case HIGHSCORE:
                 for (int i = 0; i < size; i++) {
-                    population.add(new ArrayLevelRepresentationScore(originalRandom));
+                    population.add(new ArrayLevelRepresentationScore(originalRandom, numberOfCandyColours));
                 }
                 break;
             case JELLY:
                 for (int i = 0; i < size; i++) {
-                    population.add(new ArrayLevelRepresentationJelly(originalRandom));
+                    population.add(new ArrayLevelRepresentationJelly(originalRandom, numberOfCandyColours));
                 }
                 break;
             default:
                 for (int i = 0; i < size; i++) {
-                    population.add(new ArrayLevelRepresentationIngredients(originalRandom));
+                    population.add(new ArrayLevelRepresentationIngredients(originalRandom, numberOfCandyColours));
                 }
         }
 
         return population;
+    }
+
+    /**
+     * This method returns the number of candy colours that should be used in the design, weighting its decision on the
+     * target difficulty given in the specification (i.e. it's more likely to return 4 for easy levels, 5 for medium
+     * levels and 6 for hard levels).
+     *
+     * @return The candy colour to be used.
+     */
+    public int getNumberOfCandyColours () {
+        double[] choices = {0.0, 0.5, 1.0};
+
+        int c;
+        while (true) {
+            c = originalRandom.nextInt(3);
+            if (originalRandom.nextDouble() > Math.abs(choices[c] - specification.getTargetDifficulty())) {
+                return c + 4;
+            }
+        }
     }
 
     /**

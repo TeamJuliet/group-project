@@ -4,7 +4,7 @@ public class DebugFilter {
 
     // Comment out any of these filters according to what debug output you want to see when running the code
     private static final DebugFilterKey[] debugFilterKeys = {
-            //DebugFilterKey.GAME_IMPLEMENTATION,
+            DebugFilterKey.GAME_IMPLEMENTATION,
             DebugFilterKey.SIMULATED_PLAYERS,
             //DebugFilterKey.LEVEL_DESIGN,
             DebugFilterKey.USER_INTERFACE

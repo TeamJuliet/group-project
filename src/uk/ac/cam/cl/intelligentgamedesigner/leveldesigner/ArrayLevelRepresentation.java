@@ -11,13 +11,13 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
     protected DesignBoard board;
     protected static int maxWidth = 9;
     protected static int maxHeight = 9;
+    protected int numberOfCandyColours;
     protected ArrayList<Parameter> parameters;
 
     /*
         Parameters list:
         ----------------
         [0] - number of moves available
-        [1] - number of candy colours
         (subclasses may have additional parameters in this list)
 
         Board cell types:
@@ -28,7 +28,7 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
         3 => Liquorice
     */
 
-    public ArrayLevelRepresentation(Random random) {
+    public ArrayLevelRepresentation(Random random, int numberOfCandyColours) {
     	super(random);
 
         parameters = new ArrayList<>();
@@ -36,10 +36,7 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
         // Number of moves is initialised in the range: 10-50 (inclusive)
         parameters.add(new Parameter(random, 10, 50));
 
-        // Number of candy colours is initialised in the range: 4-6 (inclusive)
-        parameters.add(new Parameter(random, 4, 6));
-
-        // TODO: The above initialisations are just guesses at the moment. We may need to refine them
+        this.numberOfCandyColours = numberOfCandyColours;
 
         // Initialise the board
         board = new DesignBoard(maxWidth, maxHeight, random);
@@ -51,7 +48,10 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
     	
     	// Copy the board.
     	clone.board = new DesignBoard (board);
-    	
+
+        // Copy the number of candy colours
+        clone.numberOfCandyColours = this.numberOfCandyColours;
+
     	// Copy the list of parameters.
     	int length = parameters.size();
     	clone.parameters = new ArrayList<>(length);
@@ -123,7 +123,7 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
 
         // Set the general parameters
         design.setNumberOfMovesAvailable(parameters.get(0).getValue());
-        design.setNumberOfCandyColours(parameters.get(1).getValue());
+        design.setNumberOfCandyColours(this.numberOfCandyColours);
 
         return design;
     }

@@ -11,8 +11,7 @@ public class ArrayLevelRepresentationIngredients extends ArrayLevelRepresentatio
         Parameters list:
         ----------------
         [0] - number of moves available
-        [1] - number of candy colours
-        [2] - number of ingredients
+        [1] - number of ingredients
 
         Board cell types:
         -----------------
@@ -22,8 +21,8 @@ public class ArrayLevelRepresentationIngredients extends ArrayLevelRepresentatio
         3 => Liquorice
      */
 
-    public ArrayLevelRepresentationIngredients(Random random) {
-        super(random);
+    public ArrayLevelRepresentationIngredients(Random random, int numberOfCandyColours) {
+        super(random, numberOfCandyColours);
 
         // Number of ingredients is initialised in the range: 1-5
         this.parameters.add(new Parameter(random, 1, 5));
@@ -34,7 +33,7 @@ public class ArrayLevelRepresentationIngredients extends ArrayLevelRepresentatio
     	Design design = super.getDesign();
     	
     	design.setGameMode(GameMode.INGREDIENTS);
-        design.setObjectiveTarget(parameters.get(2).getValue());
+        design.setObjectiveTarget(parameters.get(1).getValue());
 
         return design;
     }
