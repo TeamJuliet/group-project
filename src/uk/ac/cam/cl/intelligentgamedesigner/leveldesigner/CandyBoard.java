@@ -2,7 +2,7 @@ package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
 public class CandyBoard extends BaseBinaryBoard {
 
-	public CandyBoard(RandomBoard<DesignCellType> board)
+	public CandyBoard(DesignBoard board)
 	{
 		super(board.width,board.height,false);
 		
@@ -21,7 +21,7 @@ public class CandyBoard extends BaseBinaryBoard {
 
 	@Override
 	protected Boolean validGet(int i, int j) {
-		return (board.get(i, j) == DesignCellType.EMPTY);
+		return (board.get(i, j).getDesignCellType() == DesignCellType.EMPTY);
 	}
 	
 	@Override
@@ -36,5 +36,5 @@ public class CandyBoard extends BaseBinaryBoard {
 		return get(i, j) ? 1 : 0;
 	}
 	
-	private RandomBoard<DesignCellType> board;
+	private DesignBoard board;
 }

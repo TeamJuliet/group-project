@@ -1,5 +1,7 @@
 package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
+import java.util.ArrayList;
+
 public class ConstraintChecker {
 
 	public static boolean checkHorizontalSpace(DesignBoard board)
@@ -67,12 +69,15 @@ public class ConstraintChecker {
 		return 0;
 	}
 	
+	public static double 
+	
     public static double calculateFitness(DesignBoard board) {
-     
-    	if(checkVerticalSpace(board) && checkHorizontalSpace(board))
-    	{
-    		return 1.0f;
-    	}
+    	CandyBoard bBoard = new CandyBoard(board);
+    	
+    	ArrayList<ConnectedArea> list = ConnectedArea.getAreas(bBoard, new FourConnectivity());
+    	
+    	
+    	
     	return 0.0f;
     }
 }

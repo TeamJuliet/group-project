@@ -5,11 +5,12 @@ import java.util.PriorityQueue;
 
 public class ConnectedArea extends BinaryBoard {
 	
+	private int numCells;
+	
 	public ConnectedArea(int width, int height) {
 		super(width, height);
 		
-		totalCount = 0;
-		averageX = averageY = -1;
+		numCells = 0;
 	}
 
 	public void addConnected(int x, int y) {
@@ -18,21 +19,17 @@ public class ConnectedArea extends BinaryBoard {
 
 	@Override
 	protected void validSet(int i, int j, Boolean obj) {
-		
-		if(board[i][j] && !obj)
+		if(!board[i][j] && obj)
 		{
-			updateAverageCoord(i,j,true);
-			totalCount--;
-		}else if(!board[i][j] && obj)
-		{
-			updateAverageCoord(i,j,false);
-			totalCount++;
+			numCells++;
+		}else if(board[i][j] && !obj){
+			numCells--;
 		}
-
+		
 		board[i][j] = obj;
 	}
 
-	
+	    
 	public static void main(String [] args)
 	{
 		BinaryBoard board = new BinaryBoard(9,9);
@@ -59,48 +56,16 @@ public class ConnectedArea extends BinaryBoard {
 		for(ConnectedArea area : areas)
 		{
 			area.print();
-			
+			//System.out.println(area.cellStats.getMin(0) + " <-> " + area.cellStats.getMax(0) + " : " + area.cellStats.getAverage(0) + " : " + area.cellStats.getVariance(0));
+			//System.out.println(area.cellStats.getMin(1) + " <-> " + area.cellStats.getMax(1) + " : " + area.cellStats.getAverage(1) + " : " + area.cellStats.getVariance(1));
 			System.out.println("\n");
 		}
 	
 	}
 	
-	/*
-	public int getLongestLine() {
-		return 0;
+	private int getNumberOfConnectedCells() {
+		return numCells;
 	}
-	public int getlongestPossibleMatch() {
-		return 0;
-	}
-	public boolean isConnectedTo() {
-		return false;
-	}
-	public boolean matchPossibleIncluding(int x, int y) {
-		return false;
-	}
-	public int maxWidth() {
-		return 0;
-	}
-	public int maxHeight() {
-		return 0;
-	}
-	public int highestX() {
-		return 0;
-	}
-	public int lowestX() {
-		return 0;
-	}
-	public int highestY() {
-		return 0;
-	}
-	public int lowestY() {
-		return 0;
-	}
-	
-	private boolean checkPossibleMatch () {
-		return false;
-	}*/
-
 	
 	public static ArrayList<ConnectedArea> getAreas(BaseBinaryBoard board, ConnectivityStrategy connectivity)
 	{
@@ -121,14 +86,14 @@ public class ConnectedArea extends BinaryBoard {
     				
     				if(queue.isEmpty())
     				{
-    					areas.add(new ConnectedArea(board.width(),board.height()));
+    					areas.add(new ConnectedArea(board.width(),board.height())); //???
     					minEquivalences.add(new Label(currentLabel));
     					labelBoard.set(i, j, currentLabel);
     					currentLabel.next();
     				}else{
     					Label minLabel = queue.peek().get();
     					labelBoard.set(i, j, minLabel);
-    					for(Neighbour neighbour = queue.remove(); !queue.isEmpty(); neighbour = queue.remove())
+    					for(Neighbour neighbour : queue)
     					{
     						if(minEquivalences.get(neighbour.get().value()).compareTo(minLabel) > 0)
     						{
@@ -162,13 +127,13 @@ public class ConnectedArea extends BinaryBoard {
     		}
     	}
     	
+    	for(int i = 0; i < areas.size(); i++)
+    	{
+    		if(areas.get(i).getNumberOfConnectedCells() == 0) {
+    			areas.remove(i);
+    		}
+    	}
+    	
     	return areas;
 	}
-	
-	private int totalCount;
-	private int averageX, averageY;
-	private int maxWidth;
-	private int maxHeight;
-	private
-	
 }
