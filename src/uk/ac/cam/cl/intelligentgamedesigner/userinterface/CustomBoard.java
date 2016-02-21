@@ -84,8 +84,16 @@ public class CustomBoard extends DisplayBoard implements MouseListener, MouseMot
 	public void changeTile(int x, int y){
 		if(x>=0 && x<width && y>=0 && y<height){				
 			if(watch_creator.identifier.equals("Level Creator")){ //check is level creator
-				if(board[x][y].getCellType() != ((LevelCreatorScreen)watch_creator).getReplacer()){
-					board[x][y] = new Cell(((LevelCreatorScreen)watch_creator).getReplacer());						
+				CellType replace_type = ((LevelCreatorScreen)watch_creator).getReplacer();
+				if(board[x][y].getCellType() != replace_type){//place the tile
+					if(board[x][y].getCandy() != null && //change tile under candies
+							(replace_type == CellType.LIQUORICE || replace_type == CellType.EMPTY || replace_type == CellType.NORMAL)){
+						board[x][y].setCellType(replace_type);
+					}else{
+						int jelly_level = board[x][y].getJellyLevel();//keep the jelly level
+						board[x][y] = new Cell(replace_type);	
+						board[x][y].setJellyLevel(jelly_level);	
+					}	
 				}
 			}				
 		}
