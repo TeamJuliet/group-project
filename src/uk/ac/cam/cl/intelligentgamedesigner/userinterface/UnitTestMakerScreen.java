@@ -174,7 +174,7 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 		game_mode.add(ingredients);
 		
 		types = new String[]{"Regular Cell","Candies","Objective Pieces","Test Move"};
-		cells = new String[]{"Normal","Unusable","Icing","Liquorice","Don't Care"};
+		cells = new String[]{"Normal","Unusable","Icing","Liquorice","Don't Care","Empty"};
 		candies = new String[] {"Red","Orange","Yellow","Green","Blue","Purple"};
 		highscore_specials = new String[]{"<None>"};
 		jelly_specials = new String[]{"Jelly Level"};
@@ -426,7 +426,7 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 				//switch the fill type to cells
 				fill_type.setModel(cells_fill);
 				fill_type.setSelectedIndex(0);
-				replace_cell = CellType.EMPTY;
+				replace_cell = CellType.NORMAL;
 								
 				break;
 			case "Candies":
@@ -481,7 +481,7 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 		case "new selection":
 			switch((String)fill_type.getSelectedItem()){
 			case "Normal":
-				replace_cell = CellType.EMPTY;
+				replace_cell = CellType.NORMAL;
 				break;
 			case "Unusable":
 				replace_cell = CellType.UNUSABLE;
@@ -494,6 +494,9 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 				break;
 			case "Don't Care":
 				replace_cell = CellType.DONT_CARE;
+				break;
+			case "Empty":
+				replace_cell = CellType.EMPTY;
 				break;
 				
 			case "Red":
