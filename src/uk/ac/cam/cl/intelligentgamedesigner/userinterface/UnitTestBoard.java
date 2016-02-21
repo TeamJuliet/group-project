@@ -109,7 +109,9 @@ public class UnitTestBoard extends CustomBoard {
 					CellType watch_type = ((UnitTestMakerScreen)watch_creator).getReplacer();
 					if(type == 1 || watch_type != CellType.DONT_CARE){ //can only don't care for 'after' board
 						if(board[x][y].getCellType() != watch_type){
-							board[x][y] = new Cell(watch_type);						
+							int jelly_level = board[x][y].getJellyLevel();
+							board[x][y] = new Cell(watch_type);	
+							board[x][y].setJellyLevel(jelly_level);				
 						}							
 					}
 				}

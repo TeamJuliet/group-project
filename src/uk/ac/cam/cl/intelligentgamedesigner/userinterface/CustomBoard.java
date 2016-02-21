@@ -85,7 +85,9 @@ public class CustomBoard extends DisplayBoard implements MouseListener, MouseMot
 		if(x>=0 && x<width && y>=0 && y<height){				
 			if(watch_creator.identifier.equals("Level Creator")){ //check is level creator
 				if(board[x][y].getCellType() != ((LevelCreatorScreen)watch_creator).getReplacer()){
-					board[x][y] = new Cell(((LevelCreatorScreen)watch_creator).getReplacer());						
+					int jelly_level = board[x][y].getJellyLevel();
+					board[x][y] = new Cell(((LevelCreatorScreen)watch_creator).getReplacer());	
+					board[x][y].setJellyLevel(jelly_level);
 				}
 			}				
 		}
