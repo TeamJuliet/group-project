@@ -69,7 +69,7 @@ public class ConstraintChecker {
 		return 0;
 	}
 	
-	public static double 
+	//public static double 
 	
     public static double calculateFitness(DesignBoard board) {
     	CandyBoard bBoard = new CandyBoard(board);
