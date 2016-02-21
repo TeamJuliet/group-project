@@ -92,13 +92,14 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 		next_move.setActionCommand("next");
 		next_move.addActionListener(this);	
 	}
-
+	
+	private JPanel controls;
 	@Override
-	protected void placeItems() {
-		super.placeItems();
+	protected void addItems(){
+		super.addItems();
 
 		//make a box with all the added simulated player settings
-		JPanel controls = new JPanel();
+		controls = new JPanel();
 		controls.setLayout(new BoxLayout(controls,BoxLayout.Y_AXIS));
 		controls.setBorder(BorderFactory.createLineBorder(Color.black));
 		controls.add(Box.createRigidArea(new Dimension(0, 20)));
@@ -109,6 +110,12 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 		controls.add(next_move);
 		controls.add(Box.createRigidArea(new Dimension(0, 20)));
 		add(controls);
+		
+	}
+
+	@Override
+	protected void placeItems() {
+		super.placeItems();
 
 		//set the locations
 		position(controls,0.75,0.38,300,120);

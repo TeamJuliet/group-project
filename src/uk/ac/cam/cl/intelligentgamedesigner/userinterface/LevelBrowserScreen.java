@@ -114,7 +114,7 @@ public class LevelBrowserScreen extends DisplayScreen implements ListSelectionLi
 	}
 	
 	@Override
-	protected void placeItems() {
+	protected void addItems(){
 		//sort out the window's layout settings:
 		setLayout(null);
 		
@@ -124,6 +124,11 @@ public class LevelBrowserScreen extends DisplayScreen implements ListSelectionLi
 		add(board_display);
 		add(delete_button);
 		add(edit_button);
+		
+	}
+	
+	@Override
+	protected void placeItems() {
 		
 		position(title,0.5,0.9,300,50);
 		position(edit_button,0.75,0.6,150,20);
@@ -166,5 +171,10 @@ public class LevelBrowserScreen extends DisplayScreen implements ListSelectionLi
 			board_design = InterfaceManager.level_manager.getLevel(selected_index+1);
 			refreshBoard();
 		}
+	}
+	
+	@Override
+	protected void resizeBoards(){
+		if(board_display!=null)board_display.updateTileSize();
 	}
 }

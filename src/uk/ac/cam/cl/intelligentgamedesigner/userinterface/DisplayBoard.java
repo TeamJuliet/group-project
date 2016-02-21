@@ -146,8 +146,14 @@ public class DisplayBoard extends JComponent {
 		return new Cell(CellType.UNUSABLE);
 	}
 	
+	private double factor;
+	public void updateTileSize(){
+		tile_size = (int) (InterfaceManager.screenWidth()/(100/factor));
+	}
+	
 	public void adjustSize(double d) {
-		tile_size = (int) (InterfaceManager.screenWidth()/(100/d));
+		factor = d;
+		updateTileSize();
 	}
 	
 	public Cell[][] getBoard(){
