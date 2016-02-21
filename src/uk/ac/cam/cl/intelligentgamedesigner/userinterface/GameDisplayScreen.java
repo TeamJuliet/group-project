@@ -173,8 +173,10 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 		}
 	}
 	protected void stopGame(){
-		animation.cancel(true);
-		animation.removePropertyChangeListener(this);
+		if(animation != null){
+			animation.cancel(true);
+			animation.removePropertyChangeListener(this);
+		}
 	}
 	
 	protected abstract GameBoard specificGameBoard();
@@ -204,34 +206,40 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 		save_statistics.addActionListener(this);
 		save_statistics.setActionCommand("save");
 	}
-
+	
+	private JPanel statsbox;
 	@Override
-	protected void placeItems() {
+	protected void addItems(){
 		//sort out the window's layout settings:
 		setLayout(null);
 		
 		//make a box with all the custom settings
-		JPanel stats = new JPanel();
-		stats.setLayout(new BoxLayout(stats,BoxLayout.Y_AXIS));
-		stats.setBorder(BorderFactory.createLineBorder(Color.black));
-		stats.add(Box.createRigidArea(new Dimension(0, 20)));
-		stats.add(toggle_animations);
-		stats.add(Box.createRigidArea(new Dimension(0, 20)));
-		stats.add(score_text);
-		stats.add(Box.createRigidArea(new Dimension(0, 20)));
-		stats.add(game_mode_text);
-		stats.add(Box.createRigidArea(new Dimension(0, 20)));
-		stats.add(objective_text);
-		stats.add(Box.createRigidArea(new Dimension(0, 20)));
-		stats.add(moves_left_text);
-		stats.add(Box.createRigidArea(new Dimension(0, 20)));
-		add(stats);
+		statsbox = new JPanel();
+		statsbox.setLayout(new BoxLayout(statsbox,BoxLayout.Y_AXIS));
+		statsbox.setBorder(BorderFactory.createLineBorder(Color.black));
+		statsbox.add(Box.createRigidArea(new Dimension(0, 20)));
+		statsbox.add(toggle_animations);
+		statsbox.add(Box.createRigidArea(new Dimension(0, 20)));
+		statsbox.add(score_text);
+		statsbox.add(Box.createRigidArea(new Dimension(0, 20)));
+		statsbox.add(game_mode_text);
+		statsbox.add(Box.createRigidArea(new Dimension(0, 20)));
+		statsbox.add(objective_text);
+		statsbox.add(Box.createRigidArea(new Dimension(0, 20)));
+		statsbox.add(moves_left_text);
+		statsbox.add(Box.createRigidArea(new Dimension(0, 20)));
+		add(statsbox);
 		
 		add(board);
 		add(quit_button);
+		
+	}
+
+	@Override
+	protected void placeItems() {
 
 		//set the locations
-		position(stats,0.75,0.62,300,180);
+		position(statsbox,0.75,0.7,300,180);
 		positionBoard(board,0.4,0.5);
 		position(quit_button,0.1,0.9,100,30);
 	}
@@ -276,6 +284,11 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 				break;
 			}
 		}
+	}
+	
+	@Override
+	protected void resizeBoards(){
+		if(board!=null)board.updateTileSize();
 	}
 	
 	protected abstract boolean isHuman();

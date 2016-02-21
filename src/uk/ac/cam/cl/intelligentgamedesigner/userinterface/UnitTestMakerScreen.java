@@ -273,14 +273,17 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 		fill_type.addActionListener(this);
 		fill_type.setSelectedIndex(0);		
 	}
-
+	
+	private JPanel settings;
+	private JPanel controls;
+	private JPanel gameStates;
 	@Override
-	protected void placeItems() {
+	protected void addItems(){
 		//sort out the window's layout settings:
 		setLayout(null);
 		
 		//make a box with all the custom settings
-		JPanel settings = new JPanel();
+		settings = new JPanel();
 		settings.setLayout(new BoxLayout(settings,BoxLayout.Y_AXIS));
 		settings.setBorder(BorderFactory.createLineBorder(Color.black));
 		settings.add(Box.createRigidArea(new Dimension(0, 20)));
@@ -311,7 +314,7 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 		add(settings);
 
 		//make a box with all the controls
-		JPanel controls = new JPanel();
+		controls = new JPanel();
 		//controls.setBorder(BorderFactory.createLineBorder(Color.black));
 		controls.setLayout(new GridLayout(0,2));
 		controls.add(save_and_quit);
@@ -320,7 +323,7 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 		controls.add(run_tests);
 		add(controls);
 		
-		JPanel gameStates = new JPanel();
+		gameStates = new JPanel();
 		gameStates.setBorder(BorderFactory.createLineBorder(Color.black));
 		gameStates.setLayout(new BoxLayout(gameStates,BoxLayout.Y_AXIS));
 		gameStates.add(new JLabel("Unit Test Name:"));
@@ -341,6 +344,11 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 		infinite_lookahead.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		infinite_lookahead.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		add(infinite_lookahead);
+		
+	}
+
+	@Override
+	protected void placeItems() {
 
 		//set the locations
 		position(settings,0.5,0.6,260,450);
@@ -580,5 +588,12 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 		JOptionPane.showMessageDialog(this, loader,"Load Unit Tests",JOptionPane.INFORMATION_MESSAGE);
 		TestCaseGame newTest = loader.getTest();
 		if(newTest != null)reload(loader.getTest());
+	}
+	
+	@Override
+	protected void resizeBoards(){
+		if(board_above!=null)board_above.updateTileSize();
+		if(board_before!=null)board_before.updateTileSize();
+		if(board_after!=null)board_after.updateTileSize();
 	}
 }

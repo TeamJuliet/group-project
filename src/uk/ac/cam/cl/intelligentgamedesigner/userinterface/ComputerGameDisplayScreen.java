@@ -29,6 +29,7 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 	private JLabel ai_name;
 	private JRadioButton auto_play;
 	private JButton next_move;
+	private JButton solve;
 	private boolean auto_playing; 
 	private int ability;
 	
@@ -81,6 +82,8 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 		super.makeItems();
 		auto_play = new JRadioButton("Auto-play Simulated Player Moves");
 		next_move = new JButton("Play Next Move");
+		solve = new JButton("Auto-Complete Level");
+		solve.setToolTipText("The player runs through the entire level, stopping in success or failure.");
 		ai_name = new JLabel();
 	}
 
@@ -90,15 +93,18 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 		auto_play.setActionCommand("mode");
 		auto_play.addActionListener(this);
 		next_move.setActionCommand("next");
-		next_move.addActionListener(this);	
+		next_move.addActionListener(this);	;
+		solve.setActionCommand("solve");
+		solve.addActionListener(this);	
 	}
-
+	
+	private JPanel controls;
 	@Override
-	protected void placeItems() {
-		super.placeItems();
+	protected void addItems(){
+		super.addItems();
 
 		//make a box with all the added simulated player settings
-		JPanel controls = new JPanel();
+		controls = new JPanel();
 		controls.setLayout(new BoxLayout(controls,BoxLayout.Y_AXIS));
 		controls.setBorder(BorderFactory.createLineBorder(Color.black));
 		controls.add(Box.createRigidArea(new Dimension(0, 20)));
@@ -108,10 +114,18 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 		controls.add(Box.createRigidArea(new Dimension(0, 20)));
 		controls.add(next_move);
 		controls.add(Box.createRigidArea(new Dimension(0, 20)));
+		controls.add(solve);
+		controls.add(Box.createRigidArea(new Dimension(0, 20)));
 		add(controls);
+		
+	}
+
+	@Override
+	protected void placeItems() {
+		super.placeItems();
 
 		//set the locations
-		position(controls,0.75,0.38,300,120);
+		position(controls,0.75,0.32,300,160);
 	}
 	
 	@Override
@@ -141,6 +155,9 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 			}
 			timer.setDelay(waitspeed);
 			break;
+		case "solve":
+			allMoves();
+			break;
 		}
 	}
 	
@@ -156,6 +173,20 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 				playMove(next);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+			} catch (NullPointerException e){
+				e.printStackTrace();
+			} catch (NoMovesFoundException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private void allMoves(){
+		if(!playing_move){
+			try{
+				SimulatedPlayerManager.solve(theGame, ability);
+				update();
+				endGameCheck();
 			} catch (NullPointerException e){
 				e.printStackTrace();
 			} catch (NoMovesFoundException e) {
