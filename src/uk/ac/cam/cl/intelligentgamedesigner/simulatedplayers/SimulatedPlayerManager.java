@@ -13,18 +13,34 @@ public class SimulatedPlayerManager {
         switch (ability) {
         case 1:
             player = new ScorePlayerBeta();
-            break;
+            return player;
         case 2:
+            lookAhead = 1;
+            poolSize = 2;
+            break;
+        case 3:
+            lookAhead = 1;
+            poolSize = 4;
+            break;
+        case 4:
             lookAhead = 2;
             poolSize = 4;
             break;
-        case 3:
+        case 5:
+            lookAhead = 2;
+            poolSize = 8;
+            break;
+        case 6:
             lookAhead = 4;
             poolSize = 8;
             break;
+        case 7:
+            lookAhead = 4;
+            poolSize = 16;
+            break;
         default:
             player = new ScorePlayerAlpha();
-            break;
+            return player;
         }
 
         switch (mode) {
@@ -48,7 +64,7 @@ public class SimulatedPlayerManager {
     }
 
     public static int getMaxAbilityLevel() {
-        return 3;
+        return 7; //Decided by the switch in makeSimulatedPlayer()
     }
 
     public static void solve(GameState level, int ability) throws NoMovesFoundException {
