@@ -173,8 +173,10 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 		}
 	}
 	protected void stopGame(){
-		animation.cancel(true);
-		animation.removePropertyChangeListener(this);
+		if(animation != null){
+			animation.cancel(true);
+			animation.removePropertyChangeListener(this);
+		}
 	}
 	
 	protected abstract GameBoard specificGameBoard();
@@ -237,7 +239,7 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 	protected void placeItems() {
 
 		//set the locations
-		position(statsbox,0.75,0.62,300,180);
+		position(statsbox,0.75,0.7,300,180);
 		positionBoard(board,0.4,0.5);
 		position(quit_button,0.1,0.9,100,30);
 	}
