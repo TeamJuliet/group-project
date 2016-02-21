@@ -20,4 +20,8 @@ public class GameStateMetric implements Comparable<GameStateMetric> {
         return 0;
     }
 
+    public static GameStateMetric add(GameStateMetric first, GameStateMetric second) {
+        return new GameStateMetric(first.score + second.score);
+    }
+
 }

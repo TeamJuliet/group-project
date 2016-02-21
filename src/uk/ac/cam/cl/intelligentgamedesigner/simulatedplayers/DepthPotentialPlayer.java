@@ -7,6 +7,10 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.UnmoveableCandyGenerator;
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
+
+import static uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions.*;
 
 abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
     // The number of states that the Player should look ahead at each move.
@@ -110,6 +114,7 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
             results.add(pool.poll());
         }
         Move moveMake = results.peek().originalMove;
+        DebugFilter.println(Integer.toString(results.peek().gameStateMetric.metric.score), DebugFilterKey.SIMULATED_PLAYERS);
         results.clear();
         return moveMake;
     }
@@ -139,5 +144,15 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
         GameState nextState = new GameState(gameState, new UnmoveableCandyGenerator());
         nextState.makeFullMove(move);
         return nextState;
+    }
+
+    protected GameStateMetric getBlockerMetric(GameState gameState) {
+        if (gameState.getGameProgress().movesRemaining < 10)
+            return new GameStateMetric(0);
+        int icing = getIcingNumber(gameState);
+        int liquorice = getLiquoriceNumber(gameState);
+        // TODO: adjust multiplier values
+        return new GameStateMetric(-(icing * 100 + liquorice * 1000));
+
     }
 }
