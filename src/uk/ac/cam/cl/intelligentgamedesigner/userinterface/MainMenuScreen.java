@@ -58,9 +58,14 @@ public class MainMenuScreen extends DisplayScreen{
 	}
 	
 	@Override
-	protected void placeItems() {		
+	protected void addItems(){
 		//sort out the window's layout settings:
 		setLayout(null);
+		
+	}
+	
+	@Override
+	protected void placeItems() {		
 		
 		//add the items to the screen
 		add(title_text);

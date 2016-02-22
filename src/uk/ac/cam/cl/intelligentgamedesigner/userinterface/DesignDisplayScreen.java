@@ -133,8 +133,13 @@ public class DesignDisplayScreen extends DisplayScreen{
 		ai_strength.setPaintLabels(true);
 	}
 
+	private JPanel details;
+	private JPanel buttons;
 	@Override
-	protected void placeItems() {
+	protected void addItems(){
+		//sort out the window's layout settings:
+		setLayout(null);
+		
 		//sort out the window's layout settings:
 		setLayout(null);
 		
@@ -142,7 +147,7 @@ public class DesignDisplayScreen extends DisplayScreen{
 		title.add(level_name);
 		
 		//make a box with all the custom settings
-		JPanel details = new JPanel();
+		details = new JPanel();
 		details.setLayout(new BoxLayout(details,BoxLayout.Y_AXIS));
 		details.setBorder(BorderFactory.createLineBorder(Color.black));
 		details.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -156,7 +161,7 @@ public class DesignDisplayScreen extends DisplayScreen{
 		details.add(Box.createRigidArea(new Dimension(0, 10)));
 		
 		//make a box with the options
-		JPanel buttons = new JPanel();
+		buttons = new JPanel();
 		buttons.setLayout(new BoxLayout(buttons,BoxLayout.Y_AXIS));
 		buttons.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		buttons.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -178,6 +183,10 @@ public class DesignDisplayScreen extends DisplayScreen{
 		add(buttons);
 		add(board);
 		add(details);
+	}
+	
+	@Override
+	protected void placeItems() {
 		
 		position(title, 0.35, 0.9, 200, 30);
 		position(details, 0.7,0.3,250,150);
@@ -216,5 +225,10 @@ public class DesignDisplayScreen extends DisplayScreen{
 		InterfaceManager.refreshLevelBrowser();
 		String message = success?(fileName+".lv Saved!"):("Failed to save.");
 		JOptionPane.showMessageDialog(this,message,"Notification",JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	@Override
+	protected void resizeBoards(){
+		if(board!=null)board.updateTileSize();
 	}
 }

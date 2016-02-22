@@ -237,14 +237,17 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		mode_objective.setValue(100);
 		
 	}
-
+	
+	private JPanel settings;
+	private JPanel controls;
+	private JPanel title;
 	@Override
-	protected void placeItems() {
+	protected void addItems(){
 		//sort out the window's layout settings:
 		setLayout(null);
 		
 		//make a box with all the custom settings
-		JPanel settings = new JPanel();
+		settings = new JPanel();
 		settings.setLayout(new BoxLayout(settings,BoxLayout.Y_AXIS));
 		settings.setBorder(BorderFactory.createLineBorder(Color.black));
 		settings.add(Box.createRigidArea(new Dimension(0, 20)));
@@ -280,7 +283,7 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		add(settings);
 
 		//make a box with all the controls
-		JPanel controls = new JPanel();
+		controls = new JPanel();
 		controls.setBorder(BorderFactory.createLineBorder(Color.black));
 		controls.setLayout(new BoxLayout(controls,BoxLayout.Y_AXIS));
 		controls.add(Box.createRigidArea(new Dimension(0, 20)));
@@ -302,7 +305,7 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		add(controls);
 		
 		//make a title box
-		JPanel title = new JPanel();
+		title = new JPanel();
 		title.setBorder(BorderFactory.createLineBorder(Color.black));
 		title.setLayout(new BoxLayout(title,BoxLayout.X_AXIS));
 		title.add(level_on_label);
@@ -310,6 +313,11 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		add(title);
 		
 		add(board);
+		
+	}
+
+	@Override
+	protected void placeItems() {
 
 		//set the locations
 		position(settings,0.15,0.5,250,500);
@@ -496,5 +504,10 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		}
 		String message = success?(fileName+".lv Saved!"):("Failed to save.");
 		JOptionPane.showMessageDialog(this,message,"Notification",JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	@Override
+	protected void resizeBoards(){
+		if(board!=null)board.updateTileSize();
 	}
 }
