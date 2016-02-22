@@ -48,7 +48,8 @@ public class SimulationThread implements Runnable {
                 // Add the statistics for this given round
                 gameStatistics.add(level.getRoundStatistics());
             }
-            DebugFilter.println("Game complete. Ability: " + playerAbility + ", moves: " + movesMade, DebugFilterKey.LEVEL_DESIGN);
+            /*DebugFilter.println("Game complete. Ability: " + playerAbility + ", moves: " + movesMade, DebugFilterKey
+                    .LEVEL_DESIGN);*/
 
         } catch (NoMovesFoundException e) {
             System.err.println("Simulated player couldn't make a move.");

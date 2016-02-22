@@ -12,7 +12,7 @@ public class LevelDesigner {
 	private static final int populationSize = 100;
 	private static final int iterations = 2500;
 	private static final double elitePercentage = 0.05;
-	private static final double feasibleThreshold = 0.4;
+	private static final double feasibleThreshold = 0.2;
 	private static final double crossoverProbability = 0.8;
 	private static final int maxTopLevels = 5;
 
@@ -60,7 +60,7 @@ public class LevelDesigner {
 			infeasiblePopulation = newInfeasible;
 
 			for (LevelDesignIndividual individual : newFeasible) {
-				individual.setDifficultyFitness(manager.getGameplayFitness(individual.getDesign()));
+				individual.setDifficultyFitness(0.0);//manager.getGameplayFitness(individual.getDesign()));
 			}
 			
 			// Sort the individuals so they are in descending order of fitness.
@@ -70,8 +70,14 @@ public class LevelDesigner {
 				DebugFilter.println("Iteration " + i, DebugFilterKey.LEVEL_DESIGN);
 				List<LevelRepresentation> l = new ArrayList<>();
 				int max = Math.min(feasiblePopulation.size(), maxTopLevels);
+				DebugFilter.println("Top " + max + ":", DebugFilterKey.LEVEL_DESIGN);
+				DebugFilter.println("Num feasible: " + feasiblePopulation.size(), DebugFilterKey.LEVEL_DESIGN);
 				for (int j = 0; j < max; j++) {
 					l.add(feasiblePopulation.get(j).getLevelRepresentation());
+					DebugFilter.println((j + 1) + ". FITNESS:     " + feasiblePopulation.get(j).getFitness(),
+							DebugFilterKey.LEVEL_DESIGN);
+					DebugFilter.println((j + 1) + ". FEASIBILITY: " + feasiblePopulation.get(j).getFeasibility(),
+							DebugFilterKey.LEVEL_DESIGN);
 				}
 				manager.notifyInterface(l);
 			}

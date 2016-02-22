@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Random;
 
 public class LevelDesignerManager extends SwingWorker {
-    private long seed = 1;
+    private long seed = System.nanoTime();
     private Specification specification;
     private Random originalRandom;
     protected LevelDesigner levelDesigner;
