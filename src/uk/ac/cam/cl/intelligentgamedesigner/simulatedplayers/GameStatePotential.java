@@ -7,6 +7,10 @@ package uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers;
 public class GameStatePotential implements Comparable<GameStatePotential> {
     public final int potential;
 
+    public GameStatePotential(GameStateMetric m) {
+        potential = m.score;
+    }
+
     public GameStatePotential(int p) {
         potential = p;
     }

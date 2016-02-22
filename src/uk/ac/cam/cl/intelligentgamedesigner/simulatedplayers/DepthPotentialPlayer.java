@@ -7,6 +7,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.UnmoveableCandyGenerator;
+import static uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.GameStateMetric.sub;
 
 abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
     // The number of states that the Player should look ahead at each move.
@@ -30,7 +31,8 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
     GameStatePotential getGameStatePotential(GameState gameState) {
         // Return the highest increase in score of all possible matches
         GameState original = new GameState(gameState, new UnmoveableCandyGenerator());
-        int highestMetricAfterOneMove = 0;
+        GameStateMetric current = getGameStateMetric(gameState);
+        GameStateMetric highestIncrease = null;
         List<Move> moves = original.getValidMoves();
         for (Move move : moves) {
             GameState tmp = new GameState(original);
@@ -43,11 +45,11 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
                 continue;
             }
 
-            int nextMetric = getGameStateMetric(tmp).score;
-            if (nextMetric > highestMetricAfterOneMove)
-                highestMetricAfterOneMove = nextMetric;
+            GameStateMetric nextMetric = sub(getGameStateMetric(tmp), current);
+            if (nextMetric.compareTo(highestIncrease) == 1)
+                highestIncrease = nextMetric;
         }
-        return new GameStatePotential(highestMetricAfterOneMove);
+        return new GameStatePotential(highestIncrease);
     }
 
     GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {

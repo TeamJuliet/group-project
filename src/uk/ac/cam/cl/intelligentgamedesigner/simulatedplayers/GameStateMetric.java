@@ -13,11 +13,17 @@ public class GameStateMetric implements Comparable<GameStateMetric> {
 
     @Override
     public int compareTo(GameStateMetric arg0) {
+        if (arg0 == null)
+            return 1;
         if (score > arg0.score)
             return 1;
         if (score < arg0.score)
             return -1;
         return 0;
+    }
+
+    public static GameStateMetric sub(GameStateMetric first, GameStateMetric second) {
+        return new GameStateMetric(first.score - second.score);
     }
 
 }
