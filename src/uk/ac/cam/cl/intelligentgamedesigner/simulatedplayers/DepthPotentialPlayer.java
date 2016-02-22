@@ -9,9 +9,6 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.UnmoveableCandyGenerator;
 
-import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
-import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
-
 import static uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions.*;
 import static uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.GameStateMetric.sub;
 
@@ -60,12 +57,11 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
         return new GameStatePotential(highestIncrease);
     }
 
-    GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {
-        // Value metric and potential equally for now and find arithmetic mean
+    protected GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {
         return new GameStateCombinedMetric(metric, potential, (metric.score + potential.potential) / 2);
     }
 
-    List<Move> selectMoves(GameState gameState) {
+    protected List<Move> selectMoves(GameState gameState) {
         // TODO: look more into filtering moves
         return gameState.getValidMoves();
     }
@@ -119,8 +115,6 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
             results.add(pool.poll());
         }
         Move moveMake = results.peek().originalMove;
-        DebugFilter.println(Integer.toString(results.peek().gameStateMetric.metric.score),
-                DebugFilterKey.SIMULATED_PLAYERS);
         results.clear();
         return moveMake;
     }

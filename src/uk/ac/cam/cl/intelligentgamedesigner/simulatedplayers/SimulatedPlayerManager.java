@@ -31,11 +31,11 @@ public class SimulatedPlayerManager {
             poolSize = 8;
             break;
         case 6:
-            lookAhead = 4;
+            lookAhead = 3;
             poolSize = 8;
             break;
         case 7:
-            lookAhead = 4;
+            lookAhead = 3;
             poolSize = 16;
             break;
         default:
@@ -64,7 +64,7 @@ public class SimulatedPlayerManager {
     }
 
     public static int getMaxAbilityLevel() {
-        return 7; //Decided by the switch in makeSimulatedPlayer()
+        return 7; // Decided by the switch in makeSimulatedPlayer()
     }
 
     public static void solve(GameState level, int ability) throws NoMovesFoundException {

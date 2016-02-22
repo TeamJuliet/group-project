@@ -45,10 +45,9 @@ public class DepthPotentialJellyPlayer extends DepthPotentialPlayer {
             metric = 1024 - jellyNumber * 64;
             break;
         }
-        return new GameStateMetric(metric);
+        // return new GameStateMetric(metric);
 
-        // return add(new
-        // GameStateMetric(gameState.getGameProgress().score/10),add(new
-        // GameStateMetric(metric), getBlockerMetric(gameState)));
+        return add(new GameStateMetric(gameState.getGameProgress().score / 10),
+                add(new GameStateMetric(metric), getBlockerMetric(gameState)));
     }
 }
