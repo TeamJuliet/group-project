@@ -51,6 +51,7 @@ public class BoardDifficultyGenerator {
                 if (hasUnmovable(cellBoard[x][y])) ++hopefulCount;
             }
         }
+        System.err.println("Hopeful are " + hopefulCount);
         return hopefulCount;
     }
     
@@ -91,9 +92,9 @@ public class BoardDifficultyGenerator {
         for (int i = 0; i < design.getWidth(); ++i) {
             for (int j = 0; j < design.getHeight(); ++j) {
                 difficultyBoard[i][j] = getCellDifficulty(design, i, j, 20);
-                System.out.print(difficultyBoard[i][j] + " ");
+                // System.out.print(difficultyBoard[i][j] + " ");
             }
-            System.out.println();
+            // System.out.println();
         }
         return difficultyBoard;
     }
