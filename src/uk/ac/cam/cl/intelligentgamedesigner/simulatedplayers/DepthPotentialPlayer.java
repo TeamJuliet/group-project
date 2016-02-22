@@ -88,7 +88,7 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
 
     private void nextDepth() {
         PriorityQueue<GameStateWithCombinedMetric> nextPool = new PriorityQueue<GameStateWithCombinedMetric>(
-                numOfStatesInPool, Collections.reverseOrder());
+                numOfStatesInPool);
         while (!pool.isEmpty()) {
             GameStateWithCombinedMetric current = pool.poll();
             List<Move> moves = selectMoves(current.gameState);
@@ -108,8 +108,8 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
         List<Move> moves = currentState.getValidMoves();
         if (moves.size() == 0)
             throw new NoMovesFoundException(currentState);
-        pool = new PriorityQueue<GameStateWithCombinedMetric>(numOfStatesInPool, Collections.reverseOrder());
-        results = new PriorityQueue<GameStateWithCombinedMetric>(numOfStatesInPool, Collections.reverseOrder());
+        pool = new PriorityQueue<GameStateWithCombinedMetric>(numOfStatesInPool);
+        results = new PriorityQueue<GameStateWithCombinedMetric>(numOfStatesInPool);
         // Add the current game state with the
         pool.add(new GameStateWithCombinedMetric(currentState, new GameStateCombinedMetric(), null));
         int stages = 0;
