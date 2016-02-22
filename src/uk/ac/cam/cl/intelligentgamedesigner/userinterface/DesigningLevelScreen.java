@@ -129,7 +129,7 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 	}
 	
 	@Override
-	protected void placeItems() {
+	protected void addItems(){
 		//sort out the window's layout settings:
 		setLayout(null);
 		
@@ -137,16 +137,20 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 		add(view_level);
 		add(back_button);
 		add(progressBar);
+
+		for(int n=0;n<BOARD_COUNT;n++){
+			add(topBoards[n]);
+			add(topBoardsDetails[n]);
+		}
+	}
+	
+	@Override
+	protected void placeItems() {
 		
 		position(title,0.5,0.9,400,50);
 		position(progressBar,0.5,0.8,300,40);
 		position(view_level,0.5,0.2,200,50);
 		position(back_button,0.1,0.85,150,30);
-		
-		for(int n=0;n<BOARD_COUNT;n++){
-			add(topBoards[n]);
-			add(topBoardsDetails[n]);
-		}
 		
 		positionBoards();
 
@@ -205,6 +209,13 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
             if (selected > -1) view_level.setEnabled(true);
 
 			break;
+		}
+	}
+	
+	@Override
+	protected void resizeBoards(){
+		for(int n=0;n<BOARD_COUNT;n++){
+			if(topBoards[n] != null)topBoards[n].updateTileSize();
 		}
 	}
 }

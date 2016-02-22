@@ -1,5 +1,6 @@
 package uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -57,7 +58,9 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
 
     List<Move> selectMoves(GameState gameState) {
         // TODO: look more into filtering moves
-        return gameState.getValidMoves();
+        List<Move> ret = gameState.getValidMoves();
+        Collections.shuffle(ret);
+        return ret;
     }
 
     private GameStateWithCombinedMetric generateCombinedMetric(GameStateWithCombinedMetric state, Move move) {
@@ -83,11 +86,14 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
         while (elementsProcessed < upperLimit && !pool.isEmpty()) {
             GameStateWithCombinedMetric current = pool.poll();
             List<Move> moves = selectMoves(current.gameState);
+            if (moves.isEmpty() || current.gameState.isGameOver()) {
+                results.add(current);
+                continue;
+            }
             for (Move move : moves) {
                 nextPool.add(generateCombinedMetric(current, move));
             }
-            if (moves.isEmpty())
-                results.add(current);
+            
         }
         pool = nextPool;
     }
