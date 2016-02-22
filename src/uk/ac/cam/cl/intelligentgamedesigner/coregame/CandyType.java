@@ -11,7 +11,7 @@ public enum CandyType {
 	; 
 	
 	public boolean isSpecial() {
-		return this != NORMAL;
+		return this == HORIZONTALLY_STRIPPED || this == VERTICALLY_STRIPPED || this == WRAPPED ;
 	}
 	
 	public boolean isStripped() {
