@@ -12,6 +12,6 @@ public class DepthPotentialScorePlayer extends DepthPotentialPlayer {
 
     @Override
     GameStateMetric getGameStateMetric(GameState gameState) {
-        return add(new GameStateMetric(gameState.getGameProgress().score), getBlockerMetric(gameState));
+        return new GameStateMetric(gameState.getGameProgress().score);
     }
 }

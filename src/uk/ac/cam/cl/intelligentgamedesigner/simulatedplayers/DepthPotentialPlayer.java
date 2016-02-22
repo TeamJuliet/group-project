@@ -1,5 +1,6 @@
 package uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -54,6 +55,8 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
             if (nextMetric.compareTo(highestIncrease) == 1)
                 highestIncrease = nextMetric;
         }
+        if (highestIncrease == null)
+            return new GameStatePotential(0);
         return new GameStatePotential(highestIncrease);
     }
 
@@ -84,10 +87,9 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
     }
 
     private void nextDepth() {
-        int upperLimit = numOfStatesInPool == -1 ? pool.size() : numOfStatesInPool;
-        int elementsProcessed = 0;
-        PriorityQueue<GameStateWithCombinedMetric> nextPool = new PriorityQueue<GameStateWithCombinedMetric>();
-        while (elementsProcessed < upperLimit && !pool.isEmpty()) {
+        PriorityQueue<GameStateWithCombinedMetric> nextPool = new PriorityQueue<GameStateWithCombinedMetric>(
+                numOfStatesInPool, Collections.reverseOrder());
+        while (!pool.isEmpty()) {
             GameStateWithCombinedMetric current = pool.poll();
             List<Move> moves = selectMoves(current.gameState);
             for (Move move : moves) {
@@ -103,8 +105,8 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
         List<Move> moves = currentState.getValidMoves();
         if (moves.size() == 0)
             throw new NoMovesFoundException(currentState);
-        pool = new PriorityQueue<GameStateWithCombinedMetric>();
-        results = new PriorityQueue<GameStateWithCombinedMetric>();
+        pool = new PriorityQueue<GameStateWithCombinedMetric>(numOfStatesInPool, Collections.reverseOrder());
+        results = new PriorityQueue<GameStateWithCombinedMetric>(numOfStatesInPool, Collections.reverseOrder());
         // Add the current game state with the
         pool.add(new GameStateWithCombinedMetric(currentState, new GameStateCombinedMetric(), null));
         int stages = 0;
