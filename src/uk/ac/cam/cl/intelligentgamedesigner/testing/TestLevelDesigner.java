@@ -21,7 +21,7 @@ public class TestLevelDesigner {
 
 		LevelDesignerManager ldm = new LevelDesignerManager(new Specification(1, GameMode.HIGHSCORE));
 		
-		LevelDesigner ld = new LevelDesigner(ldm, random);
+		LevelDesigner ld = new LevelDesigner(ldm, random, 1);
 		
 		ld.run();
 		

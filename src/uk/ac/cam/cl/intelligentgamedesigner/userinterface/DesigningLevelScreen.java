@@ -7,14 +7,11 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 import uk.ac.cam.cl.intelligentgamedesigner.leveldesigner.LevelDesignerManager;
-import uk.ac.cam.cl.intelligentgamedesigner.leveldesigner.LevelRepresentation;
 import uk.ac.cam.cl.intelligentgamedesigner.leveldesigner.PropertyChanges;
 import uk.ac.cam.cl.intelligentgamedesigner.leveldesigner.Specification;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
@@ -23,19 +20,20 @@ import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
 //The screen while the level designer is working
 //will give stats on the progress etc.
 public class DesigningLevelScreen extends DisplayScreen implements ActionListener, PropertyChangeListener {
-	
+
+	public static final int BOARD_COUNT = 5;
+
 	//visual
 	private JLabel title;
-    private JLabel iterationLabel;
-    private JButton view_level;
+	private JProgressBar progressBar;
+	private JButton view_level;
+
     private JButton back_button;
-    
-    private SelectBoard[] topBoards;
+	private SelectBoard[] topBoards;
+
     private DesignDetails[] topBoardsDetails;
-	
 	//functional
     private LevelDesignerManager levelDesignerManager;
-    private static final int boardCount = 5;
     private int currentBoardCount = 0;
     private Design[] boardDesigns;
     private int selected;
@@ -52,7 +50,7 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 		title.setText("Generating "+objective_text+" Levels...");
 		
         view_level.setEnabled(false);
-		for(int n=0;n<boardCount;n++){
+		for(int n = 0; n < BOARD_COUNT; n++){
 			boardDesigns[n] = new Design();
 			topBoards[n].setBoard(boardDesigns[n].getBoard());
 			topBoards[n].clearBoard();
@@ -69,9 +67,9 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 	}
 	
 	public void selectBoard(int selected){
-		if(selected>=0 && selected<boardCount){
+		if(selected>=0 && selected<BOARD_COUNT){
 			this.selected = selected;
-			for(int n=0;n<boardCount;n++){
+			for(int n=0;n<BOARD_COUNT;n++){
 				topBoards[n].setSelected(n==selected);
 			}
 			view_level.setEnabled(topBoards[selected].hasDesign());
@@ -79,8 +77,8 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 	}
 	
 	protected void positionBoards(){
-		for(int n=0;n<boardCount;n++){
-			double x_offset = 0.5 + 0.9*(n - 0.5*(currentBoardCount - 1))/boardCount;
+		for(int n=0;n<BOARD_COUNT;n++){
+			double x_offset = 0.5 + 0.9*(n - 0.5*(currentBoardCount - 1))/BOARD_COUNT;
 			if(n<currentBoardCount){
 				positionBoard(topBoards[n],x_offset,0.55);
 				position(topBoardsDetails[n],x_offset,0.33,200,80);
@@ -98,12 +96,12 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 		view_level = new JButton("View Level");
 		back_button = new JButton("Back");
 		
-		iterationLabel = new JLabel("",SwingConstants.CENTER);
+		progressBar = new JProgressBar(0, 100);
 		
-		topBoards = new SelectBoard[boardCount];
-		topBoardsDetails = new DesignDetails[boardCount];
-		boardDesigns = new Design[5];
-		for(int n=0;n<boardCount;n++){
+		topBoards = new SelectBoard[BOARD_COUNT];
+		topBoardsDetails = new DesignDetails[BOARD_COUNT];
+		boardDesigns = new Design[BOARD_COUNT];
+		for(int n=0;n<BOARD_COUNT;n++){
 			boardDesigns[n] = new Design();
 			topBoards[n] = new SelectBoard(boardDesigns[n],n);
 			topBoards[n].adjustSize(1.75);
@@ -115,7 +113,7 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 	@Override
 	protected void setUpItems() {
 		title.setFont(new Font("Helvetica", Font.CENTER_BASELINE, 22));
-		iterationLabel.setFont(new Font("Helvetica", Font.CENTER_BASELINE, 18));
+		progressBar.setValue(0);
 		
 		view_level.setEnabled(false);
 		view_level.setActionCommand("view");
@@ -133,14 +131,14 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 		add(title);
 		add(view_level);
 		add(back_button);
-		add(iterationLabel);
+		add(progressBar);
 		
 		position(title,0.5,0.9,400,50);
-		position(iterationLabel,0.5,0.8,300,40);
+		position(progressBar,0.5,0.8,300,40);
 		position(view_level,0.5,0.2,200,50);
 		position(back_button,0.1,0.85,150,30);
 		
-		for(int n=0;n<boardCount;n++){
+		for(int n=0;n<BOARD_COUNT;n++){
 			add(topBoards[n]);
 			add(topBoardsDetails[n]);
 		}
@@ -178,12 +176,12 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 	public void propertyChange(PropertyChangeEvent evt) {	
 		switch(evt.getPropertyName()){
 		case PropertyChanges.PROPERTY_CHANGE_DESIGNS:
-            List<LevelRepresentation> topDesigns = (List<LevelRepresentation>) evt.getNewValue();
+            List<Design> topDesigns = (List<Design>) evt.getNewValue();
             int prevMost = currentBoardCount;
             currentBoardCount = topDesigns.size();
-            if(currentBoardCount > boardCount) currentBoardCount = boardCount;
+            if(currentBoardCount > BOARD_COUNT) currentBoardCount = BOARD_COUNT;
             for(int n=0;n<currentBoardCount;n++){
-            	boardDesigns[n] = topDesigns.get(n).getDesign();
+            	boardDesigns[n] = topDesigns.get(n);
             	topBoards[n].setBoard(boardDesigns[n].getBoard());
             	topBoardsDetails[n].setDetails(boardDesigns[n]);
             }
@@ -192,8 +190,8 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
             positionBoards();
 			break;
 		case PropertyChanges.PROPERTY_CHANGE_PROGRESS:
-            int iterationNumber = (int) evt.getNewValue();
-            iterationLabel.setText("Iteration: " + iterationNumber);
+            double progress = (double) evt.getNewValue();
+            progressBar.setValue((int) (progress * 100));
 			break;
 		case PropertyChanges.PROPERTY_CHANGE_DONE:
 			break;

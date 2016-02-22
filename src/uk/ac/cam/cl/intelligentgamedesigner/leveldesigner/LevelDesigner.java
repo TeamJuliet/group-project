@@ -8,34 +8,36 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class LevelDesigner {
+public class LevelDesigner implements Runnable {
 	private static final int populationSize = 100;
 	private static final int iterations = 2500;
 	private static final double elitePercentage = 0.05;
 	private static final double feasibleThreshold = 0.2;
 	private static final double crossoverProbability = 0.8;
-	private static final int maxTopLevels = 5;
 
 	private LevelDesignerManager manager;
     private List<LevelDesignIndividual> feasiblePopulation;
     private List<LevelDesignIndividual> infeasiblePopulation;
 	private Random random;
+	private int threadID;
 
-    public LevelDesigner(LevelDesignerManager manager, Random random) {
+    public LevelDesigner(LevelDesignerManager manager, Random random, int threadID) {
 		this.manager = manager;
 		this.random = random;
+		this.threadID = threadID;
 
 		feasiblePopulation = new ArrayList<>();
 		infeasiblePopulation = new ArrayList<>();
 
 		// Generate the random population.
-		List<LevelRepresentation> p = manager.getPopulation(populationSize);
+		List<LevelRepresentation> p = manager.getPopulation(populationSize, threadID);
 		for (LevelRepresentation l : p) {
 			LevelDesignIndividual individual = new LevelDesignIndividual(l);
 			infeasiblePopulation.add(individual);
 		}
     }
 
+	@Override
     public void run() {
     	long startTime = System.currentTimeMillis();
     	
@@ -69,20 +71,15 @@ public class LevelDesigner {
 			if (i % 10 == 0) {
 				DebugFilter.println("Iteration " + i, DebugFilterKey.LEVEL_DESIGN);
 				List<LevelRepresentation> l = new ArrayList<>();
-				int max = Math.min(feasiblePopulation.size(), maxTopLevels);
-				DebugFilter.println("Top " + max + ":", DebugFilterKey.LEVEL_DESIGN);
+				DebugFilter.println("Top: ", DebugFilterKey.LEVEL_DESIGN);
 				DebugFilter.println("Num feasible: " + feasiblePopulation.size(), DebugFilterKey.LEVEL_DESIGN);
-				for (int j = 0; j < max; j++) {
-					l.add(feasiblePopulation.get(j).getLevelRepresentation());
-					DebugFilter.println((j + 1) + ". FITNESS:     " + feasiblePopulation.get(j).getFitness(),
-							DebugFilterKey.LEVEL_DESIGN);
-					DebugFilter.println((j + 1) + ". FEASIBILITY: " + feasiblePopulation.get(j).getFeasibility(),
-							DebugFilterKey.LEVEL_DESIGN);
-				}
-				manager.notifyInterface(l);
-			}
 
-			manager.notifyInterface(i);
+                if (feasiblePopulation.size() > 0) {
+                    manager.notifyInterface(feasiblePopulation.get(0).getLevelRepresentation(), threadID);
+                }
+			}
+			
+			manager.notifyInterface(i / (double) iterations, threadID);
 		}
     	
     	DebugFilter.println("", DebugFilterKey.LEVEL_DESIGN);
