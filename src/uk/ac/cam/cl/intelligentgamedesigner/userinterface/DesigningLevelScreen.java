@@ -1,6 +1,6 @@
 package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
-import java.awt.Font;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -44,6 +44,10 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 	}
 	
 	public void startDesign(Specification specification){
+        // Stop the user fucking with our threads
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        back_button.setEnabled(false);
+
 		String objective_text = specification.getGameMode() == GameMode.HIGHSCORE?"High Score":
 			specification.getGameMode() == GameMode.JELLY?"Jelly Clear":
 				"Ingredients";
@@ -72,7 +76,7 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 			for(int n=0;n<BOARD_COUNT;n++){
 				topBoards[n].setSelected(n==selected);
 			}
-			view_level.setEnabled(topBoards[selected].hasDesign());
+            if (back_button.isEnabled()) view_level.setEnabled(topBoards[selected].hasDesign());
 		}
 	}
 	
@@ -97,6 +101,7 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 		back_button = new JButton("Back");
 		
 		progressBar = new JProgressBar(0, 100);
+		progressBar.setStringPainted(true);
 		
 		topBoards = new SelectBoard[BOARD_COUNT];
 		topBoardsDetails = new DesignDetails[BOARD_COUNT];
@@ -194,6 +199,11 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
             progressBar.setValue((int) (progress * 100));
 			break;
 		case PropertyChanges.PROPERTY_CHANGE_DONE:
+            // Let the user use the interface again!
+            setCursor(null);
+            back_button.setEnabled(true);
+            if (selected > -1) view_level.setEnabled(true);
+
 			break;
 		}
 	}

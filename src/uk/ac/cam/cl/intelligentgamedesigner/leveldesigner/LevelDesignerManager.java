@@ -86,6 +86,10 @@ public class LevelDesignerManager extends SwingWorker {
             totalProgress = min;
             firePropertyChange(PropertyChanges.PROPERTY_CHANGE_PROGRESS, null, progressValue);
         }
+
+        if (totalProgress == 1.0) {
+            firePropertyChange(PropertyChanges.PROPERTY_CHANGE_DONE, null, null);
+        }
     }
 
     public List<LevelRepresentation> getPopulation(int size, int threadID) {
