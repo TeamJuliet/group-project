@@ -16,6 +16,7 @@ public abstract class DisplayScreen extends JPanel  implements ActionListener{
 	public DisplayScreen(){
 		makeItems();
 		setUpItems();
+		addItems();
 		placeItems();
 	}
 	
@@ -23,13 +24,30 @@ public abstract class DisplayScreen extends JPanel  implements ActionListener{
 	protected abstract void makeItems();
 	//set up ActionListeners etc. on the items
 	protected abstract void setUpItems();
+	//add the items to the screen
+	protected abstract void addItems();
 	//place the items on the screen
 	protected abstract void placeItems();
 	
-	//position the item relative to the total screen size
-	private static int screen_width = InterfaceManager.screenWidth();
-	private static int screen_height = InterfaceManager.screenHeight();
-	public static double scale_factor = ((double)screen_width)/1200;
+
+	//position the item relative to the total window size
+	private static int screen_width;
+	private static int screen_height;
+	public static double scale_factor;
+	public static void reScale(){
+		//position the item relative to the total window size
+		screen_width = InterfaceManager.screenWidth();
+		screen_height = InterfaceManager.screenHeight();
+		scale_factor = ((double)screen_width)/1200;		
+	}
+	
+	public void rePosition(){
+		resizeBoards();
+		placeItems();
+	}
+	protected void resizeBoards(){
+		//Default does nothing
+	}
 	
 	protected void position(JComponent thing,double frac_w,double frac_h, int width, int height){
 		double scaled_width = scale_factor * width;
