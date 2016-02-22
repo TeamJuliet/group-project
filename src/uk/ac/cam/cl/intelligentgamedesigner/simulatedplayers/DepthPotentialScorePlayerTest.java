@@ -33,21 +33,20 @@ public class DepthPotentialScorePlayerTest {
 	}
 
 	public static void playGame(GameState game, GameDisplay display) {
-		DepthPotentialScorePlayer player = new DepthPotentialScorePlayer(2, 4); 
-		while(!game.isGameOver()) {
+	    TargetCellPlayer player = new TargetCellPlayer(9, 9); 
+		while(!game.isGameOver() && game.getBoard()[9][9].getJellyLevel() != 0) {
 			try {
 				System.out.println(game.getGameProgress());
 				Move move = player.calculateBestMove(game);
 				game.makeFullMove(move);
 				display.setBoard(game.getBoard());
 				display.paintImmediately(0, 0, display.getWidth(), display.getHeight());
-				Thread.sleep(5);
+				Thread.sleep(500);
 			} catch (NoMovesFoundException | InvalidMoveException e) {
 				System.err.println("No Moves Found");
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				System.err.println("Could not wait for an amount of time");
 				e.printStackTrace();
 			}
 		}
@@ -55,7 +54,10 @@ public class DepthPotentialScorePlayerTest {
 	}
 	
 	public static void main(String[] args) {
-		GameState game = new GameState(getSampleDesign());
+	    Design design = getSampleDesign();
+	    design.getBoard()[9][9].setJellyLevel(1);
+		GameState game = new GameState(design);
+		
 		JPanel generalPanel = new JPanel();
 		JFrame app = new JFrame();
 		GameDisplay gamePanel = new GameDisplay(game.width, game.height,

@@ -1,11 +1,5 @@
 package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
-import static uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions.analyzeTile;
-import static uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions.getSpecialCandyFormed;
-import static uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions.hasHorizontallyStripped;
-import static uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions.hasSpecial;
-import static uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions.hasVerticallyStripped;
-
 import java.util.LinkedList;
 import java.util.List;
 

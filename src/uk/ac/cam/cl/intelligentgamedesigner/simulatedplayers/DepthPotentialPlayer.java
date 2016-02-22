@@ -55,11 +55,14 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
         while (elementsProcessed < upperLimit && !pool.isEmpty()) {
             GameStateWithCombinedMetric current = pool.poll();
             List<Move> moves = selectMoves(current.gameState);
-            for (Move move : moves) {
-                nextPool.add(generateCombinedMetric(current, move));
-            }
-            if (moves.isEmpty())
+            if (moves.isEmpty() || current.gameState.isGameOver())
                 results.add(current);
+            else {
+                for (Move move : moves) {
+                    nextPool.add(generateCombinedMetric(current, move));
+                }
+            }
+            
         }
         pool = nextPool;
     }
