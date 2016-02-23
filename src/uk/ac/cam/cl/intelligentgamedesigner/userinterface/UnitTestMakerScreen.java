@@ -110,17 +110,6 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 			height = board_before.height;
 			above_screen = board_above.height;
 
-//			switch(test.getGameMode()){
-//			case HIGHSCORE:
-//				high_score.setSelected(true);
-//				break;
-//			case JELLY:
-//				jelly.setSelected(true);
-//				break;
-//			case INGREDIENTS:
-//				ingredients.setSelected(true);
-//				break;
-//			}
 			high_score.setSelected(true);
 		} else {
 			width = 10;
@@ -349,12 +338,16 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 
 	@Override
 	protected void placeItems() {
+		
+		//size the fonts
+		fontScale(settings, DisplayScreen.FONT_NORMAL);
+		fontScale(controls, DisplayScreen.FONT_NORMAL);
+		fontScale(gameStates, DisplayScreen.FONT_SMALL);
 
 		//set the locations
 		position(settings,0.5,0.6,260,450);
 		position(controls,0.5,0.15,300,100);
-		position(infinite_lookahead,0.2,0.8,9*board_above.tile_size,140);
-		
+		position(infinite_lookahead,0.2,0.8,9*board_above.tile_size,140);	
 		positionBoard(board_before,0.2,0.4);
 		positionBoard(board_after,0.8,0.4);
 		position(gameStates,0.8,0.8,9*board_above.tile_size,140);

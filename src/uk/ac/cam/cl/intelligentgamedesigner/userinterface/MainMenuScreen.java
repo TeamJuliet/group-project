@@ -44,8 +44,6 @@ public class MainMenuScreen extends DisplayScreen{
 	
 	@Override
 	protected void setUpItems(){	
-		title_text.setFont(new Font("Helvetica", Font.CENTER_BASELINE, 22));
-		publisher_text.setFont(new Font("Helvetica", Font.CENTER_BASELINE, 18));
 		
 		request_level.setActionCommand("request");
 		request_level.addActionListener(this);
@@ -65,7 +63,16 @@ public class MainMenuScreen extends DisplayScreen{
 	}
 	
 	@Override
-	protected void placeItems() {		
+	protected void placeItems() {	
+		
+		//size the fonts
+		fontScale(title_text, DisplayScreen.FONT_TITLE);
+		fontScale(publisher_text, DisplayScreen.FONT_SUBTITLE);
+		fontScale(request_level, DisplayScreen.FONT_NORMAL);
+		fontScale(create_level, DisplayScreen.FONT_NORMAL);
+		fontScale(load_level, DisplayScreen.FONT_NORMAL);
+		fontScale(unit_test, DisplayScreen.FONT_NORMAL);
+		
 		
 		//add the items to the screen
 		add(title_text);

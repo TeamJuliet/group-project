@@ -318,6 +318,11 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 
 	@Override
 	protected void placeItems() {
+		
+		//size the fonts
+		fontScale(title, DisplayScreen.FONT_SUBTITLE);
+		fontScale(settings, DisplayScreen.FONT_SMALL);
+		fontScale(controls, DisplayScreen.FONT_NORMAL);
 
 		//set the locations
 		position(settings,0.15,0.5,250,500);

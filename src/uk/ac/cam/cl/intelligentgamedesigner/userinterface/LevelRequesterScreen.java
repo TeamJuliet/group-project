@@ -53,8 +53,8 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		go_button = new JButton("Go");	
 
 		title = new JLabel("Choose the type of level to make",SwingConstants.CENTER);
-		game_mode_text = new JLabel("Select Game Mode",SwingConstants.CENTER);
-		difficulty_text = new JLabel("Select Difficulty",SwingConstants.CENTER);
+		game_mode_text = new JLabel("Select Game Mode:",SwingConstants.CENTER);
+		difficulty_text = new JLabel("Select Difficulty:",SwingConstants.CENTER);
 		show_difficulty = new JLabel("%",SwingConstants.CENTER);
 
 		game_mode = new ButtonGroup();
@@ -84,18 +84,14 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		difficulty.setPaintLabels(true);
 		difficulty.addChangeListener(this);
 		
-		title.setFont(new Font("Helvetica", Font.CENTER_BASELINE, 22));
 		title.setAlignmentX(CENTER_ALIGNMENT);
 		
 		high_score.setAlignmentX(CENTER_ALIGNMENT);
 		jelly_clear.setAlignmentX(CENTER_ALIGNMENT);
 		ingredients.setAlignmentX(CENTER_ALIGNMENT);
 		
-		game_mode_text.setFont(new Font("Helvetica", Font.CENTER_BASELINE, 18));
 		game_mode_text.setAlignmentX(CENTER_ALIGNMENT);
-		difficulty_text.setFont(new Font("Helvetica", Font.CENTER_BASELINE, 18));
 		difficulty_text.setAlignmentX(CENTER_ALIGNMENT);
-		show_difficulty.setFont(new Font("Helvetica", Font.CENTER_BASELINE, 18));
 		show_difficulty.setAlignmentX(CENTER_ALIGNMENT);
 	}
 	
@@ -133,6 +129,12 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 	
 	@Override
 	protected void placeItems() {
+		
+		//size the fonts
+		fontScale(title, DisplayScreen.FONT_TITLE);
+		fontScale(go_button, DisplayScreen.FONT_NORMAL);
+		fontScale(back_button, DisplayScreen.FONT_NORMAL);
+		fontScale(settings, DisplayScreen.FONT_NORMAL);
 		
 		//set the locations
 		position(title,0.5,0.9,400,50);

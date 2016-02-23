@@ -32,11 +32,14 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 	private SelectBoard[] topBoards;
 
     private DesignDetails[] topBoardsDetails;
-	//functional
+	
+    //functional
     private LevelDesignerManager levelDesignerManager;
     private int currentBoardCount = 0;
     private Design[] boardDesigns;
     private int selected;
+    
+    private boolean changing_difficulty;
 	
 	public DesigningLevelScreen(){
 		super();
@@ -53,12 +56,15 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 				"Ingredients";
 		title.setText("Generating "+objective_text+" Levels...");
 		
+		changing_difficulty = false;
+		
         view_level.setEnabled(false);
 		for(int n = 0; n < BOARD_COUNT; n++){
 			boardDesigns[n] = new Design();
 			topBoards[n].setBoard(boardDesigns[n].getBoard());
 			topBoards[n].clearBoard();
 			topBoards[n].setSelected(false);
+			topBoardsDetails[n].setDetails(boardDesigns[n],changing_difficulty);
 		}
 		selected = -1;
 		
@@ -128,15 +134,23 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 		back_button.addActionListener(this);
 	}
 	
+	private JPanel current_progress; 
+	private JLabel doing_what;
 	@Override
 	protected void addItems(){
 		//sort out the window's layout settings:
 		setLayout(null);
+
+		current_progress = new JPanel();
+		doing_what = new JLabel("Setting the level appearance:");
+		current_progress.setLayout(new BoxLayout(current_progress,BoxLayout.Y_AXIS));
+		current_progress.add(doing_what);
+		current_progress.add(progressBar);
 		
 		add(title);
 		add(view_level);
 		add(back_button);
-		add(progressBar);
+		add(current_progress);
 
 		for(int n=0;n<BOARD_COUNT;n++){
 			add(topBoards[n]);
@@ -147,8 +161,14 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 	@Override
 	protected void placeItems() {
 		
+		//size the fonts
+		fontScale(title, DisplayScreen.FONT_TITLE);
+		fontScale(current_progress, DisplayScreen.FONT_NORMAL);
+		fontScale(view_level, DisplayScreen.FONT_NORMAL);
+		fontScale(back_button, DisplayScreen.FONT_NORMAL);
+		
 		position(title,0.5,0.9,400,50);
-		position(progressBar,0.5,0.8,300,40);
+		position(current_progress,0.5,0.8,300,50);
 		position(view_level,0.5,0.2,200,50);
 		position(back_button,0.1,0.85,150,30);
 		
@@ -184,25 +204,34 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {	
 		switch(evt.getPropertyName()){
-		case PropertyChanges.PROPERTY_CHANGE_DESIGNS:
-            List<Design> topDesigns = (List<Design>) evt.getNewValue();
-            int prevMost = currentBoardCount;
-            currentBoardCount = topDesigns.size();
-            if(currentBoardCount > BOARD_COUNT) currentBoardCount = BOARD_COUNT;
-            for(int n=0;n<currentBoardCount;n++){
-            	boardDesigns[n] = topDesigns.get(n);
-            	topBoards[n].setBoard(boardDesigns[n].getBoard());
-            	topBoardsDetails[n].setDetails(boardDesigns[n]);
-            }
-            if(currentBoardCount < prevMost)currentBoardCount = prevMost;
-            
-            positionBoards();
-			break;
-		case PropertyChanges.PROPERTY_CHANGE_PROGRESS:
+		case PropertyChanges.PROPERTY_CHANGE_PROGRESS: //update the progress bar
             double progress = (double) evt.getNewValue();
             progressBar.setValue((int) (progress * 100));
 			break;
-		case PropertyChanges.PROPERTY_CHANGE_DONE:
+		case PropertyChanges.PROPERTY_CHANGE_DESIGNS: //in phase 1, getting new design appearances
+		case PropertyChanges.PROPERTY_CHANGE_OBJECTIVES: //in phase 2, getting new design objectives
+            Design[] topDesigns = (Design[]) evt.getNewValue();
+            boolean updating_appearance = evt.getPropertyName().equals(PropertyChanges.PROPERTY_CHANGE_DESIGNS);
+            int prevMost = currentBoardCount;
+            currentBoardCount = 5;
+            if(currentBoardCount > BOARD_COUNT) currentBoardCount = BOARD_COUNT;
+            for(int n=0;n<currentBoardCount;n++){
+            	boardDesigns[n] = topDesigns[n];
+            	if(updating_appearance)topBoards[n].setBoard(boardDesigns[n].getBoard());
+            	topBoardsDetails[n].setDetails(boardDesigns[n],changing_difficulty);
+            }
+            if(currentBoardCount < prevMost)currentBoardCount = prevMost;
+            
+            if(updating_appearance)positionBoards();
+			break;
+		case PropertyChanges.PROPERTY_PHASE1_DONE: //when the appearance phase is done
+			changing_difficulty = true;
+			progressBar.setValue(0);
+            for(int n=0;n<currentBoardCount;n++){
+            	topBoardsDetails[n].setDetails(boardDesigns[n],changing_difficulty);
+            }
+			break;
+		case PropertyChanges.PROPERTY_PHASE2_DONE: //when the entire process is done
             // Let the user use the interface again!
             setCursor(null);
             back_button.setEnabled(true);
