@@ -1,5 +1,8 @@
 package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,6 +58,7 @@ public class GameState implements Serializable {
         }
 
         candyGenerator = new PseudoRandomCandyGenerator(design, this.progress);
+        // candyGenerator = design.getCandyGenerator(this.progress);
         fillBoard();
 
         // Make sure the board is in a stable state
@@ -86,7 +90,7 @@ public class GameState implements Serializable {
                 // except for the
                 // normal underlying candy
                 else if (cellType == CellType.LIQUORICE || cellType == CellType.EMPTY) {
-                    board[x][y] = new Cell(cellType.equals(CellType.EMPTY) ? CellType.NORMAL : cellType,
+                    board[x][y] = new Cell((cellType.equals(CellType.EMPTY) & board[x][y].hasCandy()) ? CellType.NORMAL : cellType,
                             board[x][y].getCandy(), cellToCopy.getJellyLevel(), cellToCopy.isIngredientSink());
                 }
             }
@@ -98,6 +102,11 @@ public class GameState implements Serializable {
         // reductions, so we reset it to 0
         this.progress.resetScore();
         this.design = design;
+
+        // For really shit levels, there won't even be a possible move from the start - we need to check for this
+        if (getValidMoves().size() == 0) {
+            progress.setDidFailShuffle();
+        }
     }
 
     // Copy constructor
@@ -140,6 +149,7 @@ public class GameState implements Serializable {
         // Make sure the board is in a stable state
         while (makeSmallMove())
             ;
+        recordIngredientSinks();
     }
 
     // **** GETTER FUNCTIONS START *****
@@ -195,7 +205,7 @@ public class GameState implements Serializable {
      *             in case it is not a legitimate move.
      */
     public void makeFullMove(Move move) throws InvalidMoveException {
-        makeMove(move);
+        makeInitialMove(move);
         while (makeSmallMove())
             ;
     }
@@ -210,14 +220,15 @@ public class GameState implements Serializable {
      * @throws InvalidMoveException
      *             in case it is not a legitimate move.
      */
-    public void makeMove(Move move) throws InvalidMoveException {
+    public void makeInitialMove(Move move) throws InvalidMoveException {
         if (!isMoveValid(move))
             throw new InvalidMoveException(move);
         // Record the last move.
+
+        resetRound();
         lastMove = move;
 
-        this.statProcess.setCandySwapped1(getCell(move.p1).getCandy());
-        this.statProcess.setCandySwapped2(getCell(move.p2).getCandy());
+        this.statProcess.setCandiesSwapped(getCell(move.p1).getCandy(), getCell(move.p2).getCandy());
 
         swapCandies(move);
 
@@ -254,8 +265,7 @@ public class GameState implements Serializable {
             cell2.removeCandy();
             detonateVerticallyStripped(p1);
             detonateHorizontallyStripped(p2);
-        } else if ((hasVerticallyStripped(cell1) && hasVerticallyStripped(cell2))
-                || (hasHorizontallyStripped(cell1) && hasHorizontallyStripped(cell2))) {
+        } else if (hasStripped(cell1) && hasStripped(cell2)) {
             cell1.removeCandy();
             cell2.removeCandy();
             detonateVerticallyStripped(p1);
@@ -286,18 +296,17 @@ public class GameState implements Serializable {
     }
 
     /**
-     * Once the makeMove has been called this takes care of making the small
+     * Once the makeInitialMove has been called this takes care of making the small
      * steps in the boards.
      * 
      * @return whether there is no other step in to be made.
      */
     public boolean makeSmallMove() {
         this.statProcess.incrementTransitions();
-        System.out.println("Current state is " + this.currentProcessState);
+        DebugFilter.println("Current state is " + this.currentProcessState, DebugFilterKey.GAME_IMPLEMENTATION);
         switch (currentProcessState) {
         case AWAITING_MOVE:
             currentProcessState = ProcessState.MATCH_AND_REPLACE;
-            resetRound();
             break;
         case MATCH_AND_REPLACE:
             markAndReplaceMatchingTiles();
@@ -363,6 +372,7 @@ public class GameState implements Serializable {
         List<MatchAnalysis> ret = new ArrayList<MatchAnalysis>();
         MatchAnalysis analysis1 = getSingleMatchAnalysis(board, move.p1);
         MatchAnalysis analysis2 = getSingleMatchAnalysis(board, move.p2);
+        // Add only the analyses that produced an outcome.
         if (analysis1 != null)
             ret.add(analysis1);
         if (analysis2 != null)
@@ -386,18 +396,14 @@ public class GameState implements Serializable {
         if (Math.abs(move.p1.x - move.p2.x) + Math.abs(move.p1.y - move.p2.y) != 1)
             return false;
         Cell cell1 = getCell(move.p1), cell2 = getCell(move.p2);
-
-        if (hasIngredient(cell1) || hasIngredient(cell2))
-            return false;
-
-        
-        if (cell1.getCandy().getCandyType().isSpecial() && cell2.getCandy().getCandyType().isSpecial())
+      
+        if (hasSpecial(cell1) && hasSpecial(cell2))
             return true;
         
         // Exchanging a Bomb with a cell that has a movable item is a valid
         // move (i.e. it is either special or normal candy type).
-        else if (cell1.getCandy().getCandyType().equals(CandyType.BOMB) && (hasSpecial(cell2) || hasNormal(cell2))
-                || cell2.getCandy().getCandyType().equals(CandyType.BOMB) && (hasSpecial(cell1) || hasNormal(cell1)))
+        else if (hasBomb(cell1) && (hasSpecial(cell2) || hasNormal(cell2) || hasBomb(cell2))
+                || hasBomb(cell2) && (hasSpecial(cell1) || hasNormal(cell1) || hasBomb(cell1)))
             return true;
 
         swapCandies(move);
@@ -491,6 +497,7 @@ public class GameState implements Serializable {
         if (current.hasCandy() && current.getCandy().getCandyType().isSpecial()) {
             if (current.getCandy().getCandyType().equals(CandyType.BOMB)) {
                 current.removeCandy();
+                wasSomethingPopped = true;
                 return;
             }
             if (!current.getCandy().isDetonated()) {
@@ -878,15 +885,18 @@ public class GameState implements Serializable {
     // Function that fills the board by requesting candies from the
     // candyGenerator.
     private void fillBoard() {
+        int[] prev = new int[width];
+        for (int i = 0; i < width; ++i) prev[i] = height;
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 Cell cell = board[x][y];
                 if (cell.isFillable()) {
 
-                    int cur_y = y - 1;
+                    int cur_y = Math.min(y - 1, prev[x]);
                     while (cur_y >= 0 && !board[x][cur_y].blocksCandies()) {
                         cur_y--;
                     }
+                    prev[x] = cur_y;
                     if (cur_y < 0)
                         cell.setCandy(candyGenerator.generateCandy(x));
                 }
@@ -975,6 +985,16 @@ public class GameState implements Serializable {
         }
     }
 
+    public boolean hasMoves() {
+        for (int i = 0; i < width; ++i) {
+            for (int j = 0; j < height; ++j) {
+                if (isMoveValid(new Move(new Position(i, j), new Position(i+1, j)))) return true;
+                if (isMoveValid(new Move(new Position(i, j), new Position(i, j+1)))) return true;
+            }
+        }
+        return false;
+    }
+    
     // TODO: Handle case in which no amount of shuffling can introduce a
     // possible move - i.e. we have need some
     // concept of "GAME OVER"
@@ -983,21 +1003,19 @@ public class GameState implements Serializable {
             return false;
         boolean didShuffle = false;
 
-        this.statProcess.setShuffled(true);
-
         // It is quite complicated (and expensive to compute) whether there
         // exists a shuffle which introduces a possible move, so for now I think
         // we should just shuffle up to some limit, at which point we declare
         // that the game is over
-        int movesAvailable;
+        boolean hasMoves;
         int shuffleLimit = 5;
         int shuffleCount = 0;
 
         // While there are no available moves, we need to shuffle the normal
         // (non-special) candies on the board
-        while ((movesAvailable = getValidMoves().size()) == 0 && shuffleCount < shuffleLimit) {
+        while (!(hasMoves = this.hasMoves()) && shuffleCount < shuffleLimit) {
 
-            // System.out.println("No moves available: Shuffling candies...");
+            DebugFilter.println("No moves available: Shuffling candies...", DebugFilterKey.GAME_IMPLEMENTATION);
 
             // Collect all of the colours of the normal candies
             LinkedList<CandyColour> normalCandyColours = new LinkedList<>();
@@ -1026,11 +1044,13 @@ public class GameState implements Serializable {
             }
 
             didShuffle = true;
+            this.statProcess.setShuffled(true);
             shuffleCount++;
         }
 
-        if (movesAvailable == 0) {
+        if (!hasMoves) {
             progress.setDidFailShuffle();
+            return false;
         }
 
         return didShuffle;
@@ -1057,7 +1077,15 @@ public class GameState implements Serializable {
             }
         }
 
+        result += "  ";
+        for(int i = 0; i < this.width; i++){
+            result += " " + i + "  ";
+        }
+        result += "\n";
+        int rowNum = 0;
         for (Cell[] row : tmp) {
+            result += rowNum + " ";
+            rowNum++;
             for (Cell cell : row) {
                 result += cell.toString() + " ";
             }

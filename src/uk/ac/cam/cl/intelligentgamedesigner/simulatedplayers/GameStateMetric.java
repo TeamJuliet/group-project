@@ -10,6 +10,7 @@ public class GameStateMetric implements Comparable<GameStateMetric> {
     public GameStateMetric() {
         this(0);
     }
+    
 	@Override
 	public int compareTo(GameStateMetric arg0) {
 		if(score > arg0.score) return 1;

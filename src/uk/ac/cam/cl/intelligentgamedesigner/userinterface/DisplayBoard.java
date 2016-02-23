@@ -1,7 +1,6 @@
 package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -12,7 +11,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CandyColour;
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.CandyType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
@@ -148,8 +146,14 @@ public class DisplayBoard extends JComponent {
 		return new Cell(CellType.UNUSABLE);
 	}
 	
+	private double factor;
+	public void updateTileSize(){
+		tile_size = (int) (InterfaceManager.screenWidth()/(100/factor));
+	}
+	
 	public void adjustSize(double d) {
-		tile_size = (int) (InterfaceManager.screenWidth()/(100/d));
+		factor = d;
+		updateTileSize();
 	}
 	
 	public Cell[][] getBoard(){
@@ -208,7 +212,7 @@ public class DisplayBoard extends JComponent {
 			case INGREDIENT:
 				item = objective_piece[0];
 				break;
-			case UNMOVEABLE:
+			case UNMOVABLE:
 				break;
 			default:
 				item = candy[board[x][y].getCandy().getColour().ordinal()][board[x][y].getCandy().getCandyType().ordinal()];

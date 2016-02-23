@@ -26,4 +26,15 @@ public class ProcessStateStatsViewer implements Serializable {
         this.candySwapped1 = new Candy(candySwapped1);
         this.candySwapped2 = new Candy(candySwapped2);
     }
+
+    @Override
+    public String toString () {
+        return    "Was shuffled:                  " + wasShuffled +
+                "\nNumber of transitions:         " + numOfTransitions +
+                "\nNumber of valid moves:         " + numOfValidMoves +
+                "\nNumber of passed ingredients:  " + numOfPassedIngredients +
+                "\nNumber of removed icing:       " + numOfRemovedIcing +
+                "\nCandy swapped:                 " + candySwapped1.getCandyType() + " with " +
+                candySwapped2.getCandyType() + "\n";
+    }
 }

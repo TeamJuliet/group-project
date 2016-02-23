@@ -5,14 +5,12 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
-import java.util.Timer;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Candy;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CandyColour;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CandyType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
 
@@ -111,7 +109,15 @@ public class UnitTestBoard extends CustomBoard {
 					CellType watch_type = ((UnitTestMakerScreen)watch_creator).getReplacer();
 					if(type == 1 || watch_type != CellType.DONT_CARE){ //can only don't care for 'after' board
 						if(board[x][y].getCellType() != watch_type){
-							board[x][y] = new Cell(watch_type);						
+							//place the tile
+							if(board[x][y].getCandy() != null && //place locks over candies
+									(watch_type == CellType.LIQUORICE || watch_type == CellType.NORMAL)){
+								board[x][y].setCellType(CellType.LIQUORICE);
+							}else{
+								int jelly_level = board[x][y].getJellyLevel();//keep the jelly level
+								board[x][y] = new Cell(watch_type);	
+								board[x][y].setJellyLevel(jelly_level);	
+							}			
 						}							
 					}
 				}

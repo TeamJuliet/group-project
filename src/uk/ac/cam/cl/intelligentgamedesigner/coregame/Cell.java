@@ -9,7 +9,7 @@ public class Cell implements Cloneable, Serializable {
     private boolean         isIngredientSink;
     private CellType        cellType;
     private Candy           candy;
-    private int             jellyLevel;
+    private int             jellyLevel = 0;
 
     public Cell(CellType cellType) {
         this(cellType, null, 0, false);
@@ -36,7 +36,7 @@ public class Cell implements Cloneable, Serializable {
 
     public Cell(Cell original) {
         this.cellType = original.cellType;
-        this.candy = original.candy;
+        this.candy = original.candy == null ? null : new Candy(original.candy);
         this.jellyLevel = original.jellyLevel;
         this.isIngredientSink = original.isIngredientSink;
     }
@@ -82,7 +82,7 @@ public class Cell implements Cloneable, Serializable {
     // Function that returns whether it is possible to move the contents of the
     // block.
     public boolean isMoveable() {
-        return cellType == CellType.NORMAL && !(hasCandy() && candy.getCandyType().equals(CandyType.UNMOVEABLE));
+        return cellType == CellType.NORMAL && !(hasCandy() && candy.getCandyType().equals(CandyType.UNMOVABLE));
     }
 
     public void setIngredientSink () {
@@ -156,17 +156,17 @@ public class Cell implements Cloneable, Serializable {
         String result = "";
         switch (cellType) {
         case UNUSABLE:
-            return "XXX";
+            return "   ";
         case EMPTY:
             return "EEE";
         case ICING:
-            result += "I";
-            break;
+            return "ICE";
         case NORMAL:
             result += "N";
             break;
         case LIQUORICE:
             result += "L";
+            break;
         case DONT_CARE:
             return "D_C";
         }
@@ -176,12 +176,11 @@ public class Cell implements Cloneable, Serializable {
             result += "N";
             break;
         case BOMB:
-            result += "B";
-            break;
+            return "BMB";
         case INGREDIENT:
             result += "I";
             break;
-        case UNMOVEABLE:
+        case UNMOVABLE:
             return "UNM";
         case WRAPPED:
             result += "W";
