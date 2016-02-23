@@ -24,6 +24,7 @@ public abstract class DisplayScreen extends JPanel  implements ActionListener{
 		File font_file = new File(System.getProperty("user.dir") + File.separator + "images" + File.separator + "Lobster.ttf");
 		try {
 			lobster = Font.createFont(Font.TRUETYPE_FONT, font_file);
+			System.out.println("loaded the file");
 		} catch (FontFormatException | IOException e) {
 			lobster = null;
 			System.err.println("Failed to load the font");
@@ -88,7 +89,7 @@ public abstract class DisplayScreen extends JPanel  implements ActionListener{
 		if(lobster != null && (fontsize == FONT_TITLE || fontsize == FONT_SUBTITLE)){
 			thing.setFont(new Font(lobster.getFontName(), Font.PLAIN, scaled_font));
 		} else {
-			thing.setFont(new Font("Helvetica", Font.PLAIN, scaled_font));
+			thing.setFont(new Font("Helvetica", Font.CENTER_BASELINE, scaled_font));
 		}
 		//resize the fonts
 		Component[] components = (Component[])thing.getComponents();

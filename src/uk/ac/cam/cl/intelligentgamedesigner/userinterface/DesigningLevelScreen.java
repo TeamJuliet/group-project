@@ -216,6 +216,7 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
             currentBoardCount = 5;
             if(currentBoardCount > BOARD_COUNT) currentBoardCount = BOARD_COUNT;
             for(int n=0;n<currentBoardCount;n++){
+            	if(topDesigns)
             	boardDesigns[n] = topDesigns[n];
             	if(updating_appearance)topBoards[n].setBoard(boardDesigns[n].getBoard());
             	topBoardsDetails[n].setDetails(boardDesigns[n],changing_difficulty);
