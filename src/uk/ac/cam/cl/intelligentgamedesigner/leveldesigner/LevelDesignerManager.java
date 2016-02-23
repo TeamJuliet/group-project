@@ -236,15 +236,14 @@ public class LevelDesignerManager extends SwingWorker {
     private void assignObjectiveAndMoves (Design design, int threadID) {
 
         // Specify the distribution of abilities that we want to run:
-        int numberOfSimulations = 7;
+        int numberOfSimulations = 6;
         int[] abilityDistribution = new int[numberOfSimulations];
-        abilityDistribution[0] = 1;
+        abilityDistribution[0] = 0;
         abilityDistribution[1] = 1;
         abilityDistribution[2] = 2;
-        abilityDistribution[3] = 2;
-        abilityDistribution[4] = 3;
-        abilityDistribution[5] = 5;
-        abilityDistribution[6] = 7;
+        abilityDistribution[3] = 3;
+        abilityDistribution[4] = 5;
+        abilityDistribution[5] = 7;
 
 
         switch (specification.getGameMode()) {
@@ -294,10 +293,16 @@ public class LevelDesignerManager extends SwingWorker {
 
         // Analyse the perfomance of the players
         double scoreObtained = 0;
+        DebugFilter.println("PLAYER PERFORMANCE: ", DebugFilterKey.LEVEL_DESIGN);
+        DebugFilter.println("------------------- ", DebugFilterKey.LEVEL_DESIGN);
+        int tempCount = 0;
         for (List<RoundStatistics> stats : gameStatistics) {
             if (stats.size() > 0) {
                 scoreObtained += stats.get(stats.size() - 1).progress.score;
+                DebugFilter.println("ABILITY " + abilityDistribution[tempCount] + " REACHED: " +
+                        stats.get(stats.size() - 1).progress.score, DebugFilterKey.LEVEL_DESIGN);
             }
+            tempCount++;
         }
 
         // For now, convert the target difficulty range from [0.0, 1.0] to [0.5, 1.5] and multiply this by the
@@ -321,17 +326,25 @@ public class LevelDesignerManager extends SwingWorker {
 
         // Analyse the perfomance of the players
         double numMoves = 0;
+        DebugFilter.println("PLAYER PERFORMANCE: ", DebugFilterKey.LEVEL_DESIGN);
+        DebugFilter.println("------------------- ", DebugFilterKey.LEVEL_DESIGN);
+        int tempCount1 = 0;
         for (List<RoundStatistics> stats : gameStatistics) {
+            int tempCount2 = 0;
             for (RoundStatistics roundStatistics : stats) {
                 int target = (specification.getGameMode() == GameMode.JELLY ?
                         roundStatistics.progress.jelliesRemaining : roundStatistics.progress.ingredientsRemaining);
 
                 if (target > 0) {
                     numMoves++;
+                    tempCount2++;
                 } else {
                     break;
                 }
             }
+            DebugFilter.println("ABILITY " + abilityDistribution[tempCount1] + " REQUIRED: " + tempCount2 + " MOVES",
+                    DebugFilterKey.LEVEL_DESIGN);
+            tempCount1++;
         }
 
         // For now, convert the target difficulty range from [0.0, 1.0] to [1.5, 0.5] and multiply this by the
