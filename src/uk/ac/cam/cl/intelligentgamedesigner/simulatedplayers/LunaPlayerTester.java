@@ -14,27 +14,35 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.experimental.GameDisplay;
 
-public class DepthPotentialScorePlayerTest {
+public class LunaPlayerTester {
     public static Design getSampleDesign() {
         int sizeX = 10, sizeY = 10;
         Design design = new Design();
         Cell[][] boardLayout = new Cell[sizeX][sizeY];
+        int jellies = 0;
         for (int i = 0; i < sizeX; ++i) {
             for (int j = 0; j < sizeY; ++j) {
                 boardLayout[i][j] = new Cell(CellType.EMPTY, null, 0, false);
-
             }
         }
-        design.setGameMode(GameMode.HIGHSCORE);
+        
+        for (int i = 4; i < 8; ++i) {
+            for (int j = 4; j < 8; ++j) {
+                boardLayout[i][j].setJellyLevel(2);
+                ++jellies;
+            }
+        }
+        
+        design.setGameMode(GameMode.JELLY);
         design.setNumberOfMovesAvailable(20);
-        design.setObjectiveTarget(10000000);
+        design.setObjectiveTarget(jellies);
         design.setBoard(boardLayout);
         return design;
     }
 
     public static void playGame(GameState game, GameDisplay display) {
-        TargetCellPlayer player = new TargetCellPlayer(9, 9);
-        while (!game.isGameOver() && game.getBoard()[9][9].getJellyLevel() != 0) {
+        JellyRemoverPlayerLuna player = new JellyRemoverPlayerLuna(game.getLevelDesign(), 2, 10);
+        while (!game.isGameOver()) {
             try {
                 System.out.println(game.getGameProgress());
                 Move move = player.calculateBestMove(game);
@@ -68,5 +76,7 @@ public class DepthPotentialScorePlayerTest {
         app.setVisible(true);
         app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         playGame(game, gamePanel);
+
     }
+
 }

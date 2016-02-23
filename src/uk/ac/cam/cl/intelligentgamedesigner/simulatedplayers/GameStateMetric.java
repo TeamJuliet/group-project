@@ -31,5 +31,4 @@ public class GameStateMetric implements Comparable<GameStateMetric> {
         return new GameStateMetric(first.score + second.score);
 
     }
-
 }

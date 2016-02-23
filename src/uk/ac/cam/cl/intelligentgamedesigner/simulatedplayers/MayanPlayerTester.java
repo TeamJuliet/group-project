@@ -14,7 +14,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.experimental.GameDisplay;
 
-public class DepthPotentialScorePlayerTest {
+public class MayanPlayerTester {
     public static Design getSampleDesign() {
         int sizeX = 10, sizeY = 10;
         Design design = new Design();
@@ -22,19 +22,19 @@ public class DepthPotentialScorePlayerTest {
         for (int i = 0; i < sizeX; ++i) {
             for (int j = 0; j < sizeY; ++j) {
                 boardLayout[i][j] = new Cell(CellType.EMPTY, null, 0, false);
-
             }
         }
+        
         design.setGameMode(GameMode.HIGHSCORE);
         design.setNumberOfMovesAvailable(20);
-        design.setObjectiveTarget(10000000);
+        design.setObjectiveTarget(20000);
         design.setBoard(boardLayout);
         return design;
     }
 
     public static void playGame(GameState game, GameDisplay display) {
-        TargetCellPlayer player = new TargetCellPlayer(9, 9);
-        while (!game.isGameOver() && game.getBoard()[9][9].getJellyLevel() != 0) {
+        MayanScorePlayer player = new MayanScorePlayer(game.getLevelDesign(), 3, 20);
+        while (!game.isGameOver()) {
             try {
                 System.out.println(game.getGameProgress());
                 Move move = player.calculateBestMove(game);
@@ -50,7 +50,7 @@ public class DepthPotentialScorePlayerTest {
                 e.printStackTrace();
             }
         }
-        System.out.println("GAME IS OVER" + game.isGameOver());
+        System.out.println("GAME IS OVER " + game.getGameProgress().score);
     }
 
     public static void main(String[] args) {
@@ -68,5 +68,7 @@ public class DepthPotentialScorePlayerTest {
         app.setVisible(true);
         app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         playGame(game, gamePanel);
+
     }
+
 }

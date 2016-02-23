@@ -26,5 +26,4 @@ public class GameStateCombinedMetric implements Comparable<GameStateCombinedMetr
             return -1;
         return 0;
     }
-
 }

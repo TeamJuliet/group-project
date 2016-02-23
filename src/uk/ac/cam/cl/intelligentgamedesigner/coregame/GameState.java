@@ -57,6 +57,7 @@ public class GameState implements Serializable {
         }
 
         candyGenerator = new PseudoRandomCandyGenerator(design, this.progress);
+        // candyGenerator = design.getCandyGenerator(this.progress);
         fillBoard();
 
         // Make sure the board is in a stable state
@@ -266,8 +267,7 @@ public class GameState implements Serializable {
             cell2.removeCandy();
             detonateVerticallyStripped(p1);
             detonateHorizontallyStripped(p2);
-        } else if ((hasVerticallyStripped(cell1) && hasVerticallyStripped(cell2))
-                || (hasHorizontallyStripped(cell1) && hasHorizontallyStripped(cell2))) {
+        } else if (hasStripped(cell1) && hasStripped(cell2)) {
             cell1.removeCandy();
             cell2.removeCandy();
             detonateVerticallyStripped(p1);
@@ -403,8 +403,8 @@ public class GameState implements Serializable {
 
         // Exchanging a Bomb with a cell that has a movable item is a valid
         // move (i.e. it is either special or normal candy type).
-        else if (hasBomb(cell1) && (hasSpecial(cell2) || hasNormal(cell2))
-                || hasBomb(cell2) && (hasSpecial(cell1) || hasNormal(cell1)))
+        else if (hasBomb(cell1) && (hasSpecial(cell2) || hasNormal(cell2) || hasBomb(cell2))
+                || hasBomb(cell2) && (hasSpecial(cell1) || hasNormal(cell1) || hasBomb(cell1)))
             return true;
 
         swapCandies(move);
@@ -886,15 +886,18 @@ public class GameState implements Serializable {
     // Function that fills the board by requesting candies from the
     // candyGenerator.
     private void fillBoard() {
+        int[] prev = new int[width];
+        for (int i = 0; i < width; ++i) prev[i] = height;
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 Cell cell = board[x][y];
                 if (cell.isFillable()) {
 
-                    int cur_y = y - 1;
+                    int cur_y = Math.min(y - 1, prev[x]);
                     while (cur_y >= 0 && !board[x][cur_y].blocksCandies()) {
                         cur_y--;
                     }
+                    prev[x] = cur_y;
                     if (cur_y < 0)
                         cell.setCandy(candyGenerator.generateCandy(x));
                 }
@@ -983,6 +986,16 @@ public class GameState implements Serializable {
         }
     }
 
+    public boolean hasMoves() {
+        for (int i = 0; i < width; ++i) {
+            for (int j = 0; j < height; ++j) {
+                if (isMoveValid(new Move(new Position(i, j), new Position(i+1, j)))) return true;
+                if (isMoveValid(new Move(new Position(i, j), new Position(i, j+1)))) return true;
+            }
+        }
+        return false;
+    }
+    
     // TODO: Handle case in which no amount of shuffling can introduce a
     // possible move - i.e. we have need some
     // concept of "GAME OVER"
@@ -995,13 +1008,13 @@ public class GameState implements Serializable {
         // exists a shuffle which introduces a possible move, so for now I think
         // we should just shuffle up to some limit, at which point we declare
         // that the game is over
-        int movesAvailable;
+        boolean hasMoves;
         int shuffleLimit = 5;
         int shuffleCount = 0;
 
         // While there are no available moves, we need to shuffle the normal
         // (non-special) candies on the board
-        while ((movesAvailable = getValidMoves().size()) == 0 && shuffleCount < shuffleLimit) {
+        while (!(hasMoves = this.hasMoves()) && shuffleCount < shuffleLimit) {
 
             DebugFilter.println("No moves available: Shuffling candies...", DebugFilterKey.GAME_IMPLEMENTATION);
 
@@ -1036,7 +1049,7 @@ public class GameState implements Serializable {
             shuffleCount++;
         }
 
-        if (movesAvailable == 0) {
+        if (!hasMoves) {
             progress.setDidFailShuffle();
             return false;
         }
