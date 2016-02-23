@@ -129,8 +129,8 @@ public class MayanScorePlayer extends DepthPotentialPlayer {
     
     @Override
     public Move calculateBestMove(GameState currentState) throws NoMovesFoundException {
-        if(referenceDesign != currentState.design){
-            referenceDesign = currentState.design;
+        if(referenceDesign != currentState.levelDesign){
+            referenceDesign = currentState.levelDesign;
             fillDifficultyOfFixedPositions(referenceDesign);
             DebugFilter.println("Design was replaced by MayanScorePlayer", DebugFilterKey.SIMULATED_PLAYERS);
         }

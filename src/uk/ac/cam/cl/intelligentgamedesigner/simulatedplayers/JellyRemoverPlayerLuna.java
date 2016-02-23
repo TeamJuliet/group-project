@@ -54,8 +54,8 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
     
     @Override
     public Move calculateBestMove(GameState currentState) throws NoMovesFoundException {
-        if(this.levelDesign != currentState.design){
-            this.levelDesign = currentState.design;
+        if(this.levelDesign != currentState.levelDesign){
+            this.levelDesign = currentState.levelDesign;
             fillDifficultyOfFixedPositions(this.levelDesign);
         }
         return super.calculateBestMove(currentState);
