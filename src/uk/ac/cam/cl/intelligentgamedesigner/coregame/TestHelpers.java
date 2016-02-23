@@ -1,5 +1,10 @@
 package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
+/** 
+ * 
+ * Class that contains constants used in testing to make test case writing more readable.
+ *
+ */
 public class TestHelpers {
 	public static final int ZERO_SCORE = 0;
 	public static final Candy RED_CANDY = new Candy(CandyColour.RED, CandyType.NORMAL);

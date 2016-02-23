@@ -2,6 +2,7 @@ package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
 import java.io.Serializable;
 
+// TODO: Write description for this class.
 public class Design implements Serializable {
 	private int height, width;          // The dimensions of the board.
     private Cell[][] boardLayout;       // The layout - specifying the position of special candies and blocks
@@ -14,7 +15,7 @@ public class Design implements Serializable {
     private GameMode gameMode;			// The game mode
 
 
-    
+    // TODO: Consider changing place to this function.
     public static Cell[][] copyBoard(Cell[][] board) {
         Cell[][] copy = new Cell[board.length][board[0].length];
         for (int i = 0; i < board.length; ++i) {

@@ -5,7 +5,7 @@ import java.util.List;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.UnmoveableCandyGenerator;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.UnmovableCandyGenerator;
 
 //Simple Evaluation: Metric = current score, Potential = best score after one move
 public class DepthPotentialScorePlayer extends DepthPotentialPlayer {
@@ -22,7 +22,7 @@ public class DepthPotentialScorePlayer extends DepthPotentialPlayer {
     @Override
     GameStatePotential getGameStatePotential(GameState gameState) {
         // Return the highest increase in score of all possible matches
-        GameState original = new GameState(gameState, new UnmoveableCandyGenerator());
+        GameState original = new GameState(gameState, new UnmovableCandyGenerator());
         int highestIncrease = 0;
         List<Move> moves = original.getValidMoves();
         for (Move move : moves) {

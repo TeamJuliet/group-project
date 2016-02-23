@@ -117,14 +117,17 @@ public class GameStateAuxiliaryFunctions {
         SingleTileAnalysis analysis = analyzeTile(pos, board);
         List<Position> positions = new LinkedList<Position>();
         List<CandyType> specials = new LinkedList<CandyType>();
+        int jelliesRemoved = 0;
         if (analysis.getLengthX() > 2) {
             for (int x = analysis.start_x; x <= analysis.end_x; ++x) {
                 if (x == pos.x)
                     continue;
                 Position currentPosition = new Position(x, pos.y);
                 positions.add(currentPosition);
-                if (hasSpecial(board[x][pos.y]))
+                if (hasSpecial(board[x][pos.y])) 
                     specials.add(board[x][pos.y].getCandy().getCandyType());
+                if (board[x][pos.y].getJellyLevel() > 0)
+                    ++jelliesRemoved;
             }
         }
         if (analysis.getLengthY() > 2) {
@@ -135,9 +138,11 @@ public class GameStateAuxiliaryFunctions {
                 positions.add(currentPosition);
                 if (hasSpecial(board[pos.x][y]))
                     specials.add(board[pos.x][y].getCandy().getCandyType());
+                if (board[pos.x][y].getJellyLevel() > 0)
+                    ++jelliesRemoved;
             }
         }
-        return new MatchAnalysis(positions, specials, getSpecialCandyFormed(analysis));
+        return new MatchAnalysis(positions, specials, getSpecialCandyFormed(analysis), jelliesRemoved);
     }
 
     public static boolean hasDetonated(Cell[][] board) {

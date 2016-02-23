@@ -228,8 +228,7 @@ public class GameState implements Serializable {
         resetRound();
         lastMove = move;
 
-        this.statProcess.setCandySwapped1(getCell(move.p1).getCandy());
-        this.statProcess.setCandySwapped2(getCell(move.p2).getCandy());
+        this.statProcess.setCandiesSwapped(getCell(move.p1).getCandy(), getCell(move.p2).getCandy());
 
         swapCandies(move);
 
@@ -373,6 +372,7 @@ public class GameState implements Serializable {
         List<MatchAnalysis> ret = new ArrayList<MatchAnalysis>();
         MatchAnalysis analysis1 = getSingleMatchAnalysis(board, move.p1);
         MatchAnalysis analysis2 = getSingleMatchAnalysis(board, move.p2);
+        // Add only the analyses that produced an outcome.
         if (analysis1 != null)
             ret.add(analysis1);
         if (analysis2 != null)

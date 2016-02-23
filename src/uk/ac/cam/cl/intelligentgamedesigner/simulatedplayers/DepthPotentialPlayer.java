@@ -7,7 +7,7 @@ import java.util.PriorityQueue;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.UnmoveableCandyGenerator;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.UnmovableCandyGenerator;
 
 abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
     // The number of states that the Player should look ahead at each move.
@@ -30,7 +30,7 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
     // of cells containing jellies refreshed, etc).
     GameStatePotential getGameStatePotential(GameState gameState) {
         // Return the highest increase in score of all possible matches
-        GameState original = new GameState(gameState, new UnmoveableCandyGenerator());
+        GameState original = new GameState(gameState, new UnmovableCandyGenerator());
         int highestMetricAfterOneMove = 0;
         List<Move> moves = original.getValidMoves();
         for (Move move : moves) {
@@ -142,7 +142,7 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
     }
 
     private GameState simulateNextMove(GameState gameState, Move move) throws InvalidMoveException {
-        GameState nextState = new GameState(gameState, new UnmoveableCandyGenerator());
+        GameState nextState = new GameState(gameState, new UnmovableCandyGenerator());
         nextState.makeFullMove(move);
         return nextState;
     }
