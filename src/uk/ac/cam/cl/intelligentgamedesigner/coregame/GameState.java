@@ -391,6 +391,7 @@ public class GameState implements Serializable {
      * @return whether the move is valid.
      */
     public boolean isMoveValid(Move move) {
+        if (move == null) return false;
         if (!isPositionValidAndMoveable(move.p1) || !isPositionValidAndMoveable(move.p2))
             return false;
         // Check move is for adjacent positions.

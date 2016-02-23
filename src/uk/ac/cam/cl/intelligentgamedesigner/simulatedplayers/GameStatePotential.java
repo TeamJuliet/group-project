@@ -8,7 +8,7 @@ public class GameStatePotential implements Comparable<GameStatePotential> {
     public final int potential;
 
     public GameStatePotential(GameStateMetric m) {
-        potential = m.score;
+        potential = m.metric;
     }
 
     public GameStatePotential(int p) {

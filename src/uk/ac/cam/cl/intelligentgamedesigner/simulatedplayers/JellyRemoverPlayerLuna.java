@@ -26,7 +26,8 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
     private final double              blockerAtBoundaryConstant  = 0.5;
 
     private HashMap<Position, Double> difficultyOfFixedPositions = new HashMap<Position, Double>();
-    private List<Position>            jellies = new LinkedList<Position>(), blockers = new LinkedList<Position>();
+    private List<Position>            jellies                    = new LinkedList<Position>(),
+            blockers = new LinkedList<Position>();
     private Design                    levelDesign;
 
     private void fillDifficultyOfFixedPositions(Design design) {
@@ -138,7 +139,8 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
         double score = 0.0;
         if (!gameState.isGameWon()) {
             Cell[][] board = gameState.getBoard();
-            // Accelerates jellies detonation when the number of moves approaches 0 or the number
+            // Accelerates jellies detonation when the number of moves
+            // approaches 0 or the number
             // of jellies approaches zero.
             final double targetAlpha = Math.max(targetWeight(gameState.getGameProgress().movesRemaining),
                     targetWeight(gameState.getGameProgress().jelliesRemaining));
@@ -155,12 +157,12 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
     }
 
     @Override
-    GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {
-        return new ScalarCombinedMetric(metric.score);
+    protected GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {
+        return new ScalarCombinedMetric(metric.metric);
     }
 
     @Override
-    List<Move> selectMoves(GameState gameState) {
+    protected List<Move> selectMoves(GameState gameState) {
         List<Move> ret = gameState.getValidMoves();
         Collections.shuffle(ret);
         return ret;

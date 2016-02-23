@@ -16,8 +16,8 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
 
 public class MayanScorePlayer extends DepthPotentialPlayer {
     private final double   blockerAtBoundaryConstant = 0.5;
-    private final double scoreSmoothing = 0.0005;
-    private final double hopefulBoost = 1.5;
+    private final double   scoreSmoothing            = 0.0005;
+    private final double   hopefulBoost              = 1.5;
 
     private List<Position> jellies                   = new LinkedList<Position>(),
             blockers = new LinkedList<Position>();
@@ -131,12 +131,12 @@ public class MayanScorePlayer extends DepthPotentialPlayer {
     }
 
     @Override
-    GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {
-        return new ScalarCombinedMetric(metric.score);
+    protected GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {
+        return new ScalarCombinedMetric(metric.metric);
     }
 
     @Override
-    List<Move> selectMoves(GameState gameState) {
+    protected List<Move> selectMoves(GameState gameState) {
         List<Move> ret = gameState.getValidMoves();
         Collections.shuffle(ret);
         return ret;
