@@ -66,7 +66,6 @@ public class InterfaceManager extends JFrame {
 		screens.add(level_creator_screen, level_creator_screen.getIdentifier());
 		screens.add(design_display_screen, design_display_screen.getIdentifier());
 		screens.add(designing_level_screen, designing_level_screen.getIdentifier());
-		
 		screens.add(unit_test_screen, unit_test_screen.getIdentifier());
 	}
 	
@@ -95,6 +94,7 @@ public class InterfaceManager extends JFrame {
 	}
 	
 	private static void switchTo(DisplayScreen new_screen){
+		
 		screenLayout.show(screens, new_screen.identifier);
 	}
 	
