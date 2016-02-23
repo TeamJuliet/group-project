@@ -237,6 +237,10 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 
 	@Override
 	protected void placeItems() {
+		
+		//size the fonts
+		fontScale(statsbox, DisplayScreen.FONT_NORMAL);
+		fontScale(quit_button, DisplayScreen.FONT_NORMAL);
 
 		//set the locations
 		position(statsbox,0.75,0.7,300,180);
