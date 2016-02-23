@@ -96,7 +96,7 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
 	public Design getDesign() {
         Design design = new Design();
 
-        design.setSize(board.width, board.height);
+        design.resizeBoard(board.width, board.height);
 
         Cell[][] designBoard = new Cell[board.width][board.height];
 

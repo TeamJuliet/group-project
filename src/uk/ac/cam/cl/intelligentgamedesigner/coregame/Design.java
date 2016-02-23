@@ -35,7 +35,9 @@ public class Design implements Serializable {
 
 	/**
 	 * Copy constructor.
-	 * @param design The design to copy.
+	 * 
+	 * @param design
+	 *            The design to copy.
 	 */
 	public Design(Design design) {
 		this.height = design.height;
@@ -256,7 +258,7 @@ public class Design implements Serializable {
 	public int getNumberOfCandyColours() {
 		return numberOfCandyColours;
 	}
-	
+
 	/**
 	 * Function that gets the board layout.
 	 * 
