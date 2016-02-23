@@ -16,20 +16,12 @@ public class LevelDesignIndividual implements Comparable<LevelDesignIndividual> 
         this.constraintFitness = levelRepresentation.getConstraintFitness();
     }
 
-    public double getFeasibility() {
-        // TODO: This should take constraint fitness into account
-        return this.aestheticFitness;
-    }
-
-    public LevelRepresentation getLevelRepresentation () {
-        return levelRepresentation;
-    }
-
     public double getFitness() {
-        double fitness = aestheticFitness;
-        // TODO this needs to be tweaked, need to decide how fitnesses will be combined.
-        fitness += difficultyFitness * 2;
-        return fitness / 3;
+        return this.constraintFitness;
+    }
+
+    public LevelRepresentation getLevelRepresentation() {
+        return levelRepresentation;
     }
 
     public Design getDesign() {

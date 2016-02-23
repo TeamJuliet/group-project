@@ -145,7 +145,7 @@ public class LevelDesigner implements Runnable {
     	for (LevelRepresentation l : newRepresentations) {
     		l.mutate();
 			LevelDesignIndividual mutated = new LevelDesignIndividual(l);
-    		if (mutated.getFeasibility() > feasibleThreshold) {
+    		if (mutated.getFitness() > feasibleThreshold) {
 				newFeasible.add(mutated);
 			} else {
 				newInfeasible.add(mutated);
