@@ -9,7 +9,9 @@ import java.io.Serializable;
  */
 public class Position implements Serializable {
 
-    /**
+	private static final long serialVersionUID = 1L;
+	
+	/**
      * The x and y coordinates on the board with (0, 0) being on the top left
      * corner.
      */
@@ -28,6 +30,10 @@ public class Position implements Serializable {
         this.y = y;
     }
 
+    /**
+     * Copy constructor.
+     * @param original Original position to copy.
+     */
     public Position(Position original) {
         this.x = original.x;
         this.y = original.y;

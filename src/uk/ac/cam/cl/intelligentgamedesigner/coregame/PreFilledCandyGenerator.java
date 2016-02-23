@@ -4,6 +4,12 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Stack;
 
+/**
+ * 
+ * Candy generator used for testing where it generates candies using the specified lookahead candies specified.
+ * Note: If the specified candies have been used then a random candy will be used.
+ *
+ */
 public class PreFilledCandyGenerator extends CandyGenerator {
 
     private ArrayList<Stack<Cell>> lookahead;

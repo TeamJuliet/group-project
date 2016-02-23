@@ -270,7 +270,7 @@ public class GameStateAuxiliaryFunctions {
 		List<CandyType> specials = new LinkedList<CandyType>();
 		int jelliesRemoved = 0;
 		if (analysis.getLengthX() > 2) {
-			for (int x = analysis.start_x; x <= analysis.end_x; ++x) {
+			for (int x = analysis.startX; x <= analysis.endX; ++x) {
 				if (x == pos.x)
 					continue;
 				Position currentPosition = new Position(x, pos.y);
@@ -282,7 +282,7 @@ public class GameStateAuxiliaryFunctions {
 			}
 		}
 		if (analysis.getLengthY() > 2) {
-			for (int y = analysis.start_y; y <= analysis.end_y; ++y) {
+			for (int y = analysis.startY; y <= analysis.endY; ++y) {
 				if (y == pos.y)
 					continue;
 				Position currentPosition = new Position(pos.x, y);
@@ -386,5 +386,38 @@ public class GameStateAuxiliaryFunctions {
 			}
 		}
 		return copy;
+	}
+	
+	/**
+	 * Function that returns a human readable string representation of the board.
+	 * @param board
+	 * @return string representation of the board.
+	 */
+	public static String boardToString(Cell[][] board) {
+        String result = "";
+
+        // We need to transpose the board so string can be constructed easily.
+        Cell[][] tmp = new Cell[board.length][board[0].length];
+        for (int x = 0; x < board.length; x++) {
+            for (int y = 0; y < board[0].length; y++) {
+                tmp[y][x] = board[x][y];
+            }
+        }
+
+        result += "  ";
+        for(int i = 0; i < board.length; i++){
+            result += " " + i + "  ";
+        }
+        result += "\n";
+        int rowNum = 0;
+        for (Cell[] row : tmp) {
+            result += rowNum + " ";
+            rowNum++;
+            for (Cell cell : row) {
+                result += cell.toString() + " ";
+            }
+            result += "\n";
+        }
+        return result;
 	}
 }
