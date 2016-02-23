@@ -35,6 +35,7 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 	
 	Timer timer;
 	private static final int waitspeed = 500;
+	private static int wait_between_moves = 600;
 	
 	public ComputerGameDisplayScreen(){
 		super();
@@ -123,6 +124,9 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 	@Override
 	protected void placeItems() {
 		super.placeItems();
+		
+		//size the fonts
+		fontScale(controls, DisplayScreen.FONT_NORMAL);
 
 		//set the locations
 		position(controls,0.75,0.32,300,160);
@@ -168,7 +172,7 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 				Move next = playerManager.calculateBestMove(theGame, ability);
 
 				((ComputerGameBoard)board).showMove(next);
-				Thread.sleep(wait_time*2);
+				Thread.sleep(wait_between_moves);
 				((ComputerGameBoard)board).hideMove();
 
 				playMove(next);

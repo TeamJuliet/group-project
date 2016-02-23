@@ -48,7 +48,6 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 	protected GameMode game_mode;
 	protected int score;
 	protected Design level;
-	protected static final int wait_time = 400;
 	
 	protected ArrayList<RoundStatistics> stats;
 	
@@ -237,6 +236,10 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 
 	@Override
 	protected void placeItems() {
+		
+		//size the fonts
+		fontScale(statsbox, DisplayScreen.FONT_NORMAL);
+		fontScale(quit_button, DisplayScreen.FONT_NORMAL);
 
 		//set the locations
 		position(statsbox,0.75,0.7,300,180);

@@ -60,26 +60,23 @@ public class LevelDesigner implements Runnable {
 
 			feasiblePopulation = newFeasible;
 			infeasiblePopulation = newInfeasible;
-
-			for (LevelDesignIndividual individual : newFeasible) {
-				individual.setDifficultyFitness(0.0);//manager.getGameplayFitness(individual.getDesign()));
-			}
 			
 			// Sort the individuals so they are in descending order of fitness.
 			Collections.sort(feasiblePopulation, Collections.reverseOrder());
 			
 			if (i % 10 == 0) {
 				DebugFilter.println("Iteration " + i, DebugFilterKey.LEVEL_DESIGN);
-				List<LevelRepresentation> l = new ArrayList<>();
 				DebugFilter.println("Top: ", DebugFilterKey.LEVEL_DESIGN);
 				DebugFilter.println("Num feasible: " + feasiblePopulation.size(), DebugFilterKey.LEVEL_DESIGN);
 
                 if (feasiblePopulation.size() > 0) {
-                    manager.notifyInterface(feasiblePopulation.get(0).getLevelRepresentation(), threadID);
-                }
+                    manager.notifyInterfacePhase1(feasiblePopulation.get(0).getLevelRepresentation(), threadID);
+                } else {
+					manager.notifyInterfacePhase1(null, threadID);
+				}
 			}
 			
-			manager.notifyInterface(i / (double) iterations, threadID);
+			manager.notifyInterfacePhase1(i / (double) iterations, threadID);
 		}
     	
     	DebugFilter.println("", DebugFilterKey.LEVEL_DESIGN);
@@ -87,6 +84,23 @@ public class LevelDesigner implements Runnable {
 		DebugFilter.println("Infeasible: " + infeasiblePopulation.size(), DebugFilterKey.LEVEL_DESIGN);
     	double time = (System.currentTimeMillis() - startTime) / 1000.0;
 		DebugFilter.println("Time: " + time, DebugFilterKey.LEVEL_DESIGN);
+
+		// If there are still other LevelDesign instances running phase 1, wait for them to complete
+		synchronized (manager) {
+			if (!manager.isPhase1Complete(threadID)) {
+				try {
+					manager.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		// Pass the top level design to the LevelDesignManager for it to assign an appropriate number of moves and
+		// any objectives where appropriate.
+		if (feasiblePopulation.size() > 0) {
+			manager.notifyInterfacePhase2(feasiblePopulation.get(0).getLevelRepresentation(), threadID);
+		}
     }
 
 	private LevelDesignIndividual stochasticSelection(List<LevelDesignIndividual> population, double totalFitness) {
@@ -145,7 +159,7 @@ public class LevelDesigner implements Runnable {
     	for (LevelRepresentation l : newRepresentations) {
     		l.mutate();
 			LevelDesignIndividual mutated = new LevelDesignIndividual(l);
-    		if (mutated.getFeasibility() > feasibleThreshold) {
+    		if (mutated.getFitness() > feasibleThreshold) {
 				newFeasible.add(mutated);
 			} else {
 				newInfeasible.add(mutated);

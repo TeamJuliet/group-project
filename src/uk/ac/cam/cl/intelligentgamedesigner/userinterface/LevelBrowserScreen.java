@@ -130,6 +130,13 @@ public class LevelBrowserScreen extends DisplayScreen implements ListSelectionLi
 	@Override
 	protected void placeItems() {
 		
+		//size the fonts
+		fontScale(title, DisplayScreen.FONT_TITLE);
+		fontScale(edit_button, DisplayScreen.FONT_NORMAL);
+		fontScale(delete_button, DisplayScreen.FONT_NORMAL);
+		fontScale(level_list, DisplayScreen.FONT_NORMAL);
+		fontScale(back_button, DisplayScreen.FONT_NORMAL);
+		
 		position(title,0.5,0.9,300,50);
 		position(edit_button,0.75,0.6,150,20);
 		position(delete_button,0.25,0.6,180,20);

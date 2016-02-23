@@ -35,13 +35,4 @@ public class DesignCell {
     public void setJellyLevel (int jellyLevel) {
         if (designCellType != DesignCellType.UNUSABLE) this.jellyLevel = jellyLevel;
     }
-
-    @Override
-    public boolean equals (Object object) {
-        if (!(object instanceof DesignCell)) return false;
-
-        DesignCell designCell = (DesignCell) object;
-        return this.designCellType == designCell.getDesignCellType()
-                && this.jellyLevel == designCell.getJellyLevel();
-    }
 }

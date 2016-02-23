@@ -188,6 +188,12 @@ public class DesignDisplayScreen extends DisplayScreen{
 	@Override
 	protected void placeItems() {
 		
+		//size the fonts
+		fontScale(title, DisplayScreen.FONT_TITLE);
+		fontScale(details, DisplayScreen.FONT_NORMAL);
+		fontScale(buttons, DisplayScreen.FONT_NORMAL);
+		fontScale(back, DisplayScreen.FONT_NORMAL);
+		
 		position(title, 0.35, 0.9, 200, 30);
 		position(details, 0.7,0.3,250,150);
 		position(buttons,0.7,0.7,250,250);

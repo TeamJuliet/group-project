@@ -15,7 +15,7 @@ import java.util.Random;
 public class LevelDesignerManager extends SwingWorker {
     public static int NUMBER_TO_DISPLAY = DesigningLevelScreen.BOARD_COUNT;
 
-    private long seed = System.nanoTime();      // The seed for debugging purposes
+    private long seed = 1;                      // The seed for debugging purposes
     private Specification specification;        // The
     private Random originalRandoms[];           // Can't use one random for debugging because of concurrency
     private LevelDesigner[] levelDesigners;     // The level designers
@@ -32,6 +32,7 @@ public class LevelDesignerManager extends SwingWorker {
         this.totalProgress      = 0;
 
         for (int l = 0; l < NUMBER_TO_DISPLAY; l++) {
+            // NOTE: If you want to debug, change this to: new Random(seed)
             originalRandoms[l]  = new Random(System.nanoTime());
             levelDesigners[l]   = new LevelDesigner(this, this.originalRandoms[l], l);
         }
@@ -56,25 +57,37 @@ public class LevelDesignerManager extends SwingWorker {
         return null;
     }
 
+    /**
+     * This is called when this instance finishes executing doInBackground(), and indicates to the user interface
+     * that the generation process is complete.
+     */
     @Override
     public void done () {
-        firePropertyChange(PropertyChanges.PROPERTY_CHANGE_DONE, null, null);
-    }
-    
-    public synchronized void notifyInterface(LevelRepresentation top, int threadID) {
-        this.topDesigns[threadID] = top.getDesign();
-
-        List<Design> topDesignsList = new ArrayList<>();
-        for (Design d : topDesigns) {
-            if (d != null) {
-                topDesignsList.add(d);
-            }
-        }
-
-        firePropertyChange(PropertyChanges.PROPERTY_CHANGE_DESIGNS, null, topDesignsList);
+        firePropertyChange(PropertyChanges.PROPERTY_CHANGE_PHASE2_DONE, null, null);
     }
 
-    public synchronized void notifyInterface(double progressValue, int threadID) {
+
+    // **** PHASE 1 METHODS ****
+
+    /**
+     * This is for notifying the user interface whenever a level board has changed.
+     *
+     * @param topLevel  The board that has changed
+     * @param threadID  The thread identifier for the calling LevelDesign instance
+     */
+    public synchronized void notifyInterfacePhase1(LevelRepresentation topLevel, int threadID) {
+        this.topDesigns[threadID] = topLevel.getDesign();
+
+        firePropertyChange(PropertyChanges.PROPERTY_CHANGE_DESIGNS, null, this.topDesigns);
+    }
+
+    /**
+     * This is for notifying the user interface whenever the progress has changed.
+     *
+     * @param progressValue The progress - a double between 0 and 1 inclusive
+     * @param threadID      The thread identifier for the calling LevelDesign instance
+     */
+    public synchronized void notifyInterfacePhase1(double progressValue, int threadID) {
         this.progress[threadID] = progressValue;
 
         double min = progress[0];
@@ -84,15 +97,67 @@ public class LevelDesignerManager extends SwingWorker {
 
         if (min > totalProgress) {
             totalProgress = min;
-            firePropertyChange(PropertyChanges.PROPERTY_CHANGE_PROGRESS, null, progressValue);
-        }
-
-        if (totalProgress == 1.0) {
-            firePropertyChange(PropertyChanges.PROPERTY_CHANGE_DONE, null, null);
+            firePropertyChange(PropertyChanges.PROPERTY_CHANGE_PROGRESS, null, totalProgress);
         }
     }
 
-    public List<LevelRepresentation> getPopulation(int size, int threadID) {
+    public synchronized boolean isPhase1Complete(int threadID) {
+        this.progress[threadID] = 1;
+
+        for (int i = 0; i < NUMBER_TO_DISPLAY; i++) {
+            if (progress[i] < 1) return false;
+        }
+
+        // If phase 1 has completed:
+
+        // Notify the user interface
+        firePropertyChange(PropertyChanges.PROPERTY_CHANGE_PHASE1_DONE, null, null);
+
+        // Reset the progress values and topDesigns ready for phase 2
+        for (int i = 0; i < NUMBER_TO_DISPLAY; i++) {
+            progress[i] = 0;
+            topDesigns[i] = null;
+        }
+
+
+        // Notify all waiting threads that they can commence phase 2
+        notifyAll();
+
+        return true;
+    }
+
+    // **** PHASE 2 METHODS ****
+
+    /**
+     *
+     * @param topLevel
+     * @param threadID
+     */
+    public synchronized void notifyInterfacePhase2(LevelRepresentation topLevel, int threadID) {
+        Design topDesign = topLevel.getDesign();
+        runPlayersAndAssignObjectives(topDesign);
+
+        this.topDesigns[threadID] = topDesign;
+        this.progress[threadID] = 1;
+
+        totalProgress = 0;
+        for (int i = 0; i < NUMBER_TO_DISPLAY; i++) {
+            if (progress[i] == 1) totalProgress += (1.0 / (double) NUMBER_TO_DISPLAY);
+        }
+
+        firePropertyChange(PropertyChanges.PROPERTY_CHANGE_PROGRESS, null, totalProgress);
+        firePropertyChange(PropertyChanges.PROPERTY_CHANGE_OBJECTIVES, null, this.topDesigns);
+    }
+
+    /**
+     * This is a factory method for producing the appropriate level representations for the calling LevelDesign
+     * instance.
+     *
+     * @param size      The requested size of the population to be generated
+     * @param threadID  The thread identifier for the calling LevelDesign instance
+     * @return          A list of level representations - i.e. a population
+     */
+    public synchronized List<LevelRepresentation> getPopulation(int size, int threadID) {
 
         // Calculate the number of candy colours to be used
         int numberOfCandyColours = getNumberOfCandyColours(threadID);
@@ -126,7 +191,7 @@ public class LevelDesignerManager extends SwingWorker {
      *
      * @return The candy colour to be used.
      */
-    public int getNumberOfCandyColours (int threadID) {
+    private int getNumberOfCandyColours (int threadID) {
         double[] choices = {0.0, 0.5, 1.0};
 
         int c;
@@ -207,5 +272,30 @@ public class LevelDesignerManager extends SwingWorker {
         double funFitness = totalFun / (double) numberOfSimulations;
 
         return (difficultyFitness + funFitness) / 2.0;
+    }
+
+    /**
+     * This method will run a given design on simulated players and assign the number of moves, score to reach and
+     * number of ingredients where appropriate.
+     *
+     * @param design
+     */
+    private void runPlayersAndAssignObjectives (Design design) {
+        switch (specification.getGameMode()) {
+            case HIGHSCORE:
+                design.setObjectiveTarget(1000);
+                break;
+            case INGREDIENTS:
+                design.setObjectiveTarget(3);
+                break;
+        }
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            System.err.println("K den");
+        }
+
+        design.setNumberOfMovesAvailable(100);
     }
 }

@@ -1,6 +1,11 @@
 package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -11,6 +16,18 @@ public abstract class DisplayScreen extends JPanel  implements ActionListener{
 	protected String identifier;
 	public String getIdentifier(){
 		return identifier;
+	}
+	
+	// Lobster font from: http://www.impallari.com/lobster/
+	private static Font lobster;
+	public static void loadFonts(){
+		File font_file = new File(System.getProperty("user.dir") + File.separator + "images" + File.separator + "Lobster.ttf");
+		try {
+			lobster = Font.createFont(Font.TRUETYPE_FONT, font_file);
+		} catch (FontFormatException | IOException e) {
+			lobster = null;
+			System.err.println("Failed to load the font");
+		}
 	}
 	
 	public DisplayScreen(){
@@ -60,6 +77,27 @@ public abstract class DisplayScreen extends JPanel  implements ActionListener{
 				(int) scaled_width, 
 				(int) scaled_height
 				);
+	}
+	
+	public static final int FONT_NORMAL = 12;
+	public static final int FONT_SMALL = 10;
+	public static final int FONT_TITLE = 22;
+	public static final int FONT_SUBTITLE = 18;
+	protected void fontScale(JComponent thing, int fontsize){
+		int scaled_font = (int)(scale_factor * fontsize);
+		if(lobster != null && (fontsize == FONT_TITLE || fontsize == FONT_SUBTITLE)){
+			thing.setFont(new Font(lobster.getFontName(), Font.PLAIN, scaled_font));
+		} else {
+			thing.setFont(new Font("Helvetica", Font.CENTER_BASELINE, scaled_font));
+		}
+		//resize the fonts
+		Component[] components = (Component[])thing.getComponents();
+		if(components != null){
+			for(Component c:components){
+				//resize if it has text
+				c.setFont(new Font("Helvetica", Font.CENTER_BASELINE, scaled_font));
+			}
+		}
 	}
 	protected void positionBoard(DisplayBoard board, double frac_w, double frac_h){
 		board.setAlignmentX(CENTER_ALIGNMENT);
