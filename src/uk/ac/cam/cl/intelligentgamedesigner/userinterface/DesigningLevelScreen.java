@@ -224,14 +224,14 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
             
             if(updating_appearance)positionBoards();
 			break;
-		case PropertyChanges.PROPERTY_PHASE1_DONE: //when the appearance phase is done
+		case PropertyChanges.PROPERTY_CHANGE_PHASE1_DONE: //when the appearance phase is done
 			changing_difficulty = true;
 			progressBar.setValue(0);
             for(int n=0;n<currentBoardCount;n++){
             	topBoardsDetails[n].setDetails(boardDesigns[n],changing_difficulty);
             }
 			break;
-		case PropertyChanges.PROPERTY_PHASE2_DONE: //when the entire process is done
+		case PropertyChanges.PROPERTY_CHANGE_PHASE2_DONE: //when the entire process is done
             // Let the user use the interface again!
             setCursor(null);
             back_button.setEnabled(true);

@@ -57,18 +57,25 @@ public class LevelDesignerManager extends SwingWorker {
         return null;
     }
 
+    /**
+     * This is called when this instance finishes executing doInBackground(), and indicates to the user interface
+     * that the generation process is complete.
+     */
     @Override
     public void done () {
         firePropertyChange(PropertyChanges.PROPERTY_CHANGE_PHASE2_DONE, null, null);
     }
 
+
+    // **** PHASE 1 METHODS ****
+
     /**
      * This is for notifying the user interface whenever a level board has changed.
      *
-     * @param top       The board that has changed
+     * @param topLevel  The board that has changed
      * @param threadID  The thread identifier for the calling LevelDesign instance
      */
-    public synchronized void notifyInterface(LevelRepresentation topLevel, int threadID) {
+    public synchronized void notifyInterfacePhase1(LevelRepresentation topLevel, int threadID) {
         this.topDesigns[threadID] = topLevel.getDesign();
 
         firePropertyChange(PropertyChanges.PROPERTY_CHANGE_DESIGNS, null, this.topDesigns);
@@ -80,7 +87,7 @@ public class LevelDesignerManager extends SwingWorker {
      * @param progressValue The progress - a double between 0 and 1 inclusive
      * @param threadID      The thread identifier for the calling LevelDesign instance
      */
-    public synchronized void notifyInterface(double progressValue, int threadID) {
+    public synchronized void notifyInterfacePhase1(double progressValue, int threadID) {
         this.progress[threadID] = progressValue;
 
         double min = progress[0];
@@ -92,21 +99,41 @@ public class LevelDesignerManager extends SwingWorker {
             totalProgress = min;
             firePropertyChange(PropertyChanges.PROPERTY_CHANGE_PROGRESS, null, totalProgress);
         }
-
-        // This is true when the final thread finishes phase 1
-        if (totalProgress >= 1.0) {
-            // Notify the interface that the board layouts have been generated
-            firePropertyChange(PropertyChanges.PROPERTY_CHANGE_PHASE1_DONE, null, null);
-
-            // Reset the progress
-            for (int i = 0; i < NUMBER_TO_DISPLAY; i++) {
-                progress[i] = 0;
-            }
-            totalProgress = 0;
-        }
     }
 
-    public synchronized void assignObjectives(LevelRepresentation topLevel, int threadID) {
+    public synchronized boolean isPhase1Complete(int threadID) {
+        this.progress[threadID] = 1;
+
+        for (int i = 0; i < NUMBER_TO_DISPLAY; i++) {
+            if (progress[i] < 1) return false;
+        }
+
+        // If phase 1 has completed:
+
+        // Notify the user interface
+        firePropertyChange(PropertyChanges.PROPERTY_CHANGE_PHASE1_DONE, null, null);
+
+        // Reset the progress values and topDesigns ready for phase 2
+        for (int i = 0; i < NUMBER_TO_DISPLAY; i++) {
+            progress[i] = 0;
+            topDesigns[i] = null;
+        }
+
+
+        // Notify all waiting threads that they can commence phase 2
+        notifyAll();
+
+        return true;
+    }
+
+    // **** PHASE 2 METHODS ****
+
+    /**
+     *
+     * @param topLevel
+     * @param threadID
+     */
+    public synchronized void notifyInterfacePhase2(LevelRepresentation topLevel, int threadID) {
         Design topDesign = topLevel.getDesign();
         runPlayersAndAssignObjectives(topDesign);
 
@@ -261,6 +288,12 @@ public class LevelDesignerManager extends SwingWorker {
             case INGREDIENTS:
                 design.setObjectiveTarget(3);
                 break;
+        }
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            System.err.println("K den");
         }
 
         design.setNumberOfMovesAvailable(100);
