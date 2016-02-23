@@ -24,7 +24,6 @@ public abstract class DisplayScreen extends JPanel  implements ActionListener{
 		File font_file = new File(System.getProperty("user.dir") + File.separator + "images" + File.separator + "Lobster.ttf");
 		try {
 			lobster = Font.createFont(Font.TRUETYPE_FONT, font_file);
-			System.out.println("loaded the file");
 		} catch (FontFormatException | IOException e) {
 			lobster = null;
 			System.err.println("Failed to load the font");
