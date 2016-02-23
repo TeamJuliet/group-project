@@ -16,8 +16,9 @@ public class SimulatedPlayersTestRunner {
         LevelManager manager = new LevelManager();
         GameState testLvl = new GameState(manager.getLevel(1));
         Move suggestedMove;
+        SimulatedPlayerManager playerManager = new SimulatedPlayerManager();
         try {
-            suggestedMove = SimulatedPlayerManager.calculateBestMove(testLvl,1);
+            suggestedMove = playerManager.calculateBestMove(testLvl,1);
         } catch (NoMovesFoundException e) {
             suggestedMove = null;
         }

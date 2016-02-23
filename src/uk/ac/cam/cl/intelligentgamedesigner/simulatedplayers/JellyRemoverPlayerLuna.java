@@ -27,8 +27,8 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
 
     private HashMap<Position, Double> difficultyOfFixedPositions = new HashMap<Position, Double>();
     private List<Position>            jellies                    = new LinkedList<Position>(),
-            blockers = new LinkedList<Position>();
-    private Design                    levelDesign;
+                                      blockers                   = new LinkedList<Position>();
+    private Design                    levelDesign                = null;
 
     private void fillDifficultyOfFixedPositions(Design design) {
         this.levelDesign = design;
@@ -48,9 +48,17 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
         }
     }
 
-    JellyRemoverPlayerLuna(Design design, int numOfStatesAhead, int numOfStatesInPool) {
+    JellyRemoverPlayerLuna(int numOfStatesAhead, int numOfStatesInPool) {
         super(numOfStatesAhead, numOfStatesInPool);
-        fillDifficultyOfFixedPositions(design);
+    }
+    
+    @Override
+    public Move calculateBestMove(GameState currentState) throws NoMovesFoundException {
+        if(this.levelDesign != currentState.design){
+            this.levelDesign = currentState.design;
+            fillDifficultyOfFixedPositions(this.levelDesign);
+        }
+        return super.calculateBestMove(currentState);
     }
 
     public static Cell getCell(Cell[][] board, Position pos) {
@@ -149,12 +157,12 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
         }
         return new ScalarGameMetric(score);
     }
-
+    
     @Override
     GameStatePotential getGameStatePotential(GameState gameState) {
-        // This player does not use potential evaluation
+        //Doesn't use gameStatePotential
         return null;
-    }
+    };
 
     @Override
     protected GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {

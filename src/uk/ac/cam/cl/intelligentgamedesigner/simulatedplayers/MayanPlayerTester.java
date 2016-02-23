@@ -33,7 +33,7 @@ public class MayanPlayerTester {
     }
 
     public static void playGame(GameState game, GameDisplay display) {
-        MayanScorePlayer player = new MayanScorePlayer(game.getLevelDesign(), 3, 20);
+        MayanScorePlayer player = new MayanScorePlayer(3, 20);
         while (!game.isGameOver()) {
             try {
                 System.out.println(game.getGameProgress());

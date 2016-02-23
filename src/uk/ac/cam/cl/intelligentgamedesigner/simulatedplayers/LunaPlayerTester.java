@@ -41,7 +41,7 @@ public class LunaPlayerTester {
     }
 
     public static void playGame(GameState game, GameDisplay display) {
-        JellyRemoverPlayerLuna player = new JellyRemoverPlayerLuna(game.getLevelDesign(), 2, 10);
+        JellyRemoverPlayerLuna player = new JellyRemoverPlayerLuna(2, 10);
         while (!game.isGameOver()) {
             try {
                 System.out.println(game.getGameProgress());
