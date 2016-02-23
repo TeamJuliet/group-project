@@ -119,9 +119,9 @@ public class Candy implements Cloneable, Serializable {
     }
 
     /**
-     * Sets a new colour to the candy. Note: there is no special check to whether
-     * the candy type requires a candy colour or that a candy type that requires
-     * a candy colour was set to null.
+     * Sets a new colour to the candy. Note: there is no special check to
+     * whether the candy type requires a candy colour or that a candy type that
+     * requires a candy colour was set to null.
      * 
      * @param colour
      *            The new candy colour for the candy.
@@ -130,7 +130,7 @@ public class Candy implements Cloneable, Serializable {
         this.colour = colour;
         if (this.colour == null && this.candyType.needsColour()) {
             System.err.println("Error: This candy does need a colour, but is not set one.");
-        } else if (this.colour != null && this.candyType.needsColour()) {
+        } else if (this.colour != null && !this.candyType.needsColour()) {
             System.err.println("Error: This candy does not need a colour, but is set one.");
         }
     }

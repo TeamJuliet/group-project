@@ -262,7 +262,7 @@ public class BoardDifficultyGenerator {
     }
     
     // Function that returns estimate between 0 and 3.0
-    public static double motionPotential(Cell[][] board, int x, int y) {
+    public static double getMotionPotential(Cell[][] board, int x, int y) {
         int cellsToBeFilled = 0;
         int cellsWithSpecials = 0;
 

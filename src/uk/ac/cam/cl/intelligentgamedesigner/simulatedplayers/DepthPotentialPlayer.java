@@ -60,8 +60,16 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
         return new GameStateCombinedMetric(metric, potential, (metric.metric + potential.potential) / 2);
     }
 
+    /**
+     * Function that filters the moves on the board that will be checked next.
+     * 
+     * @param gameState
+     *            Game state where the moves will be fetched from.
+     * @return A list of moves that the player will choose from.
+     */
     protected List<Move> selectMoves(GameState gameState) {
-        // TODO: look more into filtering moves
+        // Shuffle the moves so that they are not biased to the left and upper
+        // most part of the board.
         List<Move> ret = gameState.getValidMoves();
         Collections.shuffle(ret);
         return ret;
@@ -86,7 +94,8 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
     private void nextDepth() {
         int upperLimit = numOfStatesInPool == -1 ? pool.size() : numOfStatesInPool;
         int elementsProcessed = 0;
-        PriorityQueue<GameStateWithCombinedMetric> nextPool = new PriorityQueue<GameStateWithCombinedMetric>(numOfStatesInPool);
+        PriorityQueue<GameStateWithCombinedMetric> nextPool = new PriorityQueue<GameStateWithCombinedMetric>(
+                numOfStatesInPool);
         while (elementsProcessed < upperLimit && !pool.isEmpty()) {
             GameStateWithCombinedMetric current = pool.poll();
             List<Move> moves = selectMoves(current.gameState);
@@ -97,7 +106,7 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
             for (Move move : moves) {
                 nextPool.add(generateCombinedMetric(current, move));
             }
-            
+
         }
         pool = nextPool;
     }

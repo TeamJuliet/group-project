@@ -23,8 +23,8 @@ public class ProcessStateStatsViewer implements Serializable {
         this.numOfValidMoves = moves;
         this.numOfPassedIngredients = ingredients;
         this.numOfRemovedIcing = icing;
-        this.candySwapped1 = new Candy(candySwapped1);
-        this.candySwapped2 = new Candy(candySwapped2);
+        this.candySwapped1 = candySwapped1 == null ? null : new Candy(candySwapped1);
+        this.candySwapped2 = candySwapped2 == null ? null : new Candy(candySwapped2);
     }
 
     @Override
