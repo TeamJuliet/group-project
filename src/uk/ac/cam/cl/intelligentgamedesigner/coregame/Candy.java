@@ -130,7 +130,7 @@ public class Candy implements Cloneable, Serializable {
         this.colour = colour;
         if (this.colour == null && this.candyType.needsColour()) {
             System.err.println("Error: This candy does need a colour, but is not set one.");
-        } else if (this.colour != null && this.candyType.needsColour()) {
+        } else if (this.colour != null && !this.candyType.needsColour()) {
             System.err.println("Error: This candy does not need a colour, but is set one.");
         }
     }
