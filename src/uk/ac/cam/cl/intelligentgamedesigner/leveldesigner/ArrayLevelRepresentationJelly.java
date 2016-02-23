@@ -50,4 +50,13 @@ public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
     	
     	return design;
     }
+	
+	@Override
+    public double getAestheticFitness() {
+    	double fitness = super.getAestheticFitness();
+    	
+    	double jellyFitness = AestheticChecker.calculateJellyFitness(board);
+    	
+    	return fitness + jellyFitness * 0.2;
+    }
 }

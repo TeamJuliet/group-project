@@ -68,7 +68,7 @@ public class BackgroundThreadTest extends JPanel implements ActionListener, Prop
             int iterationNumber = (int) evt.getNewValue();
 
             iterationLabel.setText("Iteration: " + iterationNumber);
-        } else if (evt.getPropertyName().equals(PropertyChanges.PROPERTY_CHANGE_DONE)) {
+        } else if (evt.getPropertyName().equals(PropertyChanges.PROPERTY_CHANGE_PHASE1_DONE)) {
             startButton.setEnabled(true);
             // Make the cursor normal again
             setCursor(null);
