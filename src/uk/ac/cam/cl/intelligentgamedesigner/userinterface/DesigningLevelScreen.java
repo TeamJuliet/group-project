@@ -216,10 +216,11 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
             currentBoardCount = 5;
             if(currentBoardCount > BOARD_COUNT) currentBoardCount = BOARD_COUNT;
             for(int n=0;n<currentBoardCount;n++){
-            	if(topDesigns)
-            	boardDesigns[n] = topDesigns[n];
-            	if(updating_appearance)topBoards[n].setBoard(boardDesigns[n].getBoard());
-            	topBoardsDetails[n].setDetails(boardDesigns[n],changing_difficulty);
+            	if(topDesigns[n] != null){
+                	boardDesigns[n] = topDesigns[n];
+                	if(updating_appearance)topBoards[n].setBoard(boardDesigns[n].getBoard());
+                	topBoardsDetails[n].setDetails(boardDesigns[n],changing_difficulty);
+            	}
             }
             if(currentBoardCount < prevMost)currentBoardCount = prevMost;
             
@@ -228,9 +229,6 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 		case PropertyChanges.PROPERTY_CHANGE_PHASE1_DONE: //when the appearance phase is done
 			changing_difficulty = true;
 			progressBar.setValue(0);
-            for(int n=0;n<currentBoardCount;n++){
-            	topBoardsDetails[n].setDetails(boardDesigns[n],changing_difficulty);
-            }
 			break;
 		case PropertyChanges.PROPERTY_CHANGE_PHASE2_DONE: //when the entire process is done
             // Let the user use the interface again!
