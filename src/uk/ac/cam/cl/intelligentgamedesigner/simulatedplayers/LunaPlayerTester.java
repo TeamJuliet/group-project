@@ -25,14 +25,14 @@ public class LunaPlayerTester {
                 boardLayout[i][j] = new Cell(CellType.EMPTY, null, 0, false);
             }
         }
-        
+
         for (int i = 4; i < 8; ++i) {
             for (int j = 4; j < 8; ++j) {
                 boardLayout[i][j].setJellyLevel(1);
                 ++jellies;
             }
         }
-        
+
         design.setGameMode(GameMode.JELLY);
         design.setNumberOfMovesAvailable(20);
         design.setObjectiveTarget(jellies);
@@ -41,7 +41,8 @@ public class LunaPlayerTester {
     }
 
     public static void playGame(GameState game, GameDisplay display) {
-        JellyRemoverPlayerLuna player = new JellyRemoverPlayerLuna(game.getLevelDesign(), 2, 20);
+        JellyRemoverPlayerLuna player = new JellyRemoverPlayerLuna(2, 10);
+
         while (!game.isGameOver()) {
             try {
                 System.out.println(game.getGameProgress());
@@ -59,8 +60,10 @@ public class LunaPlayerTester {
             }
         }
         System.out.println("GAME IS OVER");
-        if (game.isGameWon()) System.out.println("Game is WON");
-        else System.out.println("Game is lost");
+        if (game.isGameWon())
+            System.out.println("Game is WON");
+        else
+            System.out.println("Game is lost");
     }
 
     public static void main(String[] args) {

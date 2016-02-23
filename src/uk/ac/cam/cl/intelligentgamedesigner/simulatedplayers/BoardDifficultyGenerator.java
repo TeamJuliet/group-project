@@ -23,9 +23,9 @@ public class BoardDifficultyGenerator {
         int combinableCandies = 0;
         for (int x = 0; x < cellBoard.length; ++x) {
             for (int y = 0; y < cellBoard[0].length; ++y) {
-                if (y != cellBoard[0].length - 1 && hasSpecial(cellBoard[x][y]) && hasSpecial(cellBoard[x][y+1]))
+                if (y != cellBoard[0].length - 1 && hasSpecialOrColourBomb(cellBoard[x][y]) && hasSpecialOrColourBomb(cellBoard[x][y+1]))
                     ++combinableCandies;
-                if (x != cellBoard.length - 1 && hasSpecial(cellBoard[x][y]) && hasSpecial(cellBoard[x+1][y]))
+                if (x != cellBoard.length - 1 && hasSpecialOrColourBomb(cellBoard[x][y]) && hasSpecialOrColourBomb(cellBoard[x+1][y]))
                     ++combinableCandies;
             }
         }
@@ -36,7 +36,7 @@ public class BoardDifficultyGenerator {
         double count = 0;
         for (Cell[] row : cellBoard) {
             for (Cell cell : row) {
-                if (hasBomb(cell)) count += 2.5;
+                if (hasColourBomb(cell)) count += 2.5;
                 else if (hasSpecial(cell)) count += 1.0;
             }
         }
@@ -270,7 +270,7 @@ public class BoardDifficultyGenerator {
         final int smoothingFactorFillable = 5;
         for (int i = x - 1; i <= x + 1; ++i) {
             for (int j = y - 1; j >= 0; --j) {
-                if (inBoard(board, i, j) && GameStateAuxiliaryFunctions.hasSpecial(board[i][j])) {
+                if (inBoard(board, i, j) && GameStateAuxiliaryFunctions.hasSpecialOrColourBomb(board[i][j])) {
                     ++cellsWithSpecials;
                 }
                 else if (isHopeful(board, i, j)) {

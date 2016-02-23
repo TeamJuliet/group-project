@@ -499,7 +499,7 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		}
 		
 		level.setBoard(board.getBoard());
-		level.setSize(temp_width, temp_height);
+		level.resizeBoard(temp_width, temp_height);
 		level.setRules(mode, number_of_moves, objective_value, number_of_candies.getValue());
 		
 		String fileName = level_on + ". " + level_name.getValue();

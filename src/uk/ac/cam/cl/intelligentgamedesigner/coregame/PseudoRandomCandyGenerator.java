@@ -2,20 +2,26 @@ package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
 import java.util.Random;
 
+/**
+ * 
+ * Candy Generator that creates a deterministic sequence of candies.
+ *
+ */
 public class PseudoRandomCandyGenerator extends CandyGenerator {
 
-	public PseudoRandomCandyGenerator(Design design, GameStateProgress gameStateProgress) {
-		super(design, gameStateProgress);
+	public PseudoRandomCandyGenerator() {
+		super();
 	}
 
 	private int curNum = 38, prime = 361, anotherPrime = 991;
 
-	public int nextPseudoRandom() {
+	private int nextPseudoRandom() {
 		// System.out.println(curNum + " " + CandyColour.values().length);
 		curNum = (curNum * prime) % anotherPrime;
 		return curNum;
 	}
 
+	// TODO: Remove this.
 	private static Random random = new Random();
 	
 	@Override

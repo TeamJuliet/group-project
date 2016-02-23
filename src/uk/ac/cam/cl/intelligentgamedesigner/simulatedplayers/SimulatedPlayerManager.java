@@ -1,15 +1,21 @@
 package uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers;
 
+import java.util.EnumMap;
+import java.util.HashMap;
+
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 
 public class SimulatedPlayerManager {
+    
+    EnumMap<GameMode, HashMap<Integer,SimulatedPlayerBase>> players = new EnumMap<>(GameMode.class);
 
     private static SimulatedPlayerBase makeSimulatedPlayer(int ability, GameMode mode) {
         SimulatedPlayerBase player;
         int lookAhead = 0;
         int poolSize = 0;
+        boolean dimitris = false; // TODO: find better name
         switch (ability) {
         case 1:
             player = new ScorePlayerBeta();
@@ -31,11 +37,11 @@ public class SimulatedPlayerManager {
             poolSize = 8;
             break;
         case 6:
-            lookAhead = 4;
+            lookAhead = 3;
             poolSize = 8;
             break;
         case 7:
-            lookAhead = 4;
+            lookAhead = 3;
             poolSize = 16;
             break;
         default:
@@ -45,17 +51,33 @@ public class SimulatedPlayerManager {
 
         switch (mode) {
         case JELLY:
-            player = new DepthPotentialJellyPlayer(lookAhead, poolSize);
+            if (dimitris) {
+                player = new JellyRemoverPlayerLuna(lookAhead, poolSize);
+                System.out.println("Dimitris");
+            } else {
+                player = new DepthPotentialJellyPlayer(lookAhead, poolSize);
+                System.out.println("Artem");
+            }
             break;
         default:
-            player = new DepthPotentialScorePlayer(lookAhead, poolSize);
+            if (dimitris) {
+                player = new MayanScorePlayer(lookAhead, poolSize);
+                System.out.println("Dimitris");
+            } else {
+                player = new DepthPotentialScorePlayer(lookAhead, poolSize);
+                System.out.println("Artem");
+            }
             break;
         }
         return player;
     }
 
-    public static Move calculateBestMove(GameState level, int ability) throws NoMovesFoundException {
-        SimulatedPlayerBase player = makeSimulatedPlayer(ability, level.getLevelDesign().getMode());
+    public Move calculateBestMove(GameState level, int ability) throws NoMovesFoundException {
+        GameMode mode = level.getLevelDesign().getMode();
+        if(!players.containsKey(mode)) players.put(mode, new HashMap<Integer, SimulatedPlayerBase>());
+        HashMap<Integer, SimulatedPlayerBase> modePlayers = players.get(mode);
+        if(!modePlayers.containsKey(ability)) modePlayers.put(ability, makeSimulatedPlayer(ability, mode));
+        SimulatedPlayerBase player = modePlayers.get(ability);
         Move move = player.calculateBestMove(level);
         if (move != null)
             return move;
@@ -64,7 +86,7 @@ public class SimulatedPlayerManager {
     }
 
     public static int getMaxAbilityLevel() {
-        return 7; //Decided by the switch in makeSimulatedPlayer()
+        return 7; // Decided by the switch in makeSimulatedPlayer()
     }
 
     public static void solve(GameState level, int ability) throws NoMovesFoundException {

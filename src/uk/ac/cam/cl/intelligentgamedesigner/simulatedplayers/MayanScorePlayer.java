@@ -13,14 +13,18 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
 
 public class MayanScorePlayer extends DepthPotentialPlayer {
     private final double   blockerAtBoundaryConstant = 0.5;
-    private final double scoreSmoothing = 0.0005;
-    private final double hopefulBoost = 1.5;
+    private final double   scoreSmoothing            = 0.0005;
+    private final double   hopefulBoost              = 1.5;
 
     private List<Position> jellies                   = new LinkedList<Position>(),
-            blockers = new LinkedList<Position>();
+                           blockers                  = new LinkedList<Position>();
+
+    private Design         referenceDesign           = null;
 
     private void fillDifficultyOfFixedPositions(Design design) {
         Cell[][] cellBoard = design.getBoard();
@@ -99,9 +103,8 @@ public class MayanScorePlayer extends DepthPotentialPlayer {
         return 10.0 - countHopeful(cellBoard) / 2.0;
     }
 
-    MayanScorePlayer(Design design, int numOfStatesAhead, int numOfStatesInPool) {
+    MayanScorePlayer(int numOfStatesAhead, int numOfStatesInPool) {
         super(numOfStatesAhead, numOfStatesInPool);
-        fillDifficultyOfFixedPositions(design);
     }
 
     @Override
@@ -123,20 +126,30 @@ public class MayanScorePlayer extends DepthPotentialPlayer {
         }
         return new ScalarGameMetric(score);
     }
-
+    
+    @Override
+    public Move calculateBestMove(GameState currentState) throws NoMovesFoundException {
+        if(referenceDesign != currentState.design){
+            referenceDesign = currentState.design;
+            fillDifficultyOfFixedPositions(referenceDesign);
+            DebugFilter.println("Design was replaced by MayanScorePlayer", DebugFilterKey.SIMULATED_PLAYERS);
+        }
+        return super.calculateBestMove(currentState);
+    };
+    
     @Override
     GameStatePotential getGameStatePotential(GameState gameState) {
-        // This player does not use potential evaluation
+        //Doesn't use gameStatePotential
         return null;
+    };
+
+    @Override
+    protected GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {
+        return new ScalarCombinedMetric(metric.metric);
     }
 
     @Override
-    GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {
-        return new ScalarCombinedMetric(metric.score);
-    }
-
-    @Override
-    List<Move> selectMoves(GameState gameState) {
+    protected List<Move> selectMoves(GameState gameState) {
         List<Move> ret = gameState.getValidMoves();
         Collections.shuffle(ret);
         return ret;

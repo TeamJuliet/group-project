@@ -8,18 +8,18 @@ public class SingleTileAnalysis {
     /**
      * The start and end of the match on x-axis.
      */
-    public final int start_x, end_x;
+    public final int startX, endX;
     
     /**
      * The start and end of the match on y-axis.
      */
-    public final int start_y, end_y;
+    public final int startY, endY;
 
     public SingleTileAnalysis(int start_x, int end_x, int start_y, int end_y) {
-        this.start_x = start_x;
-        this.end_x = end_x;
-        this.start_y = start_y;
-        this.end_y = end_y;
+        this.startX = start_x;
+        this.endX = end_x;
+        this.startY = start_y;
+        this.endY = end_y;
     }
 
     /**
@@ -27,7 +27,7 @@ public class SingleTileAnalysis {
      * @return size of the horizontal match containing the initial point.
      */
     public int getLengthX() {
-        return end_x - start_x + 1;
+        return endX - startX + 1;
     }
 
     /**
@@ -35,7 +35,7 @@ public class SingleTileAnalysis {
      * @return size of the vertical match containing the initial point.
      */
     public int getLengthY() {
-        return end_y - start_y + 1;
+        return endY - startY + 1;
     }
     
     /**

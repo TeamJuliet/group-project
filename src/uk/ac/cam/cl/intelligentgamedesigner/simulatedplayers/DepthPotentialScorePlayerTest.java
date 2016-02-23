@@ -22,7 +22,6 @@ public class DepthPotentialScorePlayerTest {
 		for (int i = 0; i < sizeX; ++i) {
 			for (int j = 0; j < sizeY; ++j) {
 				boardLayout[i][j] = new Cell(CellType.EMPTY, null, 0, false);
-
 			}
 		}
 		design.setGameMode(GameMode.HIGHSCORE);

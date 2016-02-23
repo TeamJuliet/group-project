@@ -2,9 +2,20 @@ package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
 import java.util.Random;
 
+/**
+ * 
+ * Generator that simply creates a random candy using the default java random generator.
+ *
+ */
 public class RandomCandyGenerator extends CandyGenerator {
-	public RandomCandyGenerator(Design design, GameStateProgress gameStateProgress) {
-		super(design, gameStateProgress);
+	
+	/**
+	 * Constructor using the level design and the progress of the game state.
+	 * @param design The level design used to create the game state.
+	 * @param gameStateProgress The progress of the game.
+	 */
+	public RandomCandyGenerator() {
+		super();
 	}
 
 	@Override
@@ -19,7 +30,7 @@ public class RandomCandyGenerator extends CandyGenerator {
 				ingredientsToDrop--;
 				previousNumberOfIngredientsRemaining--;
 				return new Candy(null, CandyType.INGREDIENT);
-			}
+			}	
 		}
 
 		// If an ingredient wasn't dropped, then drop a normal candy

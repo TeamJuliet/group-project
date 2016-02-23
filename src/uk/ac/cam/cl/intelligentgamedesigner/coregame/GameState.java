@@ -1,29 +1,55 @@
 package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
-import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
-import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
 import static uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions.*;
 
+/**
+ * 
+ * Class that contains the state of a game and is responsible for making valid moves on
+ * the board and keeping track of the progress and generating the next states of the game.
+ *
+ */
 public class GameState implements Serializable {
+	
+	// The current state of the board.
     private Cell[][]           board;
+    
+    // The design used to create the game state.
     public final Design        levelDesign;
+    
+    // The dimensions of the board.
     public final int           width, height;
+    
+    // The generator used for filling in the empty positions.
     CandyGenerator             candyGenerator;
 
+    // The candies that detonated on the current state cycle.
     private List<Position>     detonated               = new ArrayList<Position>();
+    
+    // The last move that was made (should be null if in the current state cycle, there was no move made).
     private Move               lastMove;
+    
+    // The game progress made in the game.
     private GameStateProgress  progress;
+    
+    // Boolean that indicates whether something has been popped in the current state diagram cycle.
     private boolean            wasSomethingPopped      = false;
+    
+    // The positions that are ingredient sinks on the board.
     private List<Position>     ingredientSinkPositions = new ArrayList<Position>();
+    
+    // Predicate that determines whether shuffles should occur.
+    // Note: this is set to false only for testing.
     private boolean            shouldShuffle           = true;
+    
+    // The current state in the process state diagram.
     private ProcessState       currentProcessState     = ProcessState.AWAITING_MOVE;
 
     // Statistics accumulators.
@@ -34,9 +60,10 @@ public class GameState implements Serializable {
     // This number will be used to get the scoring due to multiple matches in
     // a single round.
     private int                numberOfMatchedInRound  = 0;
-    // The design used when the game state was constructed.
-    private Design             design;
     
+    // The design used when the game state was constructed.
+    public final Design        design;
+
     /**
      * GameState creation using the design specification.
      * 
@@ -57,8 +84,9 @@ public class GameState implements Serializable {
             }
         }
 
-        candyGenerator = new PseudoRandomCandyGenerator(design, this.progress);
-        // candyGenerator = design.getCandyGenerator(this.progress);
+        this.candyGenerator = design.getCandyGenerator();
+        this.candyGenerator.setDesignAndGameProgress(design, this.progress);
+        
         fillBoard();
 
         // Make sure the board is in a stable state
@@ -81,8 +109,7 @@ public class GameState implements Serializable {
 
                 // For ICING and UNUSABLEs, we can just replace the cell with
                 // the design element
-                if (cellType == CellType.ICING
-                        || cellType == CellType.UNUSABLE
+                if (cellType == CellType.ICING || cellType == CellType.UNUSABLE
                         || (cellCandy != null && cellCandy.getCandyType() == CandyType.INGREDIENT)) {
                     board[x][y] = new Cell(cellToCopy);
                 }
@@ -90,7 +117,8 @@ public class GameState implements Serializable {
                 // except for the
                 // normal underlying candy
                 else if (cellType == CellType.LIQUORICE || cellType == CellType.EMPTY) {
-                    board[x][y] = new Cell((cellType.equals(CellType.EMPTY) & board[x][y].hasCandy()) ? CellType.NORMAL : cellType,
+                    board[x][y] = new Cell(
+                            (cellType.equals(CellType.EMPTY) & board[x][y].hasCandy()) ? CellType.NORMAL : cellType,
                             board[x][y].getCandy(), cellToCopy.getJellyLevel(), cellToCopy.isIngredientSink());
                 }
             }
@@ -103,13 +131,17 @@ public class GameState implements Serializable {
         this.progress.resetScore();
         this.design = design;
 
-        // For really shit levels, there won't even be a possible move from the start - we need to check for this
+        // For really shit levels, there won't even be a possible move from the
+        // start - we need to check for this
         if (getValidMoves().size() == 0) {
             progress.setDidFailShuffle();
         }
     }
 
-    // Copy constructor
+    /**
+     * Copy constructor for the game state.
+     * @param original The original game state to be copied.
+     */
     public GameState(GameState original) {
         this.board = new Cell[original.width][original.height];
         for (int x = 0; x < original.width; x++) {
@@ -129,14 +161,23 @@ public class GameState implements Serializable {
         recordIngredientSinks();
     }
 
-    // Constructor that is used to change the candy generator and allow for
-    // checking the future board states.
+    /**
+     * Constructor that is used to change the candy generator and allow for
+     * checking the future board states.
+     * @param original
+     * @param candyGenerator
+     */
     public GameState(GameState original, CandyGenerator candyGenerator) {
         this(original);
         this.candyGenerator = candyGenerator;
     }
 
-    // This constructor is for testing purposes
+    /**
+     * This constructor is for testing purposes
+     * @param board The board that should be copied (and is assumed to be reduced.
+     * @param progress The current progress for the game.
+     * @param candyGenerator The generator that will be used.
+     */
     public GameState(Cell[][] board, GameStateProgress progress, CandyGenerator candyGenerator) {
         this.width = board.length;
         this.height = board[0].length;
@@ -150,6 +191,7 @@ public class GameState implements Serializable {
         while (makeSmallMove())
             ;
         recordIngredientSinks();
+        this.design = null;
     }
 
     // **** GETTER FUNCTIONS START *****
@@ -158,40 +200,66 @@ public class GameState implements Serializable {
     public Cell[][] getBoard() {
         return board;
     }
-    
+
+    /**
+     * Get the current process state that the game state is in.
+     * @return The current process state.
+     */
     public ProcessState getCurrentProcessState() {
-    	return this.currentProcessState;
+        return this.currentProcessState;
     }
 
-    // Returns a copy of the cell at that position.
+    /**
+     * Get a copy of the cell at that position.
+     * @param x The x coordinate of the cell.
+     * @param y The y coordinate of the cell.
+     * @return A copy of the cell at that position.
+     */
     public Cell getCell(int x, int y) {
         return new Cell(board[x][y]);
     }
 
+    /** 
+     * Get the progress view of the current state of the board. 
+     * @return the progress view of the current state of the board.
+     */
     public GameStateProgressView getGameProgress() {
         return new GameStateProgressView(progress);
     }
 
+    /**
+     * Get the statistics for the round. Note: these will be valid on after the move has been completed.
+     * @return The round statistics for the one that just terminated.
+     */
     public RoundStatistics getRoundStatistics() {
         return new RoundStatistics(this.progress, this.statCandiesRemoved, this.statCandiesFormed, this.statProcess);
     }
 
-    // This functions can only be called if a design was specified in the
-    // constructor.
+    /**
+     * Function that checks whether the game has ended. Note: this can only be called if a level design
+     * was specified when constructing the game.
+     * @return
+     */
     public boolean isGameOver() {
         return progress.isGameOver(design);
     }
 
+    /**
+     * Function that checks whether the game was won. Note: this can only be called if a level design
+     * was specified when constructing the game.
+     * @return
+     */
     public boolean isGameWon() {
         return progress.isGameWon(design);
     }
 
-    public boolean didFailShuffle () {
+    public boolean didFailShuffle() {
         return progress.didFailShuffle();
     }
 
     // **** GETTER METHODS END ****
 
+    // TODO: Remove this function.
     public Design getLevelDesign() {
         return levelDesign;
     }
@@ -210,7 +278,6 @@ public class GameState implements Serializable {
             ;
     }
 
-    // TODO: change the name of this function to initiate move.
     /**
      * Function that initiates a move, meaning that it makes the swap and
      * transitions to the first state.
@@ -239,20 +306,20 @@ public class GameState implements Serializable {
         Cell cell1 = getCell(p1), cell2 = getCell(p2);
 
         // Just enumerating possible combinations.
-        if (hasBomb(cell1) && hasBomb(cell2)) {
+        if (hasColourBomb(cell1) && hasColourBomb(cell2)) {
             cell1.removeCandy();
             cell2.removeCandy();
             detonateBombBomb();
-        } else if (hasBomb(cell1) && hasSpecial(cell2)) {
+        } else if (hasColourBomb(cell1) && hasSpecial(cell2)) {
             cell1.removeCandy();
             replaceWithSpecialAllOf(cell2.getCandy().getColour(), cell2.getCandy().getCandyType());
-        } else if (hasBomb(cell2) && hasSpecial(cell1)) {
+        } else if (hasColourBomb(cell2) && hasSpecial(cell1)) {
             cell2.removeCandy();
             replaceWithSpecialAllOf(cell1.getCandy().getColour(), cell1.getCandy().getCandyType());
-        } else if (hasBomb(cell1) && hasNormal(cell2)) {
+        } else if (hasColourBomb(cell1) && hasNormal(cell2)) {
             cell1.removeCandy();
             breakAllOf(cell2.getCandy().getColour());
-        } else if (hasBomb(cell2) && hasNormal(cell1)) {
+        } else if (hasColourBomb(cell2) && hasNormal(cell1)) {
             cell2.removeCandy();
             breakAllOf(cell1.getCandy().getColour());
         } else if (hasHorizontallyStripped(cell1) && hasVerticallyStripped(cell2)) {
@@ -285,19 +352,9 @@ public class GameState implements Serializable {
         }
     }
 
-    private void findDetonated() {
-        detonated = new ArrayList<Position>();
-        for (int i = 0; i < width; ++i) {
-            for (int j = 0; j < height; ++j) {
-                if (board[i][j].hasCandy() && board[i][j].getCandy().isDetonated())
-                    this.detonated.add(new Position(i, j));
-            }
-        }
-    }
-
     /**
-     * Once the makeInitialMove has been called this takes care of making the small
-     * steps in the boards.
+     * Once the makeInitialMove has been called this takes care of making the
+     * small steps in the boards.
      * 
      * @return whether there is no other step in to be made.
      */
@@ -364,8 +421,6 @@ public class GameState implements Serializable {
      *            the move to be performed.
      * @return a list of the MatchAnalysis.
      */
-    // Function that returns the matches formed by a move.
-    // (Note: that when the board is in a final state then this is at most two).
     public List<MatchAnalysis> getMatchAnalysis(Move move) {
         // Make move in order to get information.
         swapCandies(move);
@@ -390,24 +445,25 @@ public class GameState implements Serializable {
      * @return whether the move is valid.
      */
     public boolean isMoveValid(Move move) {
+        if (move == null) return false;
         if (!isPositionValidAndMoveable(move.p1) || !isPositionValidAndMoveable(move.p2))
             return false;
         // Check move is for adjacent positions.
         if (Math.abs(move.p1.x - move.p2.x) + Math.abs(move.p1.y - move.p2.y) != 1)
             return false;
         Cell cell1 = getCell(move.p1), cell2 = getCell(move.p2);
-      
+
         if (hasSpecial(cell1) && hasSpecial(cell2))
             return true;
-        
+
         // Exchanging a Bomb with a cell that has a movable item is a valid
         // move (i.e. it is either special or normal candy type).
-        else if (hasBomb(cell1) && (hasSpecial(cell2) || hasNormal(cell2) || hasBomb(cell2))
-                || hasBomb(cell2) && (hasSpecial(cell1) || hasNormal(cell1) || hasBomb(cell1)))
+        else if (hasColourBomb(cell1) && (hasSpecial(cell2) || hasNormal(cell2) || hasColourBomb(cell2))
+                || hasColourBomb(cell2) && (hasSpecial(cell1) || hasNormal(cell1) || hasColourBomb(cell1)))
             return true;
 
         swapCandies(move);
-        boolean isValid = tileFormsMatch(board, move.p1) || tileFormsMatch(board, move.p2);
+        boolean isValid = cellFormsMatch(board, move.p1) || cellFormsMatch(board, move.p2);
         // Place candies as they were initially.
         swapCandies(move);
         return isValid;
@@ -601,7 +657,7 @@ public class GameState implements Serializable {
             foundVertical = true;
 
         // Iterate over all candies that match horizontally.
-        for (int k = analysis.start_x; k <= analysis.end_x; ++k) {
+        for (int k = analysis.startX; k <= analysis.endX; ++k) {
             SingleTileAnalysis childAnalysis = analyzeTile(new Position(k, y), board);
             if (childAnalysis.getLengthY() > 2) {
                 // This candy will be replaced by a wrapped one if
@@ -615,7 +671,7 @@ public class GameState implements Serializable {
                 }
                 // Iterate through the vertical column and trigger
                 // them.
-                for (int yy = childAnalysis.start_y; yy <= childAnalysis.end_y; ++yy) {
+                for (int yy = childAnalysis.startY; yy <= childAnalysis.endY; ++yy) {
                     if (yy == y)
                         continue;
                     trigger(k, yy, Scoring.NO_ADDITIONAL_SCORE);
@@ -635,7 +691,7 @@ public class GameState implements Serializable {
 
             // If last move is in the range we went through,
             // then make that one the stripped candy.
-            if (lastMove == null || !moveInHorizontalRange(lastMove, analysis.start_x, analysis.end_x)) {
+            if (lastMove == null || !moveInHorizontalRange(lastMove, analysis.startX, analysis.endX)) {
                 // Make the middle candy vertically stripped.
                 matchedStripped(x + 1, y, colour, VERTICAL);
             } else {
@@ -663,7 +719,7 @@ public class GameState implements Serializable {
         // If it forms a bomb there is no need to place wrapped.
         if (analysis.getLengthY() >= 5)
             foundHorizontal = true;
-        for (int k = analysis.start_y; k <= analysis.end_y; ++k) {
+        for (int k = analysis.startY; k <= analysis.endY; ++k) {
             SingleTileAnalysis childAnalysis = analyzeTile(new Position(x, k), board);
             if (childAnalysis.getLengthX() > 2) {
                 // This candy will be replaced by a wrapped one if
@@ -677,7 +733,7 @@ public class GameState implements Serializable {
                 }
                 // Iterate through the vertical column and trigger
                 // them.
-                for (int xx = childAnalysis.start_x; xx <= childAnalysis.end_x; ++xx) {
+                for (int xx = childAnalysis.startX; xx <= childAnalysis.endX; ++xx) {
                     if (xx == x)
                         continue;
                     trigger(xx, k, Scoring.NO_ADDITIONAL_SCORE);
@@ -694,7 +750,7 @@ public class GameState implements Serializable {
         } else if (!foundHorizontal) {
             // If last move is in the range we went through,
             // then make that one the stripped candy.
-            if (lastMove == null || !moveInVerticalRange(lastMove, analysis.start_y, analysis.end_y)) {
+            if (lastMove == null || !moveInVerticalRange(lastMove, analysis.startY, analysis.endY)) {
                 // Make the middle candy vertically stripped.
                 matchedStripped(x, y + 1, colour, HORIZONTAL);
             } else {
@@ -789,7 +845,7 @@ public class GameState implements Serializable {
     // Function that performs the clearing of the horizontal line for the
     // stripped candy.
     private void detonateHorizontallyStripped(Position hStripped) {
-    	incrementScore(Scoring.DETONATE_STRIPPED_CANDY);
+        incrementScore(Scoring.DETONATE_STRIPPED_CANDY);
         for (int x = 0; x < width; ++x) {
             Cell current = getCell(new Position(x, hStripped.y));
             if (hasHorizontallyStripped(current) && !current.getCandy().isDetonated()) {
@@ -803,8 +859,8 @@ public class GameState implements Serializable {
     // Function that creates a cross of width 3 around the locations that were
     // swapped and triggers all cells inside there.
     private void detonateWrappedStripped(Position pos) {
-    	incrementScore(Scoring.DETONATE_WRAPPED_CANDY);
-    	incrementScore(Scoring.DETONATE_STRIPPED_CANDY);
+        incrementScore(Scoring.DETONATE_WRAPPED_CANDY);
+        incrementScore(Scoring.DETONATE_STRIPPED_CANDY);
         for (int x = pos.x - 1; x <= pos.x + 1; ++x) {
             for (int y = 0; y < height; ++y) {
                 trigger(x, y, Scoring.WRAPPED_STRIPPED_INDIVIDUAL);
@@ -935,7 +991,7 @@ public class GameState implements Serializable {
     }
 
     private boolean isPositionValidAndMoveable(Position pos) {
-        return inBoard(pos) && board[pos.x][pos.y].isMoveable();
+        return inBoard(pos) && board[pos.x][pos.y].isMovable();
     }
 
     private Cell getCell(Position pos) {
@@ -953,7 +1009,7 @@ public class GameState implements Serializable {
     // Function that performs the combination of a bomb and a Normal Candy.
     private void breakAllOf(CandyColour colour) {
     	incrementScore(Scoring.DETONATE_BOMB);
-    	this.statCandiesRemoved.candyProcessed(COLOR_BOMB);
+    	this.statCandiesRemoved.candyProcessed(COLOUR_BOMB);
         for (int i = 0; i < width; ++i) {
             for (int j = 0; j < height; ++j) {
                 if (sameColourWithCell(board[i][j], colour))
@@ -964,21 +1020,21 @@ public class GameState implements Serializable {
 
     // Function that performs the combination of a bomb and a Special Candy.
     private void replaceWithSpecialAllOf(CandyColour colourMatched, CandyType typeToReplace) {
-    	incrementScore(Scoring.DETONATE_BOMB);
+        incrementScore(Scoring.DETONATE_BOMB);
         for (int i = 0; i < width; ++i) {
             for (int j = 0; j < height; ++j) {
-                if (sameColourWithCell(board[i][j], colourMatched) ) {
-                	if (!board[i][j].getCandy().getCandyType().isSpecial()) {
-	                    if (typeToReplace.equals(CandyType.HORIZONTALLY_STRIPPED)
-	                            || typeToReplace.equals(CandyType.VERTICALLY_STRIPPED)) {
-	                        if ((i % 2) != (j % 2))
-	                            makeStripped(i, j, colourMatched, HORIZONTAL);
-	                        else
-	                            makeStripped(i, j, colourMatched, VERTICAL);
-	                    } else if (typeToReplace.equals(CandyType.WRAPPED)) {
-	                        makeWrapped(i, j, colourMatched);
-	                    }
-                	}
+                if (sameColourWithCell(board[i][j], colourMatched)) {
+                    if (!board[i][j].getCandy().getCandyType().isSpecial()) {
+                        if (typeToReplace.equals(CandyType.HORIZONTALLY_STRIPPED)
+                                || typeToReplace.equals(CandyType.VERTICALLY_STRIPPED)) {
+                            if ((i % 2) != (j % 2))
+                                makeStripped(i, j, colourMatched, HORIZONTAL);
+                            else
+                                makeStripped(i, j, colourMatched, VERTICAL);
+                        } else if (typeToReplace.equals(CandyType.WRAPPED)) {
+                            makeWrapped(i, j, colourMatched);
+                        }
+                    }
                     trigger(i, j, Scoring.NO_ADDITIONAL_SCORE);
                 }
             }
@@ -1055,6 +1111,16 @@ public class GameState implements Serializable {
 
         return didShuffle;
     }
+    
+    private void findDetonated() {
+        detonated = new ArrayList<Position>();
+        for (int i = 0; i < width; ++i) {
+            for (int j = 0; j < height; ++j) {
+                if (board[i][j].hasCandy() && board[i][j].getCandy().isDetonated())
+                    this.detonated.add(new Position(i, j));
+            }
+        }
+    }
 
     private void resetRound() {
         // Reset the combo multiplier.
@@ -1066,31 +1132,6 @@ public class GameState implements Serializable {
 
     @Override
     public String toString() {
-        // TODO: make this more descriptive
-        String result = "";
-
-        // We need to transpose the board so string can be constructed easily.
-        Cell[][] tmp = new Cell[height][width];
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                tmp[y][x] = board[x][y];
-            }
-        }
-
-        result += "  ";
-        for(int i = 0; i < this.width; i++){
-            result += " " + i + "  ";
-        }
-        result += "\n";
-        int rowNum = 0;
-        for (Cell[] row : tmp) {
-            result += rowNum + " ";
-            rowNum++;
-            for (Cell cell : row) {
-                result += cell.toString() + " ";
-            }
-            result += "\n";
-        }
-        return result;
+    	return boardToString(this.board);
     }
 }

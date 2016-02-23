@@ -6,8 +6,12 @@ package uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers;
 //       a priority queue.
 public class GameStatePotential implements Comparable<GameStatePotential>{
     public final int potential;
-    
-    public GameStatePotential(int p){
+
+    public GameStatePotential(GameStateMetric m) {
+        potential = m.metric;
+    }
+
+    public GameStatePotential(int p) {
         potential = p;
     }
     
