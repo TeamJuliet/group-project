@@ -2,14 +2,11 @@ package uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers;
 
 import static uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.BoardDifficultyGenerator.canBeRemoved;
 import static uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.BoardDifficultyGenerator.countMovesThatAffectCell;
+import static uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.BoardDifficultyGenerator.getMotionPotential;
 import static uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.BoardDifficultyGenerator.getMovesDelta;
 import static uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.BoardDifficultyGenerator.getProbabilityOfHopefulCells;
-import static uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.BoardDifficultyGenerator.getMotionPotential;
-
-import java.util.List;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 
 /**
  * 
@@ -106,7 +103,7 @@ public class TargetCellPlayer extends DepthPotentialPlayer {
     @Override
     protected GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {
         return new ScalarCombinedMetric(
-                ((ScalarGameMetric) metric).realScore + ((ScalarGamePotential) potential).realScore);
+                ((ScalarGameMetric) metric).score + ((ScalarGamePotential) potential).score);
     }
 
 }

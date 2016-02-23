@@ -1,5 +1,6 @@
 package uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers;
 
+import static org.junit.Assert.assertTrue;
 import static uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayersTestHelpers.FIVE_MOVES_AVAILABLE;
 import static uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayersTestHelpers.INFINITE_TARGET_SCORE;
 import static uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayersTestHelpers.MINIMUM_TARGET_SCORE;
@@ -43,15 +44,15 @@ public class TargetCellPlayerTest {
                 e.printStackTrace();
             } catch (InvalidMoveException e) {
                 // There shouldn't be an invalid move attempted.
-                assert (false);
+                assertTrue (false);
                 e.printStackTrace();
             }
         }
 
-        assert (game.isGameOver());
+        assertTrue (game.isGameOver());
         // Since the game is won with one move, the game state should be in won
         // state.
-        assert (game.isGameWon());
+        assertTrue (game.isGameWon());
     }
 
     /**
@@ -74,13 +75,13 @@ public class TargetCellPlayerTest {
                 e.printStackTrace();
             } catch (InvalidMoveException e) {
                 // There shouldn't be an invalid move attempted.
-                assert (false);
+                assertTrue (false);
                 e.printStackTrace();
             }
         }
 
         // Simply checks that the game has ended.
-        assert (game.isGameOver());
+        assertTrue (game.isGameOver());
     }
 
     /**
@@ -103,13 +104,13 @@ public class TargetCellPlayerTest {
                 e.printStackTrace();
             } catch (InvalidMoveException e) {
                 // There shouldn't be an invalid move attempted.
-                assert (false);
+                assertTrue (false);
                 e.printStackTrace();
             }
         }
 
-        assert (game.isGameOver());
-        assert (game.isGameWon());
+        assertTrue (game.isGameOver());
+        assertTrue (game.isGameWon());
     }
 
     /**
@@ -133,12 +134,12 @@ public class TargetCellPlayerTest {
                 break;
             } catch (InvalidMoveException e) {
                 // There shouldn't be an invalid move attempted.
-                assert (false);
+                assertTrue (false);
                 e.printStackTrace();
             }
         }
 
-        assert (game.isGameOver());
+        assertTrue (game.isGameOver());
     }
     
 }
