@@ -64,35 +64,14 @@ public class AestheticChecker {
     	int score = 0;
     	for (int x = 0; x < maxX; x++) {
     		for (int y = 0; y < board.height; y++) {
-    			if (board.get(x, y).equals(board.get(board.width - x - 1, y))) {
+    			DesignCellType t1 = board.get(x, y).getDesignCellType();
+    			DesignCellType t2 = board.get(board.width - x - 1, y).getDesignCellType();
+    			if (t1 == t2) {
     				score++;
     			}
     		}
     	}
     	return score / (double) (maxX * board.height);
-//
-//    	int maxY = board.height / 2;
-//    	score = 0;
-//    	for (int x = 0; x < board.width; x++) {
-//    		for (int y = 0; y < maxY; y++) {
-//    			if (board.get(x, y).equals(board.get(x, board.height - y - 1))) {
-//    				score++;
-//    			}
-//    		}
-//    	}
-//    	double horizontal = score / (double) (maxY * board.width);
-//
-//    	score = 0;
-//    	for (int x = 0; x < board.width; x++) {
-//    		for (int y = 0; y < maxY; y++) {
-//    			if (board.get(x, y).equals(board.get(board.width - x - 1, board.height - y - 1))) {
-//    				score++;
-//    			}
-//    		}
-//    	}
-//    	double rotational = score / (double) (maxY * board.width);
-//
-//    	return Math.max(rotational, Math.max(vertical, horizontal));
 	}
 	
 	private static double calculateCentralDistance(DesignBoard board)
@@ -131,29 +110,46 @@ public class AestheticChecker {
 		{
 			for(int j = 1; j < board.width - 1; j++)
 			{
-					if(!board.get(i, j).equals(board.get(i, j+1)))
-					{
-						meh++;
-					}
-								
-					if(!board.get(i, j).equals(board.get(i+1, j)))
-					{
-						meh++;
-					}
-								
-					if(!board.get(i, j).equals(board.get(i, j-1)))
-					{
-						meh++;
-					}
-								
-					if(!board.get(i, j).equals(board.get(i-1, j)))
-					{
-						meh++;
-					}
+				DesignCellType t = board.get(i, j).getDesignCellType();
+				
+				if(t != board.get(i, j + 1).getDesignCellType())
+				{
+					meh++;
+				}
+							
+				if(t != board.get(i + 1, j).getDesignCellType())
+				{
+					meh++;
+				}
+							
+				if(t != board.get(i, j - 1).getDesignCellType())
+				{
+					meh++;
+				}
+							
+				if(t != board.get(i - 1, j).getDesignCellType())
+				{
+					meh++;
+				}
 			}
 		}
 		
 		return 1.0 - ((double)meh / (4 * board.width * board.height));
+	}
+	
+	public static double calculateJellyFitness(DesignBoard board) {
+		int maxX = board.width / 2;
+    	int score = 0;
+    	for (int x = 0; x < maxX; x++) {
+    		for (int y = 0; y < board.height; y++) {
+    			int j1 = board.get(x, y).getJellyLevel();
+    			int j2 = board.get(board.width - x - 1, y).getJellyLevel();
+    			if (j1 == j2) {
+    				score++;
+    			}
+    		}
+    	}
+    	return score / (double) (maxX * board.height);
 	}
 	
 }
