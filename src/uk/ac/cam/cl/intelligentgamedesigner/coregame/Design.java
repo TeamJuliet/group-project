@@ -35,7 +35,7 @@ public class Design implements Serializable {
 
 	// Candy generator that is going to be used.
 	// Note: this is not checked for equality.
-	private CandyGenerator candyGenerator;
+	private Class<? extends CandyGenerator> candyGenerator;
 
 	/**
 	 * Copy constructor.
@@ -75,7 +75,7 @@ public class Design implements Serializable {
 		this.objectiveTarget = 1;
 		this.numberOfCandyColours = 6;
 		this.gameMode = GameMode.HIGHSCORE;
-		this.candyGenerator = new PseudoRandomCandyGenerator();
+		this.candyGenerator = PseudoRandomCandyGenerator.class;
 	}
 
 	/**
@@ -198,7 +198,7 @@ public class Design implements Serializable {
 	 * @param candyGenerator
 	 *            The candy generator that should be used in this level.
 	 */
-	public void setCandyGenerator(CandyGenerator candyGenerator) {
+	public void setCandyGenerator(Class<? extends CandyGenerator> candyGenerator) {
 		this.candyGenerator = candyGenerator;
 	}
 
@@ -235,7 +235,12 @@ public class Design implements Serializable {
 	 * @return The candy generator for this design.
 	 */
 	public CandyGenerator getCandyGenerator() {
-		return this.candyGenerator;
+		try {
+			return this.candyGenerator.newInstance();
+		} catch (InstantiationException | IllegalAccessException e) {
+			System.err.println("Error: Could not instantiate the candy generator.");
+			return new PseudoRandomCandyGenerator();
+		}
 	}
 
 	/**
