@@ -14,6 +14,6 @@ public class UnmovableCandyGenerator extends CandyGenerator {
 	@Override
 	public Candy generateCandy(int x) {
 	    // Always, simply return an unmovable candy.
-		return new Candy(null, CandyType.UNMOVEABLE);
+		return new Candy(null, CandyType.UNMOVABLE);
 	}
 }

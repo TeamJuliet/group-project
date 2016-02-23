@@ -45,7 +45,7 @@ public class CandiesAccumulator {
             break;
         case INGREDIENT:
             break;
-        case UNMOVEABLE:
+        case UNMOVABLE:
             break;
         default:
             break;

@@ -13,7 +13,7 @@ public enum CandyType {
     WRAPPED, // Wrapped special candy.
     BOMB, // Does not have a Candy Color
     INGREDIENT, // Does not have a Candy Color
-    UNMOVEABLE, // Does not have a Candy Color and it is used to get next
+    UNMOVABLE, // Does not have a Candy Color and it is used to get next
                 // partially known states.
     ;
 
