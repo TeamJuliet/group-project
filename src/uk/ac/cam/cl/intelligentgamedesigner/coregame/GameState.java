@@ -60,9 +60,6 @@ public class GameState implements Serializable {
     // This number will be used to get the scoring due to multiple matches in
     // a single round.
     private int                numberOfMatchedInRound  = 0;
-    
-    // The design used when the game state was constructed.
-    public final Design        design;
 
     /**
      * GameState creation using the design specification.
@@ -71,7 +68,7 @@ public class GameState implements Serializable {
      *            The design given by the level generator.
      */
     public GameState(Design design) {
-        this.levelDesign = design;
+        this.levelDesign = new Design(design);
         this.width = levelDesign.getWidth();
         this.height = levelDesign.getHeight();
         this.board = new Cell[width][height];
@@ -129,7 +126,6 @@ public class GameState implements Serializable {
         // The score may have been prematurely increased from initial
         // reductions, so we reset it to 0
         this.progress.resetScore();
-        this.design = design;
 
         // For really shit levels, there won't even be a possible move from the
         // start - we need to check for this
@@ -149,15 +145,19 @@ public class GameState implements Serializable {
                 this.board[x][y] = new Cell(original.board[x][y]);
             }
         }
-        this.levelDesign = original.levelDesign;
+        this.levelDesign = new Design(original.levelDesign);
         this.width = original.width;
         this.height = original.height;
         this.progress = new GameStateProgress(original.progress);
-        this.candyGenerator = original.candyGenerator;
+        try {
+            this.candyGenerator = original.candyGenerator.getClass().newInstance();
+            this.candyGenerator.setDesignAndGameProgress(this.levelDesign, this.progress);
+        } catch (Exception e) {
+            System.err.println("Could not copy the candy Generator");
+        }
         for (Position p : original.detonated)
             this.detonated.add(new Position(p));
         this.lastMove = original.lastMove;
-        this.design = original.design;
         recordIngredientSinks();
     }
 
@@ -191,7 +191,6 @@ public class GameState implements Serializable {
         while (makeSmallMove())
             ;
         recordIngredientSinks();
-        this.design = null;
     }
 
     // **** GETTER FUNCTIONS START *****
@@ -241,7 +240,7 @@ public class GameState implements Serializable {
      * @return
      */
     public boolean isGameOver() {
-        return progress.isGameOver(design);
+        return progress.isGameOver(this.levelDesign);
     }
 
     /**
@@ -250,7 +249,7 @@ public class GameState implements Serializable {
      * @return
      */
     public boolean isGameWon() {
-        return progress.isGameWon(design);
+        return progress.isGameWon(this.levelDesign);
     }
 
     public boolean didFailShuffle() {

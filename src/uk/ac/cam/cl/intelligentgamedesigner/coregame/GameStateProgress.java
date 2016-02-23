@@ -23,6 +23,7 @@ public class GameStateProgress {
         this.jelliesRemaining = progress.jelliesRemaining;
         this.ingredientsRemaining = progress.ingredientsRemaining;
         this.movesRemaining = progress.movesRemaining;
+        this.didFailShuffle = progress.didFailShuffle;
     }
 
     public GameStateProgress(Design design) {
@@ -94,6 +95,9 @@ public class GameStateProgress {
         --ingredientsRemaining;
     }
 
+    /**
+     * Function that sets if the shuffling phase was not able to find a shuffle with a move.
+     */
     public void setDidFailShuffle () {
         didFailShuffle = true;
     }
