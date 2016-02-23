@@ -18,11 +18,12 @@ public class GameStateCombinedMetric implements Comparable<GameStateCombinedMetr
         this(new GameStateMetric(), new GameStatePotential(), 0);
     }
     
-	@Override
-	public int compareTo(GameStateCombinedMetric o) {
-		if(value > o.value) return 1;
-		if(value < o.value) return -1;
-		return 0;
-	}
-
+    @Override
+    public int compareTo(GameStateCombinedMetric o) {
+        if (value > o.value)
+            return 1;
+        if (value < o.value)
+            return -1;
+        return 0;
+    }
 }

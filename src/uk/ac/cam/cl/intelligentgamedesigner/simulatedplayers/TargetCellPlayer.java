@@ -19,11 +19,11 @@ public class TargetCellPlayer extends DepthPotentialPlayer {
         this.x = x;
         this.y = y;
     }
-    
+
     @Override
     GameStateMetric getGameStateMetric(GameState gameState) {
         TargetGameMetric metric;
-        
+
         if (gameState.getCell(x, y).getJellyLevel() == 0) {
             metric = new TargetGameMetric(0.0);
         } else if (canBeRemoved(gameState.getBoard(), x, y)) {
@@ -31,12 +31,12 @@ public class TargetCellPlayer extends DepthPotentialPlayer {
         } else {
             MovesAffectingCell affectingMoves = countMovesThatAffectCell(gameState, x, y);
             double movesDelta = getMovesDelta(affectingMoves);
-            metric = new TargetGameMetric(movesDelta + 0.1 + 1.0 - 
-                    getProbabilityOfHopefulCells(gameState.getBoard(), x, y, gameState.getLevelDesign().getNumberOfCandyColours())
-                    + motionPotential(gameState.getBoard(), x, y)
-            );
+            metric = new TargetGameMetric(movesDelta + 0.1 + 1.0
+                    - getProbabilityOfHopefulCells(gameState.getBoard(), x, y,
+                            gameState.getLevelDesign().getNumberOfCandyColours())
+                    + motionPotential(gameState.getBoard(), x, y));
         }
-        
+
         return (GameStateMetric) metric;
     }
 
@@ -47,14 +47,15 @@ public class TargetCellPlayer extends DepthPotentialPlayer {
     }
 
     @Override
-    GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {
-        // Just consider using the targetGameMetric since a potential metric is not used.
+    protected GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {
+        // Just consider using the targetGameMetric since a potential metric is
+        // not used.
         TargetGameMetric targetMetric = (TargetGameMetric) metric;
         return new TargetCombinedGameMetric(targetMetric);
     }
 
     @Override
-    List<Move> selectMoves(GameState gameState) {
+    protected List<Move> selectMoves(GameState gameState) {
         return gameState.getValidMoves();
     }
 

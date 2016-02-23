@@ -12,9 +12,10 @@ public class test {
         GameState testLvl = new GameState(manager.getLevel(1));
         Move suggestedMove = null;
         int i = 0;
+        SimulatedPlayerManager playerManager = new SimulatedPlayerManager();
         while(i < 10){
             try {
-                suggestedMove = SimulatedPlayerManager.calculateBestMove(testLvl, 3);
+                suggestedMove = playerManager.calculateBestMove(testLvl, 3);
             } catch (NoMovesFoundException e) {
                 suggestedMove = null;
             }

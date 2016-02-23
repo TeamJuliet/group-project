@@ -16,7 +16,7 @@ public class DepthPotentialScorePlayer extends DepthPotentialPlayer {
 
     @Override
     GameStateMetric getGameStateMetric(GameState gameState) {
-        return new GameStateMetric(gameState.getGameProgress().score);
+        return new GameStateMetric(gameState.design.getObjectiveTarget() - gameState.getGameProgress().score);
     }
 
     @Override
@@ -44,13 +44,13 @@ public class DepthPotentialScorePlayer extends DepthPotentialPlayer {
     }
 
     @Override
-    GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {
+    protected GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {
         // Value metric and potential equally for now and find arithmetic mean
-        return new GameStateCombinedMetric(metric, potential, (metric.score + potential.potential) / 2);
+        return new GameStateCombinedMetric(metric, potential, (metric.metric + potential.potential) / 2);
     }
 
     @Override
-    List<Move> selectMoves(GameState gameState) {
+    protected List<Move> selectMoves(GameState gameState) {
         // TODO: look more into filtering moves
         return gameState.getValidMoves();
     }
