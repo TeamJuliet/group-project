@@ -228,7 +228,6 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
             			if(topDesigns[x] != null)all_null = false;
             		}
             		if(updating_appearance && !all_null){ //if sent null in phase 2, just don't update anything
-            			System.out.println("null appearance");
             			boardDesigns[n] = null;
             			topBoards[n].clearBoard();
             			topBoardsDetails[n].setDetails(null, changing_difficulty);

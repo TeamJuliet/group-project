@@ -81,21 +81,25 @@ public abstract class DisplayScreen extends JPanel  implements ActionListener{
 	
 	public static final int FONT_NORMAL = 12;
 	public static final int FONT_SMALL = 10;
-	public static final int FONT_TITLE = 22;
+	public static final int FONT_TITLE = 24;
 	public static final int FONT_SUBTITLE = 18;
 	protected void fontScale(JComponent thing, int fontsize){
-		int scaled_font = (int)(scale_factor * fontsize);
+		float scaled_font = (float) (scale_factor * fontsize);
 		if(lobster != null && (fontsize == FONT_TITLE || fontsize == FONT_SUBTITLE)){
-			thing.setFont(new Font(lobster.getFontName(), Font.PLAIN, scaled_font));
+			thing.setFont(lobster.deriveFont(scaled_font));
 		} else {
-			thing.setFont(new Font("Helvetica", Font.CENTER_BASELINE, scaled_font));
+			thing.setFont(new Font("Helvetica", Font.CENTER_BASELINE, (int)scaled_font));
 		}
 		//resize the fonts
 		Component[] components = (Component[])thing.getComponents();
 		if(components != null){
 			for(Component c:components){
 				//resize if it has text
-				c.setFont(new Font("Helvetica", Font.CENTER_BASELINE, scaled_font));
+				if(lobster != null && (fontsize == FONT_TITLE || fontsize == FONT_SUBTITLE)){
+					c.setFont(lobster.deriveFont(scaled_font));
+				} else {
+					c.setFont(new Font("Helvetica", Font.CENTER_BASELINE, (int)scaled_font));
+				}
 			}
 		}
 	}
