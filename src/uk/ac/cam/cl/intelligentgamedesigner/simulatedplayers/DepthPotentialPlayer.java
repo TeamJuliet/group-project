@@ -9,6 +9,9 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.UnmovableCandyGenerator;
 
+import static uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions.*;
+import static uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.GameStateMetric.sub;
+
 abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
     // The number of states that the Player should look ahead at each move.
     // Note: when this is -1, it generates all possible moves.
@@ -31,7 +34,7 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
     GameStatePotential getGameStatePotential(GameState gameState) {
         // Return the highest increase in score of all possible matches
         GameState original = new GameState(gameState, new UnmovableCandyGenerator());
-        int highestMetricAfterOneMove = 0;
+        GameStateMetric bestMetric = null;
         List<Move> moves = original.getValidMoves();
         for (Move move : moves) {
             GameState tmp = new GameState(original);
@@ -44,19 +47,20 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
                 continue;
             }
 
-            int nextMetric = getGameStateMetric(tmp).score;
-            if (nextMetric > highestMetricAfterOneMove)
-                highestMetricAfterOneMove = nextMetric;
+            GameStateMetric nextMetric = getGameStateMetric(tmp);
+            if (nextMetric.compareTo(bestMetric) == -1)
+                bestMetric = nextMetric;
         }
-        return new GameStatePotential(highestMetricAfterOneMove);
+        if (bestMetric == null)
+            return new GameStatePotential(Integer.MAX_VALUE);
+        return new GameStatePotential(bestMetric);
     }
 
-    GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {
-        // Value metric and potential equally for now and find arithmetic mean
-        return new GameStateCombinedMetric(metric, potential, (metric.score + potential.potential) / 2);
+    protected GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {
+        return new GameStateCombinedMetric(metric, potential, (metric.metric + potential.potential) / 2);
     }
 
-    List<Move> selectMoves(GameState gameState) {
+    protected List<Move> selectMoves(GameState gameState) {
         // TODO: look more into filtering moves
         List<Move> ret = gameState.getValidMoves();
         Collections.shuffle(ret);
@@ -82,7 +86,7 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
     private void nextDepth() {
         int upperLimit = numOfStatesInPool == -1 ? pool.size() : numOfStatesInPool;
         int elementsProcessed = 0;
-        PriorityQueue<GameStateWithCombinedMetric> nextPool = new PriorityQueue<GameStateWithCombinedMetric>();
+        PriorityQueue<GameStateWithCombinedMetric> nextPool = new PriorityQueue<GameStateWithCombinedMetric>(numOfStatesInPool);
         while (elementsProcessed < upperLimit && !pool.isEmpty()) {
             GameStateWithCombinedMetric current = pool.poll();
             List<Move> moves = selectMoves(current.gameState);
