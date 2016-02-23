@@ -141,7 +141,7 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 				}
 				else {
 					end_game_panel.add(new JLabel("Better luck next time..."),SwingConstants.CENTER);
-					switch(theGame.getLevelDesign().getMode()){
+					switch(theGame.levelDesign.getMode()){
 					case HIGHSCORE:
 						end_game_panel.add(Box.createRigidArea(new Dimension(0, 10)));
 						end_game_panel.add(new JLabel("You didn't reach the required score"));

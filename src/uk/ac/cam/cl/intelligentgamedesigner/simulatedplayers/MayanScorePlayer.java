@@ -117,7 +117,7 @@ public class MayanScorePlayer extends DepthPotentialPlayer {
             // of jellies approaches zero.
             final double targetAlpha = targetWeight(gameState.getGameProgress().movesRemaining);
             System.out.println(gameState.getGameProgress().movesRemaining);
-            final double scoreDistance = (gameState.getLevelDesign().getObjectiveTarget()
+            final double scoreDistance = (gameState.levelDesign.getObjectiveTarget()
                     - gameState.getGameProgress().score) * scoreSmoothing;
             System.out.println(scoreDistance + " " + getCandyScore(board));
             score = (1.0 + targetAlpha) * (scoreDistance) + (1.0 - targetAlpha)

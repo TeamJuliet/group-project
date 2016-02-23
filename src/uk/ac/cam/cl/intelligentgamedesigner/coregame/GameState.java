@@ -182,7 +182,7 @@ public class GameState implements Serializable {
         this.width = board.length;
         this.height = board[0].length;
         this.progress = new GameStateProgress(progress);
-        this.levelDesign = new Design();
+        this.levelDesign = null;
         this.board = board;
         this.candyGenerator = candyGenerator;
         // We do not want shuffles in testing.
@@ -257,12 +257,7 @@ public class GameState implements Serializable {
     }
 
     // **** GETTER METHODS END ****
-
-    // TODO: Remove this function.
-    public Design getLevelDesign() {
-        return levelDesign;
-    }
-
+    
     /**
      * If the move is valid, it performs all steps until completion.
      * 
