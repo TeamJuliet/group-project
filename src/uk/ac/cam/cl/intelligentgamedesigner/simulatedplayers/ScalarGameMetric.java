@@ -1,7 +1,7 @@
 package uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers;
 
 public class ScalarGameMetric extends GameStateMetric {
-    private final double realScore;
+    public final double realScore;
     
     @Override
     public int compareTo(GameStateMetric o) {

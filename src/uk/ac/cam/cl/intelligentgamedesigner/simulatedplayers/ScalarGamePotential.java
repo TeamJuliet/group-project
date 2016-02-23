@@ -1,7 +1,7 @@
 package uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers;
 
 public class ScalarGamePotential extends GameStatePotential {
-    private final double realScore;
+    public final double realScore;
     
     @Override
     public int compareTo(GameStatePotential o) {

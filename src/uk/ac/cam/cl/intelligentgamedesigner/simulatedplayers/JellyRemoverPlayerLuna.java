@@ -4,7 +4,7 @@ import static uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.BoardDifficu
 import static uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.BoardDifficultyGenerator.countHopeful;
 import static uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.BoardDifficultyGenerator.getProbabilityOfHopefulCells;
 import static uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.BoardDifficultyGenerator.getSpecialCandiesScore;
-import static uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.BoardDifficultyGenerator.motionPotential;
+import static uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.BoardDifficultyGenerator.getMotionPotential;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -78,7 +78,7 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
                 } else {
                     double likelihood = getProbabilityOfHopefulCells(board, x, y,
                             this.levelDesign.getNumberOfCandyColours());
-                    double potential = motionPotential(board, x, y);
+                    double potential = getMotionPotential(board, x, y);
                     multiplier = 1.0 - ((1.0 - alphaLikelihood) * potential / 3.0 + alphaLikelihood * likelihood) / 4.0;
                 }
                 // System.err.println("jelly multiplier is " + multiplier);
