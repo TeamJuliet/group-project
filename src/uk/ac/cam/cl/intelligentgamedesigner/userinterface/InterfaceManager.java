@@ -55,6 +55,7 @@ public class InterfaceManager extends JFrame {
 		screen.setPreferredSize(new Dimension(1400,740));
 		
 		DisplayBoard.loadTextures();
+		DisplayScreen.loadFonts();
 		
 		//using CardLayout to allow for switching between screens
 		screens.add(main_menu_screen, main_menu_screen.getIdentifier());
