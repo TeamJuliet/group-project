@@ -8,8 +8,8 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 
 public class SimulatedPlayerManager {
-    
-    EnumMap<GameMode, HashMap<Integer,SimulatedPlayerBase>> players = new EnumMap<>(GameMode.class);
+
+    EnumMap<GameMode, HashMap<Integer, SimulatedPlayerBase>> players = new EnumMap<>(GameMode.class);
 
     private static SimulatedPlayerBase makeSimulatedPlayer(int ability, GameMode mode) {
         SimulatedPlayerBase player;
@@ -74,10 +74,8 @@ public class SimulatedPlayerManager {
 
     public Move calculateBestMove(GameState level, int ability) throws NoMovesFoundException {
         GameMode mode = level.getLevelDesign().getMode();
-        if(!players.containsKey(mode)) players.put(mode, new HashMap<Integer, SimulatedPlayerBase>());
-        HashMap<Integer, SimulatedPlayerBase> modePlayers = players.get(mode);
-        if(!modePlayers.containsKey(ability)) modePlayers.put(ability, makeSimulatedPlayer(ability, mode));
-        SimulatedPlayerBase player = modePlayers.get(ability);
+        checkPlayer(mode, ability);
+        SimulatedPlayerBase player = players.get(mode).get(ability);
         Move move = player.calculateBestMove(level);
         if (move != null)
             return move;
@@ -89,8 +87,19 @@ public class SimulatedPlayerManager {
         return 7; // Decided by the switch in makeSimulatedPlayer()
     }
 
-    public static void solve(GameState level, int ability) throws NoMovesFoundException {
-        SimulatedPlayerBase player = makeSimulatedPlayer(ability, level.getLevelDesign().getMode());
+    private void checkPlayer(GameMode mode, int ability) {
+        if (!players.containsKey(mode))
+            players.put(mode, new HashMap<Integer, SimulatedPlayerBase>());
+        HashMap<Integer, SimulatedPlayerBase> modePlayers = players.get(mode);
+        if (!modePlayers.containsKey(ability))
+            modePlayers.put(ability, makeSimulatedPlayer(ability, mode));
+    }
+
+    public void solve(GameState level, int ability) throws NoMovesFoundException {
+        GameMode mode = level.getLevelDesign().getMode();
+        checkPlayer(mode, ability);
+
+        SimulatedPlayerBase player = players.get(mode).get(ability);
         player.solve(level);
     }
 }
