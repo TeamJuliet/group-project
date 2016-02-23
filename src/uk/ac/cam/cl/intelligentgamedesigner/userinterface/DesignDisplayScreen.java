@@ -194,7 +194,7 @@ public class DesignDisplayScreen extends DisplayScreen{
 		fontScale(buttons, DisplayScreen.FONT_NORMAL);
 		fontScale(back, DisplayScreen.FONT_NORMAL);
 		
-		position(title, 0.35, 0.9, 200, 30);
+		position(title, 0.35, 0.9, 300, 50);
 		position(details, 0.7,0.3,250,150);
 		position(buttons,0.7,0.7,250,250);
 		positionBoard(board,0.35,0.5);

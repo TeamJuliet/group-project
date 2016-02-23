@@ -35,7 +35,6 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 	
     //functional
     private LevelDesignerManager levelDesignerManager;
-    private int currentBoardCount = 0;
     private Design[] boardDesigns;
     private int selected;
     
@@ -57,6 +56,8 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 		title.setText("Generating "+objective_text+" Levels...");
 		
 		changing_difficulty = false;
+		doing_what.setText("Setting the level appearance:");
+		progressBar.setValue(0);
 		
         view_level.setEnabled(false);
 		for(int n = 0; n < BOARD_COUNT; n++){
@@ -68,7 +69,6 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 		}
 		selected = -1;
 		
-		currentBoardCount = 0;
 		positionBoards();
 	
         levelDesignerManager = new LevelDesignerManager(specification);
@@ -88,15 +88,9 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 	
 	protected void positionBoards(){
 		for(int n=0;n<BOARD_COUNT;n++){
-			double x_offset = 0.5 + 0.9*(n - 0.5*(currentBoardCount - 1))/BOARD_COUNT;
-			if(n<currentBoardCount){
-				positionBoard(topBoards[n],x_offset,0.55);
-				position(topBoardsDetails[n],x_offset,0.33,200,80);
-			}
-			else {
-				positionBoard(topBoards[n],x_offset,-1);
-				position(topBoardsDetails[n],x_offset,-1,200,80);
-			}
+			double x_offset = 0.5 + 0.9*(n - 0.5*(BOARD_COUNT - 1))/BOARD_COUNT;
+			positionBoard(topBoards[n],x_offset,0.55);
+			position(topBoardsDetails[n],x_offset,0.33,200,80);
 		}
 	}
 	
@@ -208,26 +202,9 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
             double progress = (double) evt.getNewValue();
             progressBar.setValue((int) (progress * 100));
 			break;
-		case PropertyChanges.PROPERTY_CHANGE_DESIGNS: //in phase 1, getting new design appearances
-		case PropertyChanges.PROPERTY_CHANGE_OBJECTIVES: //in phase 2, getting new design objectives
-            Design[] topDesigns = (Design[]) evt.getNewValue();
-            boolean updating_appearance = evt.getPropertyName().equals(PropertyChanges.PROPERTY_CHANGE_DESIGNS);
-            int prevMost = currentBoardCount;
-            currentBoardCount = 5;
-            if(currentBoardCount > BOARD_COUNT) currentBoardCount = BOARD_COUNT;
-            for(int n=0;n<currentBoardCount;n++){
-            	if(topDesigns[n] != null){
-                	boardDesigns[n] = topDesigns[n];
-                	if(updating_appearance)topBoards[n].setBoard(boardDesigns[n].getBoard());
-                	topBoardsDetails[n].setDetails(boardDesigns[n],changing_difficulty);
-            	}
-            }
-            if(currentBoardCount < prevMost)currentBoardCount = prevMost;
-            
-            if(updating_appearance)positionBoards();
-			break;
 		case PropertyChanges.PROPERTY_CHANGE_PHASE1_DONE: //when the appearance phase is done
 			changing_difficulty = true;
+			doing_what.setText("Setting the level objectives:");
 			progressBar.setValue(0);
 			break;
 		case PropertyChanges.PROPERTY_CHANGE_PHASE2_DONE: //when the entire process is done
@@ -235,7 +212,30 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
             setCursor(null);
             back_button.setEnabled(true);
             if (selected > -1) view_level.setEnabled(true);
-
+			break;
+		case PropertyChanges.PROPERTY_CHANGE_DESIGNS: //in phase 1, getting new design appearances
+		case PropertyChanges.PROPERTY_CHANGE_OBJECTIVES: //in phase 2, getting new design objectives
+            Design[] topDesigns = (Design[]) evt.getNewValue();
+            boolean updating_appearance = !changing_difficulty;//evt.getPropertyName().equals(PropertyChanges.PROPERTY_CHANGE_DESIGNS);
+            for(int n=0;n<BOARD_COUNT;n++){
+            	if(topDesigns[n] != null){
+                	boardDesigns[n] = topDesigns[n];
+                	if(updating_appearance)topBoards[n].setBoard(boardDesigns[n].getBoard());
+                	topBoardsDetails[n].setDetails(boardDesigns[n],changing_difficulty);
+            	} else {
+            		boolean all_null = true;
+            		for(int x=0;x<BOARD_COUNT;x++){
+            			if(topDesigns[x] != null)all_null = false;
+            		}
+            		if(updating_appearance && !all_null){ //if sent null in phase 2, just don't update anything
+            			boardDesigns[n] = null;
+            			topBoards[n].clearBoard();
+            			topBoardsDetails[n].setDetails(null, changing_difficulty);
+            		}
+            	}
+            }
+            
+            if(updating_appearance)positionBoards();
 			break;
 		}
 	}

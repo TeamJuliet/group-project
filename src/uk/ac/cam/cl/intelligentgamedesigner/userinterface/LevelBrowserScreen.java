@@ -81,7 +81,7 @@ public class LevelBrowserScreen extends DisplayScreen implements ListSelectionLi
 
 		board_display = new DisplayBoard(board_design);
 		back_button = new JButton("Back");
-		edit_button = new JButton("View Level Options");
+		edit_button = new JButton("Try it out!");
 		delete_button = new JButton("Delete Selected Level");
 		
 		title = new JLabel("Select A Level Design:",SwingConstants.CENTER);
