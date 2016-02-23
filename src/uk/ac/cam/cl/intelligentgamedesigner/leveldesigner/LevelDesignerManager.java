@@ -1,6 +1,7 @@
 package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.RoundStatistics;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
@@ -38,6 +39,13 @@ public class LevelDesignerManager extends SwingWorker {
         }
     }
 
+    /**
+     * This method is executed in the background, running separate instances of LevelDesign to generate a variety of
+     * levels.
+     *
+     * @return
+     * @throws InterruptedException
+     */
     @Override
     protected Void doInBackground() throws InterruptedException {
         Thread[] generationThreads = new Thread[NUMBER_TO_DISPLAY];
@@ -67,7 +75,9 @@ public class LevelDesignerManager extends SwingWorker {
     }
 
 
-    // **** PHASE 1 METHODS ****
+
+
+    // ******** PHASE 1 METHODS ********
 
     /**
      * This is for notifying the user interface whenever a level board has changed.
@@ -126,7 +136,7 @@ public class LevelDesignerManager extends SwingWorker {
         return true;
     }
 
-    // **** PHASE 2 METHODS ****
+    // ******** PHASE 2 METHODS ********
 
     /**
      *
@@ -135,7 +145,7 @@ public class LevelDesignerManager extends SwingWorker {
      */
     public synchronized void notifyInterfacePhase2(LevelRepresentation topLevel, int threadID) {
         Design topDesign = topLevel.getDesign();
-        runPlayersAndAssignObjectives(topDesign);
+        assignObjectiveAndMoves(topDesign, threadID);
 
         this.topDesigns[threadID] = topDesign;
         this.progress[threadID] = 1;
@@ -147,7 +157,17 @@ public class LevelDesignerManager extends SwingWorker {
 
         firePropertyChange(PropertyChanges.PROPERTY_CHANGE_PROGRESS, null, totalProgress);
         firePropertyChange(PropertyChanges.PROPERTY_CHANGE_OBJECTIVES, null, this.topDesigns);
+
+        DebugFilter.println("****************************", DebugFilterKey.LEVEL_DESIGN);
+        DebugFilter.println("THREAD " + threadID + " COMPLETE.", DebugFilterKey.LEVEL_DESIGN);
+        DebugFilter.println("Objective target: " + topDesign.getObjectiveTarget(), DebugFilterKey.LEVEL_DESIGN);
+        DebugFilter.println("Moves available:  " + topDesign.getNumberOfMovesAvailable(), DebugFilterKey.LEVEL_DESIGN);
     }
+
+
+
+
+    // ******** FACTORY METHODS ********
 
     /**
      * This is a factory method for producing the appropriate level representations for the calling LevelDesign
@@ -203,47 +223,186 @@ public class LevelDesignerManager extends SwingWorker {
         }
     }
 
+
+
+
+    // ******** MOVES AND OBJECTIVE ASSIGNMENT ********
+
     /**
-     * This method will run appropriate simulated players on the given design and evaluate how fun and appropriately
-     * difficult the level is based on their performance and GameState-generated statistics. The gameplay fitness
-     * will be a value between 0 and 1.
+     * This is a wrapper for assigning the objective and the number of moves to a design.
      *
-     * @param design    The design of the level
-     * @return          The gameplay fitness, 0 <= d <= 1
+     * @param design    The design to assign the parameters to
      */
-    public double getGameplayFitness (Design design) {
+    private void assignObjectiveAndMoves (Design design, int threadID) {
 
-        // TODO: Make this more conservative - initially try the design on simple players before testing it on
-        // TODO: advanced ones (which are likely to be more expensive to run)
-
-        // For now, just create one player of each ability
-        int numberOfSimulations = 1;//SimulatedPlayerManager.getMaxAbilityLevel();
-
-        // The games to be played
-        GameState[] gameStates = new GameState[numberOfSimulations];
-
-        // The different abilities of players we want for each simulation
+        // Specify the distribution of abilities that we want to run:
+        int numberOfSimulations = 7;
         int[] abilityDistribution = new int[numberOfSimulations];
+        abilityDistribution[0] = 1;
+        abilityDistribution[1] = 1;
+        abilityDistribution[2] = 2;
+        abilityDistribution[3] = 2;
+        abilityDistribution[4] = 3;
+        abilityDistribution[5] = 5;
+        abilityDistribution[6] = 7;
 
-        // Each simulation will add information to each list in this list of lists
+
+        switch (specification.getGameMode()) {
+            case HIGHSCORE:
+                // For highscore levels we pick a sensible number of moves and then adjust the objective score to meet
+                // the target difficulty
+                assignMovesHighscore(design, threadID);
+                assignHighscore(design, abilityDistribution);
+                break;
+            case JELLY:
+                // For jelly levels we just set the number of moves depending on how long the players take
+                // to clear the jellies
+                assignMovesJellyOrIngredients(design, abilityDistribution);
+                break;
+            default:
+                // For ingredient levels, we guess the number of ingredients a player should clear based on the
+                // target difficulty and then base the number of moves available on how well the players do
+                assignIngredients(design, threadID);
+                assignMovesJellyOrIngredients(design, abilityDistribution);
+                break;
+        }
+    }
+
+    /**
+     * This fixes the number of moves to for a given level design, such that easier levels are likely to be shorter
+     * and harder levels are likely to be longer. This is called before the highscore objective is set.
+     *
+     * @param design    The level design to assign the moves to
+     */
+    private void assignMovesHighscore (Design design, int threadID) {
+        int minMoves = 5;
+        int maxMoves = 50;
+
+        design.setNumberOfMovesAvailable(weightedParameterSelection(minMoves, maxMoves, threadID));
+    }
+
+    /**
+     * This method assigns the highscore to a given level design by running simulated players on it. It assumes the
+     * number of moves has already been set.
+     *
+     * @param design    The level design to assign the highscore to
+     */
+    private void assignHighscore (Design design, int[] abilityDistribution) {
+
+        // Run simulations with the given abilities in multiple threads
+        List<List<RoundStatistics>> gameStatistics = runSimulations(design, abilityDistribution);
+
+        // Analyse the perfomance of the players
+        double scoreObtained = 0;
+        for (List<RoundStatistics> stats : gameStatistics) {
+            if (stats.size() > 0) {
+                scoreObtained += stats.get(stats.size() - 1).progress.score;
+            }
+        }
+
+        // For now, convert the target difficulty range from [0.0, 1.0] to [0.5, 1.5] and multiply this by the
+        // average number of moves taken:
+        double difficultyShift = specification.getTargetDifficulty() + 0.5;
+        double objectiveTarget = difficultyShift * (scoreObtained / (double) gameStatistics.size());
+
+        design.setObjectiveTarget((int) objectiveTarget);
+    }
+
+    /**
+     * This fixes the number of moves to for a jelly level by running simulated players on it and assessing how long
+     * they took to clear the jellies.
+     */
+    private void assignMovesJellyOrIngredients (Design design, int[] abilityDistribution) {
+        // Give the players up to 100 moves
+        design.setNumberOfMovesAvailable(100);
+
+        // Run simulations with the given abilities in multiple threads
+        List<List<RoundStatistics>> gameStatistics = runSimulations(design, abilityDistribution);
+
+        // Analyse the perfomance of the players
+        double numMoves = 0;
+        for (List<RoundStatistics> stats : gameStatistics) {
+            for (RoundStatistics roundStatistics : stats) {
+                int target = (specification.getGameMode() == GameMode.JELLY ?
+                        roundStatistics.progress.jelliesRemaining : roundStatistics.progress.ingredientsRemaining);
+
+                if (target > 0) {
+                    numMoves++;
+                } else {
+                    break;
+                }
+            }
+        }
+
+        // For now, convert the target difficulty range from [0.0, 1.0] to [1.5, 0.5] and multiply this by the
+        // average number of moves taken:
+        double difficultyShift = 1.5 - specification.getTargetDifficulty();
+        double numberOfMovesAvailable = difficultyShift * (numMoves / (double) gameStatistics.size());
+
+        design.setNumberOfMovesAvailable((int) numberOfMovesAvailable);
+    }
+
+    private void assignIngredients (Design design, int threadID) {
+        int minIngredients = 1;
+        int maxIngredients = 3;
+
+        design.setObjectiveTarget(weightedParameterSelection(minIngredients, maxIngredients, threadID));
+    }
+
+
+
+
+    // ******** HELPER FUNCTIONS ********
+
+    /**
+     * This function returns an integer in the range [min, max], such that a number towards min is more likely to
+     * be picked for a low target difficulty, and a number towards max is more likely to be picked for a high target
+     * difficulty.
+     *
+     * @param min       The minimum parameter value
+     * @param max       The maximum parameter value
+     * @param threadID  The threadID, to identify the correct Random instance to use
+     * @return          The parameter described above
+     */
+    private int weightedParameterSelection (int min, int max, int threadID) {
+        int suggestedNumber;
+
+        while (true) {
+            suggestedNumber = originalRandoms[threadID].nextInt(max - min + 1) + min;
+
+            // Map the suggested parameter in the range [min, max]
+            // to a double in the range [0.0, 1.0]
+            double mappedValue = (suggestedNumber - min) / (double) (max - min);
+            double diff = Math.abs(specification.getTargetDifficulty() - mappedValue);
+
+            // This means we're more likely to pick a lower parameter for easy levels, and a higher parameter for
+            // harder levels
+            if (originalRandoms[threadID].nextDouble() > diff) break;
+        }
+
+        return suggestedNumber;
+    }
+
+    /**
+     * This method is a helper method for running simulations in parallel with players of the abilities specified in
+     * abilityDistribution.
+     *
+     * @param design                The level design to run the players on
+     * @param abilityDistribution   The abilities of the simulated players to be run
+     * @return                      The game statistics for all of the simulations
+     */
+    private List<List<RoundStatistics>> runSimulations (Design design,
+                                                            int[] abilityDistribution) {
+        int numberOfSimulations = abilityDistribution.length;
+        GameState[] gameStates = new GameState[numberOfSimulations];
         List<List<RoundStatistics>> gameStatistics = new ArrayList<>(numberOfSimulations);
-
-        // The actual threads to run the simulations
         Thread[] simulationThreads = new Thread[numberOfSimulations];
 
         for (int t = 0; t < numberOfSimulations; t++) {
-            // Generate a new game
-            gameStates[t] = new GameState(design);
-
-            // Generate a reference to a list of statistics which can be passed to a simulation
-            gameStatistics.add(new ArrayList<>());
-
-            // Generate an ability level you'd like for testing that game
-            abilityDistribution[t] = t;
-
-            // Create and start a thread for running that simulation
+            gameStates[t] = new GameState(design);      // Generate a new game
+            gameStatistics.add(new ArrayList<>());      // Generate a reference to be passed to each simulation
             simulationThreads[t] = new Thread(new SimulationThread(gameStates[t], abilityDistribution[t],
-                    gameStatistics.get(t)));
+                    gameStatistics.get(t)));            // Create the thread to run that simulation
 
             simulationThreads[t].setDaemon(true);
             simulationThreads[t].start();
@@ -259,43 +418,6 @@ public class LevelDesignerManager extends SwingWorker {
             DebugFilter.println("Simulation interrupted.", DebugFilterKey.LEVEL_DESIGN);
         }
 
-        // Evaluate the performance of the players, and how 'fun' the simulations were
-        double totalDifficulty = 0;
-        double totalFun = 0;
-        for (int t = 0; t < numberOfSimulations; t++) {
-            totalDifficulty += DifficultyChecker.estimateDifficulty(gameStates[t], design);
-            totalFun += FunChecker.getFunFitness(gameStatistics.get(t));
-        }
-
-        double estimatedDifficulty = totalDifficulty / (double) numberOfSimulations;
-        double difficultyFitness = 1 - Math.abs(estimatedDifficulty - specification.getTargetDifficulty());
-        double funFitness = totalFun / (double) numberOfSimulations;
-
-        return (difficultyFitness + funFitness) / 2.0;
-    }
-
-    /**
-     * This method will run a given design on simulated players and assign the number of moves, score to reach and
-     * number of ingredients where appropriate.
-     *
-     * @param design
-     */
-    private void runPlayersAndAssignObjectives (Design design) {
-        switch (specification.getGameMode()) {
-            case HIGHSCORE:
-                design.setObjectiveTarget(1000);
-                break;
-            case INGREDIENTS:
-                design.setObjectiveTarget(3);
-                break;
-        }
-
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            System.err.println("K den");
-        }
-
-        design.setNumberOfMovesAvailable(100);
+        return gameStatistics;
     }
 }
