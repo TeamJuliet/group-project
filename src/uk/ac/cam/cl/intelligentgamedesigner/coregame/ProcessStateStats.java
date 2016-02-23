@@ -44,14 +44,11 @@ public class ProcessStateStats {
         ++this.numOfPassedIngredients;
     }
 
-    public void setCandySwapped1(Candy candy) {
-        this.candySwapped1 = new Candy(candy);
+    public void setCandiesSwapped(Candy candy1, Candy candy2) {
+        this.candySwapped1 = new Candy(candy1);
+        this.candySwapped2 = new Candy(candy2);
     }
-
-    public void setCandySwapped2(Candy candy) {
-        this.candySwapped2 = new Candy(candy);
-    }
-
+    
     public ProcessStateStatsViewer toViewer() {
         return new ProcessStateStatsViewer(this.wasShuffled, this.numOfTransitions, this.numOfValidMoves,
                 this.numOfPassedIngredients, this.numOfRemovedIcing, candySwapped1, candySwapped2);

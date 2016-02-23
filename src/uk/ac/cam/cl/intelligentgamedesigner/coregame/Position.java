@@ -2,11 +2,27 @@ package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
 import java.io.Serializable;
 
-// The coordinates for a position on the grid.
+/**
+ * The coordinates for a position on the board grid addressing a cell. Note: a
+ * position might be valid on some gameStates and invalid on others.
+ *
+ */
 public class Position implements Serializable {
 
+    /**
+     * The x and y coordinates on the board with (0, 0) being on the top left
+     * corner.
+     */
     public final int x, y;
 
+    /**
+     * Create a position that will have as coordinates the ones specified.
+     * 
+     * @param x
+     *            the x coordinate.
+     * @param y
+     *            the y coordinate.
+     */
     public Position(int x, int y) {
         this.x = x;
         this.y = y;
@@ -26,8 +42,6 @@ public class Position implements Serializable {
     public boolean equals(Object other) {
         if (other == null)
             return false;
-        if (other == this)
-            return true;
         if (!(other instanceof Position))
             return false;
         Position otherMove = (Position) other;
@@ -38,6 +52,6 @@ public class Position implements Serializable {
 
     @Override
     public int hashCode() {
-        return (x*2729 + y*3547)%4397;
+        return (x * 2729 + y * 3547) % 4397;
     }
 }
