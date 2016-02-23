@@ -12,7 +12,6 @@ public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
         Parameters list:
         ----------------
         [0] - number of moves available
-        [1] - number of candy colours
 
         Board cell types:
         -----------------
@@ -22,8 +21,8 @@ public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
         3 => Liquorice
      */
 
-    public ArrayLevelRepresentationJelly(Random random) {
-        super(random);
+    public ArrayLevelRepresentationJelly(Random random, int numberOfCandyColours) {
+        super(random, numberOfCandyColours);
 		board.initialiseJellyLevels();
     }
     
@@ -41,12 +40,6 @@ public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
 		if (random.nextDouble() > 0.5) { // Mutate one of the jelly levels with 50% probability.
 			board.mutateJellyLevels();
 		}
-	}
-
-	@Override
-	public void crossoverWith(LevelRepresentation levelRepresentation) {
-		super.crossoverWith(levelRepresentation);
-		ArrayLevelRepresentationJelly l = (ArrayLevelRepresentationJelly) levelRepresentation;
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.RoundStatistics;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
+import uk.ac.cam.cl.intelligentgamedesigner.userinterface.DesigningLevelScreen;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -12,21 +13,45 @@ import java.util.List;
 import java.util.Random;
 
 public class LevelDesignerManager extends SwingWorker {
-    private long seed = 1;
-    private Specification specification;
-    private Random originalRandom;
-    protected LevelDesigner levelDesigner;
+    public static int NUMBER_TO_DISPLAY = DesigningLevelScreen.BOARD_COUNT;
+
+    private long seed = System.nanoTime();      // The seed for debugging purposes
+    private Specification specification;        // The
+    private Random originalRandoms[];           // Can't use one random for debugging because of concurrency
+    private LevelDesigner[] levelDesigners;     // The level designers
+    private Design[] topDesigns;                // The top design of each thread
+    private double[] progress;                  // The progress of each thread
+    private double totalProgress;               // For keeping track of the slowest thread
 
     public LevelDesignerManager (Specification specification) {
-        this.specification = specification;
+        this.specification      = specification;
+        this.originalRandoms    = new Random[NUMBER_TO_DISPLAY];
+        this.levelDesigners     = new LevelDesigner[NUMBER_TO_DISPLAY];
+        this.topDesigns         = new Design[NUMBER_TO_DISPLAY];
+        this.progress           = new double[NUMBER_TO_DISPLAY];
+        this.totalProgress      = 0;
 
-        this.originalRandom = new Random(seed);
-        this.levelDesigner = new LevelDesigner(this, this.originalRandom);
+        for (int l = 0; l < NUMBER_TO_DISPLAY; l++) {
+            originalRandoms[l]  = new Random(System.nanoTime());
+            levelDesigners[l]   = new LevelDesigner(this, this.originalRandoms[l], l);
+        }
     }
 
     @Override
     protected Void doInBackground() throws InterruptedException {
-        this.levelDesigner.run();
+        Thread[] generationThreads = new Thread[NUMBER_TO_DISPLAY];
+
+        // Start generations
+        for (int t = 0; t < NUMBER_TO_DISPLAY; t++) {
+            generationThreads[t] = new Thread(levelDesigners[t]);
+            generationThreads[t].setDaemon(true);
+            generationThreads[t].start();
+        }
+
+        // Wait for generations to finish
+        for (int t = 0; t < NUMBER_TO_DISPLAY; t++) {
+            generationThreads[t].join();
+        }
 
         return null;
     }
@@ -36,35 +61,81 @@ public class LevelDesignerManager extends SwingWorker {
         firePropertyChange(PropertyChanges.PROPERTY_CHANGE_DONE, null, null);
     }
     
-    public void notifyInterface(List<LevelRepresentation> top) {
-    	firePropertyChange(PropertyChanges.PROPERTY_CHANGE_DESIGNS, null, top);
+    public synchronized void notifyInterface(LevelRepresentation top, int threadID) {
+        this.topDesigns[threadID] = top.getDesign();
+
+        List<Design> topDesignsList = new ArrayList<>();
+        for (Design d : topDesigns) {
+            if (d != null) {
+                topDesignsList.add(d);
+            }
+        }
+
+        firePropertyChange(PropertyChanges.PROPERTY_CHANGE_DESIGNS, null, topDesignsList);
     }
 
-    public void notifyInterface(int iterationNumber) {
-        firePropertyChange(PropertyChanges.PROPERTY_CHANGE_PROGRESS, null, iterationNumber);
+    public synchronized void notifyInterface(double progressValue, int threadID) {
+        this.progress[threadID] = progressValue;
+
+        double min = progress[0];
+        for (int t = 0; t < NUMBER_TO_DISPLAY; t++) {
+            if (progress[t] < min) min = progress[t];
+        }
+
+        if (min > totalProgress) {
+            totalProgress = min;
+            firePropertyChange(PropertyChanges.PROPERTY_CHANGE_PROGRESS, null, progressValue);
+        }
+
+        if (totalProgress == 1.0) {
+            firePropertyChange(PropertyChanges.PROPERTY_CHANGE_DONE, null, null);
+        }
     }
 
-    public List<LevelRepresentation> getPopulation(int size) {
+    public List<LevelRepresentation> getPopulation(int size, int threadID) {
+
+        // Calculate the number of candy colours to be used
+        int numberOfCandyColours = getNumberOfCandyColours(threadID);
+
         List<LevelRepresentation> population = new ArrayList<>();
 
         switch (specification.getGameMode()) {
             case HIGHSCORE:
                 for (int i = 0; i < size; i++) {
-                    population.add(new ArrayLevelRepresentationScore(originalRandom));
+                    population.add(new ArrayLevelRepresentationScore(originalRandoms[threadID], numberOfCandyColours));
                 }
                 break;
             case JELLY:
                 for (int i = 0; i < size; i++) {
-                    population.add(new ArrayLevelRepresentationJelly(originalRandom));
+                    population.add(new ArrayLevelRepresentationJelly(originalRandoms[threadID], numberOfCandyColours));
                 }
                 break;
             default:
                 for (int i = 0; i < size; i++) {
-                    population.add(new ArrayLevelRepresentationIngredients(originalRandom));
+                    population.add(new ArrayLevelRepresentationIngredients(originalRandoms[threadID], numberOfCandyColours));
                 }
         }
 
         return population;
+    }
+
+    /**
+     * This method returns the number of candy colours that should be used in the design, weighting its decision on the
+     * target difficulty given in the specification (i.e. it's more likely to return 4 for easy levels, 5 for medium
+     * levels and 6 for hard levels).
+     *
+     * @return The candy colour to be used.
+     */
+    public int getNumberOfCandyColours (int threadID) {
+        double[] choices = {0.0, 0.5, 1.0};
+
+        int c;
+        while (true) {
+            c = originalRandoms[threadID].nextInt(3);
+            if (originalRandoms[threadID].nextDouble() > Math.abs(choices[c] - specification.getTargetDifficulty())) {
+                return c + 4;
+            }
+        }
     }
 
     /**

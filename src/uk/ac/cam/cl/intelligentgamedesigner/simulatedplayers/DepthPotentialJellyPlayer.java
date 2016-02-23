@@ -2,7 +2,6 @@ package uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 
-import static uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.GameStateMetric.add;
 import static uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions.getJellyNumber;
 
 public class DepthPotentialJellyPlayer extends DepthPotentialPlayer {

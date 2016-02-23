@@ -6,7 +6,7 @@ public class DebugFilter {
     private static final DebugFilterKey[] debugFilterKeys = {
             //DebugFilterKey.GAME_IMPLEMENTATION,
             DebugFilterKey.SIMULATED_PLAYERS,
-            //DebugFilterKey.LEVEL_DESIGN,
+            DebugFilterKey.LEVEL_DESIGN,
             DebugFilterKey.USER_INTERFACE
             };
 

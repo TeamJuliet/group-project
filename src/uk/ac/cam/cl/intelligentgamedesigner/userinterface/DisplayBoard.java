@@ -212,7 +212,7 @@ public class DisplayBoard extends JComponent {
 			case INGREDIENT:
 				item = objective_piece[0];
 				break;
-			case UNMOVEABLE:
+			case UNMOVABLE:
 				break;
 			default:
 				item = candy[board[x][y].getCandy().getColour().ordinal()][board[x][y].getCandy().getCandyType().ordinal()];

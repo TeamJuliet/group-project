@@ -164,7 +164,8 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen{
 	private void nextMove(){
 		if(!playing_move){
 			try{
-				Move next = SimulatedPlayerManager.calculateBestMove(theGame, ability);
+			    SimulatedPlayerManager playerManager = new SimulatedPlayerManager();
+				Move next = playerManager.calculateBestMove(theGame, ability);
 
 				((ComputerGameBoard)board).showMove(next);
 				Thread.sleep(wait_time*2);

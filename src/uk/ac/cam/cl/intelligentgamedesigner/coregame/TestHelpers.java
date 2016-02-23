@@ -1,5 +1,10 @@
 package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
+/** 
+ * 
+ * Class that contains constants used in testing to make test case writing more readable.
+ *
+ */
 public class TestHelpers {
 	public static final int ZERO_SCORE = 0;
 	public static final Candy RED_CANDY = new Candy(CandyColour.RED, CandyType.NORMAL);
@@ -7,7 +12,7 @@ public class TestHelpers {
 	public static final Candy YELLOW_CANDY = new Candy(CandyColour.YELLOW, CandyType.NORMAL);
 	public static final Candy GREEN_CANDY = new Candy(CandyColour.GREEN, CandyType.NORMAL);
 	public static final Candy PURPLE_CANDY = new Candy(CandyColour.PURPLE, CandyType.NORMAL);
-	public static final Candy UNMOVEABLE_CANDY = new Candy(null, CandyType.UNMOVEABLE);
+	public static final Candy UNMOVEABLE_CANDY = new Candy(null, CandyType.UNMOVABLE);
 	public static final Candy HORIZONTAL_RED = new Candy(CandyColour.RED, CandyType.HORIZONTALLY_STRIPPED);
 	public static final Candy HORIZONTAL_PURPLE = new Candy(CandyColour.PURPLE, CandyType.HORIZONTALLY_STRIPPED);
 	public static final Candy VERTICAL_RED = new Candy(CandyColour.RED, CandyType.VERTICALLY_STRIPPED);

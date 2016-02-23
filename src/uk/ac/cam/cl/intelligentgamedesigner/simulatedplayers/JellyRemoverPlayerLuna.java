@@ -79,8 +79,10 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
                     double likelihood = getProbabilityOfHopefulCells(board, x, y,
                             this.levelDesign.getNumberOfCandyColours());
                     double potential = motionPotential(board, x, y);
-                    multiplier = 1 - ((1 - alphaLikelihood) * potential / 3.0 + alphaLikelihood * likelihood) / 2.5;
+                    multiplier = 1.0 - ((1.0 - alphaLikelihood) * potential / 3.0 + alphaLikelihood * likelihood) / 4.0;
                 }
+                // System.err.println("jelly multiplier is " + multiplier);
+                // System.err.println("jelly score is : " + cell.getJellyLevel() * multiplier * positionDifficulty);
                 jellyScore += cell.getJellyLevel() * multiplier * positionDifficulty;
             }
         }
@@ -152,8 +154,11 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
             // of jellies approaches zero.
             final double targetAlpha = Math.max(targetWeight(gameState.getGameProgress().movesRemaining),
                     targetWeight(gameState.getGameProgress().jelliesRemaining));
-            score = (1.0 + targetAlpha) * getJelliesDifficulty(board) + (1.0 - targetAlpha)
-                    * (getBlockersDifficulty(board) + getCandyScore(board) + hopefulCellsScore(board));
+            // System.out.println(getJelliesDifficulty(board));
+            // System.out.println(getBlockersDifficulty(board));
+            score = (2.0 + targetAlpha) * getJelliesDifficulty(board) + (1.0 - targetAlpha)
+                    * (getBlockersDifficulty(board) + 0.5 * getCandyScore(board) + 0.5 * hopefulCellsScore(board));
+            // System.err.println(score);
         }
         return new ScalarGameMetric(score);
     }

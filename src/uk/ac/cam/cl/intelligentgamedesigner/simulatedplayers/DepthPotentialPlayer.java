@@ -7,7 +7,7 @@ import java.util.PriorityQueue;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.UnmoveableCandyGenerator;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.UnmovableCandyGenerator;
 
 import static uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions.*;
 import static uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.GameStateMetric.sub;
@@ -33,7 +33,7 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
     // of cells containing jellies refreshed, etc).
     GameStatePotential getGameStatePotential(GameState gameState) {
         // Return the highest increase in score of all possible matches
-        GameState original = new GameState(gameState, new UnmoveableCandyGenerator());
+        GameState original = new GameState(gameState, new UnmovableCandyGenerator());
         GameStateMetric bestMetric = null;
         List<Move> moves = original.getValidMoves();
         for (Move move : moves) {
@@ -62,7 +62,9 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
 
     protected List<Move> selectMoves(GameState gameState) {
         // TODO: look more into filtering moves
-        return gameState.getValidMoves();
+        List<Move> ret = gameState.getValidMoves();
+        Collections.shuffle(ret);
+        return ret;
     }
 
     private GameStateWithCombinedMetric generateCombinedMetric(GameStateWithCombinedMetric state, Move move) {
@@ -82,16 +84,18 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
     }
 
     private void nextDepth() {
+        int upperLimit = numOfStatesInPool == -1 ? pool.size() : numOfStatesInPool;
+        int elementsProcessed = 0;
         PriorityQueue<GameStateWithCombinedMetric> nextPool = new PriorityQueue<GameStateWithCombinedMetric>(numOfStatesInPool);
-        while (!pool.isEmpty()) {
+        while (elementsProcessed < upperLimit && !pool.isEmpty()) {
             GameStateWithCombinedMetric current = pool.poll();
             List<Move> moves = selectMoves(current.gameState);
-            if (moves.isEmpty() || current.gameState.isGameOver())
+            if (moves.isEmpty() || current.gameState.isGameOver()) {
                 results.add(current);
-            else {
-                for (Move move : moves) {
-                    nextPool.add(generateCombinedMetric(current, move));
-                }
+                continue;
+            }
+            for (Move move : moves) {
+                nextPool.add(generateCombinedMetric(current, move));
             }
             
         }
@@ -102,8 +106,8 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
         List<Move> moves = currentState.getValidMoves();
         if (moves.size() == 0)
             throw new NoMovesFoundException(currentState);
-        pool = new PriorityQueue<GameStateWithCombinedMetric>(numOfStatesInPool);
-        results = new PriorityQueue<GameStateWithCombinedMetric>(numOfStatesInPool);
+        pool = new PriorityQueue<GameStateWithCombinedMetric>();
+        results = new PriorityQueue<GameStateWithCombinedMetric>();
         // Add the current game state with the
         pool.add(new GameStateWithCombinedMetric(currentState, new GameStateCombinedMetric(), null));
         int stages = 0;
@@ -142,18 +146,8 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
     }
 
     private GameState simulateNextMove(GameState gameState, Move move) throws InvalidMoveException {
-        GameState nextState = new GameState(gameState, new UnmoveableCandyGenerator());
+        GameState nextState = new GameState(gameState, new UnmovableCandyGenerator());
         nextState.makeFullMove(move);
         return nextState;
-    }
-
-    protected GameStateMetric getBlockerMetric(GameState gameState) {
-        if (gameState.getGameProgress().movesRemaining < 10)
-            return new GameStateMetric(0);
-        int icing = getIcingNumber(gameState);
-        int liquorice = getLiquoriceNumber(gameState);
-        // TODO: adjust multiplier values
-        return new GameStateMetric(-(icing * 100 + liquorice * 1000));
-
     }
 }

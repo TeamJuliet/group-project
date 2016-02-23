@@ -51,6 +51,7 @@ public class BoardDifficultyGenerator {
                 if (hasUnmovable(cellBoard[x][y])) ++hopefulCount;
             }
         }
+        System.err.println("Hopeful are " + hopefulCount);
         return hopefulCount;
     }
     
@@ -91,9 +92,9 @@ public class BoardDifficultyGenerator {
         for (int i = 0; i < design.getWidth(); ++i) {
             for (int j = 0; j < design.getHeight(); ++j) {
                 difficultyBoard[i][j] = getCellDifficulty(design, i, j, 20);
-                System.out.print(difficultyBoard[i][j] + " ");
+                // System.out.print(difficultyBoard[i][j] + " ");
             }
-            System.out.println();
+            // System.out.println();
         }
         return difficultyBoard;
     }
@@ -123,7 +124,7 @@ public class BoardDifficultyGenerator {
         return cell1.hasCandy() && cell1.getCandy().getColour() != null && cell2.hasCandy()
                 && cell2.getCandy().getColour() != null
                 && cell1.getCandy().getColour().equals(cell2.getCandy().getColour())
-                && !cell1.getCandy().getCandyType().equals(CandyType.UNMOVEABLE);
+                && !cell1.getCandy().getCandyType().equals(CandyType.UNMOVABLE);
     }
 
     public static boolean haveSameColor(Cell[][] board, int x1, int y1, int x2, int y2, int x3, int y3) {
@@ -131,7 +132,7 @@ public class BoardDifficultyGenerator {
     }
 
     public static boolean hasUnmovable(Cell cell) {
-        return cell.hasCandy() && cell.getCandy().getCandyType().equals(CandyType.UNMOVEABLE);
+        return cell.hasCandy() && cell.getCandy().getCandyType().equals(CandyType.UNMOVABLE);
     }
 
     public static boolean canBeRemoved(Cell[][] cells, int x, int y) {

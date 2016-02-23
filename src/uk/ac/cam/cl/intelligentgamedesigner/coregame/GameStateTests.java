@@ -59,7 +59,7 @@ public class GameStateTests {
 		};
 		
 		GameState gameState = new GameState(cellBoardFromCandies(board), NORMAL_INITIAL_PROGRESS,
-				new UnmoveableCandyGenerator());
+				new UnmovableCandyGenerator());
 				
 		try {
 			gameState.makeFullMove(new Move(new Position(0,1), new Position(0, 0)));
@@ -88,7 +88,7 @@ public class GameStateTests {
         };
         
         GameState gameState = new GameState(cellBoardFromCandies(board), NORMAL_INITIAL_PROGRESS,
-                new UnmoveableCandyGenerator());
+                new UnmovableCandyGenerator());
                 
         try {
             gameState.makeFullMove(new Move(new Position(0,2), new Position(1, 2)));
@@ -118,7 +118,7 @@ public class GameStateTests {
        };
        
        GameState gameState = new GameState(cellBoardFromCandies(board), NORMAL_INITIAL_PROGRESS,
-               new UnmoveableCandyGenerator());
+               new UnmovableCandyGenerator());
                
        try {
            gameState.makeFullMove(new Move(new Position(0,2), new Position(1, 2)));
@@ -150,7 +150,7 @@ public class GameStateTests {
        };
        
        GameState gameState = new GameState(cellBoardFromCandies(board), NORMAL_INITIAL_PROGRESS,
-               new UnmoveableCandyGenerator());
+               new UnmovableCandyGenerator());
                
        try {
            gameState.makeFullMove(new Move(new Position(2, 0), new Position(2, 1)));
@@ -183,7 +183,7 @@ public class GameStateTests {
        };
        
        GameState gameState = new GameState(cellBoardFromCandies(board), NORMAL_INITIAL_PROGRESS,
-               new UnmoveableCandyGenerator());
+               new UnmovableCandyGenerator());
                
        try {
            gameState.makeFullMove(new Move(new Position(1, 0), new Position(1, 1)));
@@ -216,7 +216,7 @@ public class GameStateTests {
        };
        
        GameState gameState = new GameState(cellBoardFromCandies(board), NORMAL_INITIAL_PROGRESS,
-               new UnmoveableCandyGenerator());
+               new UnmovableCandyGenerator());
                
        try {
            gameState.makeFullMove(new Move(new Position(2, 2), new Position(3, 2)));
@@ -247,7 +247,7 @@ public class GameStateTests {
        };
        
        GameState gameState = new GameState(cellBoardFromCandies(board), NORMAL_INITIAL_PROGRESS,
-               new UnmoveableCandyGenerator());
+               new UnmovableCandyGenerator());
                
        try {
            gameState.makeFullMove(new Move(new Position(1, 0), new Position(1, 1)));
@@ -278,7 +278,7 @@ public class GameStateTests {
        };
        
        GameState gameState = new GameState(cellBoardFromCandies(board), NORMAL_INITIAL_PROGRESS,
-               new UnmoveableCandyGenerator());
+               new UnmovableCandyGenerator());
                
        try {
            gameState.makeFullMove(new Move(new Position(3, 3), new Position(2, 3)));
@@ -307,7 +307,7 @@ public class GameStateTests {
        };
        
        GameState gameState = new GameState(cellBoardFromCandies(board), NORMAL_INITIAL_PROGRESS,
-               new UnmoveableCandyGenerator());
+               new UnmovableCandyGenerator());
                
        try {
            gameState.makeFullMove(new Move(new Position(2, 0), new Position(2, 1)));
@@ -337,7 +337,7 @@ public class GameStateTests {
        };
        
        GameState gameState = new GameState(cellBoardFromCandies(board), NORMAL_INITIAL_PROGRESS,
-               new UnmoveableCandyGenerator());
+               new UnmovableCandyGenerator());
                
        try {
            gameState.makeFullMove(new Move(new Position(0, 2), new Position(1, 2)));
@@ -369,7 +369,7 @@ public class GameStateTests {
        };
        
        GameState gameState = new GameState(cellBoardFromCandies(board), NORMAL_INITIAL_PROGRESS,
-               new UnmoveableCandyGenerator());
+               new UnmovableCandyGenerator());
                
        try {
            gameState.makeFullMove(new Move(new Position(2, 0), new Position(2, 1)));
@@ -401,7 +401,7 @@ public class GameStateTests {
        };
        
        GameState gameState = new GameState(cellBoardFromCandies(board), NORMAL_INITIAL_PROGRESS,
-               new UnmoveableCandyGenerator());
+               new UnmovableCandyGenerator());
                
        try {
            gameState.makeFullMove(new Move(new Position(0, 2), new Position(1, 2)));
@@ -435,7 +435,7 @@ public class GameStateTests {
        };
        
        GameState gameState = new GameState(cellBoardFromCandies(board), NORMAL_INITIAL_PROGRESS,
-               new UnmoveableCandyGenerator());
+               new UnmovableCandyGenerator());
                
        try {
            gameState.makeFullMove(new Move(new Position(0, 2), new Position(1, 2)));
@@ -468,7 +468,7 @@ public class GameStateTests {
        };
        
        GameState gameState = new GameState(cellBoardFromCandies(board), NORMAL_INITIAL_PROGRESS,
-               new UnmoveableCandyGenerator());
+               new UnmovableCandyGenerator());
                
        try {
            gameState.makeFullMove(new Move(new Position(0, 2), new Position(1, 2)));
@@ -501,7 +501,7 @@ public class GameStateTests {
        };
        
        GameState gameState = new GameState(cellBoardFromCandies(board), NORMAL_INITIAL_PROGRESS,
-               new UnmoveableCandyGenerator());
+               new UnmovableCandyGenerator());
                
        try {
            gameState.makeFullMove(new Move(new Position(3, 2), new Position(3, 3)));
@@ -534,7 +534,7 @@ public class GameStateTests {
        };
        
        GameState gameState = new GameState(cellBoardFromCandies(board), NORMAL_INITIAL_PROGRESS,
-               new UnmoveableCandyGenerator());
+               new UnmovableCandyGenerator());
                
        try {
            gameState.makeFullMove(new Move(new Position(1, 3), new Position(2, 3)));
@@ -567,7 +567,7 @@ public class GameStateTests {
        };
        
        GameState gameState = new GameState(cellBoardFromCandies(board), NORMAL_INITIAL_PROGRESS,
-               new UnmoveableCandyGenerator());
+               new UnmovableCandyGenerator());
                
        try {
            gameState.makeFullMove(new Move(new Position(3, 2), new Position(3, 3)));
@@ -600,7 +600,7 @@ public class GameStateTests {
        };
        
        GameState gameState = new GameState(cellBoardFromCandies(board), NORMAL_INITIAL_PROGRESS,
-               new UnmoveableCandyGenerator());
+               new UnmovableCandyGenerator());
                
        try {
            gameState.makeFullMove(new Move(new Position(1, 3), new Position(2, 3)));
@@ -633,7 +633,7 @@ public class GameStateTests {
        };
        
        GameState gameState = new GameState(cellBoardFromCandies(board), NORMAL_INITIAL_PROGRESS,
-               new UnmoveableCandyGenerator());
+               new UnmovableCandyGenerator());
                
        try {
            gameState.makeFullMove(new Move(new Position(0, 2), new Position(1, 2)));
@@ -667,7 +667,7 @@ public class GameStateTests {
 		cellBoard[1][1] = new Cell(CellType.NORMAL, new Candy(RED_CANDY), 2, false);
 		
 		GameState gameState = new GameState(cellBoard, INITIAL_PROGRESS_WITH_2_JELLIES,
-				new UnmoveableCandyGenerator());
+				new UnmovableCandyGenerator());
 				
 		try {
 			gameState.makeFullMove(new Move(new Position(0,1), new Position(0, 0)));
@@ -706,7 +706,7 @@ public class GameStateTests {
        };
        
        GameState gameState = new GameState(cellBoardFromCandies(board), NORMAL_INITIAL_PROGRESS,
-               new UnmoveableCandyGenerator());
+               new UnmovableCandyGenerator());
                
        try {
            gameState.makeFullMove(new Move(new Position(2, 4), new Position(2, 5)));
@@ -748,7 +748,7 @@ public class GameStateTests {
        };
        
        GameState gameState = new GameState(cellBoardFromCandies(board), NORMAL_INITIAL_PROGRESS,
-               new UnmoveableCandyGenerator());
+               new UnmovableCandyGenerator());
        
        try {
            gameState.makeFullMove(new Move(new Position(2, 5), new Position(2, 4)));
@@ -790,7 +790,7 @@ public class GameStateTests {
        };
        
        GameState gameState = new GameState(cellBoardFromCandies(board), NORMAL_INITIAL_PROGRESS,
-               new UnmoveableCandyGenerator());
+               new UnmovableCandyGenerator());
        
        try {
            gameState.makeFullMove(new Move(new Position(0, 9), new Position(1, 9)));
@@ -831,7 +831,7 @@ public class GameStateTests {
        cellBoard[2][4] = new Cell(CellType.NORMAL, cellBoard[2][4].getCandy(), ZERO_JELLY_LEVEL, ACCEPT_INGREDIENTS);
        
        GameState gameState = new GameState(cellBoard, THREE_INRGEDIENTS_PROGRESS,
-               new UnmoveableCandyGenerator());
+               new UnmovableCandyGenerator());
                
        try {
            gameState.makeFullMove(new Move(new Position(1, 4), new Position(1, 3)));
@@ -864,7 +864,7 @@ public class GameStateTests {
        };
        
        GameState gameState = new GameState(cellBoardFromCandies(board), ONE_INRGEDIENT_PROGRESS,
-               new UnmoveableCandyGenerator());
+               new UnmovableCandyGenerator());
                
        try {
            gameState.makeFullMove(new Move(new Position(2, 2), new Position(2, 3)));
@@ -897,7 +897,7 @@ public class GameStateTests {
        };
        
        GameState gameState = new GameState(cellBoardFromCandies(board), NORMAL_INITIAL_PROGRESS,
-               new UnmoveableCandyGenerator());
+               new UnmovableCandyGenerator());
                
        try {
            gameState.makeFullMove(new Move(new Position(3, 2), new Position(3, 3)));
@@ -931,7 +931,7 @@ public class GameStateTests {
        cellBoard[0][1] = new Cell(CellType.LIQUORICE, cellBoard[0][1].getCandy());
        
        GameState gameState = new GameState(cellBoard, NORMAL_INITIAL_PROGRESS,
-               new UnmoveableCandyGenerator());
+               new UnmovableCandyGenerator());
        
        try {
            gameState.makeFullMove(new Move(new Position(1, 0), new Position(1, 1)));
@@ -965,7 +965,7 @@ public class GameStateTests {
        cellBoard[0][1] = new Cell(CellType.LIQUORICE, cellBoard[0][1].getCandy());
        
        GameState gameState = new GameState(cellBoard, NORMAL_INITIAL_PROGRESS,
-               new UnmoveableCandyGenerator());
+               new UnmovableCandyGenerator());
                
        try {
            gameState.makeFullMove(new Move(new Position(3, 2), new Position(3, 3)));
