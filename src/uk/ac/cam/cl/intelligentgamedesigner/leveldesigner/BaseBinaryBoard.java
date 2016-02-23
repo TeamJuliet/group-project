@@ -15,4 +15,6 @@ public abstract class BaseBinaryBoard extends InfiniteBoard<Boolean> {
 			return "0";
 		}
 	}
+	
+	public abstract int getCount();
 }

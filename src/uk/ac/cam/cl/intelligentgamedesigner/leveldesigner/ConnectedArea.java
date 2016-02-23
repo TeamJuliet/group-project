@@ -5,8 +5,6 @@ import java.util.PriorityQueue;
 
 public class ConnectedArea extends BinaryBoard {
 	
-	//private int numCells;
-	
 	public ConnectedArea(int width, int height) {
 		super(width, height);
 	}

@@ -16,6 +16,7 @@ public class BinaryBoard extends BaseBinaryBoard {
 		count = 0;
 	}
 	
+	@Override
 	public int getCount() {
 		return count;
 	}

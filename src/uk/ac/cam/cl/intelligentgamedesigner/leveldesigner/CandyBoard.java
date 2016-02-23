@@ -37,4 +37,9 @@ public class CandyBoard extends BaseBinaryBoard {
 	}
 	
 	private DesignBoard board;
+
+	@Override
+	public int getCount() {
+		return 0;
+	}
 }

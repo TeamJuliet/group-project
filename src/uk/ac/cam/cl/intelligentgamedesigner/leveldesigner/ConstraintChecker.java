@@ -90,7 +90,7 @@ public class ConstraintChecker {
     	PeakFunction pFunConSizeMain = new PeakFunction(50, 1, 18, 81, 0.2, 0.8);
     	PeakFunction pFunConSize = new PeakFunction(20, 1, 6, 25, 0.2, 0.8);
     	
-    	list.sort(new BoardComparator<Boolean>());
+    	list.sort(new BinaryBoardComparator());
     	
     	factor *= pFunConSizeMain.get(list.get(0).getCount()); //
     	
