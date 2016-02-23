@@ -3,7 +3,13 @@ package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * 
+ * Class that contains functions that are related to the functionality of the game state.
+ *
+ */
 public class GameStateAuxiliaryFunctions {
+	
 	// Declarations for the direction that should be followed when given in
 	// boolean format.
 	public static final boolean VERTICAL = true;
@@ -371,6 +377,24 @@ public class GameStateAuxiliaryFunctions {
 		return totalLiquorice;
 	}
 
+	/**
+	 * Get the number of ingredient candies on the board of the game state.
+	 * 
+	 * @param board
+	 *            The board to count the ingredients.
+	 * @return The number of ingredient candies on the board.
+	 */
+	public static int getIngredientsNumber(Cell[][] board) {
+		int totalIngredients = 0;
+		for (Cell[] row : board) {
+			for (Cell cell : row) {
+				if (hasIngredient(cell))
+					totalIngredients++;
+			}
+		}
+		return totalIngredients;
+	}
+	
 	/**
 	 * Function that deeply copies a cell board.
 	 * 

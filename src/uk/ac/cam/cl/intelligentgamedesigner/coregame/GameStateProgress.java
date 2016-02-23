@@ -1,6 +1,9 @@
 package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
-// Class that contains the progress of the game state (score, ingredients and jellies remaining).
+/**
+ * Class that contains the progress of the game state (score, ingredients and jellies remaining).
+ *
+ */
 public class GameStateProgress {
     private int score;
     private int jelliesRemaining;

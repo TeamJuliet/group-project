@@ -33,6 +33,10 @@ public class Design implements Serializable {
 	// Note this should be 6 and below.
 	private int numberOfCandyColours;
 
+	// Candy generator that is going to be used.
+	// Note: this is not checked for equality.
+	private CandyGenerator candyGenerator;
+
 	/**
 	 * Copy constructor.
 	 * 
@@ -49,6 +53,7 @@ public class Design implements Serializable {
 		this.objectiveTarget = design.objectiveTarget;
 		this.numberOfCandyColours = design.numberOfCandyColours;
 		this.gameMode = design.gameMode;
+		this.candyGenerator = design.candyGenerator;
 	}
 
 	/**
@@ -57,18 +62,20 @@ public class Design implements Serializable {
 	 * available and the objective to reach a score of 1.
 	 */
 	public Design() {
-		height = 10;
-		width = 10;
-		boardLayout = new Cell[width][height];
-		for (int x = 0; x < 10; x++) {
-			for (int y = 0; y < 10; y++) {
-				boardLayout[x][y] = new Cell(CellType.EMPTY, 0);
+		this.height = 10;
+		this.width = 10;
+		this.boardLayout = new Cell[width][height];
+		for (int x = 0; x < this.width; x++) {
+			for (int y = 0; y < this.height; y++) {
+				boardLayout[x][y] = new Cell(CellType.EMPTY,
+						GameConstants.NO_JELLY_LEVEL);
 			}
 		}
-		numberOfMovesAvailable = 10;
-		objectiveTarget = 1;
-		numberOfCandyColours = 6;
-		gameMode = GameMode.HIGHSCORE;
+		this.numberOfMovesAvailable = 10;
+		this.objectiveTarget = 1;
+		this.numberOfCandyColours = 6;
+		this.gameMode = GameMode.HIGHSCORE;
+		this.candyGenerator = new PseudoRandomCandyGenerator();
 	}
 
 	/**
@@ -186,6 +193,16 @@ public class Design implements Serializable {
 	}
 
 	/**
+	 * Set the candy generator to the one specified.
+	 * 
+	 * @param candyGenerator
+	 *            The candy generator that should be used in this level.
+	 */
+	public void setCandyGenerator(CandyGenerator candyGenerator) {
+		this.candyGenerator = candyGenerator;
+	}
+
+	/**
 	 * Get the width of the board layout.
 	 * 
 	 * @return the width of the board layout.
@@ -210,6 +227,15 @@ public class Design implements Serializable {
 	 */
 	public GameMode getMode() {
 		return gameMode;
+	}
+
+	/**
+	 * Get the candy generator specified in this design.
+	 * 
+	 * @return The candy generator for this design.
+	 */
+	public CandyGenerator getCandyGenerator() {
+		return this.candyGenerator;
 	}
 
 	/**

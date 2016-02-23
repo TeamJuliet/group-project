@@ -839,7 +839,7 @@ public class GameStateTests {
            assertTrue(false);
        } 
        // displayCellBoard(gameState.getBoard());
-       Candy[][] correctBoard = { 
+       Candy[][] correctBoardCandies = { 
     		   {GREEN_CANDY, UNMOVEABLE_CANDY, UNMOVEABLE_CANDY, UNMOVEABLE_CANDY},
     		   {YELLOW_CANDY, YELLOW_CANDY, UNMOVEABLE_CANDY, INGREDIENT},
     		   {GREEN_CANDY, RED_CANDY, UNMOVEABLE_CANDY, BLUE_CANDY},
@@ -847,8 +847,11 @@ public class GameStateTests {
     		   {GREEN_CANDY, YELLOW_CANDY, GREEN_CANDY, GREEN_CANDY},
        };
        
+       Cell[][] correctBoard = cellBoardFromCandies(correctBoardCandies);
+       correctBoard[2][4] = new Cell(CellType.NORMAL, correctBoard[2][4].getCandy(), ZERO_JELLY_LEVEL, ACCEPT_INGREDIENTS);
+       
        // Checks whether it forms a vertical move.
-       assertTrue(haveSameBoard(gameState, cellBoardFromCandies(correctBoard)));
+       assertTrue(haveSameBoard(gameState, correctBoard));
        assertTrue(haveSameProgress(gameState, new GameStateProgress(Scoring.MATCHED_3 + 2 * Scoring.BROUGHT_INGREDIENT_DOWN, NO_JELLIES, ONE_INGREDIENT_REMAINING, TWO_MOVES_LEFT)));
    }
    
@@ -1052,7 +1055,10 @@ public class GameStateTests {
        boolean areEqual = true;
        for (int i = 0; i < board.length; ++i) {
            for (int j = 0; j < board[0].length; ++j) {
+        	   if (!board[i][j].equals(gameState.getCell(i, j)))
+        		   System.err.println("Problem at " + i + " " + j);
                areEqual = areEqual && board[i][j].equals(gameState.getCell(i, j));
+               
            }
        }
        return areEqual ; 

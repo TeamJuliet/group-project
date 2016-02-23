@@ -16,6 +16,11 @@ public class Move implements Serializable {
      */
     public final Position p1, p2;
 
+    /**
+     * Construct a move by the positions that were swapped.
+     * @param p1 The first position that was swapped.
+     * @param p2 The second position that was swapped.
+     */
     public Move(Position p1, Position p2) {
         this.p1 = p1;
         this.p2 = p2;

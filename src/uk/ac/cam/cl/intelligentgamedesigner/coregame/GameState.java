@@ -30,6 +30,12 @@ import java.util.List;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
 
+/**
+ * 
+ * Class that contains the state of a game and is responsible for making valid moves on
+ * the board and keeping track of the progress and generating the next states of the game.
+ *
+ */
 public class GameState implements Serializable {
 	
 	// The current state of the board.
@@ -98,8 +104,9 @@ public class GameState implements Serializable {
             }
         }
 
-        candyGenerator = new PseudoRandomCandyGenerator(design, this.progress);
-        // candyGenerator = design.getCandyGenerator(this.progress);
+        this.candyGenerator = design.getCandyGenerator();
+        this.candyGenerator.setDesignAndGameProgress(design, this.progress);
+        
         fillBoard();
 
         // Make sure the board is in a stable state

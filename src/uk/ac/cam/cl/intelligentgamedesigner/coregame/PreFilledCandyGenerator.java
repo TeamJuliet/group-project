@@ -15,7 +15,7 @@ public class PreFilledCandyGenerator extends CandyGenerator {
     private ArrayList<Stack<Cell>> lookahead;
 
     public PreFilledCandyGenerator (Cell[][] lookahead) {
-        super(null, null);
+        super();
 
         this.lookahead = new ArrayList<>(lookahead.length);
 
