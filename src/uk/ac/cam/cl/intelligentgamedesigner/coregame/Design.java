@@ -33,6 +33,10 @@ public class Design implements Serializable {
 	// Note this should be 6 and below.
 	private int numberOfCandyColours;
 
+	/**
+	 * Copy constructor.
+	 * @param design The design to copy.
+	 */
 	public Design(Design design) {
 		this.height = design.height;
 		this.width = design.width;
@@ -65,7 +69,16 @@ public class Design implements Serializable {
 		gameMode = GameMode.HIGHSCORE;
 	}
 
-	public void setSize(int width, int height) {
+	/**
+	 * Resize the board to the dimensions specified. As many cells from the
+	 * previous board as possible, will be kept.
+	 * 
+	 * @param width
+	 *            the width of the new board.
+	 * @param height
+	 *            the height of the new board.
+	 */
+	public void resizeBoard(int width, int height) {
 		Cell[][] newBoard = new Cell[width][height];
 		// crop/enlarge to the correct size
 		for (int x = 0; x < width; x++) {
@@ -103,15 +116,6 @@ public class Design implements Serializable {
 			if (y >= 0)
 				board[x][y].setIngredientSink();
 		}
-	}
-
-	/**
-	 * Function that gets the board layout.
-	 * 
-	 * @return the board layout of the design.
-	 */
-	public Cell[][] getBoard() {
-		return boardLayout;
 	}
 
 	/**
@@ -251,6 +255,15 @@ public class Design implements Serializable {
 	 */
 	public int getNumberOfCandyColours() {
 		return numberOfCandyColours;
+	}
+	
+	/**
+	 * Function that gets the board layout.
+	 * 
+	 * @return the board layout of the design.
+	 */
+	public Cell[][] getBoard() {
+		return boardLayout;
 	}
 
 	@Override
