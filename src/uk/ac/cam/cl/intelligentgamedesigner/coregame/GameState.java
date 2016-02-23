@@ -239,20 +239,20 @@ public class GameState implements Serializable {
         Cell cell1 = getCell(p1), cell2 = getCell(p2);
 
         // Just enumerating possible combinations.
-        if (hasBomb(cell1) && hasBomb(cell2)) {
+        if (hasColourBomb(cell1) && hasColourBomb(cell2)) {
             cell1.removeCandy();
             cell2.removeCandy();
             detonateBombBomb();
-        } else if (hasBomb(cell1) && hasSpecial(cell2)) {
+        } else if (hasColourBomb(cell1) && hasSpecial(cell2)) {
             cell1.removeCandy();
             replaceWithSpecialAllOf(cell2.getCandy().getColour(), cell2.getCandy().getCandyType());
-        } else if (hasBomb(cell2) && hasSpecial(cell1)) {
+        } else if (hasColourBomb(cell2) && hasSpecial(cell1)) {
             cell2.removeCandy();
             replaceWithSpecialAllOf(cell1.getCandy().getColour(), cell1.getCandy().getCandyType());
-        } else if (hasBomb(cell1) && hasNormal(cell2)) {
+        } else if (hasColourBomb(cell1) && hasNormal(cell2)) {
             cell1.removeCandy();
             breakAllOf(cell2.getCandy().getColour());
-        } else if (hasBomb(cell2) && hasNormal(cell1)) {
+        } else if (hasColourBomb(cell2) && hasNormal(cell1)) {
             cell2.removeCandy();
             breakAllOf(cell1.getCandy().getColour());
         } else if (hasHorizontallyStripped(cell1) && hasVerticallyStripped(cell2)) {
@@ -402,12 +402,12 @@ public class GameState implements Serializable {
         
         // Exchanging a Bomb with a cell that has a movable item is a valid
         // move (i.e. it is either special or normal candy type).
-        else if (hasBomb(cell1) && (hasSpecial(cell2) || hasNormal(cell2) || hasBomb(cell2))
-                || hasBomb(cell2) && (hasSpecial(cell1) || hasNormal(cell1) || hasBomb(cell1)))
+        else if (hasColourBomb(cell1) && (hasSpecial(cell2) || hasNormal(cell2) || hasColourBomb(cell2))
+                || hasColourBomb(cell2) && (hasSpecial(cell1) || hasNormal(cell1) || hasColourBomb(cell1)))
             return true;
 
         swapCandies(move);
-        boolean isValid = tileFormsMatch(board, move.p1) || tileFormsMatch(board, move.p2);
+        boolean isValid = cellFormsMatch(board, move.p1) || cellFormsMatch(board, move.p2);
         // Place candies as they were initially.
         swapCandies(move);
         return isValid;
@@ -953,7 +953,7 @@ public class GameState implements Serializable {
     // Function that performs the combination of a bomb and a Normal Candy.
     private void breakAllOf(CandyColour colour) {
     	incrementScore(Scoring.DETONATE_BOMB);
-    	this.statCandiesRemoved.candyProcessed(COLOR_BOMB);
+    	this.statCandiesRemoved.candyProcessed(COLOUR_BOMB);
         for (int i = 0; i < width; ++i) {
             for (int j = 0; j < height; ++j) {
                 if (sameColourWithCell(board[i][j], colour))
