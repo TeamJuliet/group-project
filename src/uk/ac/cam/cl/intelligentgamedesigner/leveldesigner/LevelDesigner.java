@@ -66,7 +66,6 @@ public class LevelDesigner implements Runnable {
 			
 			if (i % 10 == 0) {
 				DebugFilter.println("Iteration " + i, DebugFilterKey.LEVEL_DESIGN);
-				List<LevelRepresentation> l = new ArrayList<>();
 				DebugFilter.println("Top: ", DebugFilterKey.LEVEL_DESIGN);
 				DebugFilter.println("Num feasible: " + feasiblePopulation.size(), DebugFilterKey.LEVEL_DESIGN);
 
@@ -147,7 +146,7 @@ public class LevelDesigner implements Runnable {
     	for (LevelRepresentation l : newRepresentations) {
     		l.mutate();
 			LevelDesignIndividual mutated = new LevelDesignIndividual(l);
-    		if (mutated.getFeasibility() > feasibleThreshold) {
+    		if (mutated.getFitness() > feasibleThreshold) {
 				newFeasible.add(mutated);
 			} else {
 				newInfeasible.add(mutated);
