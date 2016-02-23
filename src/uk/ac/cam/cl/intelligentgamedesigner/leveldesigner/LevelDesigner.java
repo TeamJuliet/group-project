@@ -87,9 +87,7 @@ public class LevelDesigner implements Runnable {
 		DebugFilter.println("Time: " + time, DebugFilterKey.LEVEL_DESIGN);
 
 		if (feasiblePopulation.size() > 0) {
-			manager.assignMoves(feasiblePopulation.get(0).getLevelRepresentation(), threadID);
-		} else {
-			// TODO: Handle this case
+			manager.assignObjectives(feasiblePopulation.get(0).getLevelRepresentation(), threadID);
 		}
     }
 
