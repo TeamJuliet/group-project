@@ -77,7 +77,11 @@ public class ConstraintChecker {
     	
     	double factor = 1.0;
     	
+    	long time = ( System.currentTimeMillis());
+    	
     	ArrayList<ConnectedArea> list = ConnectedArea.getAreas(bBoard, new FourConnectivity());
+    	
+    	System.out.println("Time: " + (System.currentTimeMillis() - time));
     	
     	PeakFunction pFunCount = new PeakFunction(3, 1, 1, 8, 1, 0.2);
     	factor *= pFunCount.get((double) list.size()); //
@@ -90,12 +94,17 @@ public class ConstraintChecker {
     	PeakFunction pFunConSizeMain = new PeakFunction(50, 1, 18, 81, 0.2, 0.8);
     	PeakFunction pFunConSize = new PeakFunction(20, 1, 6, 25, 0.2, 0.8);
     	
-    	list.sort(new BinaryBoardComparator());
+    	if(list.size() > 0)
+    	{
     	
-    	factor *= pFunConSizeMain.get(list.get(0).getCount()); //
+	    	list.sort(new BinaryBoardComparator());
+	    	
+	    	factor *= pFunConSizeMain.get(list.get(0).getCount()); //
+	    	
+	    	for(int i = 1; i < list.size(); i++) {
+	    		factor *= pFunConSize.get(list.get(i).getCount()); //
+	    	}
     	
-    	for(int i = 1; i < list.size(); i++) {
-    		factor *= pFunConSize.get(list.get(i).getCount()); //
     	}
     	
     	return factor;
