@@ -15,7 +15,7 @@ import java.util.Random;
 public class LevelDesignerManager extends SwingWorker {
     public static int NUMBER_TO_DISPLAY = DesigningLevelScreen.BOARD_COUNT;
 
-    private long seed = System.nanoTime();      // The seed for debugging purposes
+    private long seed = 1;                      // The seed for debugging purposes
     private Specification specification;        // The
     private Random originalRandoms[];           // Can't use one random for debugging because of concurrency
     private LevelDesigner[] levelDesigners;     // The level designers
@@ -32,6 +32,7 @@ public class LevelDesignerManager extends SwingWorker {
         this.totalProgress      = 0;
 
         for (int l = 0; l < NUMBER_TO_DISPLAY; l++) {
+            // NOTE: If you want to debug, change this to: new Random(seed)
             originalRandoms[l]  = new Random(System.nanoTime());
             levelDesigners[l]   = new LevelDesigner(this, this.originalRandoms[l], l);
         }
@@ -58,22 +59,27 @@ public class LevelDesignerManager extends SwingWorker {
 
     @Override
     public void done () {
-        firePropertyChange(PropertyChanges.PROPERTY_CHANGE_DONE, null, null);
-    }
-    
-    public synchronized void notifyInterface(LevelRepresentation top, int threadID) {
-        this.topDesigns[threadID] = top.getDesign();
-
-        List<Design> topDesignsList = new ArrayList<>();
-        for (Design d : topDesigns) {
-            if (d != null) {
-                topDesignsList.add(d);
-            }
-        }
-
-        firePropertyChange(PropertyChanges.PROPERTY_CHANGE_DESIGNS, null, topDesignsList);
+        firePropertyChange(PropertyChanges.PROPERTY_CHANGE_PHASE2_DONE, null, null);
     }
 
+    /**
+     * This is for notifying the user interface whenever a level board has changed.
+     *
+     * @param top       The board that has changed
+     * @param threadID  The thread identifier for the calling LevelDesign instance
+     */
+    public synchronized void notifyInterface(LevelRepresentation topLevel, int threadID) {
+        this.topDesigns[threadID] = topLevel.getDesign();
+
+        firePropertyChange(PropertyChanges.PROPERTY_CHANGE_DESIGNS, null, this.topDesigns);
+    }
+
+    /**
+     * This is for notifying the user interface whenever the progress has changed.
+     *
+     * @param progressValue The progress - a double between 0 and 1 inclusive
+     * @param threadID      The thread identifier for the calling LevelDesign instance
+     */
     public synchronized void notifyInterface(double progressValue, int threadID) {
         this.progress[threadID] = progressValue;
 
@@ -84,15 +90,47 @@ public class LevelDesignerManager extends SwingWorker {
 
         if (min > totalProgress) {
             totalProgress = min;
-            firePropertyChange(PropertyChanges.PROPERTY_CHANGE_PROGRESS, null, progressValue);
+            firePropertyChange(PropertyChanges.PROPERTY_CHANGE_PROGRESS, null, totalProgress);
         }
 
-        if (totalProgress == 1.0) {
-            firePropertyChange(PropertyChanges.PROPERTY_CHANGE_DONE, null, null);
+        // This is true when the final thread finishes phase 1
+        if (totalProgress >= 1.0) {
+            // Notify the interface that the board layouts have been generated
+            firePropertyChange(PropertyChanges.PROPERTY_CHANGE_PHASE1_DONE, null, null);
+
+            // Reset the progress
+            for (int i = 0; i < NUMBER_TO_DISPLAY; i++) {
+                progress[i] = 0;
+            }
+            totalProgress = 0;
         }
     }
 
-    public List<LevelRepresentation> getPopulation(int size, int threadID) {
+    public synchronized void assignObjectives(LevelRepresentation topLevel, int threadID) {
+        Design topDesign = topLevel.getDesign();
+        runPlayersAndAssignObjectives(topDesign);
+
+        this.topDesigns[threadID] = topDesign;
+        this.progress[threadID] = 1;
+
+        totalProgress = 0;
+        for (int i = 0; i < NUMBER_TO_DISPLAY; i++) {
+            if (progress[i] == 1) totalProgress += (1.0 / (double) NUMBER_TO_DISPLAY);
+        }
+
+        firePropertyChange(PropertyChanges.PROPERTY_CHANGE_PROGRESS, null, totalProgress);
+        firePropertyChange(PropertyChanges.PROPERTY_CHANGE_OBJECTIVES, null, this.topDesigns);
+    }
+
+    /**
+     * This is a factory method for producing the appropriate level representations for the calling LevelDesign
+     * instance.
+     *
+     * @param size      The requested size of the population to be generated
+     * @param threadID  The thread identifier for the calling LevelDesign instance
+     * @return          A list of level representations - i.e. a population
+     */
+    public synchronized List<LevelRepresentation> getPopulation(int size, int threadID) {
 
         // Calculate the number of candy colours to be used
         int numberOfCandyColours = getNumberOfCandyColours(threadID);
@@ -126,7 +164,7 @@ public class LevelDesignerManager extends SwingWorker {
      *
      * @return The candy colour to be used.
      */
-    public int getNumberOfCandyColours (int threadID) {
+    private int getNumberOfCandyColours (int threadID) {
         double[] choices = {0.0, 0.5, 1.0};
 
         int c;
@@ -207,5 +245,24 @@ public class LevelDesignerManager extends SwingWorker {
         double funFitness = totalFun / (double) numberOfSimulations;
 
         return (difficultyFitness + funFitness) / 2.0;
+    }
+
+    /**
+     * This method will run a given design on simulated players and assign the number of moves, score to reach and
+     * number of ingredients where appropriate.
+     *
+     * @param design
+     */
+    private void runPlayersAndAssignObjectives (Design design) {
+        switch (specification.getGameMode()) {
+            case HIGHSCORE:
+                design.setObjectiveTarget(1000);
+                break;
+            case INGREDIENTS:
+                design.setObjectiveTarget(3);
+                break;
+        }
+
+        design.setNumberOfMovesAvailable(100);
     }
 }

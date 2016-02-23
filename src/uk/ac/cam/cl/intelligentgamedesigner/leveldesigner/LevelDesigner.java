@@ -60,10 +60,6 @@ public class LevelDesigner implements Runnable {
 
 			feasiblePopulation = newFeasible;
 			infeasiblePopulation = newInfeasible;
-
-			for (LevelDesignIndividual individual : newFeasible) {
-				individual.setDifficultyFitness(0.0);//manager.getGameplayFitness(individual.getDesign()));
-			}
 			
 			// Sort the individuals so they are in descending order of fitness.
 			Collections.sort(feasiblePopulation, Collections.reverseOrder());
@@ -76,7 +72,9 @@ public class LevelDesigner implements Runnable {
 
                 if (feasiblePopulation.size() > 0) {
                     manager.notifyInterface(feasiblePopulation.get(0).getLevelRepresentation(), threadID);
-                }
+                } else {
+					manager.notifyInterface(null, threadID);
+				}
 			}
 			
 			manager.notifyInterface(i / (double) iterations, threadID);
@@ -87,6 +85,12 @@ public class LevelDesigner implements Runnable {
 		DebugFilter.println("Infeasible: " + infeasiblePopulation.size(), DebugFilterKey.LEVEL_DESIGN);
     	double time = (System.currentTimeMillis() - startTime) / 1000.0;
 		DebugFilter.println("Time: " + time, DebugFilterKey.LEVEL_DESIGN);
+
+		if (feasiblePopulation.size() > 0) {
+			manager.assignMoves(feasiblePopulation.get(0).getLevelRepresentation(), threadID);
+		} else {
+			// TODO: Handle this case
+		}
     }
 
 	private LevelDesignIndividual stochasticSelection(List<LevelDesignIndividual> population, double totalFitness) {
