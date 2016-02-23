@@ -20,6 +20,7 @@ public abstract class CandyGenerator implements Serializable {
     public CandyGenerator (Design design, GameStateProgress gameStateProgress) {
     	this.design = design;
         this.gameStateProgress = gameStateProgress;
+        if (this.gameStateProgress == null) System.err.println("Game state progress is null");
         this.previousNumberOfIngredientsRemaining = gameStateProgress.getIngredientsRemaining();
 
         Cell[][] board = design.getBoard();

@@ -11,8 +11,7 @@ public class ArrayLevelRepresentationScore extends ArrayLevelRepresentation {
         Parameters list:
         ----------------
         [0] - number of moves available
-        [1] - number of candy colours
-        [2] - score to reach
+        [1] - score to reach
 
         Board cell types:
         -----------------
@@ -22,11 +21,12 @@ public class ArrayLevelRepresentationScore extends ArrayLevelRepresentation {
         3 => Liquorice
     */
 
-    public ArrayLevelRepresentationScore(Random random) {
-        super(random);
+    public ArrayLevelRepresentationScore(Random random, int numberOfCandyColours) {
+        super(random, numberOfCandyColours);
 
-        // Score to reach is initialised in the range: 1000-500000
-        this.parameters.add(new Parameter(random, 1000, 500000));
+        // Score to reach is initialised in the range: 100-50000
+        // For the score, we want it to be a multiple of 10, so we multiply this parameter value by 10 (see below)
+        this.parameters.add(new Parameter(random, 100, 50000));
     }
     
     @Override
@@ -34,7 +34,8 @@ public class ArrayLevelRepresentationScore extends ArrayLevelRepresentation {
     	Design design = super.getDesign();
     
     	design.setGameMode(GameMode.HIGHSCORE);
-        design.setObjectiveTarget(parameters.get(2).getValue());
+        // This ensures the score is a multiple of 10 (like in Candy Crush)
+        design.setObjectiveTarget(parameters.get(1).getValue() * 10);
     	
         return design;
     }

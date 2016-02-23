@@ -1,11 +1,5 @@
 package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
-import static uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions.analyzeTile;
-import static uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions.getSpecialCandyFormed;
-import static uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions.hasHorizontallyStripped;
-import static uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions.hasSpecial;
-import static uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions.hasVerticallyStripped;
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -123,14 +117,17 @@ public class GameStateAuxiliaryFunctions {
         SingleTileAnalysis analysis = analyzeTile(pos, board);
         List<Position> positions = new LinkedList<Position>();
         List<CandyType> specials = new LinkedList<CandyType>();
+        int jelliesRemoved = 0;
         if (analysis.getLengthX() > 2) {
             for (int x = analysis.start_x; x <= analysis.end_x; ++x) {
                 if (x == pos.x)
                     continue;
                 Position currentPosition = new Position(x, pos.y);
                 positions.add(currentPosition);
-                if (hasSpecial(board[x][pos.y]))
+                if (hasSpecial(board[x][pos.y])) 
                     specials.add(board[x][pos.y].getCandy().getCandyType());
+                if (board[x][pos.y].getJellyLevel() > 0)
+                    ++jelliesRemoved;
             }
         }
         if (analysis.getLengthY() > 2) {
@@ -141,9 +138,11 @@ public class GameStateAuxiliaryFunctions {
                 positions.add(currentPosition);
                 if (hasSpecial(board[pos.x][y]))
                     specials.add(board[pos.x][y].getCandy().getCandyType());
+                if (board[pos.x][y].getJellyLevel() > 0)
+                    ++jelliesRemoved;
             }
         }
-        return new MatchAnalysis(positions, specials, getSpecialCandyFormed(analysis));
+        return new MatchAnalysis(positions, specials, getSpecialCandyFormed(analysis), jelliesRemoved);
     }
 
     public static boolean hasDetonated(Cell[][] board) {
@@ -154,5 +153,38 @@ public class GameStateAuxiliaryFunctions {
             }
         }
         return false;
+    }
+    
+    public static int getJellyNumber(GameState state){
+        Cell[][] board = state.getBoard();
+        int totalJellies = 0;
+        for(Cell[] row: board){
+            for(Cell cell: row){
+                totalJellies += cell.getJellyLevel();
+            }
+        }
+        return totalJellies;
+    }
+    
+    public static int getIcingNumber(GameState state){
+        Cell[][] board = state.getBoard();
+        int totalIcing = 0;
+        for(Cell[] row: board){
+            for(Cell cell: row){
+                if(cell.getCellType() == CellType.ICING) totalIcing++;
+            }
+        }
+        return totalIcing;
+    }
+    
+    public static int getLiquoriceNumber(GameState state){
+        Cell[][] board = state.getBoard();
+        int totalLiquorice = 0;
+        for(Cell[] row: board){
+            for(Cell cell: row){
+                if(cell.getCellType() == CellType.LIQUORICE) totalLiquorice++;
+            }
+        }
+        return totalLiquorice;
     }
 }

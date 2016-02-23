@@ -99,13 +99,14 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		show_difficulty.setAlignmentX(CENTER_ALIGNMENT);
 	}
 	
+	private JPanel settings;
 	@Override
-	protected void placeItems() {
+	protected void addItems(){
 		//sort out the window's layout settings:
 		setLayout(null);
 		
 		//make a box with the settings
-		JPanel settings = new JPanel();
+		settings = new JPanel();
 		settings.setLayout(new BoxLayout(settings,BoxLayout.Y_AXIS));
 		settings.add(Box.createRigidArea(new Dimension(0, 20)));
 		settings.add(game_mode_text);
@@ -127,6 +128,11 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		add(back_button);
 		add(go_button);
 		add(settings);
+		
+	}
+	
+	@Override
+	protected void placeItems() {
 		
 		//set the locations
 		position(title,0.5,0.9,400,50);

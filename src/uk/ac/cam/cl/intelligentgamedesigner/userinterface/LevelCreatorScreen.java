@@ -3,12 +3,7 @@ package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.text.FieldPosition;
-import java.text.Format;
 import java.text.NumberFormat;
-import java.text.ParsePosition;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -24,11 +19,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
-import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
@@ -244,14 +237,17 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		mode_objective.setValue(100);
 		
 	}
-
+	
+	private JPanel settings;
+	private JPanel controls;
+	private JPanel title;
 	@Override
-	protected void placeItems() {
+	protected void addItems(){
 		//sort out the window's layout settings:
 		setLayout(null);
 		
 		//make a box with all the custom settings
-		JPanel settings = new JPanel();
+		settings = new JPanel();
 		settings.setLayout(new BoxLayout(settings,BoxLayout.Y_AXIS));
 		settings.setBorder(BorderFactory.createLineBorder(Color.black));
 		settings.add(Box.createRigidArea(new Dimension(0, 20)));
@@ -287,7 +283,7 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		add(settings);
 
 		//make a box with all the controls
-		JPanel controls = new JPanel();
+		controls = new JPanel();
 		controls.setBorder(BorderFactory.createLineBorder(Color.black));
 		controls.setLayout(new BoxLayout(controls,BoxLayout.Y_AXIS));
 		controls.add(Box.createRigidArea(new Dimension(0, 20)));
@@ -309,7 +305,7 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		add(controls);
 		
 		//make a title box
-		JPanel title = new JPanel();
+		title = new JPanel();
 		title.setBorder(BorderFactory.createLineBorder(Color.black));
 		title.setLayout(new BoxLayout(title,BoxLayout.X_AXIS));
 		title.add(level_on_label);
@@ -317,6 +313,11 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		add(title);
 		
 		add(board);
+		
+	}
+
+	@Override
+	protected void placeItems() {
 
 		//set the locations
 		position(settings,0.15,0.5,250,500);
@@ -430,7 +431,6 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 								
 				break;
 			}
-			//System.out.println((String)fill_type.getSelectedItem());
 			break;
 		case "new selection":
 			switch((String)fill_type.getSelectedItem()){
@@ -504,5 +504,10 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		}
 		String message = success?(fileName+".lv Saved!"):("Failed to save.");
 		JOptionPane.showMessageDialog(this,message,"Notification",JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	@Override
+	protected void resizeBoards(){
+		if(board!=null)board.updateTileSize();
 	}
 }

@@ -25,23 +25,11 @@ public class LevelDesignIndividual implements Comparable<LevelDesignIndividual> 
         return levelRepresentation;
     }
 
-    public double getAestheticFitness () {
-        return aestheticFitness;
-    }
-
-    public double getConstraintFitness () {
-        return constraintFitness;
-    }
-
-    public double getDifficultyFitness () {
-        return difficultyFitness;
-    }
-
     public double getFitness() {
         double fitness = aestheticFitness;
         // TODO this needs to be tweaked, need to decide how fitnesses will be combined.
-        fitness += difficultyFitness;
-        return fitness;
+        fitness += difficultyFitness * 2;
+        return fitness / 3;
     }
 
     public Design getDesign() {
@@ -49,14 +37,6 @@ public class LevelDesignIndividual implements Comparable<LevelDesignIndividual> 
             design = levelRepresentation.getDesign();
         }
         return design;
-    }
-
-    public void setAestheticFitness (double aestheticFitness) {
-        this.aestheticFitness = aestheticFitness;
-    }
-
-    public void setConstraintFitness(double constraintFitness) {
-        this.constraintFitness = constraintFitness;
     }
 
     public void setDifficultyFitness(double difficultyFitness) {

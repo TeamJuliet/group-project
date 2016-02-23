@@ -3,25 +3,20 @@ package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
-import java.awt.Toolkit;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 import uk.ac.cam.cl.intelligentgamedesigner.leveldesigner.Specification;
-import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerBase;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.TestCaseGame;
 
 //This will be used to navigate between the menu screens
 //I will also use this for testing the different screens
 public class InterfaceManager extends JFrame {
 	public static final LevelManager level_manager = new LevelManager();
-	private static final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	
 	//Declaring the necessary components
 	private static final JFrame screen = new JFrame("Intelligent Game Designer");
@@ -40,16 +35,24 @@ public class InterfaceManager extends JFrame {
 	private static final DisplayScreen unit_test_screen = new UnitTestMakerScreen();
 		
 	public static int screenWidth(){
-		return screenSize.width;
+		return screen.getWidth();
 	}
 	public static int screenHeight(){
-		return screenSize.height;
+		return screen.getHeight();
 	}
 	
 	static void initialise(){
+		
+		//set the screen to detect resizing
+		screen.addComponentListener(new ComponentAdapter() {
+            public void componentResized(ComponentEvent e) {
+            	scaleScreens();
+            }
+        });
+		
 		//setting the screen properties
 		screen.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		screen.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		screen.setPreferredSize(new Dimension(800,600));
 		
 		DisplayBoard.loadTextures();
 		
@@ -68,10 +71,26 @@ public class InterfaceManager extends JFrame {
 	
 	static void setScreen(){
 		screen.getContentPane().add(screens, BorderLayout.CENTER);
-		//4. Size the frame.
+		//Size the frame.
 		screen.pack();
-		//5. Show it.
+		//Resize the images
+		scaleScreens();
+		//Show it.
 		screen.setVisible(true);
+	}
+	
+	private static void scaleScreens(){
+
+		DisplayScreen.reScale();
+		main_menu_screen.rePosition();
+		level_requester_screen.rePosition();
+		human_game_display_screen.rePosition();	
+		computer_game_display_screen.rePosition();
+		level_browser_screen.rePosition();
+		level_creator_screen.rePosition();
+		design_display_screen.rePosition();
+		designing_level_screen.rePosition();
+		unit_test_screen.rePosition();
 	}
 	
 	private static void switchTo(DisplayScreen new_screen){

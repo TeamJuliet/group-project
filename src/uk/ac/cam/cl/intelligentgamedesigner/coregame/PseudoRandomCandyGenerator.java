@@ -1,5 +1,7 @@
 package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
+import java.util.Random;
+
 public class PseudoRandomCandyGenerator extends CandyGenerator {
 
 	public PseudoRandomCandyGenerator(Design design, GameStateProgress gameStateProgress) {
@@ -14,6 +16,8 @@ public class PseudoRandomCandyGenerator extends CandyGenerator {
 		return curNum;
 	}
 
+	private static Random random = new Random();
+	
 	@Override
 	public Candy generateCandy(int x) {
 		// This ensures a new ingredient is introduced whenever a user clears one on the board. It also introduces
@@ -27,7 +31,9 @@ public class PseudoRandomCandyGenerator extends CandyGenerator {
 			}
 		}
 		
-		int num = nextPseudoRandom();
+		// int num = nextPseudoRandom();
+		int num = random.nextInt();
+		if (num < 0) num = -num;
 		// This line just adds some bombs for testing.
 		// if (num % 23 == 2) return new Candy(null, CandyType.BOMB);
 		// If an ingredient wasn't dropped, then drop a normal candy

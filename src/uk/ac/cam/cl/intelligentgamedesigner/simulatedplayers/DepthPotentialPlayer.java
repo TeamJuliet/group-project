@@ -1,11 +1,13 @@
 package uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.PriorityQueue;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.UnmovableCandyGenerator;
 
 abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
     // The number of states that the Player should look ahead at each move.
@@ -26,18 +28,49 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
     // Function that evaluates the current game state based on its potential
     // of making progress towards the goal. (e.g. if there is a large number
     // of cells containing jellies refreshed, etc).
-    abstract GameStatePotential getGameStatePotential(GameState gameState);
+    GameStatePotential getGameStatePotential(GameState gameState) {
+        // Return the highest increase in score of all possible matches
+        GameState original = new GameState(gameState, new UnmovableCandyGenerator());
+        int highestMetricAfterOneMove = 0;
+        List<Move> moves = original.getValidMoves();
+        for (Move move : moves) {
+            GameState tmp = new GameState(original);
+            try {
+                tmp.makeFullMove(move);
+            } catch (InvalidMoveException e) {
+                // Just eat the exception since we don't care if wrong move is
+                // suggested
+                printInvalidSuggestionError(tmp, move);
+                continue;
+            }
 
-    abstract GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential);
+            int nextMetric = getGameStateMetric(tmp).score;
+            if (nextMetric > highestMetricAfterOneMove)
+                highestMetricAfterOneMove = nextMetric;
+        }
+        return new GameStatePotential(highestMetricAfterOneMove);
+    }
 
-    abstract List<Move> selectMoves(GameState gameState);
+    GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {
+        // Value metric and potential equally for now and find arithmetic mean
+        return new GameStateCombinedMetric(metric, potential, (metric.score + potential.potential) / 2);
+    }
+
+    List<Move> selectMoves(GameState gameState) {
+        // TODO: look more into filtering moves
+        List<Move> ret = gameState.getValidMoves();
+        Collections.shuffle(ret);
+        return ret;
+    }
 
     private GameStateWithCombinedMetric generateCombinedMetric(GameStateWithCombinedMetric state, Move move) {
         GameState nextState;
         try {
-            nextState = SimulatedPlayersHelpers.simulateNextMove(state.gameState, move);
+            nextState = simulateNextMove(state.gameState, move);
         } catch (InvalidMoveException e) {
             System.err.println("Some of the moves generated are not possible.");
+            System.out.println(state.gameState);
+            System.out.println(state.gameState.getValidMoves());
             e.printStackTrace();
             return null;
         }
@@ -53,12 +86,16 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
         while (elementsProcessed < upperLimit && !pool.isEmpty()) {
             GameStateWithCombinedMetric current = pool.poll();
             List<Move> moves = selectMoves(current.gameState);
+            if (moves.isEmpty() || current.gameState.isGameOver()) {
+                results.add(current);
+                continue;
+            }
             for (Move move : moves) {
                 nextPool.add(generateCombinedMetric(current, move));
             }
-            if (moves.isEmpty())
-                results.add(current);
+            
         }
+        pool = nextPool;
     }
 
     public Move calculateBestMove(GameState currentState) throws NoMovesFoundException {
@@ -67,6 +104,7 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
             throw new NoMovesFoundException(currentState);
         pool = new PriorityQueue<GameStateWithCombinedMetric>();
         results = new PriorityQueue<GameStateWithCombinedMetric>();
+        // Add the current game state with the
         pool.add(new GameStateWithCombinedMetric(currentState, new GameStateCombinedMetric(), null));
         int stages = 0;
         // TODO: Add handling for -1.
@@ -82,9 +120,13 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
         return moveMake;
     }
 
-    DepthPotentialPlayer(int numOfStatesAhead, int numOfStatesInPool) {
+    public DepthPotentialPlayer(int numOfStatesAhead, int numOfStatesInPool) {
         this.numOfStatesAhead = numOfStatesAhead;
         this.numOfStatesInPool = numOfStatesInPool;
+    }
+
+    public DepthPotentialPlayer() {
+        this(2, 4);
     }
 
     protected void printInvalidMoveError(GameState level, Move move) {
@@ -96,5 +138,12 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
     protected void printInvalidSuggestionError(GameState level, Move move) {
         System.err.format("WARNING! Invalid move suggested in %s (%d,%d) evaluation:\n" + level + "\n" + move + ".\n",
                 this.getClass().getSimpleName(), this.numOfStatesAhead, this.numOfStatesInPool);
+        System.err.println(level.getValidMoves());
+    }
+
+    private GameState simulateNextMove(GameState gameState, Move move) throws InvalidMoveException {
+        GameState nextState = new GameState(gameState, new UnmovableCandyGenerator());
+        nextState.makeFullMove(move);
+        return nextState;
     }
 }

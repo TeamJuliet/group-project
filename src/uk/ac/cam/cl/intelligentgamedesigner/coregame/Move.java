@@ -2,8 +2,18 @@ package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
 import java.io.Serializable;
 
-// A move consisting of a two positions.
+/**
+ * 
+ * An immutable class that contains a move on the board specified by two
+ * positions, the positions of the cells that will be swapped.
+ * 
+ * Note: that a position might be valid on a certain GameState and invalid in others.
+ *
+ */
 public class Move implements Serializable {
+    /**
+     * The positions of the two cells to be swapped.
+     */
     public final Position p1, p2;
 
     public Move(Position p1, Position p2) {
@@ -20,8 +30,6 @@ public class Move implements Serializable {
     public boolean equals(Object other) {
         if (other == null)
             return false;
-        if (other == this)
-            return true;
         if (!(other instanceof Move))
             return false;
         Move otherMove = (Move) other;
@@ -32,6 +40,6 @@ public class Move implements Serializable {
 
     @Override
     public int hashCode() {
-        return (p1.hashCode() + p2.hashCode())%7919;
+        return (p1.hashCode() + p2.hashCode()) % 7919;
     }
 }

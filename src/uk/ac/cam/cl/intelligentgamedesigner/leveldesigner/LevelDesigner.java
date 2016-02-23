@@ -1,38 +1,43 @@
 package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class LevelDesigner {
+public class LevelDesigner implements Runnable {
 	private static final int populationSize = 100;
-	private static final int iterations = 2000;
+	private static final int iterations = 2500;
 	private static final double elitePercentage = 0.05;
-	private static final double feasibleThreshold = 0.4;
+	private static final double feasibleThreshold = 0.2;
 	private static final double crossoverProbability = 0.8;
-	private static final int maxTopLevels = 5;
 
 	private LevelDesignerManager manager;
     private List<LevelDesignIndividual> feasiblePopulation;
     private List<LevelDesignIndividual> infeasiblePopulation;
 	private Random random;
+	private int threadID;
 
-    public LevelDesigner(LevelDesignerManager manager, Random random) {
+    public LevelDesigner(LevelDesignerManager manager, Random random, int threadID) {
 		this.manager = manager;
 		this.random = random;
+		this.threadID = threadID;
 
 		feasiblePopulation = new ArrayList<>();
 		infeasiblePopulation = new ArrayList<>();
 
 		// Generate the random population.
-		List<LevelRepresentation> p = manager.getPopulation(populationSize);
+		List<LevelRepresentation> p = manager.getPopulation(populationSize, threadID);
 		for (LevelRepresentation l : p) {
 			LevelDesignIndividual individual = new LevelDesignIndividual(l);
 			infeasiblePopulation.add(individual);
 		}
     }
 
+	@Override
     public void run() {
     	long startTime = System.currentTimeMillis();
     	
@@ -63,24 +68,25 @@ public class LevelDesigner {
 			// Sort the individuals so they are in descending order of fitness.
 			Collections.sort(feasiblePopulation, Collections.reverseOrder());
 			
-			if (i % 100 == 0) {
-				System.out.println("Iteration " + i);
+			if (i % 10 == 0) {
+				DebugFilter.println("Iteration " + i, DebugFilterKey.LEVEL_DESIGN);
 				List<LevelRepresentation> l = new ArrayList<>();
-				int max = Math.min(feasiblePopulation.size(), maxTopLevels);
-				for (int j = 0; j < max; j++) {
-					l.add(feasiblePopulation.get(j).getLevelRepresentation());
-				}
-				manager.notifyInterface(l);
-			}
+				DebugFilter.println("Top: ", DebugFilterKey.LEVEL_DESIGN);
+				DebugFilter.println("Num feasible: " + feasiblePopulation.size(), DebugFilterKey.LEVEL_DESIGN);
 
-			manager.notifyInterface(i);
+                if (feasiblePopulation.size() > 0) {
+                    manager.notifyInterface(feasiblePopulation.get(0).getLevelRepresentation(), threadID);
+                }
+			}
+			
+			manager.notifyInterface(i / (double) iterations, threadID);
 		}
     	
-    	System.out.println();
-    	System.out.println("Feasible: " + feasiblePopulation.size());
-    	System.out.println("Infeasible: " + infeasiblePopulation.size());
+    	DebugFilter.println("", DebugFilterKey.LEVEL_DESIGN);
+		DebugFilter.println("Feasible: " + feasiblePopulation.size(), DebugFilterKey.LEVEL_DESIGN);
+		DebugFilter.println("Infeasible: " + infeasiblePopulation.size(), DebugFilterKey.LEVEL_DESIGN);
     	double time = (System.currentTimeMillis() - startTime) / 1000.0;
-    	System.out.println("Time: " + time);
+		DebugFilter.println("Time: " + time, DebugFilterKey.LEVEL_DESIGN);
     }
 
 	private LevelDesignIndividual stochasticSelection(List<LevelDesignIndividual> population, double totalFitness) {
@@ -151,9 +157,9 @@ public class LevelDesigner {
 		List<LevelDesignIndividual> population = new ArrayList<>(feasiblePopulation);
 		Collections.sort(population);
 		for (LevelDesignIndividual individual : population) {
-			System.out.println();
+			DebugFilter.println("", DebugFilterKey.LEVEL_DESIGN);
 			((ArrayLevelRepresentation) individual.getLevelRepresentation()).printRepresentation();
-			System.out.println("Fitness: " + individual.getFitness());
+			DebugFilter.println("Fitness: " + individual.getFitness(), DebugFilterKey.LEVEL_DESIGN);
 		}
 	}
 

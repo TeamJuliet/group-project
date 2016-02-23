@@ -1,11 +1,7 @@
 package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -62,9 +58,14 @@ public class MainMenuScreen extends DisplayScreen{
 	}
 	
 	@Override
-	protected void placeItems() {		
+	protected void addItems(){
 		//sort out the window's layout settings:
 		setLayout(null);
+		
+	}
+	
+	@Override
+	protected void placeItems() {		
 		
 		//add the items to the screen
 		add(title_text);

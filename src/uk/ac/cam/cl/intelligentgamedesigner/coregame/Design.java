@@ -2,6 +2,7 @@ package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
 import java.io.Serializable;
 
+// TODO: Write description for this class.
 public class Design implements Serializable {
 	private int height, width;          // The dimensions of the board.
     private Cell[][] boardLayout;       // The layout - specifying the position of special candies and blocks
@@ -13,6 +14,29 @@ public class Design implements Serializable {
     private int numberOfCandyColours;   // The number of unique colours a candy can take
     private GameMode gameMode;			// The game mode
 
+
+    // TODO: Consider changing place to this function.
+    public static Cell[][] copyBoard(Cell[][] board) {
+        Cell[][] copy = new Cell[board.length][board[0].length];
+        for (int i = 0; i < board.length; ++i) {
+            for (int j = 0; j < board[0].length; ++j) {
+                copy[i][j] = new Cell(board[i][j]);
+            }   
+        }
+        return copy;
+    }
+    
+  
+    public Design(Design design) {
+        this.height = design.height;
+        this.width = design.width;
+        this.boardLayout = copyBoard(design.boardLayout);
+        this.numberOfMovesAvailable = design.numberOfMovesAvailable;
+        this.objectiveTarget = design.objectiveTarget;
+        this.numberOfCandyColours = design.numberOfCandyColours;
+        this.gameMode = design.gameMode;
+    }
+    
     // Initialise the Design with a default - namely a 10x10 board of empty cells
     public Design () {
     	height = 10;
@@ -20,7 +44,7 @@ public class Design implements Serializable {
     	boardLayout = new Cell[width][height];
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
-                boardLayout[x][y] = new Cell(CellType.EMPTY, 2);
+                boardLayout[x][y] = new Cell(CellType.EMPTY, 0);
             }
         }
     	numberOfMovesAvailable = 10;
