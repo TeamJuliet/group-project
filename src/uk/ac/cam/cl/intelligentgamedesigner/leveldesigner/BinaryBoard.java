@@ -27,7 +27,7 @@ public class BinaryBoard extends BaseBinaryBoard {
 	}
 
 	@Override
-	protected void validSet(int i, int j, Boolean obj) {
+	protected void validStatSet(int i, int j, Boolean obj) {
 		if(!board[i][j] && obj)
 		{
 			count++;

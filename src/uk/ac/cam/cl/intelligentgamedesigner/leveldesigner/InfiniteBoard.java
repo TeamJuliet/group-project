@@ -4,32 +4,11 @@ import java.util.ArrayList;
 
 public abstract class InfiniteBoard<T> implements BaseBoard<T> {
 
-	private Statistics verticalLineCellStats[];
-	private Statistics horizontalLineCellStats[];
-	private Statistics cellStats;
 	
 	public InfiniteBoard(int width, int height, T defaultValue) {
 		this.width = width;
 		this.height = height;
 		this.defaultValue = defaultValue;
-		
-		verticalLineCellStats = new Statistics[width];
-		for(int i = 0; i < width; i++) {
-			verticalLineCellStats[i] = new Statistics(height,1);
-		}
-		horizontalLineCellStats = new Statistics[height];
-		for(int i = 0; i < height; i++) {
-			horizontalLineCellStats[i] = new Statistics(width,1);
-		}
-		cellStats = new Statistics(width*height,2);
-	}
-	
-	public int getHorizontalExtent() {
-		return (int) (cellStats.getMax(0) - cellStats.getMin(0));
-	}
-	
-	public int getVerticalExtent() {
-		return (int) (cellStats.getMax(1) - cellStats.getMin(1));
 	}
 	
 	@Override
@@ -63,26 +42,9 @@ public abstract class InfiniteBoard<T> implements BaseBoard<T> {
 		if(validCoordinate(i, j))
 		{		
 			validSet(i, j, obj);
-			updateStatistics(i, j);
 		}
 	}
-	private void updateStatistics(int i, int j) {
-		
-		ArrayList<Double> verticalLineStatArray = new ArrayList<Double>(1);
-		verticalLineStatArray.add((double) j);
-		verticalLineCellStats[i].addStatistic(new LineID(j,verticalLineStatArray));
-		
-		ArrayList<Double> horizontalLineStatArray = new ArrayList<Double>(1);
-		horizontalLineStatArray.add((double) i);
-		horizontalLineCellStats[j].addStatistic(new LineID(i,horizontalLineStatArray));
-		
-		ArrayList<Double> cellStatArray = new ArrayList<Double>();
-		cellStatArray.add((double) i);
-		cellStatArray.add((double) j);
-		cellStats.addStatistic(new CoordinateID(i,j,cellStatArray));
-		
-		
-	}
+	
 	
 	public void print()
 	{
@@ -95,10 +57,6 @@ public abstract class InfiniteBoard<T> implements BaseBoard<T> {
 			}
 			System.out.print('\n');
 		}
-		
-		//temporary
-		System.out.println(cellStats.getMin(0) + " <-> " + cellStats.getMax(0) + " : " + cellStats.getAverage(0) + " : " + cellStats.getVariance(0));
-		System.out.println(cellStats.getMin(1) + " <-> " + cellStats.getMax(1) + " : " + cellStats.getAverage(1) + " : " + cellStats.getVariance(1));
 	}
 	
 	protected<S extends InfiniteBoard<T>> void getSubSection(int x_tl, int y_tl, S subSection) {

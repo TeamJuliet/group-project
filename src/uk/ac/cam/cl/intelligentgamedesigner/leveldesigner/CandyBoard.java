@@ -25,7 +25,7 @@ public class CandyBoard extends BaseBinaryBoard {
 	}
 	
 	@Override
-	protected void validSet(int i, int j, Boolean obj) {		
+	protected void validStatSet(int i, int j, Boolean obj) {		
 		//This should never be called (Otherwise there is an error in the code)
 		assert(false);
 		

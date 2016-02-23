@@ -1,6 +1,8 @@
 package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
 
 public class LevelDesignIndividual implements Comparable<LevelDesignIndividual> {
 
