@@ -52,7 +52,7 @@ public class InterfaceManager extends JFrame {
 		
 		//setting the screen properties
 		screen.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		screen.setPreferredSize(new Dimension(800,600));
+		screen.setPreferredSize(new Dimension(1400,740));
 		
 		DisplayBoard.loadTextures();
 		

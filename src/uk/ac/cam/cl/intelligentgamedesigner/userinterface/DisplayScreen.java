@@ -1,5 +1,7 @@
 package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
+import java.awt.Component;
+import java.awt.Font;
 import java.awt.event.ActionListener;
 
 import javax.swing.JComponent;
@@ -60,6 +62,23 @@ public abstract class DisplayScreen extends JPanel  implements ActionListener{
 				(int) scaled_width, 
 				(int) scaled_height
 				);
+	}
+	
+	public static final int FONT_NORMAL = 12;
+	public static final int FONT_SMALL = 10;
+	public static final int FONT_TITLE = 22;
+	public static final int FONT_SUBTITLE = 18;
+	protected void fontScale(JComponent thing, int fontsize){
+		int scaled_font = (int)(scale_factor * fontsize);
+		thing.setFont(new Font("Helvetica", Font.CENTER_BASELINE, scaled_font));
+		//resize the fonts
+		Component[] components = (Component[])thing.getComponents();
+		if(components != null){
+			for(Component c:components){
+				//resize if it has text
+				c.setFont(new Font("Helvetica", Font.CENTER_BASELINE, scaled_font));
+			}
+		}
 	}
 	protected void positionBoard(DisplayBoard board, double frac_w, double frac_h){
 		board.setAlignmentX(CENTER_ALIGNMENT);

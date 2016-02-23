@@ -41,22 +41,37 @@ public class DesignDetails extends JPanel{
 		add(Box.createRigidArea(new Dimension(0, 10)));
 	}
 	
-	public void setDetails(Design design){
-		GameMode mode = design.getMode();
-		int objective = design.getObjectiveTarget();
-		switch(mode){
-		case HIGHSCORE: 
-			objectiveTarget.setText("Objective: Get "+objective+" points");
-			break;
-		case JELLY: 
-			objectiveTarget.setText("Objective: Clear all jelly layers");
-			break;
-		default: //ingredients
-			objectiveTarget.setText("Objective: Clear "+objective+" ingredient"+(objective!=1?"s":""));
-			break; 
+	public void setDetails(Design design, boolean showing_stats){
+		if(design == null){ //if we do not have a valid design
+			objectiveTarget.setText("");
+			movesAllowed.setText("<No design currently available>");
+			numberOfCandies.setText("");
+		} else { //If we do have a valid design
+			GameMode mode = design.getMode();
+			if(showing_stats){ //show all the information
+				int objective = design.getObjectiveTarget();
+				switch(mode){
+				case HIGHSCORE: 
+					objectiveTarget.setText("Objective: Get "+objective+" points");
+					break;
+				case JELLY: 
+					objectiveTarget.setText("Objective: Clear all jelly layers");
+					break;
+				default: //ingredients
+					objectiveTarget.setText("Objective: Clear "+objective+" ingredient"+(objective!=1?"s":""));
+					break; 
+				}
+				numberOfCandies.setText("Candy Colours in play: "+design.getNumberOfCandyColours());
+				movesAllowed.setText("Moves Allowed: "+design.getNumberOfMovesAvailable());
+			}
+			else{ //otherwise only show the number of candy colours in play
+				//set the first text to be candy colours
+				objectiveTarget.setText("Candy Colours in play: "+design.getNumberOfCandyColours());
+				//hide the rest
+				movesAllowed.setText("");
+				numberOfCandies.setText("<Other fields still to be set>");
+			}			
 		}
-		numberOfCandies.setText("Candy Colours in play: "+design.getNumberOfCandyColours());
-		movesAllowed.setText("Moves Allowed: "+design.getNumberOfMovesAvailable());
 	}
 	
 }
