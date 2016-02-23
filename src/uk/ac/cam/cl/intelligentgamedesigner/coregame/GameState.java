@@ -935,7 +935,7 @@ public class GameState implements Serializable {
     }
 
     private boolean isPositionValidAndMoveable(Position pos) {
-        return inBoard(pos) && board[pos.x][pos.y].isMoveable();
+        return inBoard(pos) && board[pos.x][pos.y].isMovable();
     }
 
     private Cell getCell(Position pos) {
