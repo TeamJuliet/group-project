@@ -2,12 +2,15 @@ package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.UIDefaults;
+import javax.swing.UIManager;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.leveldesigner.Specification;
@@ -42,6 +45,12 @@ public class InterfaceManager extends JFrame {
 	}
 	
 	static void initialise(){
+		UIDefaults uiDefaults = UIManager.getDefaults();
+
+		uiDefaults.put("TextArea.font", uiDefaults.get("TextPane.font"));
+		uiDefaults.put("Label.background", Color.red);
+		uiDefaults.put("TextArea.foreground", Color.red);
+		screens.setBackground(Color.red);
 		
 		//set the screen to detect resizing
 		screen.addComponentListener(new ComponentAdapter() {
