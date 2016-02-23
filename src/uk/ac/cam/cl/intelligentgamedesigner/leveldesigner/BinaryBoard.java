@@ -1,7 +1,8 @@
 package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
 public class BinaryBoard extends BaseBinaryBoard {
-
+	private int count;
+	
 	public BinaryBoard(int width, int height) {
 		super(width, height, false);
 		
@@ -11,6 +12,12 @@ public class BinaryBoard extends BaseBinaryBoard {
 		{
 			board[i] = new boolean[height];
 		}
+		
+		count = 0;
+	}
+	
+	public int getCount() {
+		return count;
 	}
 
 	@Override
@@ -20,6 +27,13 @@ public class BinaryBoard extends BaseBinaryBoard {
 
 	@Override
 	protected void validSet(int i, int j, Boolean obj) {
+		if(!board[i][j] && obj)
+		{
+			count++;
+		}else if(board[i][j] && !obj){
+			count--;
+		}
+		
 		board[i][j] = obj;
 	}
 

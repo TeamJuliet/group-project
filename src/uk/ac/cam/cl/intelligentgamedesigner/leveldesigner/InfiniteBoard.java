@@ -24,6 +24,14 @@ public abstract class InfiniteBoard<T> implements BaseBoard<T> {
 		cellStats = new Statistics(width*height,2);
 	}
 	
+	public int getHorizontalExtent() {
+		return (int) (cellStats.getMax(0) - cellStats.getMin(0));
+	}
+	
+	public int getVerticalExtent() {
+		return (int) (cellStats.getMax(1) - cellStats.getMin(1));
+	}
+	
 	@Override
 	public int width() {
 		return width;
@@ -53,7 +61,7 @@ public abstract class InfiniteBoard<T> implements BaseBoard<T> {
 	public final void set(int i, int j, T obj)
 	{
 		if(validCoordinate(i, j))
-		{
+		{		
 			validSet(i, j, obj);
 			updateStatistics(i, j);
 		}
@@ -72,6 +80,8 @@ public abstract class InfiniteBoard<T> implements BaseBoard<T> {
 		cellStatArray.add((double) i);
 		cellStatArray.add((double) j);
 		cellStats.addStatistic(new CoordinateID(i,j,cellStatArray));
+		
+		
 	}
 	
 	public void print()

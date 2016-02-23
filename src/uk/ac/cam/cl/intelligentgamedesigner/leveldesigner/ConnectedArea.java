@@ -5,12 +5,10 @@ import java.util.PriorityQueue;
 
 public class ConnectedArea extends BinaryBoard {
 	
-	private int numCells;
+	//private int numCells;
 	
 	public ConnectedArea(int width, int height) {
 		super(width, height);
-		
-		numCells = 0;
 	}
 
 	public void addConnected(int x, int y) {
@@ -19,13 +17,6 @@ public class ConnectedArea extends BinaryBoard {
 
 	@Override
 	protected void validSet(int i, int j, Boolean obj) {
-		if(!board[i][j] && obj)
-		{
-			numCells++;
-		}else if(board[i][j] && !obj){
-			numCells--;
-		}
-		
 		board[i][j] = obj;
 	}
 
@@ -61,10 +52,6 @@ public class ConnectedArea extends BinaryBoard {
 			System.out.println("\n");
 		}
 	
-	}
-	
-	private int getNumberOfConnectedCells() {
-		return numCells;
 	}
 	
 	public static ArrayList<ConnectedArea> getAreas(BaseBinaryBoard board, ConnectivityStrategy connectivity)
@@ -129,7 +116,7 @@ public class ConnectedArea extends BinaryBoard {
     	
     	for(int i = 0; i < areas.size(); i++)
     	{
-    		if(areas.get(i).getNumberOfConnectedCells() == 0) {
+    		if(areas.get(i).getCount() == 0) {
     			areas.remove(i);
     		}
     	}
