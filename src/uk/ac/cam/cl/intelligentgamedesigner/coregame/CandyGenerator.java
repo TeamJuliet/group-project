@@ -10,9 +10,15 @@ import java.io.Serializable;
  */
 public abstract class CandyGenerator implements Serializable {
     
+    // The level design used to generate the game that is being played.
     protected Design design;
+    
+    // The game state progress for the current game.
     protected GameStateProgress gameStateProgress;
+    
     protected int previousNumberOfIngredientsRemaining;
+    
+    // Remaining ingredients that have to drop.
     protected int ingredientsToDrop;
 
     // Some CandyGenerators do not need the GameState to throw the next candy.

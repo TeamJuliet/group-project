@@ -11,10 +11,24 @@ import java.util.List;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 
+/**
+ * 
+ * Player that is designed using the principle of the depth potential player and
+ * focuses to clear the jelly from the cell located at the position that this
+ * player had been initialized for.
+ *
+ */
 public class TargetCellPlayer extends DepthPotentialPlayer {
     private int x, y;
 
-    TargetCellPlayer(int x, int y) {
+    /**
+     * Construct the player by providing the target position that the player
+     * should aim to clear.
+     * 
+     * @param x The x coordinate for the cell to clear.
+     * @param y The y coordinate for the cell to clear.
+     */
+    public TargetCellPlayer(int x, int y) {
         super(2, 10);
         this.x = x;
         this.y = y;
