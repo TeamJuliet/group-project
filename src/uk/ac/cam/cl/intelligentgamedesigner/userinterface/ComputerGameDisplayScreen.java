@@ -36,6 +36,7 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen {
     Timer                    timer;
     private static final int waitspeed          = 500;
     private static int       wait_between_moves = 600;
+    SimulatedPlayerManager playerManager;
 
     public ComputerGameDisplayScreen() {
         super();
@@ -62,7 +63,7 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen {
     @Override
     public void initialiseGame() {
         super.initialiseGame();
-
+        playerManager = new SimulatedPlayerManager();
     }
 
     @Override
@@ -172,7 +173,6 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen {
     private void nextMove() {
         if (!playing_move) {
             try {
-                SimulatedPlayerManager playerManager = new SimulatedPlayerManager();
                 Move next = playerManager.calculateBestMove(theGame, ability);
 
                 ((ComputerGameBoard) board).showMove(next);
@@ -193,7 +193,6 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen {
     private void allMoves() {
         if (!playing_move) {
             try {
-                SimulatedPlayerManager playerManager = new SimulatedPlayerManager();
                 playerManager.solve(theGame, ability);
                 update();
                 endGameCheck();
