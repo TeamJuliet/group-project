@@ -60,17 +60,12 @@ public class LevelDesigner implements Runnable {
 
 			feasiblePopulation = newFeasible;
 			infeasiblePopulation = newInfeasible;
-
-			for (LevelDesignIndividual individual : newFeasible) {
-				individual.setDifficultyFitness(0.0);//manager.getGameplayFitness(individual.getDesign()));
-			}
 			
 			// Sort the individuals so they are in descending order of fitness.
 			Collections.sort(feasiblePopulation, Collections.reverseOrder());
 			
 			if (i % 10 == 0) {
 				DebugFilter.println("Iteration " + i, DebugFilterKey.LEVEL_DESIGN);
-				List<LevelRepresentation> l = new ArrayList<>();
 				DebugFilter.println("Top: ", DebugFilterKey.LEVEL_DESIGN);
 				DebugFilter.println("Num feasible: " + feasiblePopulation.size(), DebugFilterKey.LEVEL_DESIGN);
 

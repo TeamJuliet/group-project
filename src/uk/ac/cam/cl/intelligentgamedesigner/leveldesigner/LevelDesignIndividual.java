@@ -7,17 +7,16 @@ public class LevelDesignIndividual implements Comparable<LevelDesignIndividual> 
     private final LevelRepresentation levelRepresentation;
     private double aestheticFitness;
     private double constraintFitness;
-    private double difficultyFitness;
     private Design design = null;
 
     public LevelDesignIndividual (LevelRepresentation levelRepresentation) {
         this.levelRepresentation = levelRepresentation;
         this.aestheticFitness = levelRepresentation.getAestheticFitness();
-        this.constraintFitness = levelRepresentation.getConstraintFitness();
+        //this.constraintFitness = levelRepresentation.getConstraintFitness();
     }
 
     public double getFitness() {
-        return this.constraintFitness;
+        return this.aestheticFitness;
     }
 
     public LevelRepresentation getLevelRepresentation() {
@@ -29,10 +28,6 @@ public class LevelDesignIndividual implements Comparable<LevelDesignIndividual> 
             design = levelRepresentation.getDesign();
         }
         return design;
-    }
-
-    public void setDifficultyFitness(double difficultyFitness) {
-        this.difficultyFitness = difficultyFitness;
     }
     
     @Override

@@ -115,6 +115,10 @@ public class AestheticChecker {
 			}
 		}
 		
+		if (emptyCells == 0) {
+			return 0.0;
+		}
+		
 		return Math.pow((Math.sqrt(8.0) - Math.sqrt(Math.pow(Math.floor((double)board.width / 2.0) - (x_position / emptyCells), 2.0) + Math.pow(Math.floor((double)board.height / 2.0) - (y_position / emptyCells), 2.0))) / Math.sqrt(8.0), 2.0);
 	}
 	
