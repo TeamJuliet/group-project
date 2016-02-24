@@ -34,7 +34,7 @@ public class DepthPotentialScorePlayerTester {
 	}
 
 	public static void playGame(GameState game, GameDisplay display) {
-	    TargetCellPlayer player = new TargetCellPlayer(9, 9); 
+	    TargetCellPlayer player = new TargetCellPlayer(2, 10, 9, 9); 
 		while(!game.isGameOver() && game.getBoard()[9][9].getJellyLevel() != 0) {
 			try {
 				System.out.println(game.getGameProgress());

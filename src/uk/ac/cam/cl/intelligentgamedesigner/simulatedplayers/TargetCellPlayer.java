@@ -31,8 +31,8 @@ public class TargetCellPlayer extends DepthPotentialPlayer {
      * @param y
      *            The y coordinate for the cell to clear.
      */
-    public TargetCellPlayer(int x, int y) {
-        super(2, 10);
+    public TargetCellPlayer(int numOfStatesAhead, int numOfStatesInPool, int x, int y) {
+        super(numOfStatesAhead, numOfStatesInPool);
         this.x = x;
         this.y = y;
     }
@@ -42,7 +42,7 @@ public class TargetCellPlayer extends DepthPotentialPlayer {
      * where the specific position has been cleared and the rest.
      */
     @Override
-    GameStateMetric getGameStateMetric(GameState gameState) {
+    public GameStateMetric getGameStateMetric(GameState gameState) {
         ScalarGameMetric metric;
 
         // If the target has been reached then the distance should be 0.
@@ -67,7 +67,7 @@ public class TargetCellPlayer extends DepthPotentialPlayer {
      * cell is changing.
      */
     @Override
-    GameStatePotential getGameStatePotential(GameState gameState) {
+    public GameStatePotential getGameStatePotential(GameState gameState) {
         ScalarGamePotential metric;
 
         // If the target has been reached or the target can be reached in the
@@ -101,7 +101,7 @@ public class TargetCellPlayer extends DepthPotentialPlayer {
      * the potential.
      */
     @Override
-    protected GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {
+    public GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {
         return new ScalarCombinedMetric(
                 ((ScalarGameMetric) metric).score + ((ScalarGamePotential) potential).score);
     }

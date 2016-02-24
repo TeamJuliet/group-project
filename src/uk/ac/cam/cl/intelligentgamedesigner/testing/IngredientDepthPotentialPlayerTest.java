@@ -6,6 +6,7 @@ import static uk.ac.cam.cl.intelligentgamedesigner.testing.SimulatedPlayersTestH
 import static uk.ac.cam.cl.intelligentgamedesigner.testing.SimulatedPlayersTestHelpers.MINIMUM_TARGET_SCORE;
 import static uk.ac.cam.cl.intelligentgamedesigner.testing.SimulatedPlayersTestHelpers.SIX_CANDY_COLOURS;
 import static uk.ac.cam.cl.intelligentgamedesigner.testing.SimulatedPlayersTestHelpers.TWENTY_MOVES_AVAILABLE;
+import static uk.ac.cam.cl.intelligentgamedesigner.testing.SimulatedPlayersTestHelpers.getBoardWithBlockersAndJelliesDesign;
 import static uk.ac.cam.cl.intelligentgamedesigner.testing.SimulatedPlayersTestHelpers.getBoardWithBlockersDesign;
 import static uk.ac.cam.cl.intelligentgamedesigner.testing.SimulatedPlayersTestHelpers.getPlainBoardDesign;
 
@@ -16,18 +17,14 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
+import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.IngredientDepthPotentialPlayer;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.NoMovesFoundException;
-import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.TargetCellPlayer;
 
-/**
- * 
- * Class that checks that the target player plays games with simple boards and with blockers.
- *
- */
-public class TargetCellPlayerTest {
-
+public class IngredientDepthPotentialPlayerTest {
+    
     public static final int TWO_MOVES_AHEAD = 2;
     public static final int TEN_STATES_IN_POOL = 10;
+    public static final int THREE_INGREDIENTS = 3;
     
     /**
      * Tests that the player can play and win a plain board game with simple target.
@@ -38,8 +35,7 @@ public class TargetCellPlayerTest {
         design.setRules(GameMode.HIGHSCORE, FIVE_MOVES_AVAILABLE, MINIMUM_TARGET_SCORE, SIX_CANDY_COLOURS);
         GameState game = new GameState(design);
 
-        int targetXcoordinate = 5, targetYcoordinate = 5;
-        TargetCellPlayer player = new TargetCellPlayer(TWO_MOVES_AHEAD, TEN_STATES_IN_POOL, targetXcoordinate, targetYcoordinate);
+        IngredientDepthPotentialPlayer player = new IngredientDepthPotentialPlayer(TWO_MOVES_AHEAD, TEN_STATES_IN_POOL);
 
         while (!game.isGameOver()) {
             try {
@@ -69,8 +65,8 @@ public class TargetCellPlayerTest {
         design.setRules(GameMode.HIGHSCORE, TWENTY_MOVES_AVAILABLE, INFINITE_TARGET_SCORE, SIX_CANDY_COLOURS);
         GameState game = new GameState(design);
 
-        int targetXcoordinate = 5, targetYcoordinate = 5;
-        TargetCellPlayer player = new TargetCellPlayer(TWO_MOVES_AHEAD, TEN_STATES_IN_POOL, targetXcoordinate, targetYcoordinate);
+
+        IngredientDepthPotentialPlayer player = new IngredientDepthPotentialPlayer(TWO_MOVES_AHEAD, TEN_STATES_IN_POOL);
 
         while (!game.isGameOver()) {
             try {
@@ -98,8 +94,7 @@ public class TargetCellPlayerTest {
         design.setRules(GameMode.HIGHSCORE, FIVE_MOVES_AVAILABLE, MINIMUM_TARGET_SCORE, SIX_CANDY_COLOURS);
         GameState game = new GameState(design);
 
-        int targetXcoordinate = 5, targetYcoordinate = 5;
-        TargetCellPlayer player = new TargetCellPlayer(TWO_MOVES_AHEAD, TEN_STATES_IN_POOL, targetXcoordinate, targetYcoordinate);
+        IngredientDepthPotentialPlayer player = new IngredientDepthPotentialPlayer(TWO_MOVES_AHEAD, TEN_STATES_IN_POOL);
 
         while (!game.isGameOver()) {
             try {
@@ -127,8 +122,8 @@ public class TargetCellPlayerTest {
         design.setRules(GameMode.HIGHSCORE, TWENTY_MOVES_AVAILABLE, INFINITE_TARGET_SCORE, SIX_CANDY_COLOURS);
         GameState game = new GameState(design);
 
-        int targetXcoordinate = 5, targetYcoordinate = 5;
-        TargetCellPlayer player = new TargetCellPlayer(TWO_MOVES_AHEAD, TEN_STATES_IN_POOL, targetXcoordinate, targetYcoordinate);
+
+        IngredientDepthPotentialPlayer player = new IngredientDepthPotentialPlayer(TWO_MOVES_AHEAD, TEN_STATES_IN_POOL);
 
         while (!game.isGameOver()) {
             try {
@@ -147,4 +142,34 @@ public class TargetCellPlayerTest {
         assertTrue (game.isGameOver());
     }
     
+
+    /**
+     * Tests that the player can play a board with blockers and many moves.
+     */
+    @Test
+    public void playsBoardWithBlockersAndIngredientsLongTarget() {
+        Design design = getBoardWithBlockersAndJelliesDesign();
+        design.setRules(GameMode.INGREDIENTS, TWENTY_MOVES_AVAILABLE, THREE_INGREDIENTS, SIX_CANDY_COLOURS);
+        GameState game = new GameState(design);
+
+
+        IngredientDepthPotentialPlayer player = new IngredientDepthPotentialPlayer(TWO_MOVES_AHEAD, TEN_STATES_IN_POOL);
+
+        while (!game.isGameOver()) {
+            try {
+                Move move = player.calculateBestMove(game);
+                game.makeFullMove(move);
+            } catch (NoMovesFoundException e) {
+                e.printStackTrace();
+                break;
+            } catch (InvalidMoveException e) {
+                // There shouldn't be an invalid move attempted.
+                assertTrue (false);
+                e.printStackTrace();
+            }
+        }
+
+        assertTrue (game.isGameOver());
+    }
+
 }

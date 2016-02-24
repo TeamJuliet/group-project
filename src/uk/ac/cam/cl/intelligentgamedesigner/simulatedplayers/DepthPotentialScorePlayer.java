@@ -15,12 +15,12 @@ public class DepthPotentialScorePlayer extends DepthPotentialPlayer {
     }
 
     @Override
-    GameStateMetric getGameStateMetric(GameState gameState) {
+    public GameStateMetric getGameStateMetric(GameState gameState) {
         return new GameStateMetric(gameState.levelDesign.getObjectiveTarget() - gameState.getGameProgress().score);
     }
 
     @Override
-    GameStatePotential getGameStatePotential(GameState gameState) {
+    public GameStatePotential getGameStatePotential(GameState gameState) {
         // Return the highest increase in score of all possible matches
         GameState original = new GameState(gameState, new UnmovableCandyGenerator());
         int highestIncrease = 0;
@@ -44,7 +44,7 @@ public class DepthPotentialScorePlayer extends DepthPotentialPlayer {
     }
 
     @Override
-    protected GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {
+    public GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {
         // Value metric and potential equally for now and find arithmetic mean
         return new GameStateCombinedMetric(metric, potential, (metric.metric + potential.potential) / 2);
     }
