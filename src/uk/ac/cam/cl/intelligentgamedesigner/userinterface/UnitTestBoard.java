@@ -122,7 +122,9 @@ public class UnitTestBoard extends CustomBoard {
 					}
 				}
 				if(watch_board != null){
-					watch_board.setBoard(board);
+					Cell[][] tempBoard = watch_board.getBoard();
+					tempBoard[x][y] = board[x][y];
+					watch_board.setBoard(tempBoard);
 					
 				}
 			}
@@ -210,7 +212,11 @@ public class UnitTestBoard extends CustomBoard {
 						}
 					}					
 				}
-				if(watch_board != null)watch_board.setBoard(board);
+				if(watch_board != null){
+					Cell[][] tempBoard = watch_board.getBoard();
+					tempBoard[x][y] = board[x][y];
+					watch_board.setBoard(tempBoard);
+				}
 			}
 		}
 		//remove double click issue

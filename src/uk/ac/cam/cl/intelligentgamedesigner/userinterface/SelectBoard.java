@@ -28,6 +28,9 @@ public class SelectBoard extends DisplayBoard implements MouseListener{
 	}
 	public void setSelected(boolean selected) {
 		this.selected = selected;
+		
+		//redraw the board
+		repaint();
 	}
 	
 	public boolean hasDesign(){//prevent you from clicking on a level that isn't there

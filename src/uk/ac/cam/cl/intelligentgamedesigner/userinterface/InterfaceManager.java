@@ -142,7 +142,6 @@ public class InterfaceManager extends JFrame {
 		UIManager.put("Table.selectionBackground", DisplayScreen.EXTRA_PANEL);
 		UIManager.put("ComboBox.background", DisplayScreen.FIELD_BACK); //TODO: keep button colour
 		UIManager.put("ComboBox.selectionBackground", DisplayScreen.EXTRA_PANEL);
-		UIManager.put("ComboBox.buttonShadow", button_gradient); //TODO: keep button colour
 		UIManager.put("ProgressBar.background",DisplayScreen.FIELD_BACK);
 		UIManager.put("ProgressBar.foreground",DisplayScreen.EXTRA_PANEL);
 		UIManager.put("ProgressBar.selectionBackground",DisplayScreen.PROGRESS_BAR_TEXT);
@@ -151,7 +150,7 @@ public class InterfaceManager extends JFrame {
 
 		//buttons
 		UIManager.put("Button.gradient",button_gradient);
-		UIManager.put("Button.select",DisplayScreen.EXTRA_PANEL);
+		UIManager.put("Button.select",DisplayScreen.BUTTON_COLOUR_BOTTOM);
 		UIManager.put("RadioButton.gradient",button_gradient);
 		//add slider, dropdown and scrollpane button colours,
 		//add button disabled colour
