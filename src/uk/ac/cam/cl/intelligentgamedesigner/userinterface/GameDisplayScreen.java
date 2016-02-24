@@ -127,7 +127,7 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 			if(theGame.isGameWon()){
 				end_game_panel.add(new JLabel("Congratulations!"),SwingConstants.CENTER);
 				//if(theGame.getGameMode() != GameMode.HIGHSCORE){
-					end_game_panel.add(Box.createRigidArea(new Dimension(0, 10)));
+					end_game_panel.add(getSmallSpace());
 					end_game_panel.add(new JLabel("You finished with " + progress.movesRemaining+ " moves remaining."));					
 				//}
 			}
@@ -136,28 +136,28 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 					stopGame();
 
 					end_game_panel.add(new JLabel("Sorry, game over..."),SwingConstants.CENTER);
-					end_game_panel.add(Box.createRigidArea(new Dimension(0, 10)));
+					end_game_panel.add(getSmallSpace());
 					end_game_panel.add(new JLabel("The board could not be reshuffled to make any matches"));
 				}
 				else {
 					end_game_panel.add(new JLabel("Better luck next time..."),SwingConstants.CENTER);
 					switch(theGame.getLevelDesign().getMode()){
 					case HIGHSCORE:
-						end_game_panel.add(Box.createRigidArea(new Dimension(0, 10)));
+						end_game_panel.add(getSmallSpace());
 						end_game_panel.add(new JLabel("You didn't reach the required score"));
 						break;
 					case JELLY:
-						end_game_panel.add(Box.createRigidArea(new Dimension(0, 10)));
+						end_game_panel.add(getSmallSpace());
 						end_game_panel.add(new JLabel("You didn't manage to clear the jellies fast enough."));
 						break;
 					case INGREDIENTS:
-						end_game_panel.add(Box.createRigidArea(new Dimension(0, 10)));
+						end_game_panel.add(getSmallSpace());
 						end_game_panel.add(new JLabel("You had another " + progress.ingredientsRemaining + " left to collect."));
 						break;
 					}
 				}
 			}
-			end_game_panel.add(Box.createRigidArea(new Dimension(0, 20)));
+			end_game_panel.add(getSpace());
 			end_game_panel.add(new JLabel("You finished with a score of " + progress.score));
 			end_game_panel.add(Box.createRigidArea(new Dimension(0, 20)));
 			save_statistics.setEnabled(true);
@@ -216,17 +216,17 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 		statsbox = new JPanel();
 		statsbox.setLayout(new BoxLayout(statsbox,BoxLayout.Y_AXIS));
 		statsbox.setBorder(BorderFactory.createLineBorder(Color.black));
-		statsbox.add(Box.createRigidArea(new Dimension(0, 20)));
+		statsbox.add(getSpace());
 		statsbox.add(toggle_animations);
-		statsbox.add(Box.createRigidArea(new Dimension(0, 20)));
+		statsbox.add(getSpace());
 		statsbox.add(score_text);
-		statsbox.add(Box.createRigidArea(new Dimension(0, 20)));
+		statsbox.add(getSpace());
 		statsbox.add(game_mode_text);
-		statsbox.add(Box.createRigidArea(new Dimension(0, 20)));
+		statsbox.add(getSpace());
 		statsbox.add(objective_text);
-		statsbox.add(Box.createRigidArea(new Dimension(0, 20)));
+		statsbox.add(getSpace());
 		statsbox.add(moves_left_text);
-		statsbox.add(Box.createRigidArea(new Dimension(0, 20)));
+		statsbox.add(getSpace());
 		add(statsbox);
 		
 		add(board);

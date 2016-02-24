@@ -2,12 +2,15 @@ package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 
+import javax.swing.Box;
+import javax.swing.Box.Filler;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
@@ -21,6 +24,13 @@ public abstract class DisplayScreen extends JPanel  implements ActionListener{
 	protected static final Color BUTTON_COLOUR_TOP = new Color(200,80,0);
 	protected static final Color BUTTON_COLOUR_MID = new Color(230,100,0);
 	protected static final Color BUTTON_COLOUR_BOTTOM = new Color(180,80,0);
+	//resizable box fillers
+	public static Component getSpace(){return new Box.Filler(new Dimension(0,0), 
+            new Dimension(0, 20), 
+            new Dimension(0, 50));}
+	public static Component getSmallSpace(){return new Box.Filler(new Dimension(0,0), 
+            new Dimension(0, 5), 
+            new Dimension(0, 30));}
 	
 	
 	//The identifier is needed for switching between 'Cards'

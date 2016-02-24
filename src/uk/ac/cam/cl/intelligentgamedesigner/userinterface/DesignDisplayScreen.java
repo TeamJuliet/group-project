@@ -150,32 +150,32 @@ public class DesignDisplayScreen extends DisplayScreen{
 		details = new JPanel();
 		details.setLayout(new BoxLayout(details,BoxLayout.Y_AXIS));
 		details.setBorder(BorderFactory.createLineBorder(Color.black));
-		details.add(Box.createRigidArea(new Dimension(0, 10)));
+		details.add(getSpace());
 		details.add(game_mode);
-		details.add(Box.createRigidArea(new Dimension(0, 10)));
+		details.add(getSpace());
 		details.add(target);
-		details.add(Box.createRigidArea(new Dimension(0, 10)));
+		details.add(getSpace());
 		details.add(moves);
-		details.add(Box.createRigidArea(new Dimension(0, 10)));
+		details.add(getSpace());
 		details.add(candies);
-		details.add(Box.createRigidArea(new Dimension(0, 10)));
+		details.add(getSpace());
 		
 		//make a box with the options
 		buttons = new JPanel();
 		buttons.setLayout(new BoxLayout(buttons,BoxLayout.Y_AXIS));
 		buttons.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		buttons.add(Box.createRigidArea(new Dimension(0, 10)));
+		buttons.add(getSpace());
 		buttons.add(play_level);
-		buttons.add(Box.createRigidArea(new Dimension(0, 10)));
+		buttons.add(getSpace());
 		buttons.add(new JLabel("Simulated Player Strength:"));
 		buttons.add(ai_strength);
-		buttons.add(Box.createRigidArea(new Dimension(0, 10)));
+		buttons.add(getSpace());
 		buttons.add(watch_level);
-		buttons.add(Box.createRigidArea(new Dimension(0, 10)));
+		buttons.add(getSpace());
 		buttons.add(save_level);
-		buttons.add(Box.createRigidArea(new Dimension(0, 10)));
+		buttons.add(getSpace());
 		buttons.add(edit_level);
-		buttons.add(Box.createRigidArea(new Dimension(0, 10)));
+		buttons.add(getSpace());
 		
 		//add everything to the scene
 		add(title);

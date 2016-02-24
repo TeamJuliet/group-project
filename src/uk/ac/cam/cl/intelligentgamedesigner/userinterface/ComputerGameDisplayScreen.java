@@ -110,15 +110,15 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen {
         controls = new JPanel();
         controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
         controls.setBorder(BorderFactory.createLineBorder(Color.black));
-        controls.add(Box.createRigidArea(new Dimension(0, 20)));
+        controls.add(getSpace());
         controls.add(ai_name);
-        controls.add(Box.createRigidArea(new Dimension(0, 20)));
+        controls.add(getSpace());
         controls.add(auto_play);
-        controls.add(Box.createRigidArea(new Dimension(0, 20)));
+        controls.add(getSpace());
         controls.add(next_move);
-        controls.add(Box.createRigidArea(new Dimension(0, 20)));
+        controls.add(getSpace());
         controls.add(solve);
-        controls.add(Box.createRigidArea(new Dimension(0, 20)));
+        controls.add(getSpace());
         add(controls);
 
     }

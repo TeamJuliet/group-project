@@ -104,19 +104,21 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		//make a box with the settings
 		settings = new JPanel();
 		settings.setLayout(new BoxLayout(settings,BoxLayout.Y_AXIS));
-		settings.add(Box.createRigidArea(new Dimension(0, 20)));
+		settings.add(getSpace());
 		settings.add(game_mode_text);
-		settings.add(Box.createRigidArea(new Dimension(0, 10)));
+		settings.add(getSmallSpace());
+		settings.add(getSmallSpace());
 		settings.add(high_score);
 		settings.add(jelly_clear);
 		settings.add(ingredients);
-		settings.add(Box.createRigidArea(new Dimension(0, 40)));
+		settings.add(getSpace());
+		settings.add(getSpace());
 		settings.add(difficulty_text);
-		settings.add(Box.createRigidArea(new Dimension(0, 5)));
+		settings.add(getSmallSpace());
 		settings.add(difficulty);
-		settings.add(Box.createRigidArea(new Dimension(0, 15)));
+		settings.add(getSpace());
 		settings.add(show_difficulty);
-		settings.add(Box.createRigidArea(new Dimension(0, 20)));
+		settings.add(getSpace());
 		add(settings);
 		
 		//add the items
@@ -138,9 +140,9 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		
 		//set the locations
 		position(title,0.5,0.9,400,50);
-		position(go_button,0.5,0.3,100,40);
+		position(go_button,0.5,0.2,100,40);
 		position(back_button,0.1,0.85,150,30);
-		position(settings,0.5,0.5,400,400);
+		position(settings,0.5,0.5,400,300);
 	}
 	
 	@Override
