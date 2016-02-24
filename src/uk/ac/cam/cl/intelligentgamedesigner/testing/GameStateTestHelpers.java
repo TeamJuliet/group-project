@@ -1,11 +1,16 @@
-package uk.ac.cam.cl.intelligentgamedesigner.coregame;
+package uk.ac.cam.cl.intelligentgamedesigner.testing;
+
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.Candy;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.CandyColour;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.CandyType;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateProgress;
 
 /** 
  * 
  * Class that contains constants used in testing to make test case writing more readable.
  *
  */
-public class TestHelpers {
+public class GameStateTestHelpers {
 	public static final int ZERO_SCORE = 0;
 	public static final Candy RED_CANDY = new Candy(CandyColour.RED, CandyType.NORMAL);
 	public static final Candy BLUE_CANDY = new Candy(CandyColour.BLUE, CandyType.NORMAL);
