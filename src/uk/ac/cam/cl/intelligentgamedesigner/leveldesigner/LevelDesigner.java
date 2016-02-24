@@ -12,7 +12,7 @@ public class LevelDesigner implements Runnable {
 	private static final int populationSize = 100;
 	private static final int iterations = 2500;
 	private static final double elitePercentage = 0.05;
-	private static final double feasibleThreshold = 0.2;
+	private static final double feasibleThreshold = 0.0;
 	private static final double crossoverProbability = 0.8;
 
 	private LevelDesignerManager manager;

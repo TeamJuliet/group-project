@@ -75,7 +75,7 @@ public class Design implements Serializable {
 		this.objectiveTarget = 1;
 		this.numberOfCandyColours = 6;
 		this.gameMode = GameMode.HIGHSCORE;
-		this.candyGenerator = PseudoRandomCandyGenerator.class;
+		this.candyGenerator = RandomCandyGenerator.class;
 	}
 
 	/**
@@ -239,7 +239,7 @@ public class Design implements Serializable {
 			return this.candyGenerator.newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {
 			System.err.println("Error: Could not instantiate the candy generator.");
-			return new PseudoRandomCandyGenerator();
+			return new RandomCandyGenerator();
 		}
 	}
 

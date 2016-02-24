@@ -16,7 +16,12 @@ To do this in IntelliJ:
 * Click `Okay`
 
 #### Eclipse
-TODO
+* Right click on the project and click `properties`.
+* Click on the `Java Build Path` on the left side.
+* Click the `Add External JARs` button.
+* Navigate to the git directory and include the JARs.
+* Click `Apply`
+* Click `Okay`
 
 ## Contents
 This package contains three different classes for running unit tests:
@@ -24,6 +29,8 @@ This package contains three different classes for running unit tests:
 * `GameStateTestRunner`
 * `LevelDesignerTestRunner`
 * `SimulatedPlayersTestRunner`
+
+The rest of the unit tests for a given class will be given in the file `class name` + `Test`. 
 
 #### GameStateTestRunner
 This test launches a basic graphical user interface that runs unit tests from files in the `unit_tests` directory. 

@@ -1,10 +1,21 @@
-package uk.ac.cam.cl.intelligentgamedesigner.coregame;
+package uk.ac.cam.cl.intelligentgamedesigner.testing;
 
 import org.junit.Test;
 
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.Candy;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateProgress;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.Scoring;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.UnmovableCandyGenerator;
 import uk.ac.cam.cl.intelligentgamedesigner.experimental.GameDisplay;
-import static uk.ac.cam.cl.intelligentgamedesigner.coregame.TestHelpers.*;
+
 import static org.junit.Assert.*;
+import static uk.ac.cam.cl.intelligentgamedesigner.testing.GameStateTestHelpers.*;
 
 import java.awt.Dimension;
 
@@ -47,7 +58,7 @@ import javax.swing.JPanel;
  *   Tests remaining:
  *   	
  */
-public class GameStateTests {
+public class GameStateTest {
 
 	@Test
 	public void matchesHorizontal3() {

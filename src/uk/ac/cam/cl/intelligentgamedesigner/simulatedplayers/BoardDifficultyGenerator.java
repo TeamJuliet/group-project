@@ -1,6 +1,8 @@
 package uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers;
 
-import static uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions.*;
+import static uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions.hasColourBomb;
+import static uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions.hasSpecial;
+import static uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions.hasSpecialOrColourBomb;
 
 import java.util.List;
 
@@ -14,6 +16,8 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.MatchAnalysis;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.RandomCandyGenerator;
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DepthPotentialScorePlayerTester;
 
 
 public class BoardDifficultyGenerator {
@@ -51,7 +55,6 @@ public class BoardDifficultyGenerator {
                 if (hasUnmovable(cellBoard[x][y])) ++hopefulCount;
             }
         }
-        System.err.println("Hopeful are " + hopefulCount);
         return hopefulCount;
     }
     
@@ -78,6 +81,7 @@ public class BoardDifficultyGenerator {
         design.setObjectiveTarget(2000000);
         design.setNumberOfMovesAvailable(numRounds);
         design.getBoard()[x][y].setJellyLevel(1);
+        design.setCandyGenerator(RandomCandyGenerator.class);
         int difficulty = 0;
         for (int i = 0; i < numRounds; ++i) {
             GameState auxGame = new GameState(design);
@@ -88,10 +92,11 @@ public class BoardDifficultyGenerator {
     }
     
     public static double[][] getBoardDifficulty(Design design) {
+        final int numberOfRoundsToExecute = 20;
         double[][] difficultyBoard = new double[design.getWidth()][design.getHeight()];
         for (int i = 0; i < design.getWidth(); ++i) {
             for (int j = 0; j < design.getHeight(); ++j) {
-                difficultyBoard[i][j] = getCellDifficulty(design, i, j, 20);
+                difficultyBoard[i][j] = getCellDifficulty(design, i, j, numberOfRoundsToExecute);
                 // System.out.print(difficultyBoard[i][j] + " ");
             }
             // System.out.println();
@@ -102,7 +107,7 @@ public class BoardDifficultyGenerator {
     
     
     public static void main(String[] args) {
-        getBoardDifficulty(DepthPotentialScorePlayerTest.getSampleDesign());
+        getBoardDifficulty(DepthPotentialScorePlayerTester.getSampleDesign());
         // getBoardDifficulty(DisplayTester.getSampleDesign());
     }
     

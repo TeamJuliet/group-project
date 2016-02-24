@@ -73,7 +73,7 @@ public class SimulatedPlayerManager {
     }
 
     public Move calculateBestMove(GameState level, int ability) throws NoMovesFoundException {
-        GameMode mode = level.getLevelDesign().getMode();
+        GameMode mode = level.levelDesign.getMode();
         checkPlayer(mode, ability);
         SimulatedPlayerBase player = players.get(mode).get(ability);
         Move move = player.calculateBestMove(level);
@@ -96,7 +96,7 @@ public class SimulatedPlayerManager {
     }
 
     public void solve(GameState level, int ability) throws NoMovesFoundException {
-        GameMode mode = level.getLevelDesign().getMode();
+        GameMode mode = level.levelDesign.getMode();
         checkPlayer(mode, ability);
 
         SimulatedPlayerBase player = players.get(mode).get(ability);

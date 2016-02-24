@@ -103,7 +103,7 @@ public class MayanScorePlayer extends DepthPotentialPlayer {
         return 10.0 - countHopeful(cellBoard) / 2.0;
     }
 
-    MayanScorePlayer(int numOfStatesAhead, int numOfStatesInPool) {
+    public MayanScorePlayer(int numOfStatesAhead, int numOfStatesInPool) {
         super(numOfStatesAhead, numOfStatesInPool);
     }
 
@@ -116,32 +116,33 @@ public class MayanScorePlayer extends DepthPotentialPlayer {
             // approaches 0 or the number
             // of jellies approaches zero.
             final double targetAlpha = targetWeight(gameState.getGameProgress().movesRemaining);
-            System.out.println(gameState.getGameProgress().movesRemaining);
-            final double scoreDistance = (gameState.getLevelDesign().getObjectiveTarget()
+            // System.out.println(gameState.getGameProgress().movesRemaining);
+            final double scoreDistance = (gameState.levelDesign.getObjectiveTarget()
                     - gameState.getGameProgress().score) * scoreSmoothing;
-            System.out.println(scoreDistance + " " + getCandyScore(board));
+            // System.out.println(scoreDistance + " " + getCandyScore(board));
             score = (1.0 + targetAlpha) * (scoreDistance) + (1.0 - targetAlpha)
                     * (getBlockersDifficulty(board) + getCandyScore(board) + hopefulBoost * hopefulCellsScore(board));
-            System.err.println(score);
+            // System.err.println(score);
         }
         return new ScalarGameMetric(score);
     }
     
     @Override
     public Move calculateBestMove(GameState currentState) throws NoMovesFoundException {
-        if(referenceDesign != currentState.design){
-            referenceDesign = currentState.design;
+        if(referenceDesign != currentState.levelDesign){
+            referenceDesign = currentState.levelDesign;
             fillDifficultyOfFixedPositions(referenceDesign);
             DebugFilter.println("Design was replaced by MayanScorePlayer", DebugFilterKey.SIMULATED_PLAYERS);
+            DebugFilter.println("Number of difficulties examined " + (jellies.size() + this.blockers.size()), DebugFilterKey.SIMULATED_PLAYERS);
         }
         return super.calculateBestMove(currentState);
-    };
+    }
     
     @Override
     GameStatePotential getGameStatePotential(GameState gameState) {
         //Doesn't use gameStatePotential
         return null;
-    };
+    }
 
     @Override
     protected GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {

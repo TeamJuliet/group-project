@@ -17,6 +17,8 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
 
 public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
 
@@ -48,15 +50,17 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
         }
     }
 
-    JellyRemoverPlayerLuna(int numOfStatesAhead, int numOfStatesInPool) {
+    public JellyRemoverPlayerLuna(int numOfStatesAhead, int numOfStatesInPool) {
         super(numOfStatesAhead, numOfStatesInPool);
     }
     
     @Override
     public Move calculateBestMove(GameState currentState) throws NoMovesFoundException {
-        if(this.levelDesign != currentState.design){
-            this.levelDesign = currentState.design;
+        if(this.levelDesign != currentState.levelDesign){
+            this.levelDesign = currentState.levelDesign;
+            DebugFilter.println("Design was replaced by LunaJellyRemoverPlayer", DebugFilterKey.SIMULATED_PLAYERS);
             fillDifficultyOfFixedPositions(this.levelDesign);
+            DebugFilter.println("Filtering has ended", DebugFilterKey.SIMULATED_PLAYERS);
         }
         return super.calculateBestMove(currentState);
     }

@@ -1,4 +1,4 @@
-package uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers;
+package uk.ac.cam.cl.intelligentgamedesigner.testing;
 
 import static org.junit.Assert.assertTrue;
 
@@ -7,6 +7,10 @@ import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
+
+import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.ScalarCombinedMetric;
+import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.ScalarGameMetric;
+import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.ScalarGamePotential;
 
 /**
  * 

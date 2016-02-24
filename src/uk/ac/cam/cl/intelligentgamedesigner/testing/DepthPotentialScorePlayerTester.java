@@ -1,4 +1,4 @@
-package uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers;
+package uk.ac.cam.cl.intelligentgamedesigner.testing;
 
 import java.awt.Dimension;
 
@@ -13,8 +13,10 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.experimental.GameDisplay;
+import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.NoMovesFoundException;
+import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.TargetCellPlayer;
 
-public class DepthPotentialScorePlayerTest {
+public class DepthPotentialScorePlayerTester {
 	public static Design getSampleDesign() {
 		int sizeX = 10, sizeY = 10;
 		Design design = new Design();

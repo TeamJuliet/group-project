@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * 
- * Class that contains functions that are related to the functionality of the game state.
+ * Class that contains functions that are related to the functionality of the GameState.
  *
  */
 public class GameStateAuxiliaryFunctions {

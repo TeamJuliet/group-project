@@ -84,7 +84,7 @@ public class TargetCellPlayer extends DepthPotentialPlayer {
             // Find the probability that there will be a match formed using the
             // knowledge about the candies that are going to be filled.
             double replacementPotential = 1.0 - getProbabilityOfHopefulCells(gameState.getBoard(), x, y,
-                    gameState.getLevelDesign().getNumberOfCandyColours());
+                    gameState.levelDesign.getNumberOfCandyColours());
 
             // The potential that the region above or below is likely to change
             // it the next few moves.
