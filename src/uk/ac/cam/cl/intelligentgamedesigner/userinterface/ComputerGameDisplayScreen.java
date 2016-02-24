@@ -3,8 +3,6 @@ package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -17,11 +15,9 @@ import javax.swing.Timer;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.NoMovesFoundException;
-import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerBase;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerManager;
 
 //defines the functionality specific to the Simulated Player viewer
@@ -69,11 +65,12 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen {
     @Override
     protected void stopGame() {
         super.stopGame();
-        next_move.setEnabled(!auto_playing);
-        quit_button.setEnabled(!auto_playing);
+        next_move.setEnabled(true);
+        quit_button.setEnabled(true);
         auto_play.setSelected(false);
         auto_playing = false;
         timer.stop();
+        playerManager = null;
     }
 
     @Override
@@ -113,15 +110,15 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen {
         controls = new JPanel();
         controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
         controls.setBorder(BorderFactory.createLineBorder(Color.black));
-        controls.add(Box.createRigidArea(new Dimension(0, 20)));
+        controls.add(getSpace());
         controls.add(ai_name);
-        controls.add(Box.createRigidArea(new Dimension(0, 20)));
+        controls.add(getSpace());
         controls.add(auto_play);
-        controls.add(Box.createRigidArea(new Dimension(0, 20)));
+        controls.add(getSpace());
         controls.add(next_move);
-        controls.add(Box.createRigidArea(new Dimension(0, 20)));
+        controls.add(getSpace());
         controls.add(solve);
-        controls.add(Box.createRigidArea(new Dimension(0, 20)));
+        controls.add(getSpace());
         add(controls);
 
     }
@@ -193,14 +190,20 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen {
     private void allMoves() {
         if (!playing_move) {
             try {
-                playerManager.solve(theGame, ability);
+                //playerManager.solve(theGame, ability);
+            	while(!theGame.isGameOver()){
+            		theGame.makeFullMove(playerManager.calculateBestMove(theGame, ability));
+            	}
                 update();
                 endGameCheck();
             } catch (NullPointerException e) {
                 e.printStackTrace();
             } catch (NoMovesFoundException e) {
                 e.printStackTrace();
-            }
+            } catch (InvalidMoveException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
     }
 

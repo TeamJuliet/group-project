@@ -1,17 +1,38 @@
 package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 
+import javax.swing.Box;
+import javax.swing.Box.Filler;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 //This will be used as a template for all following menu screens
 public abstract class DisplayScreen extends JPanel  implements ActionListener{
+	//default UI settings
+	protected static final Color BACKGROUND = new Color(225,143,80);
+	protected static final Color EXTRA_PANEL = new Color(235,153,90);
+	protected static final Color FIELD_BACK = new Color(255,203,150);
+	protected static final Color PROGRESS_BAR_TEXT = new Color(80,50,0);
+	protected static final Color BUTTON_COLOUR_TOP = new Color(200,80,0);
+	protected static final Color BUTTON_COLOUR_MID = new Color(230,100,0);
+	protected static final Color BUTTON_COLOUR_BOTTOM = new Color(180,80,0);
+	//resizable box fillers
+	public static Component getSpace(){return new Box.Filler(new Dimension(0,0), 
+            new Dimension(0, 20), 
+            new Dimension(0, 50));}
+	public static Component getSmallSpace(){return new Box.Filler(new Dimension(0,0), 
+            new Dimension(0, 5), 
+            new Dimension(0, 30));}
+	
+	
 	//The identifier is needed for switching between 'Cards'
 	protected String identifier;
 	public String getIdentifier(){
@@ -31,6 +52,7 @@ public abstract class DisplayScreen extends JPanel  implements ActionListener{
 	}
 	
 	public DisplayScreen(){
+		setBackground(BACKGROUND);
 		makeItems();
 		setUpItems();
 		addItems();
@@ -107,11 +129,12 @@ public abstract class DisplayScreen extends JPanel  implements ActionListener{
 		board.setAlignmentX(CENTER_ALIGNMENT);
 		board.setAlignmentY(CENTER_ALIGNMENT);
 		int width = 10 * board.tile_size;
-		double scaled_width = scale_factor * width;
-		double offset = -scale_factor * 4.25 * board.tile_size;
+		double scaled_width = width;
+		double x_offset = - ((double)board.width)/2 * board.tile_size;
+		double y_offset = - ((double)board.height)/2 * board.tile_size;
 		board.setBounds(
-				(int)(screen_width*frac_w + offset), 
-				(int)(screen_height*(1-frac_h) + offset),
+				(int)(screen_width*frac_w + x_offset), 
+				(int)(screen_height*(1-frac_h) + y_offset),
 				(int) scaled_width, 
 				(int) scaled_width
 				);

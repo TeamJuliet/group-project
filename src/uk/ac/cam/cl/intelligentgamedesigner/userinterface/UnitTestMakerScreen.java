@@ -140,6 +140,10 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 		board_above.revalidate();
 		
 		selection.setSelectedIndex(0);
+		
+		position(infinite_lookahead,0.2,0.8,(int)(((double)board_above.width-0.5)*board_above.tile_size),140);	
+		positionBoard(board_before,0.2,0.4);
+		positionBoard(board_after,0.8,0.4);
 	}
 
 	@Override
@@ -275,31 +279,31 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 		settings = new JPanel();
 		settings.setLayout(new BoxLayout(settings,BoxLayout.Y_AXIS));
 		settings.setBorder(BorderFactory.createLineBorder(Color.black));
-		settings.add(Box.createRigidArea(new Dimension(0, 20)));
+		settings.add(getSpace());
 		settings.add(new JLabel("Tile Type:"));
-		settings.add(Box.createRigidArea(new Dimension(0, 10)));
+		settings.add(getSmallSpace());
 		settings.add(selection);
-		settings.add(Box.createRigidArea(new Dimension(0, 10)));
+		settings.add(getSmallSpace());
 		settings.add(fill_type);
-		settings.add(Box.createRigidArea(new Dimension(0, 20)));
+		settings.add(getSpace());
 		settings.add(new JLabel("Level Width:"));
-		settings.add(Box.createRigidArea(new Dimension(0, 5)));
+		settings.add(getSmallSpace());
 		settings.add(dimensions_width);
-		settings.add(Box.createRigidArea(new Dimension(0, 10)));
+		settings.add(getSmallSpace());
 		settings.add(new JLabel("Level Height:"));
-		settings.add(Box.createRigidArea(new Dimension(0, 5)));
+		settings.add(getSmallSpace());
 		settings.add(dimensions_height);
-		settings.add(Box.createRigidArea(new Dimension(0, 10)));
+		settings.add(getSmallSpace());
 		settings.add(new JLabel("Height Above Screen Specified:"));
-		settings.add(Box.createRigidArea(new Dimension(0, 5)));
+		settings.add(getSmallSpace());
 		settings.add(dimensions_above);
-		settings.add(Box.createRigidArea(new Dimension(0, 20)));
+		settings.add(getSpace());
 		settings.add(new JLabel("Select a Game Mode:"));
-		settings.add(Box.createRigidArea(new Dimension(0, 5)));
+		settings.add(getSmallSpace());
 		settings.add(high_score);
 		settings.add(jelly);
 		settings.add(ingredients);
-		settings.add(Box.createRigidArea(new Dimension(0, 20)));
+		settings.add(getSpace());
 		add(settings);
 
 		//make a box with all the controls
@@ -317,11 +321,11 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 		gameStates.setLayout(new BoxLayout(gameStates,BoxLayout.Y_AXIS));
 		gameStates.add(new JLabel("Unit Test Name:"));
 		gameStates.add(test_name);
-		controls.add(Box.createRigidArea(new Dimension(0, 20)));
+		settings.add(getSpace());
 		gameStates.add(new JLabel("Additional Rules:"));
-		gameStates.add(Box.createRigidArea(new Dimension(0, 5)));
+		settings.add(getSmallSpace());
 		gameStates.add(game_state_stuff);
-		controls.add(Box.createRigidArea(new Dimension(0, 20)));
+		settings.add(getSpace());
 		gameStates.add(new JLabel("Description of Test:"));
 		gameStates.add(description);
 		add(gameStates);
@@ -347,7 +351,7 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 		//set the locations
 		position(settings,0.5,0.6,260,450);
 		position(controls,0.5,0.15,300,100);
-		position(infinite_lookahead,0.2,0.8,9*board_above.tile_size,140);	
+		position(infinite_lookahead,0.2,0.8,(int)(((double)board_above.width-0.5)*board_above.tile_size),140);	
 		positionBoard(board_before,0.2,0.4);
 		positionBoard(board_after,0.8,0.4);
 		position(gameStates,0.8,0.8,9*board_above.tile_size,140);
@@ -521,6 +525,9 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 	    board_after.changeSize(dimensions_width.getValue(), dimensions_height.getValue());
 	    board_above.changeSize(dimensions_width.getValue(), dimensions_above.getValue());
 	    board_above.revalidate();
+		position(infinite_lookahead,0.2,0.8,(int)(((double)board_above.width-0.5)*board_above.tile_size),140);	
+		positionBoard(board_before,0.2,0.4);
+		positionBoard(board_after,0.8,0.4);
 	}
 	
 	public boolean canFill() {

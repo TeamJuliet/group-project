@@ -138,6 +138,7 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 		current_progress = new JPanel();
 		doing_what = new JLabel("Setting the level appearance:");
 		current_progress.setLayout(new BoxLayout(current_progress,BoxLayout.Y_AXIS));
+		current_progress.setBorder(BorderFactory.createLineBorder(Color.black));
 		current_progress.add(doing_what);
 		current_progress.add(progressBar);
 		

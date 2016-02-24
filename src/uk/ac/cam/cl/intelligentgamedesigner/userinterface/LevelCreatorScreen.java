@@ -121,6 +121,7 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		dimensions_height.setValue(height);
 		
 		selection.setSelectedIndex(0);
+		positionBoard(board,0.5,0.5);
 	}
 
 	@Override
@@ -250,58 +251,58 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		settings = new JPanel();
 		settings.setLayout(new BoxLayout(settings,BoxLayout.Y_AXIS));
 		settings.setBorder(BorderFactory.createLineBorder(Color.black));
-		settings.add(Box.createRigidArea(new Dimension(0, 20)));
+		settings.add(getSpace());
 		settings.add(new JLabel("Tile Type:"));
-		settings.add(Box.createRigidArea(new Dimension(0, 10)));
+		settings.add(getSpace());
 		settings.add(selection);
-		settings.add(Box.createRigidArea(new Dimension(0, 10)));
+		settings.add(getSpace());
 		settings.add(fill_type);
-		settings.add(Box.createRigidArea(new Dimension(0, 20)));
+		settings.add(getSpace());
 		settings.add(new JLabel("Level Width:"));
-		settings.add(Box.createRigidArea(new Dimension(0, 5)));
+		settings.add(getSmallSpace());
 		settings.add(dimensions_width);
-		settings.add(Box.createRigidArea(new Dimension(0, 20)));
+		settings.add(getSpace());
 		settings.add(new JLabel("Level Height:"));
-		settings.add(Box.createRigidArea(new Dimension(0, 5)));
+		settings.add(getSmallSpace());
 		settings.add(dimensions_height);
-		settings.add(Box.createRigidArea(new Dimension(0, 20)));
+		settings.add(getSpace());
 		settings.add(new JLabel("Select a Game Mode:"));
-		settings.add(Box.createRigidArea(new Dimension(0, 5)));
+		settings.add(getSmallSpace());
 		settings.add(high_score);
 		settings.add(jelly);
 		settings.add(ingredients);
-		settings.add(Box.createRigidArea(new Dimension(0, 20)));
+		settings.add(getSmallSpace());
 		settings.add(new JLabel("Number of moves:"));
 		settings.add(moves);
-		settings.add(Box.createRigidArea(new Dimension(0, 5)));
+		settings.add(getSmallSpace());
 		settings.add(what_objective);
 		settings.add(mode_objective);
-		settings.add(Box.createRigidArea(new Dimension(0, 5)));
+		settings.add(getSmallSpace());
 		settings.add(new JLabel("Number of candy types:"));
 		settings.add(number_of_candies);
-		settings.add(Box.createRigidArea(new Dimension(0, 20)));
+		settings.add(getSpace());
 		add(settings);
 
 		//make a box with all the controls
 		controls = new JPanel();
 		controls.setBorder(BorderFactory.createLineBorder(Color.black));
 		controls.setLayout(new BoxLayout(controls,BoxLayout.Y_AXIS));
-		controls.add(Box.createRigidArea(new Dimension(0, 20)));
+		controls.add(getSpace());
 		just_save.setAlignmentX(CENTER_ALIGNMENT);
 		controls.add(just_save);
-		controls.add(Box.createRigidArea(new Dimension(0, 20)));
+		controls.add(getSpace());
 		analyse.setAlignmentX(CENTER_ALIGNMENT);
 		controls.add(analyse);
-		controls.add(Box.createRigidArea(new Dimension(0, 20)));
+		controls.add(getSpace());
 		save_and_quit.setAlignmentX(CENTER_ALIGNMENT);
 		controls.add(save_and_quit);
-		controls.add(Box.createRigidArea(new Dimension(0, 20)));
+		controls.add(getSpace());
 		just_quit.setAlignmentX(CENTER_ALIGNMENT);
 		controls.add(just_quit);	
-		controls.add(Box.createRigidArea(new Dimension(0, 20)));
+		controls.add(getSpace());
 		reset_board.setAlignmentX(CENTER_ALIGNMENT);
 		controls.add(reset_board);	
-		controls.add(Box.createRigidArea(new Dimension(0, 20)));
+		controls.add(getSpace());
 		add(controls);
 		
 		//make a title box
@@ -460,6 +461,7 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 	public void stateChanged(ChangeEvent e) {
 	    JSlider source = (JSlider)e.getSource();
 	    board.changeSize(dimensions_width.getValue(), dimensions_height.getValue());
+		positionBoard(board,0.5,0.5);
 	}
 	
 	public boolean canFill() {
@@ -500,6 +502,7 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		
 		level.setBoard(board.getBoard());
 		level.resizeBoard(temp_width, temp_height);
+		positionBoard(board,0.5,0.5);
 		level.setRules(mode, number_of_moves, objective_value, number_of_candies.getValue());
 		
 		String fileName = level_on + ". " + level_name.getValue();

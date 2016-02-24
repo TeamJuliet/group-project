@@ -14,6 +14,8 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.CandyColour;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
 
 public class DisplayBoard extends JComponent {
 
@@ -78,7 +80,7 @@ public class DisplayBoard extends JComponent {
 	    	   
 	           using_textures = true;
 	        } catch (IOException ex) {
-	        	System.out.println("Error in loading textures");
+	        	ex.printStackTrace();
 	        	using_textures = false;
 	        }
 	}
@@ -347,6 +349,7 @@ public class DisplayBoard extends JComponent {
 	}
 	
 	public void paint(Graphics g){
+		DebugFilter.println("Drawing board",DebugFilterKey.USER_INTERFACE);
 		setBorder(BorderFactory.createLineBorder(Color.black));
 		for(int x=0;x<width;x++){
 			for(int y=0;y<height;y++){

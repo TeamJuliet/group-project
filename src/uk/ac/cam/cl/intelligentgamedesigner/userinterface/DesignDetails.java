@@ -32,13 +32,13 @@ public class DesignDetails extends JPanel{
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 		setBorder(BorderFactory.createLineBorder(Color.black));
 
-		add(Box.createRigidArea(new Dimension(0, 10)));
+		add(DisplayScreen.getSmallSpace());
 		add(objectiveTarget);
-		add(Box.createRigidArea(new Dimension(0, 10)));
+		add(DisplayScreen.getSmallSpace());
 		add(movesAllowed);
-		add(Box.createRigidArea(new Dimension(0, 10)));
+		add(DisplayScreen.getSmallSpace());
 		add(numberOfCandies);
-		add(Box.createRigidArea(new Dimension(0, 10)));
+		add(DisplayScreen.getSmallSpace());
 	}
 	
 	public void setDetails(Design design, boolean showing_stats){
