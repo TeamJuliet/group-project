@@ -83,6 +83,7 @@ public class DesignDisplayScreen extends DisplayScreen{
 		candies.setText(number_of_candies+" candy colours in play");
 		board.setBoard(design.getBoard());
 		level = design;
+		positionBoard(board,0.35,0.5);
 	}
 
 	@Override

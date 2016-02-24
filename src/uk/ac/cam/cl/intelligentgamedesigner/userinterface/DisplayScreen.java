@@ -129,11 +129,12 @@ public abstract class DisplayScreen extends JPanel  implements ActionListener{
 		board.setAlignmentX(CENTER_ALIGNMENT);
 		board.setAlignmentY(CENTER_ALIGNMENT);
 		int width = 10 * board.tile_size;
-		double scaled_width = scale_factor * width;
-		double offset = -scale_factor * 4.25 * board.tile_size;
+		double scaled_width = width;
+		double x_offset = - ((double)board.width)/2 * board.tile_size;
+		double y_offset = - ((double)board.height)/2 * board.tile_size;
 		board.setBounds(
-				(int)(screen_width*frac_w + offset), 
-				(int)(screen_height*(1-frac_h) + offset),
+				(int)(screen_width*frac_w + x_offset), 
+				(int)(screen_height*(1-frac_h) + y_offset),
 				(int) scaled_width, 
 				(int) scaled_width
 				);

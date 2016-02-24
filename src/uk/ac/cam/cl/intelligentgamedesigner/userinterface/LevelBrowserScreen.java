@@ -61,6 +61,7 @@ public class LevelBrowserScreen extends DisplayScreen implements ListSelectionLi
 			board_display.setBoard(board_design.getBoard());
 			board_display.clearBoard();
 		}
+		positionBoard(board_display,0.5,0.55);
 	}
 	
 	@Override

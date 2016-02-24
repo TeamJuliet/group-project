@@ -94,6 +94,7 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 		show_animations = true;
 		stats = new ArrayList<RoundStatistics>();
 		update();
+		positionBoard(board,0.4,0.5);
 	}
 	
 	protected void update(){

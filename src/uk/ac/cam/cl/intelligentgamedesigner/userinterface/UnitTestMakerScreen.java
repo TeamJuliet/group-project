@@ -140,6 +140,10 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 		board_above.revalidate();
 		
 		selection.setSelectedIndex(0);
+		
+		position(infinite_lookahead,0.2,0.8,(int)(((double)board_above.width-0.5)*board_above.tile_size),140);	
+		positionBoard(board_before,0.2,0.4);
+		positionBoard(board_after,0.8,0.4);
 	}
 
 	@Override
@@ -347,7 +351,7 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 		//set the locations
 		position(settings,0.5,0.6,260,450);
 		position(controls,0.5,0.15,300,100);
-		position(infinite_lookahead,0.2,0.8,9*board_above.tile_size,140);	
+		position(infinite_lookahead,0.2,0.8,(int)(((double)board_above.width-0.5)*board_above.tile_size),140);	
 		positionBoard(board_before,0.2,0.4);
 		positionBoard(board_after,0.8,0.4);
 		position(gameStates,0.8,0.8,9*board_above.tile_size,140);
@@ -521,6 +525,9 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 	    board_after.changeSize(dimensions_width.getValue(), dimensions_height.getValue());
 	    board_above.changeSize(dimensions_width.getValue(), dimensions_above.getValue());
 	    board_above.revalidate();
+		position(infinite_lookahead,0.2,0.8,(int)(((double)board_above.width-0.5)*board_above.tile_size),140);	
+		positionBoard(board_before,0.2,0.4);
+		positionBoard(board_after,0.8,0.4);
 	}
 	
 	public boolean canFill() {

@@ -121,6 +121,7 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		dimensions_height.setValue(height);
 		
 		selection.setSelectedIndex(0);
+		positionBoard(board,0.5,0.5);
 	}
 
 	@Override
@@ -460,6 +461,7 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 	public void stateChanged(ChangeEvent e) {
 	    JSlider source = (JSlider)e.getSource();
 	    board.changeSize(dimensions_width.getValue(), dimensions_height.getValue());
+		positionBoard(board,0.5,0.5);
 	}
 	
 	public boolean canFill() {
@@ -500,6 +502,7 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		
 		level.setBoard(board.getBoard());
 		level.resizeBoard(temp_width, temp_height);
+		positionBoard(board,0.5,0.5);
 		level.setRules(mode, number_of_moves, objective_value, number_of_candies.getValue());
 		
 		String fileName = level_on + ". " + level_name.getValue();
