@@ -11,34 +11,30 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
-import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
-import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
 
-public class MayanScorePlayer extends DepthPotentialPlayer {
+public class IngredientDepthPotentialPlayer extends DepthPotentialPlayer {
     private final double   blockerAtBoundaryConstant = 0.5;
-    private final double   scoreSmoothing            = 0.0005;
+    private final int      numOfRoundsToExecute      = 10;
+    private final double   ingredientsBonusRemoval   = 5.0;
     private final double   hopefulBoost              = 1.5;
+    private final double   ingredientPercentageBoost = 10.0;
 
-    private List<Position> jellies                   = new LinkedList<Position>(),
-                           blockers                  = new LinkedList<Position>();
+    private List<Position> blockers                  = new LinkedList<Position>();
 
     private Design         referenceDesign           = null;
 
-    private void recordJelliesAndBlockers(Design design) {
+    private double[][]     difficultyBoard;
+
+    private void recordBlockers(Design design) {
         Cell[][] cellBoard = design.getBoard();
+        this.blockers.clear();
         for (int x = 0; x < cellBoard.length; ++x) {
             for (int y = 0; y < cellBoard[0].length; ++y) {
-                Position currentPosition = new Position(x, y);
-                if (cellBoard[x][y].getJellyLevel() > 0) {
-                    // this.difficultyOfFixedPositions.put(currentPosition,
-                    // BoardDifficultyGenerator.getCellDifficulty(design, x, y,
-                    // fixedNumberOfRounds));
-                    this.jellies.add(currentPosition);
-                }
                 if (cellBoard[x][y].getCellType().blocksCandies()) {
-                    this.blockers.add(currentPosition);
+                    this.blockers.add(new Position(x, y));
                 }
             }
         }
@@ -61,6 +57,47 @@ public class MayanScorePlayer extends DepthPotentialPlayer {
         double score = 0.0;
         for (Position blockerPosition : this.blockers) {
             score += getBlockerCriticality(board, blockerPosition.x, blockerPosition.y);
+        }
+        return score;
+    }
+
+    private double getIngredientsDifficulty(Cell[][] board) {
+        double score = 0.0;
+        for (int x = 0; x < board.length; ++x) {
+            double difficultyAccumulated = 0.0;
+            double prevDifficulty = 0.0;
+            double prevPrevDifficulty = 0.0;
+            double colDifficulty = 0.0;
+            double colTotalDifficulty = 0.0;
+            for (int y = board[0].length - 1; y >= 0; --y) {
+                if (GameStateAuxiliaryFunctions.hasIngredient(board[x][y])) {
+                    colDifficulty += colTotalDifficulty;
+                    /*
+                     * score += prevPrevDifficulty * prevPrevIngredientBoost +
+                     * prevDifficulty * prevIngredientBoost + 0.5 *
+                     * this.difficultyBoard[x][y];
+                     */
+                }
+                colTotalDifficulty += this.difficultyBoard[x][y];
+                // prevPrevDifficulty = prevDifficulty;
+                // prevDifficulty = this.difficultyBoard[x][y];
+            }
+            if (colTotalDifficulty == 0.0)
+                continue;
+            // Add the progress for all ingredients in that column.
+            score += colDifficulty / colTotalDifficulty * ingredientPercentageBoost;
+        }
+        return score;
+    }
+
+    private double getIngredientsPotential(Cell[][] board) {
+        double score = 0.0;
+        for (int x = 0; x < board.length; ++x) {
+            for (int y = 0; y < board[0].length; ++y) {
+                if (GameStateAuxiliaryFunctions.hasIngredient(board[x][y])) {
+                    score += BoardDifficultyGenerator.getMotionPotential(board, x, y);
+                }
+            }
         }
         return score;
     }
@@ -96,51 +133,53 @@ public class MayanScorePlayer extends DepthPotentialPlayer {
     }
 
     private static double targetWeight(int movesRemaining) {
-        return 0.5 * Math.exp(-0.2 * movesRemaining);
+        return 0.9 * Math.exp(-0.2 * movesRemaining);
     }
 
     private double hopefulCellsScore(Cell[][] cellBoard) {
         return 10.0 - countHopeful(cellBoard) / 2.0;
     }
 
-    public MayanScorePlayer(int numOfStatesAhead, int numOfStatesInPool) {
+    public IngredientDepthPotentialPlayer(int numOfStatesAhead, int numOfStatesInPool) {
         super(numOfStatesAhead, numOfStatesInPool);
     }
 
     @Override
     GameStateMetric getGameStateMetric(GameState gameState) {
         double score = 0.0;
-        if (!gameState.isGameOver()) {
+        if (!gameState.isGameWon()) {
             Cell[][] board = gameState.getBoard();
             // Accelerates jellies detonation when the number of moves
-            // approaches 0 or the number
-            // of jellies approaches zero.
-            final double targetAlpha = targetWeight(gameState.getGameProgress().movesRemaining);
-            // System.out.println(gameState.getGameProgress().movesRemaining);
-            final double scoreDistance = (gameState.levelDesign.getObjectiveTarget()
-                    - gameState.getGameProgress().score) * scoreSmoothing;
-            // System.out.println(scoreDistance + " " + getCandyScore(board));
-            score = (1.0 + targetAlpha) * (scoreDistance) + (1.0 - targetAlpha)
-                    * (getBlockersDifficulty(board) + getCandyScore(board) + hopefulBoost * hopefulCellsScore(board));
-            // System.err.println(score);
+            // approaches 0 or the number of jellies ingredients is close to
+            // zero.
+            final double targetAlpha = Math.max(targetWeight(gameState.getGameProgress().movesRemaining),
+                    targetWeight(gameState.getGameProgress().ingredientsRemaining));
+            final double remainingIngredients = ingredientsBonusRemoval
+                    * gameState.getGameProgress().ingredientsRemaining;
+            System.out.println(remainingIngredients);
+            System.out.println(targetAlpha);
+            score = (1.0 + targetAlpha) * (getIngredientsDifficulty(board) + remainingIngredients)
+                    + (1.0 - targetAlpha) * (getBlockersDifficulty(board) + getCandyScore(board)
+                            + hopefulBoost * hopefulCellsScore(board) + getIngredientsPotential(board));
+
+            System.out.println(score);
         }
         return new ScalarGameMetric(score);
     }
-    
+
     @Override
     public Move calculateBestMove(GameState currentState) throws NoMovesFoundException {
-        if(referenceDesign != currentState.levelDesign){
+        if (referenceDesign != currentState.levelDesign) {
             referenceDesign = currentState.levelDesign;
-            recordJelliesAndBlockers(referenceDesign);
-            DebugFilter.println("Design was replaced by MayanScorePlayer", DebugFilterKey.SIMULATED_PLAYERS);
-            DebugFilter.println("Number of difficulties examined " + (jellies.size() + this.blockers.size()), DebugFilterKey.SIMULATED_PLAYERS);
+            recordBlockers(referenceDesign);
+            this.difficultyBoard = BoardDifficultyGenerator.getBoardDifficulty(referenceDesign, numOfRoundsToExecute);
         }
         return super.calculateBestMove(currentState);
     }
-    
+
     @Override
     GameStatePotential getGameStatePotential(GameState gameState) {
-        //Doesn't use gameStatePotential
+        // Doesn't use gameStatePotential
         return null;
     }
 
@@ -155,5 +194,4 @@ public class MayanScorePlayer extends DepthPotentialPlayer {
         Collections.shuffle(ret);
         return ret;
     }
-
 }
