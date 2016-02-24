@@ -12,11 +12,11 @@ public class LevelDesignIndividual implements Comparable<LevelDesignIndividual> 
     public LevelDesignIndividual (LevelRepresentation levelRepresentation) {
         this.levelRepresentation = levelRepresentation;
         this.aestheticFitness = levelRepresentation.getAestheticFitness();
-        //this.constraintFitness = levelRepresentation.getConstraintFitness();
+        this.constraintFitness = levelRepresentation.getConstraintFitness();
     }
 
     public double getFitness() {
-        return this.aestheticFitness;
+        return (this.aestheticFitness + this.constraintFitness) / 2;
     }
 
     public LevelRepresentation getLevelRepresentation() {

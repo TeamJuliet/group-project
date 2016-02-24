@@ -55,5 +55,12 @@ public class IterationTester {
 		// Also, game state doesn't re-shuffle the candies whenever no moves remain yet
 		//
 		// If you want this to run without exceptions, just return 0.5 in getDifficultyFitness() in LevelDesignerManager
+		ArrayLevelRepresentation arrayLevelRepresentation = new ArrayLevelRepresentationScore(new Random(), 6);
+		arrayLevelRepresentation.printRepresentation();
+
+		DesignBoard designBoard = arrayLevelRepresentation.board;
+
+		System.out.println(ConstraintChecker.calculateDropFitness(designBoard));
+
 	}
 }
