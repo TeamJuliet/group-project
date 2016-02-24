@@ -84,6 +84,9 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 			}
             if (back_button.isEnabled()) view_level.setEnabled(topBoards[selected].hasDesign());
 		}
+
+		// Repaint to add red selection border
+		repaint();
 	}
 	
 	protected void positionBoards(){
