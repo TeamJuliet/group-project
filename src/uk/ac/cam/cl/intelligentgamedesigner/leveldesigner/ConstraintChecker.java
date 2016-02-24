@@ -119,11 +119,8 @@ public class ConstraintChecker {
 			if (nonUnusableFound) {
 				totalDropProportion += (y / (double) actualHeight);
 				actualWidth++;
-				System.out.println(x + ": " + y);
 			}
 		}
-
-		System.out.println(actualHeight + ", " + actualWidth);
 
 		return (totalDropProportion / (double) actualWidth);
 	}
