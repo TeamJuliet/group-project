@@ -1,4 +1,4 @@
-package uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers;
+package uk.ac.cam.cl.intelligentgamedesigner.testing;
 
 import java.awt.Dimension;
 
@@ -13,6 +13,8 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.experimental.GameDisplay;
+import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.MayanScorePlayer;
+import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.NoMovesFoundException;
 
 public class MayanPlayerTester {
     public static Design getSampleDesign() {

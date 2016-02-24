@@ -1,4 +1,4 @@
-package uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers;
+package uk.ac.cam.cl.intelligentgamedesigner.testing;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
@@ -33,6 +33,36 @@ public class SimulatedPlayersTestHelpers {
         for (int i = 0; i < sizeX; ++i) {
             for (int j = 0; j < sizeY; ++j) {
                 boardLayout[i][j] = new Cell(CellType.EMPTY);
+            }
+        }
+        
+        // Add three cells with icing.
+        boardLayout[0][0] = new Cell(CellType.ICING);
+        boardLayout[0][1] = new Cell(CellType.ICING);
+        boardLayout[0][2] = new Cell(CellType.ICING);
+        
+        // Add three cells with liquorice locks.
+        boardLayout[9][2] = new Cell(CellType.ICING);
+        boardLayout[8][2] = new Cell(CellType.ICING);
+        boardLayout[7][2] = new Cell(CellType.ICING);
+        
+        design.setBoard(boardLayout);
+        return design;
+    }
+    
+    public static Design getBoardWithBlockersAndJelliesDesign() {
+        int sizeX = 10, sizeY = 10;
+        Design design = new Design();
+        Cell[][] boardLayout = new Cell[sizeX][sizeY];
+        for (int i = 0; i < sizeX; ++i) {
+            for (int j = 0; j < sizeY; ++j) {
+                boardLayout[i][j] = new Cell(CellType.EMPTY);
+            }
+        }
+        
+        for (int i = 4; i < 7; ++i) {
+            for (int j = 4; j < 7; ++j) {
+                boardLayout[i][j].setJellyLevel((i + j) % 2 + 1);
             }
         }
         
