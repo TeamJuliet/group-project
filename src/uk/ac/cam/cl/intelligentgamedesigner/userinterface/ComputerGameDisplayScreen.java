@@ -15,6 +15,7 @@ import javax.swing.Timer;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.NoMovesFoundException;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerManager;
@@ -189,14 +190,20 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen {
     private void allMoves() {
         if (!playing_move) {
             try {
-                playerManager.solve(theGame, ability);
+                //playerManager.solve(theGame, ability);
+            	while(!theGame.isGameOver()){
+            		theGame.makeFullMove(playerManager.calculateBestMove(theGame, ability));
+            	}
                 update();
                 endGameCheck();
             } catch (NullPointerException e) {
                 e.printStackTrace();
             } catch (NoMovesFoundException e) {
                 e.printStackTrace();
-            }
+            } catch (InvalidMoveException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
     }
 

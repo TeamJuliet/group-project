@@ -6,11 +6,14 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.LinkedList;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
+import javax.swing.plaf.ColorUIResource;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.leveldesigner.Specification;
@@ -26,16 +29,15 @@ public class InterfaceManager extends JFrame {
 	private static final JPanel screens = new JPanel(new CardLayout());	
 	private static final CardLayout screenLayout = (CardLayout)screens.getLayout();
 	
-	private static final DisplayScreen main_menu_screen = new MainMenuScreen();
-	private static final DisplayScreen level_requester_screen = new LevelRequesterScreen();
-	private static final DisplayScreen human_game_display_screen = new HumanGameDisplayScreen();
-	private static final DisplayScreen computer_game_display_screen = new ComputerGameDisplayScreen();
-	private static final DisplayScreen level_browser_screen = new LevelBrowserScreen();
-	private static final DisplayScreen level_creator_screen = new LevelCreatorScreen();
-	private static final DisplayScreen design_display_screen = new DesignDisplayScreen();
-	private static final DisplayScreen designing_level_screen = new DesigningLevelScreen();
-	
-	private static final DisplayScreen unit_test_screen = new UnitTestMakerScreen();
+	private static DisplayScreen main_menu_screen;
+	private static DisplayScreen level_requester_screen;
+	private static DisplayScreen human_game_display_screen;
+	private static DisplayScreen computer_game_display_screen;
+	private static DisplayScreen level_browser_screen;
+	private static DisplayScreen level_creator_screen;
+	private static DisplayScreen design_display_screen;
+	private static DisplayScreen designing_level_screen;
+	private static DisplayScreen unit_test_screen;
 		
 	public static int screenWidth(){
 		return screen.getWidth();
@@ -45,12 +47,7 @@ public class InterfaceManager extends JFrame {
 	}
 	
 	static void initialise(){
-		UIDefaults uiDefaults = UIManager.getDefaults();
-
-		uiDefaults.put("TextArea.font", uiDefaults.get("TextPane.font"));
-		uiDefaults.put("Label.background", Color.red);
-		uiDefaults.put("TextArea.foreground", Color.red);
-		screens.setBackground(Color.red);
+		setAppearanceDefaults();
 		
 		//set the screen to detect resizing
 		screen.addComponentListener(new ComponentAdapter() {
@@ -65,6 +62,21 @@ public class InterfaceManager extends JFrame {
 		
 		DisplayBoard.loadTextures();
 		DisplayScreen.loadFonts();
+
+		initialiseScreens();
+	}
+	
+	private static void initialiseScreens(){
+		//intisialise the screens
+		main_menu_screen = new MainMenuScreen();
+		level_requester_screen = new LevelRequesterScreen();
+		human_game_display_screen = new HumanGameDisplayScreen();
+		computer_game_display_screen = new ComputerGameDisplayScreen();
+		level_browser_screen = new LevelBrowserScreen();
+		level_creator_screen = new LevelCreatorScreen();
+		design_display_screen = new DesignDisplayScreen();
+		designing_level_screen = new DesigningLevelScreen();
+		unit_test_screen = new UnitTestMakerScreen();		
 		
 		//using CardLayout to allow for switching between screens
 		screens.add(main_menu_screen, main_menu_screen.getIdentifier());
@@ -100,6 +112,50 @@ public class InterfaceManager extends JFrame {
 		design_display_screen.rePosition();
 		designing_level_screen.rePosition();
 		unit_test_screen.rePosition();
+	}
+	
+	private static void setAppearanceDefaults(){
+		//Create linked list that will store all gradient information
+		//You can try to understand it by change it's value
+		LinkedList<Object> button_gradient=new LinkedList<Object>();
+		button_gradient.add(0.3);
+		button_gradient.add(0.3);
+		//First colour :
+		button_gradient.add(new ColorUIResource(DisplayScreen.BUTTON_COLOUR_TOP));
+		button_gradient.add(new ColorUIResource(DisplayScreen.BUTTON_COLOUR_MID));
+		button_gradient.add(new ColorUIResource(DisplayScreen.BUTTON_COLOUR_BOTTOM));
+		//Set Button.gradient key with new value
+		
+		//backgrounds
+		UIManager.put("Panel.background", DisplayScreen.EXTRA_PANEL);
+		UIManager.put("RadioButton.background", DisplayScreen.EXTRA_PANEL);
+		UIManager.put("Slider.background", DisplayScreen.EXTRA_PANEL);
+		
+		//fields
+		UIManager.put("TextField.background", DisplayScreen.FIELD_BACK);
+		UIManager.put("TextField.selectionBackground", DisplayScreen.EXTRA_PANEL);
+		UIManager.put("FormattedTextField.background", DisplayScreen.FIELD_BACK);
+		UIManager.put("FormattedTextField.selectionBackground", DisplayScreen.EXTRA_PANEL);
+		UIManager.put("Label.background", DisplayScreen.FIELD_BACK);
+		UIManager.put("List.background", DisplayScreen.FIELD_BACK);
+		UIManager.put("List.selectionBackground", DisplayScreen.EXTRA_PANEL);
+		UIManager.put("Table.background", DisplayScreen.FIELD_BACK);
+		UIManager.put("Table.selectionBackground", DisplayScreen.EXTRA_PANEL);
+		UIManager.put("ComboBox.background", DisplayScreen.FIELD_BACK); //TODO: keep button colour
+		UIManager.put("ComboBox.selectionBackground", DisplayScreen.EXTRA_PANEL);
+		UIManager.put("ComboBox.buttonShadow", button_gradient); //TODO: keep button colour
+		UIManager.put("ProgressBar.background",DisplayScreen.FIELD_BACK);
+		UIManager.put("ProgressBar.foreground",DisplayScreen.EXTRA_PANEL);
+		UIManager.put("ProgressBar.selectionBackground",DisplayScreen.PROGRESS_BAR_TEXT);
+		UIManager.put("ProgressBar.selectionForeground",DisplayScreen.PROGRESS_BAR_TEXT);
+		UIManager.put("ProgressBar.border",BorderFactory.createLineBorder(DisplayScreen.PROGRESS_BAR_TEXT));
+
+		//buttons
+		UIManager.put("Button.gradient",button_gradient);
+		UIManager.put("Button.select",DisplayScreen.EXTRA_PANEL);
+		UIManager.put("RadioButton.gradient",button_gradient);
+		//add slider, dropdown and scrollpane button colours,
+		//add button disabled colour
 	}
 	
 	private static void switchTo(DisplayScreen new_screen){

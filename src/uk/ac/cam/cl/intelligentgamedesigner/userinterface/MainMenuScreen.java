@@ -39,8 +39,6 @@ public class MainMenuScreen extends DisplayScreen{
 		load_level = new JButton("Saved Levels");
 		
 		unit_test = new JButton("Make Unit Test");
-
-		
 	}
 	
 	@Override

@@ -1,5 +1,6 @@
 package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -12,6 +13,16 @@ import javax.swing.JPanel;
 
 //This will be used as a template for all following menu screens
 public abstract class DisplayScreen extends JPanel  implements ActionListener{
+	//default UI settings
+	protected static final Color BACKGROUND = new Color(225,143,80);
+	protected static final Color EXTRA_PANEL = new Color(235,153,90);
+	protected static final Color FIELD_BACK = new Color(255,203,150);
+	protected static final Color PROGRESS_BAR_TEXT = new Color(80,50,0);
+	protected static final Color BUTTON_COLOUR_TOP = new Color(200,80,0);
+	protected static final Color BUTTON_COLOUR_MID = new Color(230,100,0);
+	protected static final Color BUTTON_COLOUR_BOTTOM = new Color(180,80,0);
+	
+	
 	//The identifier is needed for switching between 'Cards'
 	protected String identifier;
 	public String getIdentifier(){
@@ -31,6 +42,7 @@ public abstract class DisplayScreen extends JPanel  implements ActionListener{
 	}
 	
 	public DisplayScreen(){
+		setBackground(BACKGROUND);
 		makeItems();
 		setUpItems();
 		addItems();

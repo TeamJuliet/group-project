@@ -80,7 +80,7 @@ public class DisplayBoard extends JComponent {
 	    	   
 	           using_textures = true;
 	        } catch (IOException ex) {
-	        	System.out.println("Error in loading textures");
+	        	ex.printStackTrace();
 	        	using_textures = false;
 	        }
 	}
