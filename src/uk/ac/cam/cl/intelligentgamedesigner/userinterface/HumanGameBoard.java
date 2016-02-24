@@ -56,6 +56,9 @@ public class HumanGameBoard extends GameBoard implements MouseListener, MouseMot
 			int x = pos.x/tile_size;
 			int y = pos.y/tile_size;
 			move_to = new Position(x,y);
+
+			//redraw the board
+			repaint();
 		}
 	}
 	

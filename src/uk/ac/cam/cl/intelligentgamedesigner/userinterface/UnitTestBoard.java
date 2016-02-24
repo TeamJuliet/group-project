@@ -17,7 +17,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
 public class UnitTestBoard extends CustomBoard {
 
 	private int type;//0 is before, 1 is after, 2 is lookahead
-	private Cell[][] watch_board;
+	private UnitTestBoard watch_board;
 	private Position move_from;
 	private Position move_to;
 	private boolean just_clicked;//so doesn't trigger twice, for click, and down
@@ -41,7 +41,7 @@ public class UnitTestBoard extends CustomBoard {
 	
 	public void watchBoard(UnitTestBoard watch){
 		if(type == 0){//before watches and updates after
-			watch_board = watch.getBoard();
+			watch_board = watch;
 		}
 	}
 
@@ -122,10 +122,14 @@ public class UnitTestBoard extends CustomBoard {
 					}
 				}
 				if(watch_board != null){
-					watch_board[x][y] = board[x][y];
+					watch_board.setBoard(board);
+					
 				}
 			}
+
 			
+			//redraw the board
+			repaint();
 		}
 	}
 
@@ -206,11 +210,14 @@ public class UnitTestBoard extends CustomBoard {
 						}
 					}					
 				}
-				if(watch_board != null)watch_board[x][y] = board[x][y];
+				if(watch_board != null)watch_board.setBoard(board);
 			}
 		}
 		//remove double click issue
 		just_clicked = false;
+		
+		//redraw the board
+		repaint();
 	}
 	
 	@Override
