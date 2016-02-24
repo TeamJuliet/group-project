@@ -48,7 +48,6 @@ public class InterfaceManager extends JFrame {
 	
 	static void initialise(){
 		setAppearanceDefaults();
-		
 		//set the screen to detect resizing
 		screen.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent e) {

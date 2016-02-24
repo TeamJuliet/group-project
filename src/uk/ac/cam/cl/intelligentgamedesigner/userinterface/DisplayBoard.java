@@ -108,6 +108,7 @@ public class DisplayBoard extends JComponent {
 	
 	public DisplayBoard(int width, int height) {
 		super();
+		setIgnoreRepaint(true);
 		
 		this.width = width;
 		this.height = height;
@@ -124,6 +125,8 @@ public class DisplayBoard extends JComponent {
 		showing_unusables = true;
 	}
 	public DisplayBoard(Design design){
+		super();
+		setIgnoreRepaint(true);
 		if(design == null){
 			width = 5;
 			height = 5;
@@ -349,8 +352,6 @@ public class DisplayBoard extends JComponent {
 	}
 	
 	public void paint(Graphics g){
-		DebugFilter.println("Drawing board",DebugFilterKey.USER_INTERFACE);
-		setBorder(BorderFactory.createLineBorder(Color.black));
 		for(int x=0;x<width;x++){
 			for(int y=0;y<height;y++){
 				if(using_textures)draw_textured_cell(x,y,g);
