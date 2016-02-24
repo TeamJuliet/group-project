@@ -149,7 +149,7 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
     }
 
     @Override
-    GameStateMetric getGameStateMetric(GameState gameState) {
+    public GameStateMetric getGameStateMetric(GameState gameState) {
         double score = 0.0;
         if (!gameState.isGameWon()) {
             Cell[][] board = gameState.getBoard();
@@ -168,13 +168,13 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
     }
     
     @Override
-    GameStatePotential getGameStatePotential(GameState gameState) {
+    public GameStatePotential getGameStatePotential(GameState gameState) {
         //Doesn't use gameStatePotential
         return null;
     };
 
     @Override
-    protected GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {
+    public GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {
         return new ScalarCombinedMetric(metric.metric);
     }
 

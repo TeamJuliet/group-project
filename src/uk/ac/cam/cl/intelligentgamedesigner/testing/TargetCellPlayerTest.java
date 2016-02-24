@@ -26,6 +26,9 @@ import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.TargetCellPlayer;
  */
 public class TargetCellPlayerTest {
 
+    public static final int TWO_MOVES_AHEAD = 2;
+    public static final int TEN_STATES_IN_POOL = 10;
+    
     /**
      * Tests that the player can play and win a plain board game with simple target.
      */
@@ -36,7 +39,7 @@ public class TargetCellPlayerTest {
         GameState game = new GameState(design);
 
         int targetXcoordinate = 5, targetYcoordinate = 5;
-        TargetCellPlayer player = new TargetCellPlayer(targetXcoordinate, targetYcoordinate);
+        TargetCellPlayer player = new TargetCellPlayer(TWO_MOVES_AHEAD, TEN_STATES_IN_POOL, targetXcoordinate, targetYcoordinate);
 
         while (!game.isGameOver()) {
             try {
@@ -67,7 +70,7 @@ public class TargetCellPlayerTest {
         GameState game = new GameState(design);
 
         int targetXcoordinate = 5, targetYcoordinate = 5;
-        TargetCellPlayer player = new TargetCellPlayer(targetXcoordinate, targetYcoordinate);
+        TargetCellPlayer player = new TargetCellPlayer(TWO_MOVES_AHEAD, TEN_STATES_IN_POOL, targetXcoordinate, targetYcoordinate);
 
         while (!game.isGameOver()) {
             try {
@@ -96,7 +99,7 @@ public class TargetCellPlayerTest {
         GameState game = new GameState(design);
 
         int targetXcoordinate = 5, targetYcoordinate = 5;
-        TargetCellPlayer player = new TargetCellPlayer(targetXcoordinate, targetYcoordinate);
+        TargetCellPlayer player = new TargetCellPlayer(TWO_MOVES_AHEAD, TEN_STATES_IN_POOL, targetXcoordinate, targetYcoordinate);
 
         while (!game.isGameOver()) {
             try {
@@ -125,7 +128,7 @@ public class TargetCellPlayerTest {
         GameState game = new GameState(design);
 
         int targetXcoordinate = 5, targetYcoordinate = 5;
-        TargetCellPlayer player = new TargetCellPlayer(targetXcoordinate, targetYcoordinate);
+        TargetCellPlayer player = new TargetCellPlayer(TWO_MOVES_AHEAD, TEN_STATES_IN_POOL, targetXcoordinate, targetYcoordinate);
 
         while (!game.isGameOver()) {
             try {
