@@ -435,7 +435,7 @@ public class BoardDifficultyGenerator {
     // and calculates the number of rounds that were required to
     // complete it.
     private static int numOfRounds(GameState game, int x, int y) {
-        TargetCellPlayer player = new TargetCellPlayer(x, y);
+        TargetCellPlayer player = new TargetCellPlayer(2, 10, x, y);
         int rounds = 0;
         while (!game.isGameOver() && game.getCell(x, y).getJellyLevel() != 0) {
             try {
