@@ -5,12 +5,11 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 
 public abstract class SimulatedPlayerBase {
-    
+
     public void solve(GameState game) throws NoMovesFoundException {
         while (!game.isGameOver()) {
-            Move bestMove = calculateBestMove(game);
             try {
-                game.makeFullMove(bestMove);
+                game.makeFullMove(calculateBestMove(game));
             } catch (InvalidMoveException e) {
                 this.printInvalidMoveError(e.invalidMove);
                 try { // TODO: this is horrible, fix it
