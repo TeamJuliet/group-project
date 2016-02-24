@@ -79,6 +79,9 @@ public class CustomBoard extends DisplayBoard implements MouseListener, MouseMot
 			}
 			break;
 		}
+		
+		//redraw the board
+		repaint();
 	}
 
 	public void changeTile(int x, int y){
@@ -95,6 +98,9 @@ public class CustomBoard extends DisplayBoard implements MouseListener, MouseMot
 						board[x][y].setJellyLevel(jelly_level);	
 					}	
 				}
+				
+				//redraw the board
+				repaint();
 			}				
 		}
 	}
@@ -165,6 +171,9 @@ public class CustomBoard extends DisplayBoard implements MouseListener, MouseMot
 					}
 				}
 			}
+			
+			//redraw the board
+			repaint();
 		}
 	}
 

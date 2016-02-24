@@ -124,6 +124,7 @@ public class DisplayBoard extends JComponent {
 		showing_unusables = true;
 	}
 	public DisplayBoard(Design design){
+		super();
 		if(design == null){
 			width = 5;
 			height = 5;
@@ -169,6 +170,9 @@ public class DisplayBoard extends JComponent {
 		} else{
 			System.out.println("Null board sent");
 		}
+		
+		//redraw the board
+		repaint();
 	}
 	
 	public void clearBoard(){
@@ -177,6 +181,8 @@ public class DisplayBoard extends JComponent {
 				board[x][y] = defaultCell();				
 			}
 		}
+		
+		repaint();
 	}
 
 	//drawing the screen
@@ -349,8 +355,7 @@ public class DisplayBoard extends JComponent {
 	}
 	
 	public void paint(Graphics g){
-		DebugFilter.println("Drawing board",DebugFilterKey.USER_INTERFACE);
-		setBorder(BorderFactory.createLineBorder(Color.black));
+		super.paint(g);
 		for(int x=0;x<width;x++){
 			for(int y=0;y<height;y++){
 				if(using_textures)draw_textured_cell(x,y,g);
