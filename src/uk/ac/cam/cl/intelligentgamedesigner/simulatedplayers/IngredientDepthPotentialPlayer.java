@@ -64,9 +64,9 @@ public class IngredientDepthPotentialPlayer extends DepthPotentialPlayer {
     private double getIngredientsDifficulty(Cell[][] board) {
         double score = 0.0;
         for (int x = 0; x < board.length; ++x) {
-            double difficultyAccumulated = 0.0;
-            double prevDifficulty = 0.0;
-            double prevPrevDifficulty = 0.0;
+            // double difficultyAccumulated = 0.0;
+            // double prevDifficulty = 0.0;
+            // double prevPrevDifficulty = 0.0;
             double colDifficulty = 0.0;
             double colTotalDifficulty = 0.0;
             for (int y = board[0].length - 1; y >= 0; --y) {

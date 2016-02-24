@@ -6,7 +6,7 @@ public class GameStateMetric implements Comparable<GameStateMetric> {
     public GameStateMetric(int score) {
         this.metric = score;
     }
-    
+
     public GameStateMetric() {
         this(0);
     }

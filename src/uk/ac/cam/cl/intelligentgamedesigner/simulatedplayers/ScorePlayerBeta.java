@@ -14,7 +14,8 @@ public class ScorePlayerBeta extends SimulatedPlayerBase {
         GameState original = new GameState(currentState, new UnmovableCandyGenerator());
         List<Move> validMoves = original.getValidMoves();
         int largestMatch = 0;
-        if (validMoves.isEmpty()) throw new NoMovesFoundException(currentState);
+        if (validMoves.isEmpty())
+            throw new NoMovesFoundException(currentState);
         Move bestMove = null;
         for (Move candidateMove : validMoves) {
             GameState tmp = new GameState(original);

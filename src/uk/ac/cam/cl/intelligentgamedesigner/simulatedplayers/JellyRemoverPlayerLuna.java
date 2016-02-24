@@ -53,10 +53,10 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
     public JellyRemoverPlayerLuna(int numOfStatesAhead, int numOfStatesInPool) {
         super(numOfStatesAhead, numOfStatesInPool);
     }
-    
+
     @Override
     public Move calculateBestMove(GameState currentState) throws NoMovesFoundException {
-        if(this.levelDesign != currentState.levelDesign){
+        if (this.levelDesign != currentState.levelDesign) {
             this.levelDesign = currentState.levelDesign;
             DebugFilter.println("Design was replaced by LunaJellyRemoverPlayer", DebugFilterKey.SIMULATED_PLAYERS);
             fillDifficultyOfFixedPositions(this.levelDesign);
@@ -86,7 +86,8 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
                     multiplier = 1.0 - ((1.0 - alphaLikelihood) * potential / 3.0 + alphaLikelihood * likelihood) / 4.0;
                 }
                 // System.err.println("jelly multiplier is " + multiplier);
-                // System.err.println("jelly score is : " + cell.getJellyLevel() * multiplier * positionDifficulty);
+                // System.err.println("jelly score is : " + cell.getJellyLevel()
+                // * multiplier * positionDifficulty);
                 jellyScore += cell.getJellyLevel() * multiplier * positionDifficulty;
             }
         }
@@ -166,10 +167,10 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
         }
         return new ScalarGameMetric(score);
     }
-    
+
     @Override
     public GameStatePotential getGameStatePotential(GameState gameState) {
-        //Doesn't use gameStatePotential
+        // Doesn't use gameStatePotential
         return null;
     };
 

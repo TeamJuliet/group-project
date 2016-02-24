@@ -126,21 +126,22 @@ public class MayanScorePlayer extends DepthPotentialPlayer {
         }
         return new ScalarGameMetric(score);
     }
-    
+
     @Override
     public Move calculateBestMove(GameState currentState) throws NoMovesFoundException {
-        if(referenceDesign != currentState.levelDesign){
+        if (referenceDesign != currentState.levelDesign) {
             referenceDesign = currentState.levelDesign;
             recordJelliesAndBlockers(referenceDesign);
             DebugFilter.println("Design was replaced by MayanScorePlayer", DebugFilterKey.SIMULATED_PLAYERS);
-            DebugFilter.println("Number of difficulties examined " + (jellies.size() + this.blockers.size()), DebugFilterKey.SIMULATED_PLAYERS);
+            DebugFilter.println("Number of difficulties examined " + (jellies.size() + this.blockers.size()),
+                    DebugFilterKey.SIMULATED_PLAYERS);
         }
         return super.calculateBestMove(currentState);
     }
-    
+
     @Override
     public GameStatePotential getGameStatePotential(GameState gameState) {
-        //Doesn't use gameStatePotential
+        // Doesn't use gameStatePotential
         return null;
     }
 

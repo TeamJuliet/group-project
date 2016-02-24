@@ -148,7 +148,6 @@ public class BoardDifficultyGenerator {
         return x >= 0 && y >= 0 && cells.length > y && cells.length > x;
     }
 
-
     /**
      * Function that checks whether the cell can be removed on the next round.
      * 
@@ -420,9 +419,13 @@ public class BoardDifficultyGenerator {
     /**
      * Function that gets the cell at (x, y) from the given board and returns
      * null if the coordinates are out of bounds.
-     * @param board The board on which the cell is on.
-     * @param x The x-coordinate for the cell.
-     * @param y The y-coordinate for the cell.
+     *
+     * @param board
+     *            The board on which the cell is on.
+     * @param x
+     *            The x-coordinate for the cell.
+     * @param y
+     *            The y-coordinate for the cell.
      * @return the cell at that location or null if there is not such.
      */
     public static Cell getCell(Cell[][] board, int x, int y) {
@@ -430,7 +433,7 @@ public class BoardDifficultyGenerator {
             return null;
         return board[x][y];
     }
-    
+
     // Function that runs a game to clear the cell at (x, y) for
     // and calculates the number of rounds that were required to
     // complete it.
@@ -463,7 +466,6 @@ public class BoardDifficultyGenerator {
                 && cell1.getCandy().getColour().equals(cell2.getCandy().getColour())
                 && !cell1.getCandy().getCandyType().equals(CandyType.UNMOVABLE);
     }
-
     // Function that checks if the cells (x1, y1), (x2, y2) and (x3, y3) on the
     // board have the same colour.
     private static boolean haveSameColor(Cell[][] board, int x1, int y1, int x2, int y2, int x3, int y3) {
@@ -474,7 +476,6 @@ public class BoardDifficultyGenerator {
     private static boolean hasUnmovable(Cell cell) {
         return cell.hasCandy() && cell.getCandy().getCandyType().equals(CandyType.UNMOVABLE);
     }
-    
 
     // Function that gets the number of hopeful cells in the consecutive
     // horizontal triple containing (x, y).
