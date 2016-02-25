@@ -20,7 +20,7 @@ public class TargetCellPlayer extends DepthPotentialPlayer {
     private final int           x, y;
 
     private static final double ZERO_DISTANCE = 0.0,
-                                        BASE_DISTANCE = 0.1;
+                                BASE_DISTANCE = 0.1;
 
     /**
      * Construct the player by providing the target position that the player
@@ -102,8 +102,7 @@ public class TargetCellPlayer extends DepthPotentialPlayer {
      */
     @Override
     public GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {
-        return new ScalarCombinedMetric(
-                ((ScalarGameMetric) metric).score + ((ScalarGamePotential) potential).score);
+        return new ScalarCombinedMetric(((ScalarGameMetric) metric).score + ((ScalarGamePotential) potential).score);
     }
 
 }

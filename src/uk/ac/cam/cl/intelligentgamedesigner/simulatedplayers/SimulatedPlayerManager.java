@@ -15,26 +15,26 @@ public class SimulatedPlayerManager {
         SimulatedPlayerBase player;
         int lookAhead = 0;
         int poolSize = 0;
-        boolean dimitris = false; // TODO: find better name
+        boolean dimitris = true; // TODO: find better name
         switch (ability) {
         case 1:
             player = new ScorePlayerBeta();
             return player;
         case 2:
             lookAhead = 1;
-            poolSize = 2;
+            poolSize = 8;
             break;
         case 3:
             lookAhead = 1;
-            poolSize = 4;
+            poolSize = 16;
             break;
         case 4:
             lookAhead = 2;
-            poolSize = 4;
+            poolSize = 8;
             break;
         case 5:
             lookAhead = 2;
-            poolSize = 8;
+            poolSize = 16;
             break;
         case 6:
             lookAhead = 3;
@@ -53,19 +53,15 @@ public class SimulatedPlayerManager {
         case JELLY:
             if (dimitris) {
                 player = new JellyRemoverPlayerLuna(lookAhead, poolSize);
-                System.out.println("Dimitris");
             } else {
                 player = new DepthPotentialJellyPlayer(lookAhead, poolSize);
-                System.out.println("Artem");
             }
             break;
         default:
             if (dimitris) {
                 player = new MayanScorePlayer(lookAhead, poolSize);
-                System.out.println("Dimitris");
             } else {
                 player = new DepthPotentialScorePlayer(lookAhead, poolSize);
-                System.out.println("Artem");
             }
             break;
         }

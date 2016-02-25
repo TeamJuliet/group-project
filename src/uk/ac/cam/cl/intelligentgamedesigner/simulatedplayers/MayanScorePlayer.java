@@ -60,7 +60,8 @@ public class MayanScorePlayer extends DepthPotentialPlayer {
     private double getBlockersDifficulty(Cell[][] board) {
         double score = 0.0;
         for (Position blockerPosition : this.blockers) {
-            score += getBlockerCriticality(board, blockerPosition.x, blockerPosition.y);
+            if (board[blockerPosition.x][blockerPosition.y].getCellType().blocksCandies())
+                score += getBlockerCriticality(board, blockerPosition.x, blockerPosition.y);
         }
         return score;
     }
@@ -119,28 +120,29 @@ public class MayanScorePlayer extends DepthPotentialPlayer {
             // System.out.println(gameState.getGameProgress().movesRemaining);
             final double scoreDistance = (gameState.levelDesign.getObjectiveTarget()
                     - gameState.getGameProgress().score) * scoreSmoothing;
-            // System.out.println(scoreDistance + " " + getCandyScore(board));
+            
             score = (1.0 + targetAlpha) * (scoreDistance) + (1.0 - targetAlpha)
                     * (getBlockersDifficulty(board) + getCandyScore(board) + hopefulBoost * hopefulCellsScore(board));
             // System.err.println(score);
         }
         return new ScalarGameMetric(score);
     }
-    
+
     @Override
     public Move calculateBestMove(GameState currentState) throws NoMovesFoundException {
-        if(referenceDesign != currentState.levelDesign){
+        if (referenceDesign != currentState.levelDesign) {
             referenceDesign = currentState.levelDesign;
             recordJelliesAndBlockers(referenceDesign);
             DebugFilter.println("Design was replaced by MayanScorePlayer", DebugFilterKey.SIMULATED_PLAYERS);
-            DebugFilter.println("Number of difficulties examined " + (jellies.size() + this.blockers.size()), DebugFilterKey.SIMULATED_PLAYERS);
+            DebugFilter.println("Number of difficulties examined " + (jellies.size() + this.blockers.size()),
+                    DebugFilterKey.SIMULATED_PLAYERS);
         }
         return super.calculateBestMove(currentState);
     }
-    
+
     @Override
     public GameStatePotential getGameStatePotential(GameState gameState) {
-        //Doesn't use gameStatePotential
+        // Doesn't use gameStatePotential
         return null;
     }
 

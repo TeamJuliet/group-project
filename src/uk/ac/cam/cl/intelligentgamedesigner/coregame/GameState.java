@@ -90,6 +90,9 @@ public class GameState implements Serializable {
         while (makeSmallMove())
             ;
 
+        // Remove striped and wrapped candies from the starting board
+        GameStateAuxiliaryFunctions.removeSpecialCandies(board);
+
         // *** Copy the design elements AFTER filling the board with normal
         // candies. The reason for this is that if we
         // add the design elements (icing, liquorice, etc) BEFORE the normal

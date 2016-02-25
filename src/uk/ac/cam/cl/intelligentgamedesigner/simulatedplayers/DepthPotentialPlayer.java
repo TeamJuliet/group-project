@@ -9,9 +9,6 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.UnmovableCandyGenerator;
 
-import static uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions.*;
-import static uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.GameStateMetric.sub;
-
 abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
     // The number of states that the Player should look ahead at each move.
     // Note: when this is -1, it generates all possible moves.

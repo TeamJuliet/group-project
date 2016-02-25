@@ -15,6 +15,13 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
 
+/**
+ * 
+ * Player that attempts to solve ingredient levels.
+ * 
+ * Note: it assumes that every column has a sink.
+ *
+ */
 public class IngredientDepthPotentialPlayer extends DepthPotentialPlayer {
     private final double   blockerAtBoundaryConstant = 0.5;
     private final int      numOfRoundsToExecute      = 10;
@@ -27,22 +34,6 @@ public class IngredientDepthPotentialPlayer extends DepthPotentialPlayer {
     private Design         referenceDesign           = null;
 
     private double[][]     difficultyBoard;
-
-    private void recordBlockers(Design design) {
-        Cell[][] cellBoard = design.getBoard();
-        this.blockers.clear();
-        for (int x = 0; x < cellBoard.length; ++x) {
-            for (int y = 0; y < cellBoard[0].length; ++y) {
-                if (cellBoard[x][y].getCellType().blocksCandies()) {
-                    this.blockers.add(new Position(x, y));
-                }
-            }
-        }
-    }
-
-    public static Cell getCell(Cell[][] board, Position pos) {
-        return BoardDifficultyGenerator.getCell(board, pos.x, pos.y);
-    }
 
     private double getBlockerCriticality(Cell[][] board, int x, int y) {
         double multiplier;
@@ -64,9 +55,9 @@ public class IngredientDepthPotentialPlayer extends DepthPotentialPlayer {
     private double getIngredientsDifficulty(Cell[][] board) {
         double score = 0.0;
         for (int x = 0; x < board.length; ++x) {
-            double difficultyAccumulated = 0.0;
-            double prevDifficulty = 0.0;
-            double prevPrevDifficulty = 0.0;
+            // double difficultyAccumulated = 0.0;
+            // double prevDifficulty = 0.0;
+            // double prevPrevDifficulty = 0.0;
             double colDifficulty = 0.0;
             double colTotalDifficulty = 0.0;
             for (int y = board[0].length - 1; y >= 0; --y) {
@@ -154,15 +145,14 @@ public class IngredientDepthPotentialPlayer extends DepthPotentialPlayer {
             // zero.
             final double targetAlpha = Math.max(targetWeight(gameState.getGameProgress().movesRemaining),
                     targetWeight(gameState.getGameProgress().ingredientsRemaining));
+            
+            // Term that promotes the removal of ingredients.
             final double remainingIngredients = ingredientsBonusRemoval
                     * gameState.getGameProgress().ingredientsRemaining;
-            System.out.println(remainingIngredients);
-            System.out.println(targetAlpha);
+            
             score = (1.0 + targetAlpha) * (getIngredientsDifficulty(board) + remainingIngredients)
                     + (1.0 - targetAlpha) * (getBlockersDifficulty(board) + getCandyScore(board)
                             + hopefulBoost * hopefulCellsScore(board) + getIngredientsPotential(board));
-
-            System.out.println(score);
         }
         return new ScalarGameMetric(score);
     }
@@ -171,7 +161,7 @@ public class IngredientDepthPotentialPlayer extends DepthPotentialPlayer {
     public Move calculateBestMove(GameState currentState) throws NoMovesFoundException {
         if (referenceDesign != currentState.levelDesign) {
             referenceDesign = currentState.levelDesign;
-            recordBlockers(referenceDesign);
+            this.blockers = GameStateAuxiliaryFunctions.getBlockerPositions(referenceDesign.getBoard());
             this.difficultyBoard = BoardDifficultyGenerator.getBoardDifficulty(referenceDesign, numOfRoundsToExecute);
         }
         return super.calculateBestMove(currentState);

@@ -17,6 +17,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
+import uk.ac.cam.cl.intelligentgamedesigner.leveldesigner.LevelDesignerAccuracy;
 import uk.ac.cam.cl.intelligentgamedesigner.leveldesigner.Specification;
 
 //The menu from which you can request levels.
@@ -179,7 +180,7 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 			GameMode mode = GameMode.HIGHSCORE;
 			if(jelly_clear.isSelected())mode = GameMode.JELLY;
 			if(ingredients.isSelected())mode = GameMode.INGREDIENTS;
-			InterfaceManager.setLevelSpecifications(new Specification(val_difficulty,mode));
+			InterfaceManager.setLevelSpecifications(new Specification(val_difficulty,mode,LevelDesignerAccuracy.values()[val_accuracy-1]));
 	    	InterfaceManager.switchScreen(Windows.REQUESTING);
 			break;
 		}

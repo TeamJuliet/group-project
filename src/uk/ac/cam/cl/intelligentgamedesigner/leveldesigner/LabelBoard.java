@@ -38,7 +38,7 @@ public class LabelBoard extends InfiniteBoard<Label> {
 	}
 	
 	@Override
-	protected int getConvolutionValue(int i, int j) {
+	protected int getConvolutionValue(int i, int j, int si, int sj) {
 		return 0;
 	}
 	

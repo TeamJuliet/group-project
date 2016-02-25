@@ -18,6 +18,13 @@ public class GameStateProgress {
         this.ingredientsRemaining = ingredients;
         this.movesRemaining = moves;
     }
+    
+    public GameStateProgress(GameStateProgressView progressView) {
+        this.score = progressView.score;
+        this.jelliesRemaining = progressView.jelliesRemaining;
+        this.ingredientsRemaining = progressView.ingredientsRemaining;
+        this.movesRemaining = progressView.movesRemaining;
+    }
 
     /**
      * Copy constructor.

@@ -1,6 +1,8 @@
 package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
 
 public class LevelDesignIndividual implements Comparable<LevelDesignIndividual> {
 
@@ -16,7 +18,7 @@ public class LevelDesignIndividual implements Comparable<LevelDesignIndividual> 
     }
 
     public double getFitness() {
-        return (this.aestheticFitness + this.constraintFitness) / 2;
+        return aestheticFitness * constraintFitness;
     }
 
     public LevelRepresentation getLevelRepresentation() {
@@ -33,7 +35,8 @@ public class LevelDesignIndividual implements Comparable<LevelDesignIndividual> 
     @Override
 	public int compareTo(LevelDesignIndividual individual) {
 		double compared = this.getFitness() - individual.getFitness();
+		
 		// Can't just return compared cast to an int, need to be careful with rounding.
-		return (compared > 0 ? 1 : compared < 0 ? -1 : 0);
+		return (compared > 0 ? 1 : (compared < 0 ? -1 : 0));
 	}
 }

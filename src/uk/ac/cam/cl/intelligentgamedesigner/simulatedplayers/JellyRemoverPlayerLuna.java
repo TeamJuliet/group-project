@@ -53,10 +53,10 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
     public JellyRemoverPlayerLuna(int numOfStatesAhead, int numOfStatesInPool) {
         super(numOfStatesAhead, numOfStatesInPool);
     }
-    
+
     @Override
     public Move calculateBestMove(GameState currentState) throws NoMovesFoundException {
-        if(this.levelDesign != currentState.levelDesign){
+        if (this.levelDesign != currentState.levelDesign) {
             this.levelDesign = currentState.levelDesign;
             DebugFilter.println("Design was replaced by LunaJellyRemoverPlayer", DebugFilterKey.SIMULATED_PLAYERS);
             fillDifficultyOfFixedPositions(this.levelDesign);
@@ -85,8 +85,7 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
                     double potential = getMotionPotential(board, x, y);
                     multiplier = 1.0 - ((1.0 - alphaLikelihood) * potential / 3.0 + alphaLikelihood * likelihood) / 4.0;
                 }
-                // System.err.println("jelly multiplier is " + multiplier);
-                // System.err.println("jelly score is : " + cell.getJellyLevel() * multiplier * positionDifficulty);
+
                 jellyScore += cell.getJellyLevel() * multiplier * positionDifficulty;
             }
         }
@@ -105,7 +104,8 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
     private double getBlockersDifficulty(Cell[][] board) {
         double score = 0.0;
         for (Position blockerPosition : this.blockers) {
-            score += getBlockerCriticality(board, blockerPosition.x, blockerPosition.y);
+            if (board[blockerPosition.x][blockerPosition.y].getCellType().blocksCandies())
+                score += getBlockerCriticality(board, blockerPosition.x, blockerPosition.y);
         }
         return score;
     }
@@ -161,15 +161,15 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
             // System.out.println(getJelliesDifficulty(board));
             // System.out.println(getBlockersDifficulty(board));
             score = (2.0 + targetAlpha) * getJelliesDifficulty(board) + (1.0 - targetAlpha)
-                    * (getBlockersDifficulty(board) + 0.5 * getCandyScore(board) + 0.5 * hopefulCellsScore(board));
+                    * (getBlockersDifficulty(board) + 0.2 * getCandyScore(board) + 1.5 * hopefulCellsScore(board));
             // System.err.println(score);
         }
         return new ScalarGameMetric(score);
     }
-    
+
     @Override
     public GameStatePotential getGameStatePotential(GameState gameState) {
-        //Doesn't use gameStatePotential
+        // Doesn't use gameStatePotential
         return null;
     };
 

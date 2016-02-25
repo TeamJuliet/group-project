@@ -32,7 +32,7 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen {
     Timer                    timer;
     private static final int waitspeed          = 500;
     private static int       wait_between_moves = 600;
-    SimulatedPlayerManager playerManager;
+    SimulatedPlayerManager   playerManager;
 
     public ComputerGameDisplayScreen() {
         super();
@@ -190,10 +190,10 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen {
     private void allMoves() {
         if (!playing_move) {
             try {
-                //playerManager.solve(theGame, ability);
-            	while(!theGame.isGameOver()){
-            		theGame.makeFullMove(playerManager.calculateBestMove(theGame, ability));
-            	}
+                // playerManager.solve(theGame, ability);
+                while (!theGame.isGameOver()) {
+                    theGame.makeFullMove(playerManager.calculateBestMove(theGame, ability));
+                }
                 update();
                 endGameCheck();
             } catch (NullPointerException e) {
@@ -201,9 +201,9 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen {
             } catch (NoMovesFoundException e) {
                 e.printStackTrace();
             } catch (InvalidMoveException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
     }
 

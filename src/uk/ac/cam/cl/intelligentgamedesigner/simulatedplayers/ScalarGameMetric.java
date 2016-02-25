@@ -27,7 +27,8 @@ public class ScalarGameMetric extends GameStateMetric {
      * This should be initialized with the real score that the game state has
      * been assigned with.
      * 
-     * @param realScore The real scalar score given to it.
+     * @param realScore
+     *            The real scalar score given to it.
      */
     public ScalarGameMetric(double realScore) {
         this.score = realScore;

@@ -19,7 +19,7 @@ public class DepthPotentialJellyPlayer extends DepthPotentialPlayer {
     public GameStateMetric getGameStateMetric(GameState gameState) {
         return new GameStateMetric(getJellyNumber(gameState));
     }
-    
+
     @Override
     public GameStatePotential getGameStatePotential(GameState gameState) {
         // Return the highest increase in score of all possible matches
@@ -45,7 +45,7 @@ public class DepthPotentialJellyPlayer extends DepthPotentialPlayer {
             return new GameStatePotential(Integer.MAX_VALUE);
         return new GameStatePotential(bestMetric);
     }
-    
+
     @Override
     public GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {
         return new GameStateCombinedMetric(metric, potential, (metric.metric + potential.potential) / 2);
