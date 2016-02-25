@@ -38,10 +38,10 @@ public class BinaryBoard extends BaseBinaryBoard {
 		board[i][j] = obj;
 	}
 
-	boolean[][] board;
-
 	@Override
-	protected int getConvolutionValue(int i, int j) {
+	protected int getConvolutionValue(int i, int j, int si, int sj) {
 		return get(i, j) ? 1 : 0;
 	}
+	
+	private boolean[][] board;
 }

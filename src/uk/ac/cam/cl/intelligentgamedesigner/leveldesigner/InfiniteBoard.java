@@ -57,6 +57,7 @@ public abstract class InfiniteBoard<T> implements BaseBoard<T> {
 			}
 			System.out.print('\n');
 		}
+		System.out.println("");
 	}
 	
 	protected<S extends InfiniteBoard<T>> void getSubSection(int x_tl, int y_tl, S subSection) {
@@ -69,10 +70,10 @@ public abstract class InfiniteBoard<T> implements BaseBoard<T> {
 		}
 	}
 	
-	protected abstract int getConvolutionValue(int i, int j);
+	protected abstract int getConvolutionValue(int i, int j, int si, int sj);
 	
 	@Override
-	public final IntegerBoard convolutionFilter(IntegerBoard board) {
+	public final IntegerBoard convolutionFilter(IntegerBoard board, ConvolutionStrategy<T> strategy) {
 		
 		assert((board.width() % 2 == 1) && (board.height() % 2 == 1));
 		
@@ -82,16 +83,7 @@ public abstract class InfiniteBoard<T> implements BaseBoard<T> {
 		{
 			for(int j = 0; j < height; j++)
 			{
-				for(int k = 0; k < board.width(); k++)
-				{
-					for(int l = 0; l < board.height(); l++)
-					{
-						if(getConvolutionValue(i + k - (board.width() / 2), j + l - (board.height / 2)) != 0)
-						{
-							intBoard.set(i, j, intBoard.get(i, j) + (getConvolutionValue(i + k - (board.width() / 2), j + l - (board.height / 2)) * board.get(k, l)));
-						}
-					}
-				}
+				intBoard.set(i, j, strategy.getConvolutionIndividual(i, j, board, this));
 			}
 		}
 		

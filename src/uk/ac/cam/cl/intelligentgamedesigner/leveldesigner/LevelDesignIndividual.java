@@ -28,10 +28,10 @@ public class LevelDesignIndividual implements Comparable<LevelDesignIndividual> 
     }
 
     public double getFitness() {
-        double fitness = aestheticFitness;
+        double fitness = aestheticFitness * constraintFitness;
         // TODO this needs to be tweaked, need to decide how fitnesses will be combined.
-        fitness += difficultyFitness * 2;
-        return fitness / 3;
+        fitness += (difficultyFitness * 0.3);
+        return fitness;
     }
 
     public Design getDesign() {
@@ -48,7 +48,8 @@ public class LevelDesignIndividual implements Comparable<LevelDesignIndividual> 
     @Override
 	public int compareTo(LevelDesignIndividual individual) {
 		double compared = this.getFitness() - individual.getFitness();
+		
 		// Can't just return compared cast to an int, need to be careful with rounding.
-		return (compared > 0 ? 1 : compared < 0 ? -1 : 0);
+		return (compared > 0 ? 1 : (compared < 0 ? -1 : 0));
 	}
 }

@@ -10,7 +10,16 @@ public class DesignCell {
     // Constructor for creating a randomly initialised design cell type
     public DesignCell (Random random, int jellyLevel) {
         // Create a cell with random cell type
-        this.designCellType = DesignCellType.values()[random.nextInt(DesignCellType.values().length)];
+    	
+    	double r = random.nextDouble();
+    	
+    	if(r < 0.5) {
+    		this.designCellType = DesignCellType.EMPTY;
+    	}else if(r < 0.55){
+    		this.designCellType = DesignCellType.UNUSABLE;
+    	}else{
+    		this.designCellType = DesignCellType.values()[random.nextInt(DesignCellType.values().length)];
+    	}
         this.jellyLevel = jellyLevel;
     }
 
