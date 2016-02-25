@@ -274,7 +274,6 @@ public class ConstraintChecker {
 		
 		PeakFunction pFunIM = new PeakFunction(50,0.5,0,100,0,1);
 		
-		
 		return 1.0 - pFunIM.get(totalErrors);
 	}
 	
@@ -287,11 +286,18 @@ public class ConstraintChecker {
     	testBoard.set(0, 3, true);
     	//testBoard.set(0, 4, true);
     	
+    	
     	testBoard.set(1, 2, true);
     	
     	testBoard.set(2, 1, true);
     	testBoard.set(2, 2, true);
     	testBoard.set(2, 3, true);
+    	
+    	BinaryBoard columnTestBoard = new BinaryBoard(5,5);
+    	
+    	columnTestBoard.set(2, 0, true);
+    	
+      	System.out.println(boardColumnProportion(testBoard,columnTestBoard));
     	
      	getPossibleMatches(testBoard).print();
      	System.out.println("");
@@ -375,6 +381,36 @@ public class ConstraintChecker {
     	return factor;
 	}
 	
+	public static double boardColumnProportion(BaseBinaryBoard board, BaseBinaryBoard columns) {
+		int totalColumnUnders = 0;
+		
+		for(int i = 0;  i < board.width; i++) {
+			boolean isColumn = false;
+			for(int j = 0; j < board.height; j++) {
+				isColumn = isColumn || columns.get(i, j);
+				if(isColumn && board.get(i, j)) {
+					totalColumnUnders++;
+				}
+			}
+		}
+		
+		if(board.getCount() == 0) {
+			return 1.0;
+		}
+		
+		return (double) totalColumnUnders / board.getCount();
+	}
+	
+	public static double columnFitness(DesignBoard board) {
+		ILEBoard ileBoard = new ILEBoard(board);
+		
+		ILBoard ilBoard = new ILBoard(board);
+		
+		PeakFunction pFun = new PeakFunction(0.3,1,0,1,0.1,0.1);
+		
+		return pFun.get(boardColumnProportion(ileBoard,ilBoard));
+	}
+	
     /**
      * This method calculates will the fitness between 0 and 1 for how large the overall board is.
      * This fitness metric is based on the maximum width and height of the empty sections of the board
@@ -409,7 +445,17 @@ public class ConstraintChecker {
     	
     	factor *= matchFitness(board, bBoard);
     	
+    	double col = columnFitness(board);
+    	
+    	factor = (factor * col) + col;
+    	
+    	factor /= 2;
+    	
+    	factor *= boardExtentFitness(bBoard);
+    	
     	factor *= connectedAreaFitness(board,bBoard);
+    	
+    	System.out.println(factor);
     	
     	return factor;
     }

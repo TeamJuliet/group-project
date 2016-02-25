@@ -13,12 +13,14 @@ public class DesignCell {
     	
     	double r = random.nextDouble();
     	
-    	if(r < 0.5) {
+    	if(r < 0.4) {
     		this.designCellType = DesignCellType.EMPTY;
-    	}else if(r < 0.55){
+    	}else if(r < 0.6){
     		this.designCellType = DesignCellType.UNUSABLE;
+    	}else if(r < 0.8){
+    		this.designCellType = DesignCellType.ICING;
     	}else{
-    		this.designCellType = DesignCellType.values()[random.nextInt(DesignCellType.values().length)];
+    		this.designCellType = DesignCellType.LIQUORICE;
     	}
         this.jellyLevel = jellyLevel;
     }
