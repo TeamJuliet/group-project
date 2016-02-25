@@ -15,6 +15,13 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
 
+/**
+ * 
+ * Player that attempts to solve ingredient levels.
+ * 
+ * Note: it assumes that every column has a sink.
+ *
+ */
 public class IngredientDepthPotentialPlayer extends DepthPotentialPlayer {
     private final double   blockerAtBoundaryConstant = 0.5;
     private final int      numOfRoundsToExecute      = 10;
@@ -28,19 +35,7 @@ public class IngredientDepthPotentialPlayer extends DepthPotentialPlayer {
 
     private double[][]     difficultyBoard;
 
-    private void recordBlockers(Design design) {
-        Cell[][] cellBoard = design.getBoard();
-        this.blockers.clear();
-        for (int x = 0; x < cellBoard.length; ++x) {
-            for (int y = 0; y < cellBoard[0].length; ++y) {
-                if (cellBoard[x][y].getCellType().blocksCandies()) {
-                    this.blockers.add(new Position(x, y));
-                }
-            }
-        }
-    }
-
-    public static Cell getCell(Cell[][] board, Position pos) {
+    private static Cell getCell(Cell[][] board, Position pos) {
         return BoardDifficultyGenerator.getCell(board, pos.x, pos.y);
     }
 
@@ -171,7 +166,7 @@ public class IngredientDepthPotentialPlayer extends DepthPotentialPlayer {
     public Move calculateBestMove(GameState currentState) throws NoMovesFoundException {
         if (referenceDesign != currentState.levelDesign) {
             referenceDesign = currentState.levelDesign;
-            recordBlockers(referenceDesign);
+            this.blockers = GameStateAuxiliaryFunctions.getBlockerPositions(referenceDesign.getBoard());
             this.difficultyBoard = BoardDifficultyGenerator.getBoardDifficulty(referenceDesign, numOfRoundsToExecute);
         }
         return super.calculateBestMove(currentState);
