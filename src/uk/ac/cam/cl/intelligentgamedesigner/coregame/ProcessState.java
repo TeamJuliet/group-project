@@ -19,5 +19,8 @@ public enum ProcessState {
     // Fill the empty cells on the board that are not blocked by blocker candies.
     FILL_BOARD,
     // The game state is awaiting a move.
-    AWAITING_MOVE
+    AWAITING_MOVE,
+    
+    // two candies are swapped
+    MAKING_SWAP
 }

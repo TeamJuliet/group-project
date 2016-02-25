@@ -15,7 +15,7 @@ public class SimulatedPlayerManager {
         SimulatedPlayerBase player;
         int lookAhead = 0;
         int poolSize = 0;
-        boolean dimitris = false; // TODO: find better name
+        boolean dimitris = true; // TODO: find better name
         switch (ability) {
         case 1:
             player = new ScorePlayerBeta();

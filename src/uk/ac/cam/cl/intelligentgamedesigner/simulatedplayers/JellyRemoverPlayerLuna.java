@@ -163,7 +163,7 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
             // System.out.println(getJelliesDifficulty(board));
             // System.out.println(getBlockersDifficulty(board));
             score = (2.0 + targetAlpha) * getJelliesDifficulty(board) + (1.0 - targetAlpha)
-                    * (getBlockersDifficulty(board) + 0.2 * getCandyScore(board) + 0.5 * hopefulCellsScore(board));
+                    * (getBlockersDifficulty(board) + 0.2 * getCandyScore(board) + 1.5 * hopefulCellsScore(board));
             // System.err.println(score);
         }
         return new ScalarGameMetric(score);

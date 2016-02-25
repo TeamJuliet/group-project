@@ -15,11 +15,11 @@ public class SingleTileAnalysis {
      */
     public final int startY, endY;
 
-    public SingleTileAnalysis(int start_x, int end_x, int start_y, int end_y) {
-        this.startX = start_x;
-        this.endX = end_x;
-        this.startY = start_y;
-        this.endY = end_y;
+    public SingleTileAnalysis(int startX, int endX, int startY, int endY) {
+        this.startX = startX;
+        this.endX = endX;
+        this.startY = startY;
+        this.endY = endY;
     }
 
     /**

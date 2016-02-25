@@ -94,6 +94,8 @@ public class CustomBoard extends DisplayBoard implements MouseListener, MouseMot
 						board[x][y].setCellType(replace_type);
 					}else{
 						int jelly_level = board[x][y].getJellyLevel();//keep the jelly level
+						//clear the jelly if clearing the tile
+						if(replace_type == CellType.EMPTY || replace_type == CellType.UNUSABLE)jelly_level = 0;
 						board[x][y] = new Cell(replace_type);	
 						board[x][y].setJellyLevel(jelly_level);	
 					}	

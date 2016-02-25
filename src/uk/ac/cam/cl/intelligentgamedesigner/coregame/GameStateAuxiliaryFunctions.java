@@ -5,11 +5,12 @@ import java.util.List;
 
 /**
  * 
- * Class that contains functions that are related to the functionality of the GameState.
+ * Class that contains functions that are related to the functionality of the
+ * GameState.
  *
  */
 public class GameStateAuxiliaryFunctions {
-	
+
 	// Declarations for the direction that should be followed when given in
 	// boolean format.
 	public static final boolean VERTICAL = true;
@@ -39,6 +40,32 @@ public class GameStateAuxiliaryFunctions {
 			return CandyType.BOMB;
 		else
 			return CandyType.WRAPPED;
+	}
+
+	/**
+	 * Function that is used to replace all striped and wrapped candies with
+	 * normal candies of the same colour.
+	 *
+	 * @param board
+	 *            The board to replace the special candies on
+	 */
+	public static void removeSpecialCandies(Cell[][] board) {
+		for (int x = 0; x < board.length; x++) {
+			for (int y = 0; y < board[0].length; y++) {
+				// Ignore cells without a candy
+				if (!board[x][y].hasCandy())
+					continue;
+
+				Candy candy = board[x][y].getCandy();
+				CandyType candyType = candy.getCandyType();
+				if (candyType == CandyType.VERTICALLY_STRIPPED
+						|| candyType == CandyType.HORIZONTALLY_STRIPPED
+						|| candyType == CandyType.WRAPPED) {
+					board[x][y].setCandy(new Candy(candy.getColour(),
+							CandyType.NORMAL));
+				}
+			}
+		}
 	}
 
 	/**
@@ -394,7 +421,7 @@ public class GameStateAuxiliaryFunctions {
 		}
 		return totalIngredients;
 	}
-	
+
 	/**
 	 * Function that deeply copies a cell board.
 	 * 
@@ -411,37 +438,58 @@ public class GameStateAuxiliaryFunctions {
 		}
 		return copy;
 	}
-	
+
 	/**
-	 * Function that returns a human readable string representation of the board.
+	 * Function that returns the blockers positions on the board.
+	 * 
+	 * @param board
+	 *            The board that will be scanned.
+	 * @return The list of positions containing blockers.
+	 */
+	public static List<Position> getBlockerPositions(Cell[][] board) {
+		List<Position> blockers = new LinkedList<Position>();
+		for (int x = 0; x < board.length; ++x) {
+			for (int y = 0; y < board[0].length; ++y) {
+				if (board[x][y].getCellType().blocksCandies()) {
+					blockers.add(new Position(x, y));
+				}
+			}
+		}
+		return blockers;
+	}
+
+	/**
+	 * Function that returns a human readable string representation of the
+	 * board.
+	 * 
 	 * @param board
 	 * @return string representation of the board.
 	 */
 	public static String boardToString(Cell[][] board) {
-        String result = "";
+		String result = "";
 
-        // We need to transpose the board so string can be constructed easily.
-        Cell[][] tmp = new Cell[board.length][board[0].length];
-        for (int x = 0; x < board.length; x++) {
-            for (int y = 0; y < board[0].length; y++) {
-                tmp[y][x] = board[x][y];
-            }
-        }
+		// We need to transpose the board so string can be constructed easily.
+		Cell[][] tmp = new Cell[board.length][board[0].length];
+		for (int x = 0; x < board.length; x++) {
+			for (int y = 0; y < board[0].length; y++) {
+				tmp[y][x] = board[x][y];
+			}
+		}
 
-        result += "  ";
-        for(int i = 0; i < board.length; i++){
-            result += " " + i + "  ";
-        }
-        result += "\n";
-        int rowNum = 0;
-        for (Cell[] row : tmp) {
-            result += rowNum + " ";
-            rowNum++;
-            for (Cell cell : row) {
-                result += cell.toString() + " ";
-            }
-            result += "\n";
-        }
-        return result;
+		result += "  ";
+		for (int i = 0; i < board.length; i++) {
+			result += " " + i + "  ";
+		}
+		result += "\n";
+		int rowNum = 0;
+		for (Cell[] row : tmp) {
+			result += rowNum + " ";
+			rowNum++;
+			for (Cell cell : row) {
+				result += cell.toString() + " ";
+			}
+			result += "\n";
+		}
+		return result;
 	}
 }

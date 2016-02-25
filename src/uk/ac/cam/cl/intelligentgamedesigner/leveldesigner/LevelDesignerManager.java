@@ -416,7 +416,7 @@ public class LevelDesignerManager extends SwingWorker {
 
         for (int t = 0; t < numberOfSimulations; t++) {
             gameStates[t] = new GameState(design);      // Generate a new game
-            gameStatistics.add(new ArrayList<>());      // Generate a reference to be passed to each simulation
+            gameStatistics.add(new ArrayList<RoundStatistics>());      // Generate a reference to be passed to each simulation
             simulationThreads[t] = new Thread(new SimulationThread(gameStates[t], abilityDistribution[t],
                     gameStatistics.get(t)));            // Create the thread to run that simulation
 

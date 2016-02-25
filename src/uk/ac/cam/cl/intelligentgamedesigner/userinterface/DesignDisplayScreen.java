@@ -74,7 +74,7 @@ public class DesignDisplayScreen extends DisplayScreen{
 			break;
 		case INGREDIENTS:
 			game_mode.setText("Game Mode: Ingredients");
-			target.setText(objective_value==1?"Gather all "+objective_value+" ingredients!":"Gather 1 ingredient!");
+			target.setText(objective_value==1?"Gather 1 ingredient!":"Gather all "+objective_value+" ingredients!");
 			break;
 		}
 		number_of_moves = design.getNumberOfMovesAvailable();
