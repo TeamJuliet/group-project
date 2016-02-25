@@ -35,7 +35,7 @@ public class LevelDesignerManager extends SwingWorker {
         for (int l = 0; l < NUMBER_TO_DISPLAY; l++) {
             // NOTE: If you want to debug, change this to: new Random(seed)
             originalRandoms[l]  = new Random(System.nanoTime());
-            levelDesigners[l]   = new LevelDesigner(this, this.originalRandoms[l], l);
+            levelDesigners[l]   = new LevelDesigner(this, this.originalRandoms[l], l, specification.getAccuracy());
         }
     }
 
