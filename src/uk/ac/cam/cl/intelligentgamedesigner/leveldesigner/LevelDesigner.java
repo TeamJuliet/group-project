@@ -20,7 +20,14 @@ public class LevelDesigner implements Runnable {
     private List<LevelDesignIndividual> infeasiblePopulation;
 	private Random random;
 	private int threadID;
-
+	
+	/**
+	 * Constructs a LevelDesigner, generating a random population.
+	 * 
+	 * @param manager The LevelDesignerManager instance for this.
+	 * @param random The Random instance to use to generate rangom numbers.
+	 * @param threadID The ID of the thread, used when notifying the manager.
+	 */
     public LevelDesigner(LevelDesignerManager manager, Random random, int threadID) {
 		this.manager = manager;
 		this.random = random;
@@ -36,7 +43,10 @@ public class LevelDesigner implements Runnable {
 			infeasiblePopulation.add(individual);
 		}
     }
-
+    
+    /**
+     * Generates and improves levels using a genetic algorithm, notifying the manager of changes.
+     */
 	@Override
     public void run() {
     	long startTime = System.currentTimeMillis();
@@ -102,7 +112,15 @@ public class LevelDesigner implements Runnable {
 			manager.notifyInterfacePhase2(feasiblePopulation.get(0).getLevelRepresentation(), threadID);
 		}
     }
-
+	
+	/**
+	 * Selects an individual from a population, with the probability of it being selected
+	 * proportionate to its fitness.
+	 * 
+	 * @param population The population to select from.
+	 * @param totalFitness The total fitness of the population.
+	 * @return The individual that was selected.
+	 */
 	private LevelDesignIndividual stochasticSelection(List<LevelDesignIndividual> population, double totalFitness) {
 		int length = population.size();
 		while (true) {
@@ -115,6 +133,15 @@ public class LevelDesigner implements Runnable {
 		}
 	}
     
+	/**
+	 * Perform one iteration of crossover and mutation on a particular population,
+	 * separating it into feasible and infeasible at the end.
+	 * 
+	 * @param current The current population to iterate.
+	 * @param numberToGenerate The number of new individuals to generate.
+	 * @param newFeasible The list to hold the new feasible population.
+	 * @param newInfeasible The list to hold the new infeasible population.
+	 */
     private void iterate(List<LevelDesignIndividual> current,
 						 int numberToGenerate,
 						 List<LevelDesignIndividual> newFeasible,
@@ -168,7 +195,7 @@ public class LevelDesigner implements Runnable {
 			}
     	}
     }
-
+    
 	public void printIndividuals() {
 		List<LevelDesignIndividual> population = new ArrayList<>(feasiblePopulation);
 		Collections.sort(population);
