@@ -637,7 +637,7 @@ public class GameState implements Serializable {
         for (int x = 0; x < width; ++x) {
             for (int y = 0; y < height; ++y) {
                 // Do not consider cells with no candy.
-                if (!board[x][y].hasCandy())
+                if (!board[x][y].hasCandy() || board[x][y].getCandy().getCandyType().equals(CandyType.UNMOVABLE))
                     continue;
                 markAndReplaceForTile(x, y);
             }
