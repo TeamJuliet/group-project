@@ -96,6 +96,13 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 		update();
 		positionBoard(board,0.4,0.5);
 	}
+	public boolean couldStart(){
+		if(!theGame.hasMoves()){
+			endGameCheck();
+			return false;
+		}
+		return true;
+	}
 	
 	protected void update(){
 		theBoard = theGame.getBoard();

@@ -1,15 +1,12 @@
 package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.image.BufferedImage;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.ProcessState;
 
 public class GameBoard extends DisplayBoard{
-	public Dimension[][] candy_offsets;
+	protected Dimension[][] candy_offsets;
 
 	public GameBoard(Design design) {
 		super(design);
@@ -19,6 +16,7 @@ public class GameBoard extends DisplayBoard{
 	public GameBoard(int width, int height) {
 		super(width,height);
 		showing_unusables = false;
+		candy_offsets = new Dimension[width][height];
 	}
 	
 	protected boolean animating;
@@ -48,7 +46,8 @@ public class GameBoard extends DisplayBoard{
 				for(int y=0;y<height;y++){
 					int x_loc = x*tile_size;
 					int y_loc = y*tile_size;
-					if(candy_offsets != null && candy_offsets[x][y] != null){
+					if(candy_offsets != null && 
+							candy_offsets[x][y] != null){
 						x_loc += candy_offsets[x][y].width;
 						y_loc += candy_offsets[x][y].height;
 					}

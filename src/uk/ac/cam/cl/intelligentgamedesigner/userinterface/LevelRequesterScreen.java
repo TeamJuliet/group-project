@@ -35,12 +35,16 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 	
 	JLabel game_mode_text;
 	JLabel difficulty_text;
+	JLabel accuracy_text;
 	JLabel show_difficulty;
+	JLabel show_accuracy;
 	
 	JSlider difficulty;
+	JSlider accuracy;
 	
 	//specified values
 	double val_difficulty;
+	int val_accuracy;
 	
 	public LevelRequesterScreen(){
 		super();
@@ -56,6 +60,8 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		game_mode_text = new JLabel("Select Game Mode:",SwingConstants.CENTER);
 		difficulty_text = new JLabel("Select Difficulty:",SwingConstants.CENTER);
 		show_difficulty = new JLabel("%",SwingConstants.CENTER);
+		show_accuracy = new JLabel("%",SwingConstants.CENTER);
+		accuracy_text = new JLabel("Set Accuracy:",SwingConstants.CENTER);
 
 		game_mode = new ButtonGroup();
 		high_score = new JRadioButton("High Score",true);
@@ -66,6 +72,7 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		game_mode.add(ingredients);
 		
 		difficulty = new JSlider(0,100);
+		accuracy = new JSlider(1,3);
 	}
 	
 	@Override
@@ -79,10 +86,18 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		show_difficulty.setText("Middling");
 		difficulty.setValue(50);
 		difficulty.setMajorTickSpacing(10);
-		difficulty.setMinorTickSpacing(10);
+		difficulty.setMinorTickSpacing(1);
 		difficulty.setPaintTicks(true);
 		difficulty.setPaintLabels(true);
 		difficulty.addChangeListener(this);
+
+		val_accuracy = accuracy.getMaximum();
+		show_accuracy.setText("Maximum accuracy, but slow");
+		accuracy.setValue(val_accuracy);
+		accuracy.setMajorTickSpacing(1);
+		accuracy.setPaintTicks(true);
+		accuracy.setPaintLabels(true);
+		accuracy.addChangeListener(this);
 		
 		title.setAlignmentX(CENTER_ALIGNMENT);
 		
@@ -93,6 +108,9 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		game_mode_text.setAlignmentX(CENTER_ALIGNMENT);
 		difficulty_text.setAlignmentX(CENTER_ALIGNMENT);
 		show_difficulty.setAlignmentX(CENTER_ALIGNMENT);
+
+		accuracy_text.setAlignmentX(CENTER_ALIGNMENT);
+		show_accuracy.setAlignmentX(CENTER_ALIGNMENT);
 	}
 	
 	private JPanel settings;
@@ -116,8 +134,14 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		settings.add(difficulty_text);
 		settings.add(getSmallSpace());
 		settings.add(difficulty);
-		settings.add(getSpace());
+		settings.add(getSmallSpace());
 		settings.add(show_difficulty);
+		settings.add(getSpace());
+		settings.add(accuracy_text);
+		settings.add(getSmallSpace());
+		settings.add(accuracy);
+		settings.add(getSmallSpace());
+		settings.add(show_accuracy);
 		settings.add(getSpace());
 		add(settings);
 		
@@ -142,7 +166,7 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		position(title,0.5,0.9,400,50);
 		position(go_button,0.5,0.2,100,40);
 		position(back_button,0.1,0.85,150,30);
-		position(settings,0.5,0.5,400,300);
+		position(settings,0.5,0.55,400,380);
 	}
 	
 	@Override
@@ -163,8 +187,7 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 	
 	@Override
 	public void stateChanged(ChangeEvent e) {
-	    JSlider source = (JSlider)e.getSource();
-	    val_difficulty = ((double)source.getValue())/100;
+	    val_difficulty = ((double)difficulty.getValue())/100;
 	    String difficulty_measure = null;
 	    if(val_difficulty<0.10)difficulty_measure = "Trivial";
 	    if(val_difficulty>=0.10 && val_difficulty<0.20)difficulty_measure = "Simples";
@@ -178,5 +201,18 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 	    if(val_difficulty>0.80 && val_difficulty<=0.90)difficulty_measure = "Very Hard";
 	    if(val_difficulty>0.90)difficulty_measure = "Holy Moley";
 	    show_difficulty.setText(difficulty_measure);
+	    
+	    val_accuracy = accuracy.getValue();
+	    switch(val_accuracy){
+	    case 1:
+	    	show_accuracy.setText("Fast but inaccurate");
+	    	break;
+	    case 2:
+	    	show_accuracy.setText("Balance of accuracy and speed");
+	    	break;
+	    case 3:
+	    	show_accuracy.setText("Maximum accuracy, but slow");
+	    	break;
+	    }
 	}
 }
