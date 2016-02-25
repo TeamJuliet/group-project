@@ -127,7 +127,7 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 	@Override
 	protected void makeItems() {
 		save_and_quit = new JButton("Save and Quit");
-		just_quit = new JButton("Quit without saving");
+		just_quit = new JButton("Quit");
 		analyse = new JButton("Analyse Level");
 		just_save = new JButton("Save Level");
 		reset_board = new JButton("Clear Board");
@@ -291,9 +291,10 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		just_save.setAlignmentX(CENTER_ALIGNMENT);
 		controls.add(just_save);
 		controls.add(getSpace());
-		analyse.setAlignmentX(CENTER_ALIGNMENT);
-		controls.add(analyse);
-		controls.add(getSpace());
+		//The analyse button is never used
+		//analyse.setAlignmentX(CENTER_ALIGNMENT);
+		//controls.add(analyse);
+		//controls.add(getSpace());
 		save_and_quit.setAlignmentX(CENTER_ALIGNMENT);
 		controls.add(save_and_quit);
 		controls.add(getSpace());
