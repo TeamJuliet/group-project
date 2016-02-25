@@ -10,21 +10,34 @@ import java.util.Random;
 
 public class LevelDesigner implements Runnable {
 	private static final int populationSize = 100;
-	private static final int iterations = 2000;
 	private static final double elitePercentage = 0.05;
 	private static final double feasibleThreshold = 0.01;
 	private static final double crossoverProbability = 0.8;
+	private int iterations;
 
 	private LevelDesignerManager manager;
-    private List<LevelDesignIndividual> feasiblePopulation;
+	private List<LevelDesignIndividual> feasiblePopulation;
     private List<LevelDesignIndividual> infeasiblePopulation;
 	private Random random;
 	private int threadID;
 
-    public LevelDesigner(LevelDesignerManager manager, Random random, int threadID) {
+    public LevelDesigner(LevelDesignerManager manager, Random random, int threadID, LevelDesignerAccuracy accuracy) {
 		this.manager = manager;
 		this.random = random;
 		this.threadID = threadID;
+
+		// Set the number of iterations based on how accurate the user wants the generation
+		switch (accuracy) {
+			case LOW:
+				this.iterations = 1500;
+				break;
+			case MEDIUM:
+				this.iterations = 2000;
+				break;
+			case HIGH:
+				this.iterations = 2500;
+				break;
+		}
 
 		feasiblePopulation = new ArrayList<>();
 		infeasiblePopulation = new ArrayList<>();

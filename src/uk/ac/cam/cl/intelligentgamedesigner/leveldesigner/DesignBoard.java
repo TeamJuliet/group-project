@@ -41,7 +41,14 @@ public class DesignBoard {
 	public void initialiseJellyLevels() {
 		for (DesignCell designCell : board) {
 			if (designCell.getDesignCellType() != DesignCellType.UNUSABLE) {
-				designCell.setJellyLevel(random.nextInt(ArrayLevelRepresentationJelly.maxJellyLevel));
+				double probability = random.nextDouble();
+				if (probability < 0.65) {
+					designCell.setJellyLevel(0);
+				} else if (probability < 0.95) {
+					designCell.setJellyLevel(1);
+				} else {
+					designCell.setJellyLevel(2);
+				}
 			}
 		}
 	}
