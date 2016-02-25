@@ -28,9 +28,34 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
     // Function that evaluates the current game state based on its potential
     // of making progress towards the goal. (e.g. if there is a large number
     // of cells containing jellies refreshed, etc).
-    public abstract GameStatePotential getGameStatePotential(GameState gameState);
+    public GameStatePotential getGameStatePotential(GameState gameState) {
+        // Return the highest increase in score of all possible matches
+        GameState original = new GameState(gameState, new UnmovableCandyGenerator());
+        GameStateMetric bestMetric = null;
+        List<Move> moves = original.getValidMoves();
+        for (Move move : moves) {
+            GameState tmp = new GameState(original);
+            try {
+                tmp.makeFullMove(move);
+            } catch (InvalidMoveException e) {
+                // Just eat the exception since we don't care if wrong move is
+                // suggested
+                printInvalidSuggestionError(tmp, move);
+                continue;
+            }
 
-    public abstract GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential);
+            GameStateMetric nextMetric = getGameStateMetric(tmp);
+            if (nextMetric.compareTo(bestMetric) == -1)
+                bestMetric = nextMetric;
+        }
+        if (bestMetric == null)
+            return new GameStatePotential(Integer.MAX_VALUE);
+        return new GameStatePotential(bestMetric);
+    }
+
+    public GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {
+        return new GameStateCombinedMetric(metric, potential, (metric.metric + potential.potential) / 2);
+    }
 
     /**
      * Function that filters the moves on the board that will be checked next.
