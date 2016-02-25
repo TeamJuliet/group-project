@@ -4,7 +4,7 @@ public class AestheticChecker {
 	
 	public static double calculateFitness(DesignBoard board) {
 		double fitness = calculateSymmetryScore(board);
-		
+
 		return 0.1 + ( fitness * calculateDistributionScore(board) * calculateCentralDistance(board) * calculateConnectedFitness(board) );
 	}
 	
@@ -138,6 +138,10 @@ public class AestheticChecker {
 	}
 	
 	public static double calculateJellyFitness(DesignBoard board) {
+		return calculateJellyNonIsolationFitness(board) * calculateJellySymmetryFitness(board);
+	}
+
+	public static double calculateJellySymmetryFitness(DesignBoard board) {
 		int maxX = board.width / 2;
     	int score = 0;
     	for (int x = 0; x < maxX; x++) {
@@ -150,6 +154,26 @@ public class AestheticChecker {
     		}
     	}
     	return score / (double) (maxX * board.height);
+	}
+
+	public static double calculateJellyNonIsolationFitness (DesignBoard board) {
+		int totalJelly = 0;
+		int totalIsolatedJelly = 0;
+		for (int x = 1; x < board.width - 1; x++) {
+			for (int y = 1; y < board.height - 1; y++) {
+				if (board.get(x, y).getJellyLevel() > 0) {
+					totalJelly++;
+
+					if (board.get(x - 1, y).getJellyLevel() == 0
+							&& board.get(x, y - 1).getJellyLevel() == 0
+							&& board.get(x + 1, y).getJellyLevel() == 0
+							&& board.get(x, y + 1).getJellyLevel() == 0) totalIsolatedJelly++;
+				}
+			}
+		}
+		double proportionIsolated = totalIsolatedJelly / (double) totalJelly;
+
+		return Math.exp(-proportionIsolated);
 	}
 	
 }
