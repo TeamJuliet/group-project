@@ -236,15 +236,21 @@ public class LevelDesignerManager extends SwingWorker {
     private void assignObjectiveAndMoves (Design design, int threadID) {
 
         // Specify the distribution of abilities that we want to run:
-        int numberOfSimulations = 6;
-        int[] abilityDistribution = new int[numberOfSimulations];
-        abilityDistribution[0] = 0;
-        abilityDistribution[1] = 1;
-        abilityDistribution[2] = 2;
-        abilityDistribution[3] = 3;
-        abilityDistribution[4] = 5;
-        abilityDistribution[5] = 7;
+        int loopNumber = 2;
+        int numberOfPlayersPerBatch = 5;
+        if (specification.getAccuracy() == LevelDesignerAccuracy.MEDIUM) loopNumber *= 2;
+        if (specification.getAccuracy() == LevelDesignerAccuracy.HIGH) loopNumber *= 4;
 
+        int numberOfSimulations = numberOfPlayersPerBatch * loopNumber;
+        int[] abilityDistribution = new int[numberOfSimulations];
+
+        for (int i = 0; i < loopNumber * numberOfPlayersPerBatch; i += numberOfPlayersPerBatch) {
+            abilityDistribution[i]      = 0;
+            abilityDistribution[i + 1]  = 1;
+            abilityDistribution[i + 2]  = 2;
+            abilityDistribution[i + 3]  = 3;
+            abilityDistribution[i + 3]  = 5;
+        }
 
         switch (specification.getGameMode()) {
             case HIGHSCORE:
@@ -287,6 +293,9 @@ public class LevelDesignerManager extends SwingWorker {
      * @param design    The level design to assign the highscore to
      */
     private void assignHighscore (Design design, int[] abilityDistribution) {
+
+        // Ensure that the simulated player doesn't encounter game over whilst making their moves
+        design.setObjectiveTarget(Integer.MAX_VALUE);
 
         // Run simulations with the given abilities in multiple threads
         List<List<RoundStatistics>> gameStatistics = runSimulations(design, abilityDistribution);

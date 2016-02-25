@@ -12,6 +12,19 @@ public class IntegerBoard extends InfiniteBoard<Integer>{
 			board[i] = new int[height];
 		}
 	}
+	
+	public IntegerBoard(BaseBinaryBoard board) {
+		super(board.width(), board.height(), 0);
+		
+		for(int i = 0; i < width; i++) {
+			for(int j = 0; j < height; j++) {
+				if(board.get(i, j))
+				{
+					set(i,j,1);
+				}
+			}
+		}
+	}
 
 	@Override
 	protected String getChar(int i, int j) {
@@ -21,6 +34,14 @@ public class IntegerBoard extends InfiniteBoard<Integer>{
 	@Override
 	protected Integer validGet(int i, int j) {
 		return board[i][j];
+	}
+	
+	public void setAll(int value) {
+		for(int i = 0; i < width; i++) {
+			for(int j = 0; j < height; j++) {
+				set(i,j,value);
+			}
+		}
 	}
 
 	@Override
@@ -46,8 +67,21 @@ public class IntegerBoard extends InfiniteBoard<Integer>{
 	}
 	
 	@Override
-	protected int getConvolutionValue(int i, int j) {
+	protected int getConvolutionValue(int i, int j, int si, int sj) {
 		return get(i, j);
+	}
+	
+	public int getTotal() {
+		int total = 0;
+		
+		for(int i = 0; i < width; i++)
+		{
+			for(int j = 0; j < height; j++)
+			{
+				total += board[i][j];
+			}
+		}
+		return total;
 	}
 	
 	private int[][] board;

@@ -5,7 +5,7 @@ public class AestheticChecker {
 	public static double calculateFitness(DesignBoard board) {
 		double fitness = calculateSymmetryScore(board);
 		
-		return fitness * calculateDistributionScore(board) * calculateCentralDistance(board) * calculateConnectedFitness(board);
+		return 0.1 + ( fitness * calculateDistributionScore(board) * calculateCentralDistance(board) * calculateConnectedFitness(board) );
 	}
 	
 	private static double calculateDistributionScore(DesignBoard board) {
@@ -27,11 +27,11 @@ public class AestheticChecker {
 		distributionDesired[1][0] = 0.4;
 		distributionDesired[1][1] = 1.0;
 		
-		distributionDesired[2][0] = 0.01;
-		distributionDesired[2][1] = 0.01;
+		distributionDesired[2][0] = 0.05;
+		distributionDesired[2][1] = 0.1;
 	
-		distributionDesired[3][0] = 0.01;
-		distributionDesired[3][1] = 0.01;
+		distributionDesired[3][0] = 0.05;
+		distributionDesired[3][1] = 0.1;
 		
 		double[] distributions = new double[counts.length];
 		for (int i = 0; i < counts.length; i++) {

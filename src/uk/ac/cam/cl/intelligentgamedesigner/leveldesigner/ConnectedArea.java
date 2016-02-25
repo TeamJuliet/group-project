@@ -12,12 +12,6 @@ public class ConnectedArea extends BinaryBoard {
 	public void addConnected(int x, int y) {
 		set(x,y,true);
 	}
-
-	@Override
-	protected void validSet(int i, int j, Boolean obj) {
-		board[i][j] = obj;
-	}
-
 	    
 	public static void main(String [] args)
 	{

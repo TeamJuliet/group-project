@@ -1,6 +1,6 @@
 package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
-public abstract class BaseBinaryBoard extends InfiniteBoard<Boolean> {
+public abstract class BaseBinaryBoard extends StatisticBoard<Boolean> {
 
 	public BaseBinaryBoard(int width, int height, boolean defaultValue) {
 		super(width, height, defaultValue);

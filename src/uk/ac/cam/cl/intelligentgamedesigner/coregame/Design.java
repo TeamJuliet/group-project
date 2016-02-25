@@ -326,4 +326,41 @@ public class Design implements Serializable {
 
 		return equals;
 	}
+
+	/**
+	 * Function for debugging Design instances.
+	 *
+	 * @return The string representation of the design.
+     */
+	@Override
+	public String toString () {
+		String result = "Number of moves:         " + numberOfMovesAvailable + "\n";
+		result += "Number of candy colours: " + numberOfCandyColours + "\n";
+		result += "Objective target:        " + objectiveTarget + "\n";
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				CellType cellType = boardLayout[x][y].getCellType();
+
+				switch (cellType) {
+					case EMPTY:
+						result += " ";
+						break;
+					case ICING:
+						result += "I";
+						break;
+					case LIQUORICE:
+						result += "L";
+						break;
+					case UNUSABLE:
+						result += "X";
+						break;
+					default:
+						System.err.println("Error: Design contains a non-design cell!");
+						break;
+				}
+			}
+			result += "\n";
+		}
+		return result;
+	}
 }

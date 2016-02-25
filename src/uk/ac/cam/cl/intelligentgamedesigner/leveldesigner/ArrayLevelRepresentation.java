@@ -12,29 +12,9 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
     protected static int maxWidth = 9;
     protected static int maxHeight = 9;
     protected int numberOfCandyColours;
-    protected ArrayList<Parameter> parameters;
-
-    /*
-        Parameters list:
-        ----------------
-        [0] - number of moves available
-        (subclasses may have additional parameters in this list)
-
-        Board cell types:
-        -----------------
-        0 => Empty
-        1 => Unusable
-        2 => Icing
-        3 => Liquorice
-    */
 
     public ArrayLevelRepresentation(Random random, int numberOfCandyColours) {
     	super(random);
-
-        parameters = new ArrayList<>();
-
-        // Number of moves is initialised in the range: 10-50 (inclusive)
-        parameters.add(new Parameter(random, 10, 50));
 
         this.numberOfCandyColours = numberOfCandyColours;
 
@@ -47,45 +27,22 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
     	ArrayLevelRepresentation clone = (ArrayLevelRepresentation) super.clone();
     	
     	// Copy the board.
-    	clone.board = new DesignBoard (board);
+    	clone.board = new DesignBoard(board);
 
         // Copy the number of candy colours
         clone.numberOfCandyColours = this.numberOfCandyColours;
-
-    	// Copy the list of parameters.
-    	int length = parameters.size();
-    	clone.parameters = new ArrayList<>(length);
-    	for (int i = 0; i < length; i++) {
-    		clone.parameters.add(parameters.get(i).copy());
-    	}
     	
     	return clone;
     }
 
     public void mutate() {
-        if (random.nextDouble() < 0.75) {
-            // Mutate the board (75% probability).
-        	board.mutateCellType();
-        } else {
-            // Mutate a parameter (25% probability).
-            Parameter p = parameters.get(random.nextInt(parameters.size()));
-            p.generateNewValue();
-        }
+        board.mutateCellType();
     }
     
 	@Override
     public void crossoverWith(LevelRepresentation levelRepresentation) {
 		ArrayLevelRepresentation l = (ArrayLevelRepresentation) levelRepresentation;
-		
 		board.crossoverWith(l.board);
-		
-		for (int i = 0; i < parameters.size(); i++) {
-			if (random.nextDouble() > 0.5) { // Swap each parameter with 50% probability.
-				Parameter p = parameters.get(i);
-				parameters.set(i, l.parameters.get(i));
-				l.parameters.set(i, p);
-			}
-		}
     }
     
     /**
@@ -122,7 +79,6 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
         design.setBoard(designBoard);
 
         // Set the general parameters
-        design.setNumberOfMovesAvailable(parameters.get(0).getValue());
         design.setNumberOfCandyColours(this.numberOfCandyColours);
 
         return design;
