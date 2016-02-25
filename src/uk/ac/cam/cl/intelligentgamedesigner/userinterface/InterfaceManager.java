@@ -200,11 +200,15 @@ public class InterfaceManager extends JFrame {
 			break;
 		case HUMAN:
 			((HumanGameDisplayScreen)human_game_display_screen).initialiseGame();
-			switchTo(human_game_display_screen);
+			if(((HumanGameDisplayScreen)human_game_display_screen).couldStart()){
+				switchTo(human_game_display_screen);//don't start if the game couldn't start
+			}
 			break;
 		case SIMULATED:
 			((ComputerGameDisplayScreen)computer_game_display_screen).initialiseGame();
-			switchTo(computer_game_display_screen);
+			if(((ComputerGameDisplayScreen)computer_game_display_screen).couldStart()){
+				switchTo(computer_game_display_screen);//don't start if the game couldn't start
+			}
 			break;
 		case CREATE:
 			switchTo(level_creator_screen);
