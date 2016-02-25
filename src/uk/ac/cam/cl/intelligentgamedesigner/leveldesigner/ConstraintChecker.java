@@ -255,17 +255,31 @@ public class ConstraintChecker {
     	return factor;
 	}
 	
+    /**
+     * This method calculates will the connected area fitness between 0 and 1.
+     * This fitness metric is based on the properties of the conected areas of teh board
+     *
+     * @param bBoard    The design of the level wrapper
+     * @param board The design of the level
+     * @return         The connected area fitness, 0 <= d <= 1
+     */
+	
 	public static double connectedAreaFitness(DesignBoard board, CandyBoard bBoard) {
 		double factor = 1.0;
 		
+		
+		//Get all connected areas
     	ArrayList<ConnectedArea> list = ConnectedArea.getAreas(bBoard, new FourConnectivity());
     	
+    	//Map from number of areas to fitness
     	PeakFunction pFunCount = new PeakFunction(3, 1, 1, 8, 1, 0.8);
     	factor *= pFunCount.get((double) list.size()); //
     	
+    	//Map from size of areas to fitness
     	PeakFunction pFunConSizeMain = new PeakFunction(50, 1, 18, 81, 0.9, 0.95);
     	PeakFunction pFunConSize = new PeakFunction(20, 1, 6, 25, 0.95, 0.98);
     	
+    	//Convolution with each connected area to ensure areas are open 
     	IntegerBoard convolutionFilter = new IntegerBoard(3,3); convolutionFilter.setAll(1);
     	
     	PeakFunction pFunConvolution = new PeakFunction(8, 1, 1, 10, 0.50, 0.90);
@@ -275,6 +289,7 @@ public class ConstraintChecker {
     	
     	if(list.size() > 0)
     	{
+    		//Sort by size of areas
 	    	list.sort(new BinaryBoardComparator());
 	    	
 	    	totalCountFactor += pFunConSizeMain.get(list.get(0).getCount()); //
@@ -313,6 +328,7 @@ public class ConstraintChecker {
 	public static double boardExtentFitness(CandyBoard bBoard) {
 		double factor = 1.0;
 		
+		//Map from extent to fitness
     	PeakFunction pFunConCount = new PeakFunction(7, 1, 5, 9, 0.95, 0.95);
 		
     	factor *= pFunConCount.get(bBoard.getHorizontalExtent());
@@ -332,6 +348,7 @@ public class ConstraintChecker {
     public static double calculateFitness(DesignBoard board) {
     	CandyBoard bBoard = new CandyBoard(board);
     	
+    	//Helps avoid 
     	double factor = IcingSurroundFitness(bBoard);
     	
     	factor *= matchFitness(board, bBoard);
