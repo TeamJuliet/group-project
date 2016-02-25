@@ -21,17 +21,8 @@ public class PseudoRandomCandyGenerator extends CandyGenerator {
 
     @Override
     public Candy generateCandy(int x) {
-        // This ensures a new ingredient is introduced whenever a user clears
-        // one on the board. It also introduces
-        // another ingredient with a small probability
-        if (super.ingredientsToDrop > 0) {
-            if (previousNumberOfIngredientsRemaining > gameStateProgress.getIngredientsRemaining()
-                    || nextPseudoRandom() % 100 < 2) {
-                ingredientsToDrop--;
-                previousNumberOfIngredientsRemaining--;
-                return new Candy(null, CandyType.INGREDIENT);
-            }
-        }
+
+        if (shouldGenerateIngredient()) return new Candy(null, CandyType.INGREDIENT);
 
         int num = nextPseudoRandom();
         // This line just adds some bombs for testing.

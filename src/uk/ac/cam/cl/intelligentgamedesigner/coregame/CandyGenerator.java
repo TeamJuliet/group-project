@@ -34,10 +34,20 @@ public abstract class CandyGenerator implements Serializable {
         	System.err.println("Candy Generator Error: Game state progress is null");
         this.previousNumberOfIngredientsRemaining = gameStateProgress.getIngredientsRemaining();
 
-        int numberOfInitialIngredients = GameStateAuxiliaryFunctions.getIngredientsNumber(design.getBoard());
-
-        this.ingredientsToDrop = gameStateProgress.getIngredientsRemaining() - numberOfInitialIngredients;
+        this.ingredientsToDrop = gameStateProgress.getIngredientsRemaining() - 1;
     }
     
     public abstract Candy generateCandy(int x);
+
+    public boolean shouldGenerateIngredient() {
+        // This ensures a new ingredient is introduced whenever a user clears one on the board.
+        if (ingredientsToDrop > 0) {
+            if (previousNumberOfIngredientsRemaining > gameStateProgress.getIngredientsRemaining()) {
+                ingredientsToDrop--;
+                previousNumberOfIngredientsRemaining--;
+                return true;
+            }
+        }
+        return false;
+    }
 }

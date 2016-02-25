@@ -1,7 +1,9 @@
 package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * 
@@ -65,6 +67,36 @@ public class GameStateAuxiliaryFunctions {
 							CandyType.NORMAL));
 				}
 			}
+		}
+	}
+
+	/**
+	 * This places an ingredient at random in the top half of a game board
+	 *
+	 * @param board	The board to place the ingredient on
+     */
+	public static void placeInitialIngredient(Cell[][] board) {
+		ArrayList<Position> possibles = new ArrayList<Position>();
+
+		int width = board.length;
+		int height = board[0].length;
+
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				if (board[x][y].getCellType() != CellType.UNUSABLE
+						&& board[x][y].getCellType() != CellType.LIQUORICE
+						&& board[x][y].getCellType() != CellType.ICING) {
+					possibles.add(new Position(x, y));
+				}
+			}
+		}
+
+		if (possibles.size() > 0) {
+			int range = possibles.size() / 2;
+			Random random = new Random();
+			Position replacePosition = possibles.get(random.nextInt(range));
+
+			board[replacePosition.x][replacePosition.y] = new Cell(CellType.NORMAL, new Candy(null, CandyType.INGREDIENT));
 		}
 	}
 
@@ -402,24 +434,6 @@ public class GameStateAuxiliaryFunctions {
 			}
 		}
 		return totalLiquorice;
-	}
-
-	/**
-	 * Get the number of ingredient candies on the board of the game state.
-	 * 
-	 * @param board
-	 *            The board to count the ingredients.
-	 * @return The number of ingredient candies on the board.
-	 */
-	public static int getIngredientsNumber(Cell[][] board) {
-		int totalIngredients = 0;
-		for (Cell[] row : board) {
-			for (Cell cell : row) {
-				if (hasIngredient(cell))
-					totalIngredients++;
-			}
-		}
-		return totalIngredients;
 	}
 
 	/**

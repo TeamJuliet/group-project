@@ -126,6 +126,9 @@ public class GameState implements Serializable {
 
         recordIngredientSinks();
 
+        // For ingredients levels, place the first ingredient randomly in the top half of the board
+        if (levelDesign.getMode() == GameMode.INGREDIENTS) GameStateAuxiliaryFunctions.placeInitialIngredient(board);
+
         // The score may have been prematurely increased from initial
         // reductions, so we reset it to 0
         this.progress.resetScore();
