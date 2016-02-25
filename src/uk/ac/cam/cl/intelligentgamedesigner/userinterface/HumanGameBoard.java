@@ -68,7 +68,7 @@ public class HumanGameBoard extends GameBoard implements MouseListener, MouseMot
 		
 		//draw the cursor	
 		g.setColor(Color.WHITE);
-		if(selecting){
+		if(selecting && !animating){
 			boolean draw_from = 
 					move_from.x<width && move_from.y<height &&
 					board[move_from.x][move_from.y].getCellType()!=CellType.UNUSABLE;
