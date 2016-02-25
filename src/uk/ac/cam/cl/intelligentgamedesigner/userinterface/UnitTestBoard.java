@@ -115,6 +115,8 @@ public class UnitTestBoard extends CustomBoard {
 								board[x][y].setCellType(CellType.LIQUORICE);
 							}else{
 								int jelly_level = board[x][y].getJellyLevel();//keep the jelly level
+								//clear the jelly if clearing the tile
+								if(watch_type == CellType.EMPTY || watch_type == CellType.UNUSABLE)jelly_level = 0;
 								board[x][y] = new Cell(watch_type);	
 								board[x][y].setJellyLevel(jelly_level);	
 							}			
