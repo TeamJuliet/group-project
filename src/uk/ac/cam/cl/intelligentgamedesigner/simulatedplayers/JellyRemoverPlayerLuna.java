@@ -85,9 +85,7 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
                     double potential = getMotionPotential(board, x, y);
                     multiplier = 1.0 - ((1.0 - alphaLikelihood) * potential / 3.0 + alphaLikelihood * likelihood) / 4.0;
                 }
-                // System.err.println("jelly multiplier is " + multiplier);
-                // System.err.println("jelly score is : " + cell.getJellyLevel()
-                // * multiplier * positionDifficulty);
+
                 jellyScore += cell.getJellyLevel() * multiplier * positionDifficulty;
             }
         }

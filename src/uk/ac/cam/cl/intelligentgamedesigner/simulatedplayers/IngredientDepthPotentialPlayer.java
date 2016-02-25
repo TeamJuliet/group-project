@@ -35,10 +35,6 @@ public class IngredientDepthPotentialPlayer extends DepthPotentialPlayer {
 
     private double[][]     difficultyBoard;
 
-    private static Cell getCell(Cell[][] board, Position pos) {
-        return BoardDifficultyGenerator.getCell(board, pos.x, pos.y);
-    }
-
     private double getBlockerCriticality(Cell[][] board, int x, int y) {
         double multiplier;
         if (x == board.length - 1 || x == 0)
@@ -149,15 +145,14 @@ public class IngredientDepthPotentialPlayer extends DepthPotentialPlayer {
             // zero.
             final double targetAlpha = Math.max(targetWeight(gameState.getGameProgress().movesRemaining),
                     targetWeight(gameState.getGameProgress().ingredientsRemaining));
+            
+            // Term that promotes the removal of ingredients.
             final double remainingIngredients = ingredientsBonusRemoval
                     * gameState.getGameProgress().ingredientsRemaining;
-            System.out.println(remainingIngredients);
-            System.out.println(targetAlpha);
+            
             score = (1.0 + targetAlpha) * (getIngredientsDifficulty(board) + remainingIngredients)
                     + (1.0 - targetAlpha) * (getBlockersDifficulty(board) + getCandyScore(board)
                             + hopefulBoost * hopefulCellsScore(board) + getIngredientsPotential(board));
-
-            System.out.println(score);
         }
         return new ScalarGameMetric(score);
     }
