@@ -60,7 +60,8 @@ public class MayanScorePlayer extends DepthPotentialPlayer {
     private double getBlockersDifficulty(Cell[][] board) {
         double score = 0.0;
         for (Position blockerPosition : this.blockers) {
-            score += getBlockerCriticality(board, blockerPosition.x, blockerPosition.y);
+            if (board[blockerPosition.x][blockerPosition.y].getCellType().blocksCandies())
+                score += getBlockerCriticality(board, blockerPosition.x, blockerPosition.y);
         }
         return score;
     }
@@ -119,7 +120,8 @@ public class MayanScorePlayer extends DepthPotentialPlayer {
             // System.out.println(gameState.getGameProgress().movesRemaining);
             final double scoreDistance = (gameState.levelDesign.getObjectiveTarget()
                     - gameState.getGameProgress().score) * scoreSmoothing;
-            // System.out.println(scoreDistance + " " + getCandyScore(board));
+            System.out.println(scoreDistance + " " + getCandyScore(board));
+            System.out.println(getBlockersDifficulty(board));
             score = (1.0 + targetAlpha) * (scoreDistance) + (1.0 - targetAlpha)
                     * (getBlockersDifficulty(board) + getCandyScore(board) + hopefulBoost * hopefulCellsScore(board));
             // System.err.println(score);

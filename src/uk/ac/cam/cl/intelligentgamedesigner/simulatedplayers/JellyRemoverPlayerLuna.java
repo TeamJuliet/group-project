@@ -106,7 +106,8 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
     private double getBlockersDifficulty(Cell[][] board) {
         double score = 0.0;
         for (Position blockerPosition : this.blockers) {
-            score += getBlockerCriticality(board, blockerPosition.x, blockerPosition.y);
+            if (board[blockerPosition.x][blockerPosition.y].getCellType().blocksCandies())
+                score += getBlockerCriticality(board, blockerPosition.x, blockerPosition.y);
         }
         return score;
     }
@@ -162,7 +163,7 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
             // System.out.println(getJelliesDifficulty(board));
             // System.out.println(getBlockersDifficulty(board));
             score = (2.0 + targetAlpha) * getJelliesDifficulty(board) + (1.0 - targetAlpha)
-                    * (getBlockersDifficulty(board) + 0.5 * getCandyScore(board) + 0.5 * hopefulCellsScore(board));
+                    * (getBlockersDifficulty(board) + 0.2 * getCandyScore(board) + 0.5 * hopefulCellsScore(board));
             // System.err.println(score);
         }
         return new ScalarGameMetric(score);
