@@ -13,11 +13,11 @@ public class DesignCell {
     	
     	double r = random.nextDouble();
     	
-    	if(r < 0.4) {
+    	if(r < 0.75) {
     		this.designCellType = DesignCellType.EMPTY;
-    	}else if(r < 0.6){
+    	}else if(r < 0.85){
     		this.designCellType = DesignCellType.UNUSABLE;
-    	}else if(r < 0.8){
+    	}else if(r < 0.95){
     		this.designCellType = DesignCellType.ICING;
     	}else{
     		this.designCellType = DesignCellType.LIQUORICE;

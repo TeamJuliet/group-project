@@ -288,6 +288,9 @@ public class LevelDesignerManager extends SwingWorker {
      */
     private void assignHighscore (Design design, int[] abilityDistribution) {
 
+        // Ensure that the simulated player doesn't encounter game over whilst making their moves
+        design.setObjectiveTarget(Integer.MAX_VALUE);
+
         // Run simulations with the given abilities in multiple threads
         List<List<RoundStatistics>> gameStatistics = runSimulations(design, abilityDistribution);
 

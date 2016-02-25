@@ -10,9 +10,9 @@ import java.util.Random;
 
 public class LevelDesigner implements Runnable {
 	private static final int populationSize = 100;
-	private static final int iterations = 2500;
+	private static final int iterations = 2000;
 	private static final double elitePercentage = 0.05;
-	private static final double feasibleThreshold = 0.0;
+	private static final double feasibleThreshold = 0.01;
 	private static final double crossoverProbability = 0.8;
 
 	private LevelDesignerManager manager;
@@ -65,11 +65,7 @@ public class LevelDesigner implements Runnable {
 			Collections.sort(feasiblePopulation, Collections.reverseOrder());
 			
 			if (i % 10 == 0) {
-				DebugFilter.println("Iteration " + i, DebugFilterKey.LEVEL_DESIGN);
-				DebugFilter.println("Top: ", DebugFilterKey.LEVEL_DESIGN);
-				DebugFilter.println("Num feasible: " + feasiblePopulation.size(), DebugFilterKey.LEVEL_DESIGN);
-
-                if (feasiblePopulation.size() > 0) {
+				if (feasiblePopulation.size() > 0) {
                     manager.notifyInterfacePhase1(feasiblePopulation.get(0).getLevelRepresentation(), threadID);
                 } else {
 					manager.notifyInterfacePhase1(null, threadID);
@@ -161,7 +157,7 @@ public class LevelDesigner implements Runnable {
     	for (LevelRepresentation l : newRepresentations) {
     		l.mutate();
 			LevelDesignIndividual mutated = new LevelDesignIndividual(l);
-    		if (mutated.getFitness() > feasibleThreshold) {
+			if (mutated.getFitness() > feasibleThreshold) {
 				newFeasible.add(mutated);
 			} else {
 				newInfeasible.add(mutated);

@@ -455,8 +455,6 @@ public class ConstraintChecker {
     	
     	factor *= connectedAreaFitness(board,bBoard);
     	
-    	System.out.println(factor);
-    	
     	return factor;
     }
 }
