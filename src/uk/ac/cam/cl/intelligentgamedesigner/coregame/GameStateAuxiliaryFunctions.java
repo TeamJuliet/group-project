@@ -42,6 +42,29 @@ public class GameStateAuxiliaryFunctions {
 	}
 
 	/**
+	 * Function that is used to replace all striped and wrapped candies with normal candies
+	 * of the same colour.
+	 *
+	 * @param board	The board to replace the special candies on
+	 */
+	public static void removeSpecialCandies(Cell[][] board) {
+		for (int x = 0; x < board.length; x++) {
+			for (int y = 0; y < board[0].length; y++) {
+				// Ignore cells without a candy
+				if (!board[x][y].hasCandy()) continue;
+
+				Candy candy = board[x][y].getCandy();
+				CandyType candyType = candy.getCandyType();
+				if (candyType == CandyType.VERTICALLY_STRIPPED ||
+						candyType == CandyType.HORIZONTALLY_STRIPPED ||
+						candyType == CandyType.WRAPPED) {
+					board[x][y].setCandy(new Candy(candy.getColour(), CandyType.NORMAL));
+				}
+			}
+		}
+	}
+
+	/**
 	 * Function that safely checks if the cell has the same colour as the candy
 	 * colour given.
 	 * 
