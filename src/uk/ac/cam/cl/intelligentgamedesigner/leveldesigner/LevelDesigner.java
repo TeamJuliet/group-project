@@ -107,7 +107,9 @@ public class LevelDesigner implements Runnable {
 		int length = population.size();
 		while (true) {
 			LevelDesignIndividual individual = population.get(random.nextInt(length));
-			if (random.nextDouble() < individual.getFitness() / totalFitness) {
+			double fitness = individual.getFitness();
+			double randomValue = random.nextDouble();
+			if ((fitness == 0.0 && randomValue < 0.01) || (randomValue < fitness / totalFitness)) {
 				return individual;
 			}
 		}

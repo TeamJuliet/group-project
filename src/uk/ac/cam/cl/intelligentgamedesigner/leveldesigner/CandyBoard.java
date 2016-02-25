@@ -10,12 +10,12 @@ public class CandyBoard extends BaseBinaryBoard {
 	}
 
 	@Override
-	public int width() {
+	public final int width() {
 		return board.width;
 	}
 
 	@Override
-	public int height() {
+	public final int height() {
 		return board.height;
 	}
 
@@ -25,21 +25,29 @@ public class CandyBoard extends BaseBinaryBoard {
 	}
 	
 	@Override
-	protected void validSet(int i, int j, Boolean obj) {		
+	protected final void validStatSet(int i, int j, Boolean obj) {		
 		//This should never be called (Otherwise there is an error in the code)
 		assert(false);
 		
 	}
+	
+	public DesignCellType getCellType(int i, int j) {
+		if(validCoordinate(i,j)) {
+			return board.get(i, j).getDesignCellType();
+		}else{
+			return DesignCellType.UNUSABLE;
+		}
+	}
 
 	@Override
-	protected int getConvolutionValue(int i, int j) {
+	protected final int getConvolutionValue(int i, int j, int si, int sj) {
 		return get(i, j) ? 1 : 0;
 	}
-	
-	private DesignBoard board;
 
 	@Override
-	public int getCount() {
+	public final int getCount() {
 		return 0;
 	}
+	
+	protected DesignBoard board;
 }
