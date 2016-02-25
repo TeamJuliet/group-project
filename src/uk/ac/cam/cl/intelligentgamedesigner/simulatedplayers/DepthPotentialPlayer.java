@@ -9,6 +9,8 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.UnmovableCandyGenerator;
 
+import static uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.BoardDifficultyGenerator.*;
+
 abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
     // The number of states that the Player should look ahead at each move.
     // Note: when this is -1, it generates all possible moves.
@@ -23,15 +25,15 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
 
     // Function that evaluates the current game state based on the knowledge
     // at that particular state.
-    public abstract GameStateMetric getGameStateMetric(GameState gameState);
+    abstract GameStateMetric getGameStateMetric(GameState gameState);
 
     // Function that evaluates the current game state based on its potential
     // of making progress towards the goal. (e.g. if there is a large number
     // of cells containing jellies refreshed, etc).
-    public GameStatePotential getGameStatePotential(GameState gameState) {
+    GameStatePotential getGameStatePotential(GameState gameState, GameStateMetric metric) {
         // Return the highest increase in score of all possible matches
         GameState original = new GameState(gameState, new UnmovableCandyGenerator());
-        GameStateMetric bestMetric = null;
+        GameStateMetric bestMetric = metric;
         List<Move> moves = original.getValidMoves();
         for (Move move : moves) {
             GameState tmp = new GameState(original);
@@ -84,8 +86,9 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
             return null;
         }
         Move moveRecorded = state.originalMove == null ? move : state.originalMove;
+        GameStateMetric nextStateMetric = getGameStateMetric(nextState);
         return new GameStateWithCombinedMetric(nextState,
-                getCombinedMetric(getGameStateMetric(nextState), getGameStatePotential(nextState)), moveRecorded);
+                getCombinedMetric(nextStateMetric, getGameStatePotential(nextState, nextStateMetric)), moveRecorded);
     }
 
     private void nextDepth() {
@@ -155,5 +158,15 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
         GameState nextState = new GameState(gameState, new UnmovableCandyGenerator());
         nextState.makeFullMove(move);
         return nextState;
+    }
+
+    protected double numOfSpecialsOnMove(GameState gameState, Move move) {
+        GameState copy = new GameState(gameState);
+        try {
+            copy.makeFullMove(move);
+        } catch (InvalidMoveException e) {
+            return 0;
+        }
+        return getSpecialCandiesScore(copy.getBoard());
     }
 }

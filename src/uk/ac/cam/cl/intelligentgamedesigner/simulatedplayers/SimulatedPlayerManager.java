@@ -57,6 +57,8 @@ public class SimulatedPlayerManager {
                 player = new DepthPotentialJellyPlayer(lookAhead, poolSize);
             }
             break;
+        case INGREDIENTS:
+            player = new IngredientDepthPotentialPlayer(lookAhead, poolSize);
         default:
             if (dimitris) {
                 player = new MayanScorePlayer(lookAhead, poolSize);
