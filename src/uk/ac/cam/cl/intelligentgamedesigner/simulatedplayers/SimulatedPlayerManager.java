@@ -11,15 +11,22 @@ public class SimulatedPlayerManager {
 
     EnumMap<GameMode, HashMap<Integer, SimulatedPlayerBase>> players = new EnumMap<>(GameMode.class);
 
+    private static final int MAXIMUM_PLAYER_ABILITY = 7;
+    
     private static SimulatedPlayerBase makeSimulatedPlayer(int ability, GameMode mode) {
         SimulatedPlayerBase player;
         int lookAhead = 0;
         int poolSize = 0;
-        boolean dimitris = true; // TODO: find better name
+        boolean dimitris = false; // TODO: find better name
         switch (ability) {
         case 1:
             player = new ScorePlayerBeta();
-            return player;
+            if (mode.equals(GameMode.HIGHSCORE))
+                return new ScorePlayerBeta();
+            else if (mode.equals(GameMode.JELLY))
+                return new RuleBasedJellyPlayer();
+            else 
+                break;
         case 2:
             lookAhead = 1;
             poolSize = 8;
@@ -57,6 +64,9 @@ public class SimulatedPlayerManager {
                 player = new DepthPotentialJellyPlayer(lookAhead, poolSize);
             }
             break;
+        case INGREDIENTS:
+            player = new RuleBasedIngredientsPlayer();
+            break;
         default:
             if (dimitris) {
                 player = new MayanScorePlayer(lookAhead, poolSize);
@@ -80,7 +90,7 @@ public class SimulatedPlayerManager {
     }
 
     public static int getMaxAbilityLevel() {
-        return 7; // Decided by the switch in makeSimulatedPlayer()
+        return MAXIMUM_PLAYER_ABILITY; // Decided by the switch in makeSimulatedPlayer()
     }
 
     private void checkPlayer(GameMode mode, int ability) {

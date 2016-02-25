@@ -18,18 +18,45 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
     // Note: again, when this is -1, it discovers all possible moves.
     protected final int                                numOfStatesInPool;
 
+    // The pool of game states with their respective metric that are currently
+    // being considered.
     private PriorityQueue<GameStateWithCombinedMetric> pool;
+
+    // The pool of game states with their respective metric that have been
+    // completed or have no more moves.
     private PriorityQueue<GameStateWithCombinedMetric> results;
 
-    // Function that evaluates the current game state based on the knowledge
-    // at that particular state.
+    /**
+     * Function that evaluates the current game state based on the knowledge at
+     * that particular state.
+     * 
+     * @param gameState
+     *            The game state to be evaluated.
+     * @return The metric for that state of the game.
+     */
     public abstract GameStateMetric getGameStateMetric(GameState gameState);
 
-    // Function that evaluates the current game state based on its potential
-    // of making progress towards the goal. (e.g. if there is a large number
-    // of cells containing jellies refreshed, etc).
+    /**
+     * Function that evaluates the current game state based on its potential of
+     * making progress towards the goal. (e.g. if there is a large number of
+     * cells containing jellies refreshed, etc).
+     * 
+     * @param gameState
+     *            The game state that will be evaluated.
+     * @return The potential for that game state.
+     */
     public abstract GameStatePotential getGameStatePotential(GameState gameState);
 
+    /**
+     * Function that is used for combining the metric and the potential for that
+     * game state.
+     * 
+     * @param metric
+     *            The metric for a game state.
+     * @param potential
+     *            The potential for a game state.
+     * @return The Combined metric for the two.
+     */
     public abstract GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential);
 
     /**
@@ -47,6 +74,8 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
         return ret;
     }
 
+    // Auxiliary function that generates the combined metric for the state after
+    // the move is made.
     private GameStateWithCombinedMetric generateCombinedMetric(GameStateWithCombinedMetric state, Move move) {
         GameState nextState;
         try {
@@ -63,6 +92,7 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
                 getCombinedMetric(getGameStateMetric(nextState), getGameStatePotential(nextState)), moveRecorded);
     }
 
+    // Function that calculates the next depth for the game states given.
     private void nextDepth() {
         int upperLimit = numOfStatesInPool == -1 ? pool.size() : numOfStatesInPool;
         int elementsProcessed = 0;
@@ -91,9 +121,9 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
         results = new PriorityQueue<GameStateWithCombinedMetric>();
         // Add the current game state with the
         pool.add(new GameStateWithCombinedMetric(currentState, new GameStateCombinedMetric(), null));
+        
         int stages = 0;
-        // TODO: Add handling for -1.
-        while (stages < numOfStatesAhead) {
+        while (stages < numOfStatesAhead || (numOfStatesAhead == -1 && !pool.isEmpty())) {
             nextDepth();
             stages++;
         }
@@ -110,22 +140,13 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
         this.numOfStatesInPool = numOfStatesInPool;
     }
 
-    public DepthPotentialPlayer() {
-        this(2, 4);
-    }
-
-    protected void printInvalidMoveError(GameState level, Move move) {
-        System.err.format(
-                "WARNING! %s with settings (%d,%d) has suggested an invalidMove:\n" + level + "\n" + move + ".\n",
-                this.getClass().getSimpleName(), this.numOfStatesAhead, this.numOfStatesInPool);
-    }
-
     protected void printInvalidSuggestionError(GameState level, Move move) {
         System.err.format("WARNING! Invalid move suggested in %s (%d,%d) evaluation:\n" + level + "\n" + move + ".\n",
                 this.getClass().getSimpleName(), this.numOfStatesAhead, this.numOfStatesInPool);
         System.err.println(level.getValidMoves());
     }
 
+    // Auxiliary function that simulates the next move for a given game state.
     private GameState simulateNextMove(GameState gameState, Move move) throws InvalidMoveException {
         GameState nextState = new GameState(gameState, new UnmovableCandyGenerator());
         nextState.makeFullMove(move);

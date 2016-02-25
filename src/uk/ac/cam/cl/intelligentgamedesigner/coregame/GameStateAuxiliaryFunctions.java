@@ -299,9 +299,13 @@ public class GameStateAuxiliaryFunctions {
 		if (!cellFormsMatch(board, pos))
 			return null;
 		SingleTileAnalysis analysis = analyzeTile(pos, board);
+		
 		List<Position> positions = new LinkedList<Position>();
 		List<CandyType> specials = new LinkedList<CandyType>();
+		
 		int jelliesRemoved = 0;
+		int blockersRemoved = 0;
+		
 		if (analysis.getLengthX() > 2) {
 			for (int x = analysis.startX; x <= analysis.endX; ++x) {
 				if (x == pos.x)
@@ -312,8 +316,11 @@ public class GameStateAuxiliaryFunctions {
 					specials.add(board[x][pos.y].getCandy().getCandyType());
 				if (board[x][pos.y].getJellyLevel() > 0)
 					++jelliesRemoved;
+				if (board[x][pos.y].getCellType().blocksCandies())
+                    ++blockersRemoved;
 			}
 		}
+		
 		if (analysis.getLengthY() > 2) {
 			for (int y = analysis.startY; y <= analysis.endY; ++y) {
 				if (y == pos.y)
@@ -324,10 +331,13 @@ public class GameStateAuxiliaryFunctions {
 					specials.add(board[pos.x][y].getCandy().getCandyType());
 				if (board[pos.x][y].getJellyLevel() > 0)
 					++jelliesRemoved;
+				if (board[pos.x][y].getCellType().blocksCandies())
+                    ++blockersRemoved;
 			}
 		}
+		
 		return new MatchAnalysis(positions, specials,
-				getSpecialCandyFormed(analysis), jelliesRemoved);
+				getSpecialCandyFormed(analysis), jelliesRemoved, blockersRemoved);
 	}
 
 	/**
