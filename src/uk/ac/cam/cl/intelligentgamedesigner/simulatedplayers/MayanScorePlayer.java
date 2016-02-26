@@ -11,6 +11,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
@@ -18,11 +19,11 @@ import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
 
 public class MayanScorePlayer extends DepthPotentialPlayer {
     private final double   blockerAtBoundaryConstant = 0.5;
-    private final double   scoreSmoothing            = 0.0005;
+    private final double   scoreSmoothing            = 0.005;
     private final double   hopefulBoost              = 1.5;
 
     private List<Position> jellies                   = new LinkedList<Position>(),
-                           blockers                  = new LinkedList<Position>();
+            blockers = new LinkedList<Position>();
 
     private Design         referenceDesign           = null;
 
@@ -81,10 +82,10 @@ public class MayanScorePlayer extends DepthPotentialPlayer {
         double combinableCandiesScore;
         switch (combinableCandies) {
         case 0:
-            combinableCandiesScore = 3.0;
+            combinableCandiesScore = 8.0;
             break;
         case 1:
-            combinableCandiesScore = 1.5;
+            combinableCandiesScore = 4.0;
             break;
         default:
             combinableCandiesScore = 0.0;
@@ -120,10 +121,9 @@ public class MayanScorePlayer extends DepthPotentialPlayer {
             // System.out.println(gameState.getGameProgress().movesRemaining);
             final double scoreDistance = (gameState.levelDesign.getObjectiveTarget()
                     - gameState.getGameProgress().score) * scoreSmoothing;
-            
-            score = (1.0 + targetAlpha) * (scoreDistance) + (1.0 - targetAlpha)
-                    * (getBlockersDifficulty(board) + getCandyScore(board) + hopefulBoost * hopefulCellsScore(board));
-            // System.err.println(score);
+
+            score = (2.0 + targetAlpha) * (scoreDistance) + (1.0 - targetAlpha)
+                    * (getBlockersDifficulty(board) + 1.5 * getCandyScore(board) + hopefulBoost * hopefulCellsScore(board));
         }
         return new ScalarGameMetric(score);
     }
@@ -154,6 +154,14 @@ public class MayanScorePlayer extends DepthPotentialPlayer {
     @Override
     protected List<Move> selectMoves(GameState gameState) {
         List<Move> ret = gameState.getValidMoves();
+        List<Move> tmp = new LinkedList<Move>();
+        for (Move move : ret) {
+            if (GameStateAuxiliaryFunctions.hasSpecialOrColourBomb(gameState.getCell(move.p1.x, move.p1.y))
+                    && GameStateAuxiliaryFunctions.hasSpecialOrColourBomb(gameState.getCell(move.p2.x, move.p2.y)))
+                tmp.add(move);
+        }
+        if (!tmp.isEmpty())
+            return tmp; 
         Collections.shuffle(ret);
         return ret;
     }

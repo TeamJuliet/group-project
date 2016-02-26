@@ -55,6 +55,32 @@ public class SimulatedPlayerAssessment {
     }
 
     /**
+     * Evaluates a list of jelly players given a design.
+     * 
+     * @param design
+     *            The design of the level
+     * @param players
+     *            The players that will be evaluated.
+     * @param gamesToRun
+     *            The number of games that each player will try.
+     * @return A list containing the respective percentage scores.
+     */
+    public static List<Double> evaluateJellyPlayers(Design design, List<SimulatedPlayerBase> players, int gamesToRun) {
+
+        List<PlayerAssessmentRecord> records = new LinkedList<PlayerAssessmentRecord>();
+        for (SimulatedPlayerBase player : players) {
+            List<GameStateProgress> progressRecords = getGameStateProgressList(player, design, gamesToRun);
+            records.add(getJellyPlayerAssessmentRecord(progressRecords, design));
+        }
+
+        List<Double> ret = new LinkedList<Double>();
+        for (PlayerAssessmentRecord record : records) {
+            ret.add(getJellyPlayerAssessment(record, records));
+        }
+        return ret;
+    }
+    
+    /**
      * Function that returns the average of a list of values. If the list does
      * not have any elements then the mean value returned is 0.
      * 
@@ -229,6 +255,80 @@ public class SimulatedPlayerAssessment {
         return progressList;
     }
 
+    /**
+     * Function that generates the percentage that indicates how well in the
+     * given list of players the current player (of which the records have to be
+     * provided) performed.
+     * 
+     * @param playerRecordsToAssess
+     * @param otherPlayers
+     *            The assessment records for the rest of the players.
+     * @return A value between 0.0 and 1.0 indicating the relative position of
+     *         the player in the rank.
+     */
+    public static double getJellyPlayerAssessment(PlayerAssessmentRecord playerRecordsToAssess,
+            List<PlayerAssessmentRecord> otherPlayers) {
+        List<Double> movesMeans = extractAverageMovesRemaining(otherPlayers);
+        List<Double> scoreMeans = extractScoreToTarget(otherPlayers);
+
+        double movesMean = getAverage(movesMeans);
+        double scoreMean = getAverage(scoreMeans);
+
+        double movesSD = getStandardDeviationEstimate(movesMeans);
+        double scoreSD = getStandardDeviationEstimate(scoreMeans);
+
+        double movesDelta = movesSD == 0.0 ? 0.0
+                : ((playerRecordsToAssess.averageRemainingMoves - movesMean) / movesSD);
+        double scoreDelta = scoreSD == 0.0 ? 0.0
+                : ((scoreMean - playerRecordsToAssess.normalizedAverageScore) / scoreSD);
+
+        double averageGamesWon = playerRecordsToAssess.getAverageGamesWon();
+        double percentage = countSmallerMeans(averageGamesWon, otherPlayers) / ((double) otherPlayers.size());
+
+        return sanitizePercentage(
+                percentage + PERCENTAGE_BOOST * (averageGamesWon * movesDelta + scoreDelta * (1.0 - averageGamesWon)));
+    }
+
+    /**
+     * Function that returns the assessment for a player that played a game with
+     * highscore objective.
+     * 
+     * @param progressRecords
+     *            The records for each of the last rounds of the game.
+     * @param design
+     *            The design for the level that was created.
+     * @return The assessment record for the player.
+     */
+    public static PlayerAssessmentRecord getJellyPlayerAssessmentRecord(List<GameStateProgress> progressRecords,
+            Design design) {
+        int sumMovesRemaining = 0;
+        int numOfGamesWon = 0;
+        int numOfGamesLost = 0;
+        double scoreToTarget = 0;
+
+        // Calculate the conversion rate for how many moves correspond to the
+        // score remaining.
+        final double averageMovesPerJelly = design.getNumberOfMovesAvailable() / design.getObjectiveTarget();
+
+        // Calculate the number of games won / lost and the sumof moves
+        // remaining for the games that were won and the total normalised score
+        // that was not reached.
+        for (GameStateProgress progress : progressRecords) {
+            if (progress.isGameWon(design)) {
+                sumMovesRemaining += progress.getMovesRemaining();
+                ++numOfGamesWon;
+            } else {
+                scoreToTarget += averageMovesPerJelly * (design.getObjectiveTarget() - progress.getJelliesRemaining());
+                ++numOfGamesLost;
+            }
+        }
+        
+        final double normalizedAverageScore = numOfGamesLost == 0 ? 0.0 : scoreToTarget / ((double) numOfGamesLost);
+        final double averageRemainingMoves = numOfGamesWon == 0 ? 0.0 : sumMovesRemaining / ((double) numOfGamesWon);
+
+        return new PlayerAssessmentRecord(numOfGamesWon, numOfGamesLost, normalizedAverageScore, averageRemainingMoves);
+    }
+    
     // Auxiliary function that extracts a list of doubles from a list of
     // Assessment records by taking the field of averageRemainingMoves.
     private static List<Double> extractAverageMovesRemaining(List<PlayerAssessmentRecord> otherPlayers) {
@@ -269,21 +369,49 @@ public class SimulatedPlayerAssessment {
             return 1.0;
         return percentage;
     }
+    
+    private static void outputResults(List<SimulatedPlayerBase> players, List<Double> scores) {
+        for (int i = 0; i < scores.size(); ++i) {
+            System.out.println(players.get(i).getClass().getSimpleName() + ": " + scores.get(i));
+        }
+    }
 
-    public static void main(String[] Args) {
-        List<SimulatedPlayerBase> players = new LinkedList<SimulatedPlayerBase>();
-        players.add(new ScorePlayerAlpha());
-        players.add(new ScorePlayerBeta());
-        players.add(new RuleBasedJellyPlayer());
+    private static void assessScoreBasedPlayers() {
+        final int numberOfGamesToRun = 20;
+        
+        List<SimulatedPlayerBase> scorePlayers = new LinkedList<SimulatedPlayerBase>();
+        scorePlayers.add(new ScorePlayerAlpha());
+        scorePlayers.add(new ScorePlayerBeta());
+        scorePlayers.add(new DepthPotentialScorePlayer(2, 10));
+        scorePlayers.add(new MayanScorePlayer(2, 10));
 
         Design design = SimulatedPlayersTestHelpers.getBoardWithBlockersDesign();
         design.setGameMode(GameMode.HIGHSCORE);
-        design.setObjectiveTarget(2800);
+        design.setObjectiveTarget(2400);
         design.setNumberOfMovesAvailable(12);
 
+        outputResults(scorePlayers, evaluateScorePlayers(design, scorePlayers, numberOfGamesToRun));
+    }
+    
+    private static void assessJellyBasedPlayers() {
         final int numberOfGamesToRun = 20;
+        
+        List<SimulatedPlayerBase> jellyPlayers = new LinkedList<SimulatedPlayerBase>();
+        jellyPlayers.add(new ScorePlayerAlpha());
+        jellyPlayers.add(new DepthPotentialJellyPlayer(2, 10));
+        jellyPlayers.add(new JellyRemoverPlayerLuna(2, 10));
+        jellyPlayers.add(new RuleBasedJellyPlayer());
+        
+        Design jellyDesign = SimulatedPlayersTestHelpers.getBoardWithBlockersAndJelliesDesign();
+        jellyDesign.setGameMode(GameMode.JELLY);
+        jellyDesign.setNumberOfMovesAvailable(7);
 
-        System.out.println(evaluateScorePlayers(design, players, numberOfGamesToRun));
 
+        outputResults(jellyPlayers, evaluateScorePlayers(jellyDesign, jellyPlayers, numberOfGamesToRun));
+    }
+    
+    public static void main(String[] Args) {
+        assessScoreBasedPlayers();
+        assessJellyBasedPlayers();
     }
 }

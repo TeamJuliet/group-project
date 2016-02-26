@@ -39,7 +39,7 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
             for (int y = 0; y < cellBoard[0].length; ++y) {
                 Position currentPosition = new Position(x, y);
                 if (cellBoard[x][y].getJellyLevel() > 0) {
-                    this.difficultyOfFixedPositions.put(currentPosition,
+                    this.difficultyOfFixedPositions.put(currentPosition, 1.0
                             BoardDifficultyGenerator.getCellDifficulty(design, x, y, fixedNumberOfRounds));
                     this.jellies.add(currentPosition);
                 }
@@ -156,8 +156,7 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
             // Accelerates jellies detonation when the number of moves
             // approaches 0 or the number
             // of jellies approaches zero.
-            final double targetAlpha = Math.max(targetWeight(gameState.getGameProgress().movesRemaining),
-                    targetWeight(gameState.getGameProgress().jelliesRemaining));
+            final double targetAlpha = targetWeight(gameState.getGameProgress().movesRemaining);
             // System.out.println(getJelliesDifficulty(board));
             // System.out.println(getBlockersDifficulty(board));
             score = (2.0 + targetAlpha) * getJelliesDifficulty(board) + (1.0 - targetAlpha)
