@@ -126,6 +126,9 @@ public class GameState implements Serializable {
 
         recordIngredientSinks();
 
+        // For ingredients levels, place the first ingredient randomly in the top 3/10ths of the board
+        if (levelDesign.getMode() == GameMode.INGREDIENTS) GameStateAuxiliaryFunctions.placeInitialIngredient(board);
+
         // The score may have been prematurely increased from initial
         // reductions, so we reset it to 0
         this.progress.resetScore();
@@ -198,7 +201,6 @@ public class GameState implements Serializable {
 
     // **** GETTER FUNCTIONS START *****
 
-    // TODO: Consider returning a copy of the board.
     public Cell[][] getBoard() {
         return board;
     }
@@ -405,6 +407,8 @@ public class GameState implements Serializable {
                 currentProcessState = ProcessState.MATCH_AND_REPLACE;
             }
             break;
+        default:
+            break;
         }
         return true;
     }
@@ -488,6 +492,20 @@ public class GameState implements Serializable {
         return moves;
     }
 
+    /**
+     * Function that returns whether there are moves on the board.
+     * @return whether there are any valid moves on the board.
+     */
+    public boolean hasMoves() {
+        for (int i = 0; i < width; ++i) {
+            for (int j = 0; j < height; ++j) {
+                if (isMoveValid(new Move(new Position(i, j), new Position(i+1, j)))) return true;
+                if (isMoveValid(new Move(new Position(i, j), new Position(i, j+1)))) return true;
+            }
+        }
+        return false;
+    }
+    
     // **** FUNCIONS THAT MONITOR PROGRESS ****
     private void incrementScore(int addedScore) {
         progress.incrementScore(addedScore);
@@ -1036,16 +1054,6 @@ public class GameState implements Serializable {
                 }
             }
         }
-    }
-
-    public boolean hasMoves() {
-        for (int i = 0; i < width; ++i) {
-            for (int j = 0; j < height; ++j) {
-                if (isMoveValid(new Move(new Position(i, j), new Position(i+1, j)))) return true;
-                if (isMoveValid(new Move(new Position(i, j), new Position(i, j+1)))) return true;
-            }
-        }
-        return false;
     }
     
     // TODO: Handle case in which no amount of shuffling can introduce a

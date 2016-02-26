@@ -25,7 +25,12 @@ public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
         super(random, numberOfCandyColours);
 		board.initialiseJellyLevels();
     }
-    
+
+	/**
+	 * This method clones the current representation.
+	 *
+	 * @return The clone
+	 */
     @Override
     public ArrayLevelRepresentationJelly clone() {
     	ArrayLevelRepresentationJelly clone = (ArrayLevelRepresentationJelly) super.clone();
@@ -33,6 +38,9 @@ public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
     	return clone;
     }
 
+	/**
+	 * This extends the mutation to alter jelly levels.
+	 */
 	@Override
 	public void mutate() {
 		super.mutate();
@@ -42,6 +50,11 @@ public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
 		}
 	}
 
+	/**
+	 * This returns a design corresponding to the representation.
+	 *
+	 * @return The design
+	 */
 	@Override
     public Design getDesign() {
     	Design design = super.getDesign();
@@ -50,7 +63,12 @@ public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
     	
     	return design;
     }
-	
+
+	/**
+	 * This extends the aesthetic fitness function for jelly levels.
+	 *
+	 * @return	The fitness
+     */
 	@Override
     public double getAestheticFitness() {
     	double fitness = super.getAestheticFitness();

@@ -43,7 +43,7 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
                             BoardDifficultyGenerator.getCellDifficulty(design, x, y, fixedNumberOfRounds));
                     this.jellies.add(currentPosition);
                 }
-                if (cellBoard[x][y].getCellType().blocksCandies()) {
+                if (cellBoard[x][y].getCellType().isBlocker()) {
                     this.blockers.add(currentPosition);
                 }
             }
@@ -104,7 +104,7 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
     private double getBlockersDifficulty(Cell[][] board) {
         double score = 0.0;
         for (Position blockerPosition : this.blockers) {
-            if (board[blockerPosition.x][blockerPosition.y].getCellType().blocksCandies())
+            if (board[blockerPosition.x][blockerPosition.y].getCellType().isBlocker())
                 score += getBlockerCriticality(board, blockerPosition.x, blockerPosition.y);
         }
         return score;

@@ -35,7 +35,7 @@ public class LevelDesignerManager extends SwingWorker {
         for (int l = 0; l < NUMBER_TO_DISPLAY; l++) {
             // NOTE: If you want to debug, change this to: new Random(seed)
             originalRandoms[l]  = new Random(System.nanoTime());
-            levelDesigners[l]   = new LevelDesigner(this, this.originalRandoms[l], l);
+            levelDesigners[l]   = new LevelDesigner(this, this.originalRandoms[l], l, specification.getAccuracy());
         }
     }
 
@@ -111,6 +111,13 @@ public class LevelDesignerManager extends SwingWorker {
         }
     }
 
+    /**
+     * This is a method used to synchronise the threads after completing phase 1. That is, the threads must wait
+     * until they've all completed phase 1 before they can start phase 2.
+     *
+     * @param threadID  The identifier of the calling thread
+     * @return          Whether the thread can proceed
+     */
     public synchronized boolean isPhase1Complete(int threadID) {
         this.progress[threadID] = 1;
 
@@ -139,9 +146,11 @@ public class LevelDesignerManager extends SwingWorker {
     // ******** PHASE 2 METHODS ********
 
     /**
+     * This method invokes the process of running the simulated players on a level design to assign the objectives
+     * and the number of moves. It also notifies the user interface of progress as it proceeds.
      *
-     * @param topLevel
-     * @param threadID
+     * @param topLevel  The level to assess
+     * @param threadID  The identifier of the calling thread
      */
     public synchronized void notifyInterfacePhase2(LevelRepresentation topLevel, int threadID) {
         Design topDesign = topLevel.getDesign();

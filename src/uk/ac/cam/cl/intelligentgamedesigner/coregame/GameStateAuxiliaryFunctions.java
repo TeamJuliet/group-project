@@ -1,7 +1,9 @@
 package uk.ac.cam.cl.intelligentgamedesigner.coregame;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * 
@@ -65,6 +67,37 @@ public class GameStateAuxiliaryFunctions {
 							CandyType.NORMAL));
 				}
 			}
+		}
+	}
+
+	/**
+	 * This places an ingredient at random in the top 3/10ths of a game board
+	 *
+	 * @param board	The board to place the ingredient on
+     */
+	public static void placeInitialIngredient(Cell[][] board) {
+		ArrayList<Position> possibles = new ArrayList<Position>();
+
+		int width = board.length;
+		int height = board[0].length;
+
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				if (board[x][y].getCellType() != CellType.UNUSABLE
+						&& board[x][y].getCellType() != CellType.LIQUORICE
+						&& board[x][y].getCellType() != CellType.ICING) {
+					possibles.add(new Position(x, y));
+				}
+			}
+		}
+
+		if (possibles.size() > 0) {
+			// Place the ingredient in the top 3/10ths of the replaceable part of the board
+			int range = (int) (possibles.size() * 0.3);
+			Random random = new Random();
+			Position replacePosition = possibles.get(random.nextInt(range));
+
+			board[replacePosition.x][replacePosition.y] = new Cell(CellType.NORMAL, new Candy(null, CandyType.INGREDIENT));
 		}
 	}
 
@@ -299,9 +332,13 @@ public class GameStateAuxiliaryFunctions {
 		if (!cellFormsMatch(board, pos))
 			return null;
 		SingleTileAnalysis analysis = analyzeTile(pos, board);
+		
 		List<Position> positions = new LinkedList<Position>();
 		List<CandyType> specials = new LinkedList<CandyType>();
+		
 		int jelliesRemoved = 0;
+		int blockersRemoved = 0;
+		
 		if (analysis.getLengthX() > 2) {
 			for (int x = analysis.startX; x <= analysis.endX; ++x) {
 				if (x == pos.x)
@@ -312,8 +349,11 @@ public class GameStateAuxiliaryFunctions {
 					specials.add(board[x][pos.y].getCandy().getCandyType());
 				if (board[x][pos.y].getJellyLevel() > 0)
 					++jelliesRemoved;
+				if (board[x][pos.y].getCellType().isBlocker())
+                    ++blockersRemoved;
 			}
 		}
+		
 		if (analysis.getLengthY() > 2) {
 			for (int y = analysis.startY; y <= analysis.endY; ++y) {
 				if (y == pos.y)
@@ -324,10 +364,13 @@ public class GameStateAuxiliaryFunctions {
 					specials.add(board[pos.x][y].getCandy().getCandyType());
 				if (board[pos.x][y].getJellyLevel() > 0)
 					++jelliesRemoved;
+				if (board[pos.x][y].getCellType().isBlocker())
+                    ++blockersRemoved;
 			}
 		}
+		
 		return new MatchAnalysis(positions, specials,
-				getSpecialCandyFormed(analysis), jelliesRemoved);
+				getSpecialCandyFormed(analysis), jelliesRemoved, blockersRemoved);
 	}
 
 	/**
@@ -405,24 +448,6 @@ public class GameStateAuxiliaryFunctions {
 	}
 
 	/**
-	 * Get the number of ingredient candies on the board of the game state.
-	 * 
-	 * @param board
-	 *            The board to count the ingredients.
-	 * @return The number of ingredient candies on the board.
-	 */
-	public static int getIngredientsNumber(Cell[][] board) {
-		int totalIngredients = 0;
-		for (Cell[] row : board) {
-			for (Cell cell : row) {
-				if (hasIngredient(cell))
-					totalIngredients++;
-			}
-		}
-		return totalIngredients;
-	}
-
-	/**
 	 * Function that deeply copies a cell board.
 	 * 
 	 * @param board
@@ -450,7 +475,7 @@ public class GameStateAuxiliaryFunctions {
 		List<Position> blockers = new LinkedList<Position>();
 		for (int x = 0; x < board.length; ++x) {
 			for (int y = 0; y < board[0].length; ++y) {
-				if (board[x][y].getCellType().blocksCandies()) {
+				if (board[x][y].getCellType().isBlocker()) {
 					blockers.add(new Position(x, y));
 				}
 			}

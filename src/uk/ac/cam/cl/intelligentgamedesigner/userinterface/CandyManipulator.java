@@ -2,6 +2,8 @@ package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
 import java.awt.Dimension;
 
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
+
 public class CandyManipulator {
 //CANDY SIZE
 	public static boolean shrink(double[][] sizes, double increment){
@@ -33,6 +35,17 @@ public class CandyManipulator {
 	
 	
 //CANDY OFFSET
+	//ensure that candies above fall in sync
+	public static void bumpUp(Dimension[][] offsets, int size){
+		for(int x=0;x<offsets.length;x++){
+			for(int y=offsets[0].length-1;y>0;y--){
+				if(offsets[x][y].height<0){
+					//bump up one
+					if(offsets[x][y].height-size != offsets[x][y-1].height)offsets[x][y-1].height = offsets[x][y].height-size;
+				}
+			}
+		}
+	}
 	
 	//move all candies back to their natural positions
 	public static boolean decrement(Dimension[][] offsets, double increment,int size){

@@ -95,10 +95,7 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		}
 		else {
 			board.setBoard(design.getBoard());
-			number_of_candies.setValue(design.getNumberOfCandyColours());
-			moves.setValue(design.getNumberOfMovesAvailable());
 			level_name.setValue(name);
-			mode_objective.setValue(design.getObjectiveTarget());
 			GameMode obj = design.getMode();
 			switch(obj){
 			case HIGHSCORE:
@@ -111,6 +108,10 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 				ingredients.doClick();
 				break;
 			}
+			number_of_candies.setValue(design.getNumberOfCandyColours());
+			moves.setValue(design.getNumberOfMovesAvailable());
+			mode_objective.setValue(design.getObjectiveTarget());
+			System.out.println((int)moves.getValue() + ", " + (int)mode_objective.getValue());
 		}
 		this.level_on = level_on;
 		level_on_label.setText(level_on+". ");
