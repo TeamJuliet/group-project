@@ -66,10 +66,11 @@ public abstract class CandyGenerator implements Serializable {
      */
     public abstract Candy generateCandy(int x);
 
-    public boolean shouldGenerateIngredient() {
+    public boolean shouldGenerateIngredient(boolean canDropRandomly) {
         // This ensures a new ingredient is introduced whenever a user clears one on the board.
         if (ingredientsToDrop > 0) {
-            if (previousNumberOfIngredientsRemaining > gameStateProgress.getIngredientsRemaining()) {
+            if (previousNumberOfIngredientsRemaining > gameStateProgress.getIngredientsRemaining()
+                    || (gameStateProgress.hasGameBegun() && canDropRandomly)) {
                 ingredientsToDrop--;
                 previousNumberOfIngredientsRemaining--;
                 return true;

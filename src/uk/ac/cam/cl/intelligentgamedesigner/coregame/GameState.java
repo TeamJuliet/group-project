@@ -138,6 +138,9 @@ public class GameState implements Serializable {
         if (getValidMoves().size() == 0) {
             progress.setDidFailShuffle();
         }
+
+        // Finally, we indicate that the game has begun
+        progress.gameHasBegun();
     }
 
     /**

@@ -327,8 +327,9 @@ public class LevelDesignerManager extends SwingWorker {
         // average number of moves taken:
         double difficultyShift = specification.getTargetDifficulty() + 0.5;
         double objectiveTarget = difficultyShift * (scoreObtained / (double) gameStatistics.size());
+        int scoreRoundedTo10   = (((int) objectiveTarget + 5) / 10) * 10;
 
-        design.setObjectiveTarget((int) objectiveTarget);
+        design.setObjectiveTarget(scoreRoundedTo10);
     }
 
     /**
