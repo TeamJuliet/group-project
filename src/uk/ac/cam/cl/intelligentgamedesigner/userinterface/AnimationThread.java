@@ -128,6 +128,7 @@ public class AnimationThread extends SwingWorker{
 		double[][] scales = new double[board.width][board.height];
 		double[][] scales2 = new double[board.width][board.height];
 		boolean made_special = false;
+		boolean did_clear = false;
 		for(int x=0;x<board.width;x++){
 			for(int y=0;y<board.height;y++){
 				scales[x][y] = -1;
@@ -137,23 +138,26 @@ public class AnimationThread extends SwingWorker{
 						scales2[x][y] = DISTANCE_PER_SLEEP;
 						made_special = true;
 					}
+					did_clear = true;
 					scales[x][y] = 1;
 				}
 			}
 		}
-		while(!CandyManipulator.shrink(scales,DISTANCE_PER_SLEEP)){
-			board.setResize(scales);
-			board.repaint();
-			Thread.sleep(CLEAR_SPEED);
-		}
-		Thread.sleep(PHASE_SWITCH_SLEEP);
-		board.setBoard(theGame.getBoard());
-		if(made_special){
-			board.setResize(scales2);
-			while(!CandyManipulator.expand(scales2,DISTANCE_PER_SLEEP)){
-				board.setResize(scales2);
+		if(did_clear){
+			while(!CandyManipulator.shrink(scales,DISTANCE_PER_SLEEP)){
+				board.setResize(scales);
 				board.repaint();
 				Thread.sleep(CLEAR_SPEED);
+			}
+			Thread.sleep(PHASE_SWITCH_SLEEP);
+			board.setBoard(theGame.getBoard());
+			if(made_special){
+				board.setResize(scales2);
+				while(!CandyManipulator.expand(scales2,DISTANCE_PER_SLEEP)){
+					board.setResize(scales2);
+					board.repaint();
+					Thread.sleep(CLEAR_SPEED);
+				}
 			}
 		}
 		board.setResize(null);
@@ -209,7 +213,7 @@ public class AnimationThread extends SwingWorker{
 				}
 			}
 		}
-		CandyManipulator.bumpUp(candy_offsets,board.tile_size);
+		CandyManipulator.bumpUp(candy_offsets,board.tile_size,old_game);
 
 		board.setOffsets(candy_offsets);
 		board.repaint();
@@ -219,7 +223,6 @@ public class AnimationThread extends SwingWorker{
 			Thread.sleep(FALL_SPEED);
 		}
 		board.clear_offsets();
-		Thread.sleep(PHASE_SWITCH_SLEEP);
 	}
 	
 	private int findSourceYAbove(int x, int y, Cell[][] before, Cell[][] after){
