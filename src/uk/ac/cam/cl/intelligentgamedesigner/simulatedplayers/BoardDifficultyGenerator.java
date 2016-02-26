@@ -466,6 +466,7 @@ public class BoardDifficultyGenerator {
                 && cell1.getCandy().getColour().equals(cell2.getCandy().getColour())
                 && !cell1.getCandy().getCandyType().equals(CandyType.UNMOVABLE);
     }
+
     // Function that checks if the cells (x1, y1), (x2, y2) and (x3, y3) on the
     // board have the same colour.
     private static boolean haveSameColor(Cell[][] board, int x1, int y1, int x2, int y2, int x3, int y3) {

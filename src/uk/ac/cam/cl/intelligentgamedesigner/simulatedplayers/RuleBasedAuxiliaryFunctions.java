@@ -14,35 +14,14 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
  *
  */
 public class RuleBasedAuxiliaryFunctions {
-    public static int getJelliesCleared(List<MatchAnalysis> analyses) {
-        int jelliesRemoved = 0;
-        for (MatchAnalysis analysis : analyses) {
-            jelliesRemoved += analysis.jelliesRemoved;
-        }
-        return jelliesRemoved;
-    }
 
-    public static int getBlockersCleared(List<MatchAnalysis> analyses) {
-        int blockersRemoved = 0;
-        for (MatchAnalysis analysis : analyses) {
-            blockersRemoved += analysis.blockersRemoved;
-        }
-        return blockersRemoved;
-    }
-
-    public static int getAnalysesScore(List<MatchAnalysis> analyses) {
-        int score = 0;
-        for (MatchAnalysis analysis : analyses) {
-            score += analysis.containsSpecials.size();
-            if (analysis.formsSpecial) {
-                score += 5;
-                if (analysis.formedSpecialType.equals(CandyType.BOMB))
-                    score += 2;
-            }
-        }
-        return score;
-    }
-
+    /**
+     * Function that finds the number of ingredients above each position.
+     * 
+     * @param board
+     *            The board to be searched.
+     * @return The precomputed board.
+     */
     public static int[][] precomputeIngredientsCount(Cell[][] board) {
         int[][] ingredientsCount = new int[board.length][board[0].length];
         for (int x = 0; x < board.length; ++x) {
@@ -56,6 +35,13 @@ public class RuleBasedAuxiliaryFunctions {
         return ingredientsCount;
     }
 
+    /**
+     * Function that finds the number of ingredients below each position.
+     * 
+     * @param board
+     *            The board to be searched.
+     * @return The precomputed board.
+     */
     public static int[][] precomputeInverseIngredientsCount(Cell[][] board) {
         int[][] ingredientsCount = new int[board.length][board[0].length];
         for (int x = 0; x < board.length; ++x) {
@@ -69,6 +55,16 @@ public class RuleBasedAuxiliaryFunctions {
         return ingredientsCount;
     }
 
+    /**
+     * Sums the ingredient score from the precomputed table. The pre-computed
+     * table amortizes complexity to be linear.
+     * 
+     * @param analyses
+     *            The analyses for the move.
+     * @param ingredientsCount
+     *            The precomputed table for the ingredients to be scored.
+     * @return the sum of the individual scores.
+     */
     public static int getIngredientsScore(List<MatchAnalysis> analyses, int[][] ingredientsCount) {
         int count = 0;
         for (MatchAnalysis analysis : analyses) {
@@ -79,6 +75,18 @@ public class RuleBasedAuxiliaryFunctions {
         return count;
     }
 
+    /**
+     * Comparison made for two moves for the ingredients games. Tells if 2 is
+     * better than 1.
+     * 
+     * @param analyses1
+     *            The analysis for the first move. If null then 2 will always be
+     *            better.
+     * @param analyses2
+     *            The analysis for the second move.
+     * @return whether the first move was better for ingredients than the second
+     *         move.
+     */
     public static boolean isIngredientsBetter(List<MatchAnalysis> analyses1, List<MatchAnalysis> analyses2,
             int[][] ingredientsCount, int[][] inverseIngredientsCount) {
         if (analyses1 == null)
@@ -96,7 +104,8 @@ public class RuleBasedAuxiliaryFunctions {
                 int scoreAnalysis2 = getAnalysesScore(analyses2);
 
                 if (scoreAnalysis1 == scoreAnalysis2) {
-                    return getIngredientsScore(analyses1, inverseIngredientsCount) < getIngredientsScore(analyses2, inverseIngredientsCount);
+                    return getIngredientsScore(analyses1, inverseIngredientsCount) < getIngredientsScore(analyses2,
+                            inverseIngredientsCount);
                 } else {
                     return scoreAnalysis1 < scoreAnalysis2;
                 }
@@ -109,6 +118,18 @@ public class RuleBasedAuxiliaryFunctions {
         }
     }
 
+    /**
+     * Comparison made for two moves for the jelly games. Tells if 2 is better
+     * than 1.
+     * 
+     * @param analyses1
+     *            The analysis for the first move. If null then 2 will always be
+     *            better.
+     * @param analyses2
+     *            The analysis for the second move.
+     * @return whether the first move was better for jellies than the second
+     *         move.
+     */
     public static boolean isJellyBetter(List<MatchAnalysis> analyses1, List<MatchAnalysis> analyses2) {
         if (analyses1 == null)
             return true;
@@ -129,5 +150,37 @@ public class RuleBasedAuxiliaryFunctions {
         } else {
             return jelliesCleared1 < jelliesCleared2;
         }
+    }
+
+    // Function that counts the jellies cleared by a move.
+    private static int getJelliesCleared(List<MatchAnalysis> analyses) {
+        int jelliesRemoved = 0;
+        for (MatchAnalysis analysis : analyses) {
+            jelliesRemoved += analysis.jelliesRemoved;
+        }
+        return jelliesRemoved;
+    }
+
+    // Function that gets the blocks cleared by a move.
+    private static int getBlockersCleared(List<MatchAnalysis> analyses) {
+        int blockersRemoved = 0;
+        for (MatchAnalysis analysis : analyses) {
+            blockersRemoved += analysis.blockersRemoved;
+        }
+        return blockersRemoved;
+    }
+
+    // Function that gives a score to the immediate candies removed.
+    private static int getAnalysesScore(List<MatchAnalysis> analyses) {
+        int score = 0;
+        for (MatchAnalysis analysis : analyses) {
+            score += analysis.containsSpecials.size();
+            if (analysis.formsSpecial) {
+                score += 5;
+                if (analysis.formedSpecialType.equals(CandyType.BOMB))
+                    score += 2;
+            }
+        }
+        return score;
     }
 }

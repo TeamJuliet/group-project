@@ -15,20 +15,20 @@ public abstract class SimulatedPlayerBase {
     /**
      * Function that plays the game until the game is over.
      * 
-     * @param game
+     * @param state
      *            The game that the player should play.
      * @throws NoMovesFoundException
      *             In case it reaches a state where there is no move found it
      *             throws this exception.
      */
-    public void solve(GameState game) throws NoMovesFoundException {
-        while (!game.isGameOver()) {
+    public void solve(GameState state) throws NoMovesFoundException {
+        while (!state.isGameOver()) {
             try {
-                game.makeFullMove(calculateBestMove(game));
+                state.makeFullMove(calculateBestMove(state));
             } catch (InvalidMoveException e) {
                 this.printInvalidMoveError(e.invalidMove);
-                try { // TODO: this is horrible, fix it
-                    game.makeFullMove(game.getValidMoves().get(0));
+                try { // TODO: Find a better way to resolve this.
+                    state.makeFullMove(state.getValidMoves().get(0));
                 } catch (InvalidMoveException exception) {
                     return;
                 }

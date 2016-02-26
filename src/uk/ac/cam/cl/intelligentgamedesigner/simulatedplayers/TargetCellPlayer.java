@@ -12,7 +12,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
  * 
  * Player that is designed using the principle of the depth potential player and
  * focuses to clear the jelly from the cell located at the position that this
- * player had been initialized for.
+ * player had been initialised for.
  *
  */
 public class TargetCellPlayer extends DepthPotentialPlayer {
