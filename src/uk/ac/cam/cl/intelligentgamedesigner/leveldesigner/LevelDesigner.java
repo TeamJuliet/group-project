@@ -21,7 +21,14 @@ public class LevelDesigner implements Runnable {
 	private Random random;
 	private int threadID;
 
-    public LevelDesigner(LevelDesignerManager manager, Random random, int threadID, LevelDesignerAccuracy accuracy) {
+	/**
+	 * Constructs a LevelDesigner, generating a random population.
+	 * 
+	 * @param manager The LevelDesignerManager instance for this.
+	 * @param random The Random instance to use.
+	 * @param threadID The ID of the thread, used when notifying the manager.
+	 */
+	public LevelDesigner(LevelDesignerManager manager, Random random, int threadID, LevelDesignerAccuracy accuracy) {
 		this.manager = manager;
 		this.random = random;
 		this.threadID = threadID;
@@ -115,7 +122,15 @@ public class LevelDesigner implements Runnable {
 		}
     }
 
-	private LevelDesignIndividual stochasticSelection(List<LevelDesignIndividual> population, double totalFitness) {
+    /**
+	 * Selects an individual from a population, with the probability of it being selected
+	 * proportionate to its fitness.
+	 * 
+	 * @param population The population to select from.
+	 * @param totalFitness The total fitness of the population.
+	 * @return The individual that was selected.
+	 */
+    private LevelDesignIndividual stochasticSelection(List<LevelDesignIndividual> population, double totalFitness) {
 		int length = population.size();
 		while (true) {
 			LevelDesignIndividual individual = population.get(random.nextInt(length));
