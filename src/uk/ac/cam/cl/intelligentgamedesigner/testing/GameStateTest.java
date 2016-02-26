@@ -433,7 +433,6 @@ public class GameStateTest {
        assertTrue(haveSameProgress(gameState, new GameStateProgress(Scoring.MADE_BOMB, NO_JELLIES, NO_INGREDIENTS, TWO_MOVES_LEFT)));
    }
    
-   // TODO: Try this with ingredients.
    @Test
    public void movesBombBomb() {
 
@@ -465,6 +464,45 @@ public class GameStateTest {
        // Checks whether it forms a vertical move.
        assertTrue(haveSameBoard(gameState, cellBoardFromCandies(correctBoard)));
        assertTrue(haveSameProgress(gameState, new GameStateProgress(Scoring.DETONATE_BOMB * 2 + (20 - 2) * Scoring.BOMB_INDIVIDUAL, NO_JELLIES, NO_INGREDIENTS, TWO_MOVES_LEFT)));
+   }
+   
+   @Test
+   public void movesBombBombWithIngredients() {
+
+       Candy[][] board = { 
+               {GREEN_CANDY, RED_CANDY, GREEN_CANDY, INGREDIENT},
+               {BLUE_CANDY, RED_CANDY, GREEN_CANDY, BLUE_CANDY},
+               {COLOR_BOMB, COLOR_BOMB, RED_CANDY, RED_CANDY},
+               {BLUE_CANDY, RED_CANDY, YELLOW_CANDY, GREEN_CANDY},
+               {GREEN_CANDY, RED_CANDY, BLUE_CANDY, YELLOW_CANDY},
+       };
+       
+       Cell[][] cellBoard = cellBoardFromCandies(board);
+       cellBoard[3][4].setIngredientSink();
+       
+       GameState gameState = new GameState(cellBoard, ONE_INRGEDIENT_PROGRESS,
+               new UnmovableCandyGenerator());
+
+       try {
+           gameState.makeFullMove(new Move(new Position(0, 2), new Position(1, 2)));
+       } catch (InvalidMoveException e) {
+           assertTrue(false);
+       } 
+     
+       Candy[][] correctBoard = { 
+               {UNMOVEABLE_CANDY, UNMOVEABLE_CANDY, UNMOVEABLE_CANDY, UNMOVEABLE_CANDY},
+               {UNMOVEABLE_CANDY, UNMOVEABLE_CANDY, UNMOVEABLE_CANDY, UNMOVEABLE_CANDY},
+               {UNMOVEABLE_CANDY, UNMOVEABLE_CANDY, UNMOVEABLE_CANDY, UNMOVEABLE_CANDY},
+               {UNMOVEABLE_CANDY, UNMOVEABLE_CANDY, UNMOVEABLE_CANDY, UNMOVEABLE_CANDY},
+               {UNMOVEABLE_CANDY, UNMOVEABLE_CANDY, UNMOVEABLE_CANDY, UNMOVEABLE_CANDY},
+       };
+
+       Cell[][] correctCellBoard = cellBoardFromCandies(correctBoard);
+       correctCellBoard[3][4].setIngredientSink();
+       
+       // Checks whether it forms a vertical move.
+       assertTrue(haveSameBoard(gameState, correctCellBoard));
+       assertTrue(haveSameProgress(gameState, new GameStateProgress(Scoring.DETONATE_BOMB * 2 + (20 - 3) * Scoring.BOMB_INDIVIDUAL + Scoring.BROUGHT_INGREDIENT_DOWN, NO_JELLIES, NO_INGREDIENTS, TWO_MOVES_LEFT)));
    }
    
    @Test

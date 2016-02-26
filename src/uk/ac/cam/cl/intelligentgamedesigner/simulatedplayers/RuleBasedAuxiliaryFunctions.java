@@ -8,6 +8,11 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.MatchAnalysis;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
 
+/**
+ * 
+ * Class that contains the functions used by the rule based players.
+ *
+ */
 public class RuleBasedAuxiliaryFunctions {
     public static int getJelliesCleared(List<MatchAnalysis> analyses) {
         int jelliesRemoved = 0;
