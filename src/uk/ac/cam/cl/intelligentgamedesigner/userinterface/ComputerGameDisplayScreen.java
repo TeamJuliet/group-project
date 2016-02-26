@@ -190,7 +190,6 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen {
     private void allMoves() {
         if (!playing_move) {
             try {
-                // playerManager.solve(theGame, ability);
                 while (!theGame.isGameOver()) {
                     theGame.makeFullMove(playerManager.calculateBestMove(theGame, ability));
                 }

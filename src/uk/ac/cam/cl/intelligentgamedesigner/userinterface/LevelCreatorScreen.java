@@ -111,7 +111,6 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 			number_of_candies.setValue(design.getNumberOfCandyColours());
 			moves.setValue(design.getNumberOfMovesAvailable());
 			mode_objective.setValue(design.getObjectiveTarget());
-			System.out.println((int)moves.getValue() + ", " + (int)mode_objective.getValue());
 		}
 		this.level_on = level_on;
 		level_on_label.setText(level_on+". ");

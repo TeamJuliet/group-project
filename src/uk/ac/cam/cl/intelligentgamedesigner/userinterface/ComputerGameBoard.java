@@ -25,7 +25,7 @@ public class ComputerGameBoard extends GameBoard{
 	
 	@Override
 	public void paint(Graphics g){
-		//super.paint(g);
+		super.paint(g);
 		
 		//draw the cursor	
 		g.setColor(Color.WHITE);

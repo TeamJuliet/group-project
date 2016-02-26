@@ -46,7 +46,7 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
 	}
 	
 	public void startDesign(Specification specification){
-        // Stop the user fucking with our threads
+        // Stop the user interfering with our threads
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         back_button.setEnabled(false);
 
@@ -215,6 +215,7 @@ public class DesigningLevelScreen extends DisplayScreen implements ActionListene
             // Let the user use the interface again!
             setCursor(null);
             back_button.setEnabled(true);
+			doing_what.setText("Done:");
             if (selected > -1) view_level.setEnabled(true);
 			break;
 		case PropertyChanges.PROPERTY_CHANGE_DESIGNS: //in phase 1, getting new design appearances
