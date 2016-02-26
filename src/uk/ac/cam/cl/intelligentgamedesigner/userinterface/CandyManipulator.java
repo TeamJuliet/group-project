@@ -37,13 +37,13 @@ public class CandyManipulator {
 	
 //CANDY OFFSET
 	//ensure that candies above fall in sync
-	public static void bumpUp(Dimension[][] offsets, int size, Cell[][] board){
+	public static void bumpUp(Dimension[][] offsets, Cell[][] board){
 		for(int x=0;x<offsets.length;x++){
 			for(int y=offsets[0].length-1;y>0;y--){
 				if(offsets[x][y].height<0){
 					//bump up one
-					if(offsets[x][y].height-size != offsets[x][y-1].height)
-						offsets[x][y-1].height = offsets[x][y].height-size;
+					if(offsets[x][y].height != offsets[x][y-1].height)
+						offsets[x][y-1].height = offsets[x][y].height;
 					//unless is locked
 					if(board[x][y-1].getCellType() == CellType.ICING ||
 							board[x][y-1].getCellType() == CellType.LIQUORICE)

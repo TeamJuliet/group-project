@@ -13,7 +13,8 @@ public class RandomCandyGenerator extends CandyGenerator {
 	public Candy generateCandy(int x) {
 		Random random = new Random();
 
-		if (shouldGenerateIngredient()) return new Candy(null, CandyType.INGREDIENT);
+		if (shouldGenerateIngredient(random.nextInt(100) < 2))
+			return new Candy (null, CandyType.INGREDIENT);
 
 		// If an ingredient wasn't dropped, then drop a normal candy
 		int result = random.nextInt(super.design.getNumberOfCandyColours());

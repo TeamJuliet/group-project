@@ -107,7 +107,7 @@ public class GameState implements Serializable {
                 CellType cellType = cellToCopy.getCellType();
                 Candy cellCandy = cellToCopy.getCandy();
 
-                // For ICING and UNUSABLEs, we can just replace the cell with
+                // For ICING, UNUSABLEs and INGREDIENTS, we can just replace the cell with
                 // the design element
                 if (cellType == CellType.ICING || cellType == CellType.UNUSABLE
                         || (cellCandy != null && cellCandy.getCandyType() == CandyType.INGREDIENT)) {
@@ -138,6 +138,9 @@ public class GameState implements Serializable {
         if (getValidMoves().size() == 0) {
             progress.setDidFailShuffle();
         }
+
+        // Finally, we indicate that the game has begun
+        progress.gameHasBegun();
     }
 
     /**
@@ -565,12 +568,11 @@ public class GameState implements Serializable {
 
         if (current.hasCandy() && current.getCandy().isDetonated())
             return;
-        if (current.hasCandy() && current.getCandy().getCandyType().isSpecial()) {
-            if (current.getCandy().getCandyType().equals(CandyType.BOMB)) {
-                current.removeCandy();
-                wasSomethingPopped = true;
-                return;
-            }
+        if (current.hasCandy() && current.getCandy().getCandyType().equals(CandyType.BOMB)) {
+            current.removeCandy();
+            wasSomethingPopped = true;
+            return;
+        } else if (current.hasCandy() && current.getCandy().getCandyType().isSpecial()) { 
             if (!current.getCandy().isDetonated()) {
                 detonated.add(new Position(x, y));
                 current.getCandy().setDetonated();
@@ -631,20 +633,28 @@ public class GameState implements Serializable {
         makeCellBomb(x, y);
     }
 
+    private boolean isValidPoint(int x, int y) {
+        return (x >= 0 && x < width && y >= 0 && y < height);
+    }
+
     private void makeCellBomb(int x, int y) {
-        incrementScore(Scoring.MADE_BOMB);
-        board[x][y].setCandy(new Candy(null, CandyType.BOMB));
-        this.statCandiesFormed.candyProcessed(board[x][y].getCandy());
+        if (isValidPoint(x, y)) {
+            incrementScore(Scoring.MADE_BOMB);
+            board[x][y].setCandy(new Candy(null, CandyType.BOMB));
+            this.statCandiesFormed.candyProcessed(board[x][y].getCandy());
+        }
     }
 
     private void makeWrapped(int x, int y, CandyColour clr) {
         incrementScore(Scoring.MADE_WRAPPED_CANDY);
+        if (hasDetonated(board[x][y])) return;
         board[x][y].setCandy(new Candy(clr, CandyType.WRAPPED));
         this.statCandiesFormed.candyProcessed(board[x][y].getCandy());
     }
 
     private void makeStripped(int x, int y, CandyColour clr, boolean isVertical) {
         incrementScore(Scoring.MADE_STRIPPED_CANDY);
+        if (hasDetonated(board[x][y])) return;
         board[x][y]
                 .setCandy(new Candy(clr, isVertical ? CandyType.VERTICALLY_STRIPPED : CandyType.HORIZONTALLY_STRIPPED));
         this.statCandiesFormed.candyProcessed(board[x][y].getCandy());
@@ -658,7 +668,7 @@ public class GameState implements Serializable {
         for (int x = 0; x < width; ++x) {
             for (int y = 0; y < height; ++y) {
                 // Do not consider cells with no candy.
-                if (!board[x][y].hasCandy())
+                if (!board[x][y].hasCandy()|| board[x][y].getCandy().getCandyType().equals(CandyType.UNMOVABLE))
                     continue;
                 markAndReplaceForTile(x, y);
             }
@@ -959,7 +969,7 @@ public class GameState implements Serializable {
         int[] prev = new int[width];
         for (int i = 0; i < width; ++i) prev[i] = height;
         for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
+            for (int y = height - 1; y >= 0; --y) {
                 Cell cell = board[x][y];
                 if (cell.isFillable()) {
 

@@ -20,7 +20,7 @@ public class PseudoRandomCandyGenerator extends CandyGenerator {
     @Override
     public Candy generateCandy(int x) {
 
-        if (shouldGenerateIngredient())
+        if (shouldGenerateIngredient((nextPseudoRandom() % 100) < 2))
             return new Candy(null, CandyType.INGREDIENT);
 
         int num = nextPseudoRandom();

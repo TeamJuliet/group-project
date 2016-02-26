@@ -3,11 +3,14 @@ package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.text.NumberFormat;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -43,6 +46,15 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 	JSlider difficulty;
 	JSlider accuracy;
 	
+	//bonus settings:
+	JFormattedTextField min_moves;
+	JFormattedTextField max_moves;
+	JSlider jelly_density;
+	JSlider lock_density;
+	JSlider icing_density;
+	JComboBox<Integer> max_candies;
+	JComboBox<Integer> min_candies;
+	
 	//specified values
 	double val_difficulty;
 	int val_accuracy;
@@ -74,6 +86,22 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		
 		difficulty = new JSlider(0,100);
 		accuracy = new JSlider(1,3);
+
+		NumberFormat nf = NumberFormat.getInstance();
+	    nf.setMaximumFractionDigits(0);
+	    nf.setMaximumIntegerDigits(2);
+	    
+		min_moves = new JFormattedTextField(nf);
+		max_moves = new JFormattedTextField(nf);
+		jelly_density = new JSlider(1,10);
+		lock_density = new JSlider(0,10);
+		icing_density = new JSlider(0,10);
+		min_candies = new JComboBox<Integer>();
+		max_candies = new JComboBox<Integer>();
+		for(int n=4;n<=6;n++){
+			min_candies.addItem(n);
+			max_candies.addItem(n);
+		}
 	}
 	
 	@Override
@@ -92,8 +120,8 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		difficulty.setPaintLabels(true);
 		difficulty.addChangeListener(this);
 
-		val_accuracy = accuracy.getMaximum();
-		show_accuracy.setText("Maximum accuracy, but slow");
+		val_accuracy = 2;
+		show_accuracy.setText("Balance of accuracy and speed");
 		accuracy.setValue(val_accuracy);
 		accuracy.setMajorTickSpacing(1);
 		accuracy.setPaintTicks(true);
@@ -112,9 +140,25 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 
 		accuracy_text.setAlignmentX(CENTER_ALIGNMENT);
 		show_accuracy.setAlignmentX(CENTER_ALIGNMENT);
+
+		min_moves.setValue(5);
+		max_moves.setValue(50);
+		jelly_density.setValue(5);
+		jelly_density.setMajorTickSpacing(1);
+		jelly_density.setPaintTicks(true);
+		jelly_density.setPaintLabels(true);
+		lock_density.setValue(5);
+		lock_density.setMajorTickSpacing(1);
+		lock_density.setPaintTicks(true);
+		lock_density.setPaintLabels(true);
+		icing_density.setValue(5);
+		icing_density.setMajorTickSpacing(1);
+		icing_density.setPaintTicks(true);
+		icing_density.setPaintLabels(true);
 	}
 	
 	private JPanel settings;
+	private JPanel settings2;
 	@Override
 	protected void addItems(){
 		//sort out the window's layout settings:
@@ -144,13 +188,49 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		settings.add(getSmallSpace());
 		settings.add(show_accuracy);
 		settings.add(getSpace());
-		add(settings);
+		
+		//make a box with the settings
+		settings2 = new JPanel();
+		settings2.setLayout(new BoxLayout(settings2,BoxLayout.Y_AXIS));
+		settings2.add(getSpace());
+		settings2.add(new JLabel("Number of Moves:"));
+		settings2.add(getSmallSpace());
+		settings2.add(new JLabel("Minimum:"));
+		settings2.add(getSmallSpace());
+		settings2.add(min_moves);
+		settings2.add(getSmallSpace());
+		settings2.add(new JLabel("Maximum:"));
+		settings2.add(getSmallSpace());
+		settings2.add(max_moves);
+		settings2.add(getSpace());
+		settings2.add(new JLabel("Number of Candies:"));
+		settings2.add(getSmallSpace());
+		settings2.add(new JLabel("Minimum:"));
+		settings2.add(getSmallSpace());
+		settings2.add(min_candies);
+		settings2.add(new JLabel("Maximum:"));
+		settings2.add(getSmallSpace());
+		settings2.add(max_candies);
+		settings2.add(getSpace());
+		settings2.add(new JLabel("Density of Liquorice Locks:"));
+		settings2.add(getSmallSpace());
+		settings2.add(lock_density);
+		settings2.add(getSpace());
+		settings2.add(new JLabel("Density of Icing:"));
+		settings2.add(getSmallSpace());
+		settings2.add(icing_density);
+		settings2.add(getSpace());
+		settings2.add(new JLabel("Density of Jelly layers (Jelly Clear only):"));
+		settings2.add(getSmallSpace());
+		settings2.add(jelly_density);
+		settings2.add(getSpace());
 		
 		//add the items
 		add(title);
 		add(back_button);
 		add(go_button);
 		add(settings);
+		add(settings2);
 		
 	}
 	
@@ -162,12 +242,14 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		fontScale(go_button, DisplayScreen.FONT_NORMAL);
 		fontScale(back_button, DisplayScreen.FONT_NORMAL);
 		fontScale(settings, DisplayScreen.FONT_NORMAL);
+		fontScale(settings2, DisplayScreen.FONT_NORMAL);
 		
 		//set the locations
 		position(title,0.5,0.9,400,50);
 		position(go_button,0.5,0.2,100,40);
-		position(back_button,0.1,0.85,150,30);
-		position(settings,0.5,0.55,400,380);
+		position(back_button,0.1,0.9,150,30);
+		position(settings,0.3,0.55,400,380);
+		position(settings2,0.7,0.55,400,380);
 	}
 	
 	@Override
