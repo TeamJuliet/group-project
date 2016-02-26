@@ -349,7 +349,7 @@ public class GameStateAuxiliaryFunctions {
 					specials.add(board[x][pos.y].getCandy().getCandyType());
 				if (board[x][pos.y].getJellyLevel() > 0)
 					++jelliesRemoved;
-				if (board[x][pos.y].getCellType().blocksCandies())
+				if (board[x][pos.y].getCellType().isBlocker())
                     ++blockersRemoved;
 			}
 		}
@@ -364,7 +364,7 @@ public class GameStateAuxiliaryFunctions {
 					specials.add(board[pos.x][y].getCandy().getCandyType());
 				if (board[pos.x][y].getJellyLevel() > 0)
 					++jelliesRemoved;
-				if (board[pos.x][y].getCellType().blocksCandies())
+				if (board[pos.x][y].getCellType().isBlocker())
                     ++blockersRemoved;
 			}
 		}
@@ -475,7 +475,7 @@ public class GameStateAuxiliaryFunctions {
 		List<Position> blockers = new LinkedList<Position>();
 		for (int x = 0; x < board.length; ++x) {
 			for (int y = 0; y < board[0].length; ++y) {
-				if (board[x][y].getCellType().blocksCandies()) {
+				if (board[x][y].getCellType().isBlocker()) {
 					blockers.add(new Position(x, y));
 				}
 			}

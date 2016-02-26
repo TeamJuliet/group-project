@@ -9,7 +9,16 @@ package uk.ac.cam.cl.intelligentgamedesigner.coregame;
  *
  */
 public enum GameMode {
+    /**
+     * The player should reach the target score.
+     */
     HIGHSCORE,
+    /**
+     * The player should clear all the jellies from the board.
+     */
     JELLY,
+    /**
+     * The player should pass the number of ingredients specified.
+     */
     INGREDIENTS
 }

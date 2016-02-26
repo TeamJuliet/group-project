@@ -240,7 +240,7 @@ public class Cell implements Cloneable, Serializable {
 	 * @return whether the cell will allow candies to be dropped through it.
 	 */
 	public boolean blocksCandies() {
-		return cellType.blocksCandies()
+		return cellType.isBlocker()
 				|| (hasCandy() && candy.isDetonated() && candy.getCandyType()
 						.isStripped());
 	}
