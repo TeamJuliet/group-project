@@ -568,12 +568,11 @@ public class GameState implements Serializable {
 
         if (current.hasCandy() && current.getCandy().isDetonated())
             return;
-        if (current.hasCandy() && current.getCandy().getCandyType().isSpecial()) {
-            if (current.getCandy().getCandyType().equals(CandyType.BOMB)) {
-                current.removeCandy();
-                wasSomethingPopped = true;
-                return;
-            }
+        if (current.hasCandy() && current.getCandy().getCandyType().equals(CandyType.BOMB)) {
+            current.removeCandy();
+            wasSomethingPopped = true;
+            return;
+        } else if (current.hasCandy() && current.getCandy().getCandyType().isSpecial()) { 
             if (!current.getCandy().isDetonated()) {
                 detonated.add(new Position(x, y));
                 current.getCandy().setDetonated();
