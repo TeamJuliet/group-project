@@ -107,7 +107,7 @@ public class GameState implements Serializable {
                 CellType cellType = cellToCopy.getCellType();
                 Candy cellCandy = cellToCopy.getCandy();
 
-                // For ICING and UNUSABLEs, we can just replace the cell with
+                // For ICING, UNUSABLEs and INGREDIENTS, we can just replace the cell with
                 // the design element
                 if (cellType == CellType.ICING || cellType == CellType.UNUSABLE
                         || (cellCandy != null && cellCandy.getCandyType() == CandyType.INGREDIENT)) {
@@ -634,10 +634,16 @@ public class GameState implements Serializable {
         makeCellBomb(x, y);
     }
 
+    private boolean isValidPoint(int x, int y) {
+        return (x >= 0 && x < width && y >= 0 && y < height);
+    }
+
     private void makeCellBomb(int x, int y) {
-        incrementScore(Scoring.MADE_BOMB);
-        board[x][y].setCandy(new Candy(null, CandyType.BOMB));
-        this.statCandiesFormed.candyProcessed(board[x][y].getCandy());
+        if (isValidPoint(x, y)) {
+            incrementScore(Scoring.MADE_BOMB);
+            board[x][y].setCandy(new Candy(null, CandyType.BOMB));
+            this.statCandiesFormed.candyProcessed(board[x][y].getCandy());
+        }
     }
 
     private void makeWrapped(int x, int y, CandyColour clr) {
@@ -661,7 +667,7 @@ public class GameState implements Serializable {
         for (int x = 0; x < width; ++x) {
             for (int y = 0; y < height; ++y) {
                 // Do not consider cells with no candy.
-                if (!board[x][y].hasCandy())
+                if (!board[x][y].hasCandy()|| board[x][y].getCandy().getCandyType().equals(CandyType.UNMOVABLE))
                     continue;
                 markAndReplaceForTile(x, y);
             }

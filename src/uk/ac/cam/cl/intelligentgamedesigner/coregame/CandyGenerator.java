@@ -54,7 +54,11 @@ public abstract class CandyGenerator implements Serializable {
 
         this.previousNumberOfIngredientsRemaining = gameStateProgress.getIngredientsRemaining();
 
-        this.ingredientsToDrop = gameStateProgress.getIngredientsRemaining() - 1;
+        // Either the user has specified initial positions, or the GameState has automatically placed 1
+        int numberOfInitialIngredients =
+                Math.max(GameStateAuxiliaryFunctions.getIngredientsNumber(design.getBoard()), 1);
+
+        this.ingredientsToDrop = gameStateProgress.getIngredientsRemaining() - numberOfInitialIngredients;
     }
 
     /**
