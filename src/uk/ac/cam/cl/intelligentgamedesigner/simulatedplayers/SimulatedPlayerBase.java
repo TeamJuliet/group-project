@@ -6,14 +6,21 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 
 public abstract class SimulatedPlayerBase {
 
-    public void solve(GameState game) throws NoMovesFoundException {
-        while (!game.isGameOver()) {
+    /**
+     * Function that solves the game. Repeatedly finds and makes best move,
+     * until game is over.
+     * 
+     * @param state
+     *            GameState to be solved.
+     */
+    void solve(GameState state) throws NoMovesFoundException {
+        while (!state.isGameOver()) {
             try {
-                game.makeFullMove(calculateBestMove(game));
+                state.makeFullMove(calculateBestMove(state));
             } catch (InvalidMoveException e) {
                 this.printInvalidMoveError(e.invalidMove);
-                try { // TODO: this is horrible, fix it
-                    game.makeFullMove(game.getValidMoves().get(0));
+                try { // TODO: Find a better way to resolve this.
+                    state.makeFullMove(state.getValidMoves().get(0));
                 } catch (InvalidMoveException exception) {
                     return;
                 }
@@ -21,9 +28,16 @@ public abstract class SimulatedPlayerBase {
         }
     }
 
-    public abstract Move calculateBestMove(GameState currentState) throws NoMovesFoundException;
+    /**
+     * Finds best move in a given position.
+     * 
+     * @param currentState
+     *            GameState to be evaluated.
+     * @return best move according to the algorithm used.
+     */
+    abstract Move calculateBestMove(GameState currentState) throws NoMovesFoundException;
 
-    public void noMovesFound() {
+    void noMovesFound() {
         System.err.format("WARNING! %s didn't return a valid move!\n", this.getClass().getSimpleName());
     }
 
