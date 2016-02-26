@@ -647,12 +647,14 @@ public class GameState implements Serializable {
 
     private void makeWrapped(int x, int y, CandyColour clr) {
         incrementScore(Scoring.MADE_WRAPPED_CANDY);
+        if (hasDetonated(board[x][y])) return;
         board[x][y].setCandy(new Candy(clr, CandyType.WRAPPED));
         this.statCandiesFormed.candyProcessed(board[x][y].getCandy());
     }
 
     private void makeStripped(int x, int y, CandyColour clr, boolean isVertical) {
         incrementScore(Scoring.MADE_STRIPPED_CANDY);
+        if (hasDetonated(board[x][y])) return;
         board[x][y]
                 .setCandy(new Candy(clr, isVertical ? CandyType.VERTICALLY_STRIPPED : CandyType.HORIZONTALLY_STRIPPED));
         this.statCandiesFormed.candyProcessed(board[x][y].getCandy());
