@@ -123,7 +123,7 @@ public class SimulatedPlayerAssessment {
                 : ((scoreMean - playerRecordsToAssess.normalizedAverageScore) / scoreSD);
 
         double averageGamesWon = playerRecordsToAssess.getAverageGamesWon();
-        double percentage = countSmallerMeans(averageGamesWon, otherPlayers);
+        double percentage = countSmallerMeans(averageGamesWon, otherPlayers) / ((double) otherPlayers.size());
 
         return sanitizePercentage(
                 percentage + PERCENTAGE_BOOST * (averageGamesWon * movesDelta + scoreDelta * (1.0 - averageGamesWon)));
@@ -162,7 +162,7 @@ public class SimulatedPlayerAssessment {
                 ++numOfGamesLost;
             }
         }
-
+        
         final double normalizedAverageScore = numOfGamesLost == 0 ? 0.0 : scoreToTarget / ((double) numOfGamesLost);
         final double averageRemainingMoves = numOfGamesWon == 0 ? 0.0 : sumMovesRemaining / ((double) numOfGamesWon);
 
@@ -278,10 +278,10 @@ public class SimulatedPlayerAssessment {
 
         Design design = SimulatedPlayersTestHelpers.getBoardWithBlockersDesign();
         design.setGameMode(GameMode.HIGHSCORE);
-        design.setObjectiveTarget(1800);
-        design.setNumberOfMovesAvailable(16);
+        design.setObjectiveTarget(2800);
+        design.setNumberOfMovesAvailable(12);
 
-        final int numberOfGamesToRun = 10;
+        final int numberOfGamesToRun = 20;
 
         System.out.println(evaluateScorePlayers(design, players, numberOfGamesToRun));
 
