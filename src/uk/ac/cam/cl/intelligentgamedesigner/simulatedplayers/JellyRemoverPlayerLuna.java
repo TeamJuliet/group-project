@@ -39,7 +39,7 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
             for (int y = 0; y < cellBoard[0].length; ++y) {
                 Position currentPosition = new Position(x, y);
                 if (cellBoard[x][y].getJellyLevel() > 0) {
-                    this.difficultyOfFixedPositions.put(currentPosition, 1.0
+                    this.difficultyOfFixedPositions.put(currentPosition,
                             BoardDifficultyGenerator.getCellDifficulty(design, x, y, fixedNumberOfRounds));
                     this.jellies.add(currentPosition);
                 }
