@@ -22,7 +22,7 @@ public class AnimationThread extends SwingWorker{
 	//TODO: animations, make cell objects for drawing purposes?
 	public static final int SWAP_SPEED = 15;
 	public static final int FALL_SPEED = 9;
-	public static final int CLEAR_SPEED = 15;
+	public static final int CLEAR_SPEED = 20;
 	public static final int SHUFFLE_SPEED = 10;
 	public static final double DISTANCE_PER_SLEEP = 0.1;//in fractions of a tilesize
 	public static final int PHASE_SWITCH_SLEEP = 30;
@@ -266,26 +266,21 @@ public class AnimationThread extends SwingWorker{
 	private void animateFuse(Cell[][] old_game) throws InterruptedException{
 		Thread.sleep(50);
 		board.setBoard(old_game);
-		//System.out.println("Fu... sion...");
-		Dimension[][] candy_offsets = new Dimension[board.width][board.height];
 		double[][] scales = new double[board.width][board.height];
 		board.setMoveLoc(new Dimension(move.p2.x,move.p2.y));
-		candy_offsets[move.p1.x][move.p1.y] = new Dimension(
-				board.tile_size * (move.p2.x - move.p1.x),board.tile_size * (move.p2.y - move.p1.y));
-		candy_offsets[move.p2.x][move.p2.y] = new Dimension(
-				board.tile_size * (move.p1.x - move.p2.x),board.tile_size * (move.p1.y - move.p2.y));
-		while(!CandyManipulator.decrement(candy_offsets,DISTANCE_PER_SLEEP*4,board.tile_size/2)){
-			board.setOffsets(candy_offsets);
-			board.repaint();
-			Thread.sleep(SWAP_SPEED);
-		}
-		Thread.sleep(PHASE_SWITCH_SLEEP);
-		//System.out.println("Ha!");
 		for(int x=0;x<board.width;x++)
 			for(int y=0;y<board.height;y++)
 				scales[x][y] = -1;
 		scales[move.p1.x][move.p1.y] = 1;
 		scales[move.p2.x][move.p2.y] = 1;
+		while(!CandyManipulator.shrink(scales,DISTANCE_PER_SLEEP)){
+			board.setResize(scales);
+			board.repaint();
+			Thread.sleep(CLEAR_SPEED);
+		}
+		Thread.sleep(PHASE_SWITCH_SLEEP);
+		scales[move.p1.x][move.p1.y] = DISTANCE_PER_SLEEP;
+		scales[move.p2.x][move.p2.y] = DISTANCE_PER_SLEEP;
 		while(!CandyManipulator.expand(scales,DISTANCE_PER_SLEEP)){
 			board.setResize(scales);
 			board.repaint();

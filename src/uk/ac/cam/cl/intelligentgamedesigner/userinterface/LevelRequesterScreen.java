@@ -71,7 +71,7 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 
 		title = new JLabel("Choose the type of level to make",SwingConstants.CENTER);
 		game_mode_text = new JLabel("Select Game Mode:",SwingConstants.CENTER);
-		difficulty_text = new JLabel("Select Difficulty:",SwingConstants.CENTER);
+		difficulty_text = new JLabel("Select Difficulty (Predicted fail rate):",SwingConstants.CENTER);
 		show_difficulty = new JLabel("%",SwingConstants.CENTER);
 		show_accuracy = new JLabel("%",SwingConstants.CENTER);
 		accuracy_text = new JLabel("Set Accuracy:",SwingConstants.CENTER);
@@ -84,7 +84,7 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		game_mode.add(jelly_clear);
 		game_mode.add(ingredients);
 		
-		difficulty = new JSlider(0,100);
+		difficulty = new JSlider(5,95);
 		accuracy = new JSlider(1,3);
 
 		NumberFormat nf = NumberFormat.getInstance();
@@ -114,7 +114,7 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		val_difficulty = 0.5;
 		show_difficulty.setText("Middling");
 		difficulty.setValue(50);
-		difficulty.setMajorTickSpacing(10);
+		difficulty.setMajorTickSpacing(5);
 		difficulty.setMinorTickSpacing(1);
 		difficulty.setPaintTicks(true);
 		difficulty.setPaintLabels(true);
