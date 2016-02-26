@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
@@ -58,6 +59,8 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 	//specified values
 	double val_difficulty;
 	int val_accuracy;
+	int val_max_moves;
+	int val_min_moves;
 	
 	public LevelRequesterScreen(){
 		super();
@@ -71,7 +74,7 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 
 		title = new JLabel("Choose the type of level to make",SwingConstants.CENTER);
 		game_mode_text = new JLabel("Select Game Mode:",SwingConstants.CENTER);
-		difficulty_text = new JLabel("Select Difficulty:",SwingConstants.CENTER);
+		difficulty_text = new JLabel("Select Difficulty (Predicted fail rate):",SwingConstants.CENTER);
 		show_difficulty = new JLabel("%",SwingConstants.CENTER);
 		show_accuracy = new JLabel("%",SwingConstants.CENTER);
 		accuracy_text = new JLabel("Set Accuracy:",SwingConstants.CENTER);
@@ -84,7 +87,7 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		game_mode.add(jelly_clear);
 		game_mode.add(ingredients);
 		
-		difficulty = new JSlider(0,100);
+		difficulty = new JSlider(5,95);
 		accuracy = new JSlider(1,3);
 
 		NumberFormat nf = NumberFormat.getInstance();
@@ -102,6 +105,16 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 			min_candies.addItem(n);
 			max_candies.addItem(n);
 		}
+		min_candies.setSelectedItem(4);
+		max_candies.setSelectedItem(6);
+		min_candies.addActionListener(this);
+		max_candies.addActionListener(this);
+		min_candies.setActionCommand("min candy");
+		max_candies.setActionCommand("max candy");
+		min_moves.addActionListener(this);
+		max_moves.addActionListener(this);
+		min_moves.setActionCommand("min move");
+		max_moves.setActionCommand("max move");
 	}
 	
 	@Override
@@ -114,7 +127,7 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		val_difficulty = 0.5;
 		show_difficulty.setText("Middling");
 		difficulty.setValue(50);
-		difficulty.setMajorTickSpacing(10);
+		difficulty.setMajorTickSpacing(5);
 		difficulty.setMinorTickSpacing(1);
 		difficulty.setPaintTicks(true);
 		difficulty.setPaintLabels(true);
@@ -141,8 +154,10 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		accuracy_text.setAlignmentX(CENTER_ALIGNMENT);
 		show_accuracy.setAlignmentX(CENTER_ALIGNMENT);
 
-		min_moves.setValue(5);
-		max_moves.setValue(50);
+		val_min_moves = 5;
+		val_max_moves = 50;
+		min_moves.setValue(val_min_moves);
+		max_moves.setValue(val_max_moves);
 		jelly_density.setValue(5);
 		jelly_density.setMajorTickSpacing(1);
 		jelly_density.setPaintTicks(true);
@@ -193,7 +208,7 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		settings2 = new JPanel();
 		settings2.setLayout(new BoxLayout(settings2,BoxLayout.Y_AXIS));
 		settings2.add(getSpace());
-		settings2.add(new JLabel("Number of Moves:"));
+		settings2.add(new JLabel("Number of Moves (High Score and Ingredients only):"));
 		settings2.add(getSmallSpace());
 		settings2.add(new JLabel("Minimum:"));
 		settings2.add(getSmallSpace());
@@ -254,6 +269,7 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		String move_to_text;
 		switch(e.getActionCommand()){
 		case "back":
 	    	InterfaceManager.switchScreen(Windows.MAIN);
@@ -262,8 +278,49 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 			GameMode mode = GameMode.HIGHSCORE;
 			if(jelly_clear.isSelected())mode = GameMode.JELLY;
 			if(ingredients.isSelected())mode = GameMode.INGREDIENTS;
-			InterfaceManager.setLevelSpecifications(new Specification(val_difficulty,mode,LevelDesignerAccuracy.values()[val_accuracy-1]));
+
+			move_to_text = max_moves.getValue().toString();
+			val_max_moves = Integer.parseInt(move_to_text);
+			move_to_text = min_moves.getValue().toString();
+			val_min_moves = Integer.parseInt(move_to_text);
+			if(val_min_moves>val_max_moves){
+				JOptionPane.showMessageDialog(this, "You entered invalid bounds for the moves. using the defaults (5-50)","Notification",JOptionPane.INFORMATION_MESSAGE);
+				val_min_moves = 5;
+				val_max_moves = 50;
+			}
+			InterfaceManager.setLevelSpecifications(new Specification(
+					val_difficulty,
+					mode,
+					LevelDesignerAccuracy.values()[val_accuracy-1],
+					val_max_moves,
+					val_min_moves,
+					max_candies.getSelectedIndex(),
+					min_candies.getSelectedIndex(),
+					jelly_density.getValue(),
+					icing_density.getValue(),
+					lock_density.getValue()				
+							));
 	    	InterfaceManager.switchScreen(Windows.REQUESTING);
+			break;
+		case "max move"://set the min if larger
+			move_to_text = max_moves.getValue().toString();
+			val_max_moves = Integer.parseInt(move_to_text);
+			if(val_min_moves>val_max_moves)
+				min_moves.setValue(max_moves.getValue());
+			break;
+		case "min move"://set the max if smaller
+			move_to_text = min_moves.getValue().toString();
+			val_min_moves = Integer.parseInt(move_to_text);
+			if(val_min_moves>val_max_moves)
+				max_moves.setValue(min_moves.getValue());
+			break;
+		case "max candy"://set the min if larger
+			if(min_candies.getSelectedIndex()>max_candies.getSelectedIndex())
+				min_candies.setSelectedItem(max_candies.getSelectedItem());
+			break;
+		case "min candy"://set the max if smaller
+			if(min_candies.getSelectedIndex()>max_candies.getSelectedIndex())
+				max_candies.setSelectedItem(min_candies.getSelectedItem());
 			break;
 		}
 	}

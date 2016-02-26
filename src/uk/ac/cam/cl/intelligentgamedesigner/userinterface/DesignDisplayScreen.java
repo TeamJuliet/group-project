@@ -137,7 +137,7 @@ public class DesignDisplayScreen extends DisplayScreen{
 		ai_strength.setPaintTicks(true);
 		ai_strength.setPaintLabels(true);
 
-		analyse.setToolTipText("Runs the simulated players on the level");
+		analyse.setToolTipText("Runs the selected simulated player on the level");
 		analyse.setActionCommand("analyse");
 		analyse.addActionListener(this);
 	}
@@ -181,11 +181,11 @@ public class DesignDisplayScreen extends DisplayScreen{
 		buttons.add(getSpace());
 		buttons.add(watch_level);
 		buttons.add(getSpace());
+		buttons.add(analyse);
+		buttons.add(getSpace());
 		buttons.add(save_level);
 		buttons.add(getSpace());
 		buttons.add(edit_level);
-		buttons.add(getSpace());
-		buttons.add(analyse);
 		buttons.add(getSpace());
 		
 		//add everything to the scene
