@@ -16,7 +16,7 @@ public class RoundStatisticsManager {
 	static final String location = System.getProperty("user.dir") + File.separator + "round_statistics" + File.separator;
 	static final String suffix = ".rs";
 
-    public static File createLocalFile (String fileName) throws IOException {
+    private static File createLocalFile (String fileName) throws IOException {
         File unitTestDirectory = new File(location);
 
         // Create unit test directory if it doesn't already exist
@@ -37,10 +37,16 @@ public class RoundStatisticsManager {
     }
 
 	static String latest_name;
+    /**
+	 *  
+     *            Creates a named saved RoundStatistics ArrayList.
+     *            This returns the name it finds for the file, for interface purposes.
+     *            the GameMode and boolean are required for name formation
+     */
     public static String saveStats (ArrayList<RoundStatistics> stats, GameMode mode, boolean human_player) {
 
         try {
-        	String partOfName = //e.g. highscore_human_1.lv
+        	String partOfName = //e.g. highscore_human_1.rs
         			(mode==GameMode.HIGHSCORE)?"highscore":((mode==GameMode.JELLY)?"jelly":"ingredients") +
         			(human_player?"_human_":"_simulated_");
             File statsFile = createLocalFile(partOfName);//updates latest name too
@@ -59,7 +65,14 @@ public class RoundStatisticsManager {
             return null;
         }
     }
-    
+
+    /**
+	 *  
+     *            Give the name for a .rs file (without the .rs).
+     *            It returns the saved ArrayList<RoundStatistics>
+     *            the file name will be (highscore/jelly/ingredients)_(human/simulated)_X
+     *            select from the above. X will be a number starting from 1.
+     */
     public static ArrayList<RoundStatistics> getStats (String name) {
         try {
             File statsFile = new File(location + name + suffix);

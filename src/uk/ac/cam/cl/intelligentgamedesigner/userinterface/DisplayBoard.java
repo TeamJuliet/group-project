@@ -186,7 +186,7 @@ public class DisplayBoard extends JComponent {
 	}
 
 	//drawing the screen
-	protected void draw_textured_cell(int x, int y, Graphics g, int candy_x_loc, int candy_y_loc){
+	protected void draw_textured_cell(int x, int y, Graphics g, int candy_x_loc, int candy_y_loc, double[][] scale){
 		BufferedImage item = null;
 		
 		//before the candy
@@ -233,7 +233,10 @@ public class DisplayBoard extends JComponent {
 			g.drawImage(objective_piece[jl], x*tile_size, y*tile_size, (x+1)*tile_size, (y+1)*tile_size, 0, 0, image_size, image_size, null);
 		}
 		
-		if(item != null)g.drawImage(item, candy_x_loc, candy_y_loc, candy_x_loc+tile_size, candy_y_loc+tile_size, 0, 0, image_size, image_size, null);
+		//draw the candy itself
+		int centralise_offset = 0;
+		if(scale != null && scale[x][y]>=0)centralise_offset = (int)((1-scale[x][y])*tile_size/2);
+		if(item != null)g.drawImage(item, candy_x_loc+centralise_offset, candy_y_loc+centralise_offset, candy_x_loc+tile_size-centralise_offset, candy_y_loc+tile_size-centralise_offset, 0, 0, image_size, image_size, null);
 		
 		//after the candy
 		switch(board[x][y].getCellType()){
@@ -357,7 +360,7 @@ public class DisplayBoard extends JComponent {
 	public void paint(Graphics g){
 		for(int x=0;x<width;x++){
 			for(int y=0;y<height;y++){
-				if(using_textures)draw_textured_cell(x,y,g,x*tile_size,y*tile_size);
+				if(using_textures)draw_textured_cell(x,y,g,x*tile_size,y*tile_size,null);
 				else draw_cell(x,y,g);
 			}
 		}

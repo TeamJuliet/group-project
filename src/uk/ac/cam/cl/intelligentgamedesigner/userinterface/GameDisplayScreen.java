@@ -63,6 +63,8 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 	protected void giveInfo(Design level){
 		this.level = level;
 		this.theBoard = level.getBoard();
+		board.setOffsets(new Dimension[level.getWidth()][level.getHeight()]);
+		board.setResize(null);
 		this.objective = level.getObjectiveTarget();
 		this.moves_left = level.getNumberOfMovesAvailable();
 		this.game_mode = level.getMode();
