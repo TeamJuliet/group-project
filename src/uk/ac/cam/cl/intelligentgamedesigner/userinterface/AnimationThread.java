@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import javax.swing.SwingWorker;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
@@ -23,7 +24,8 @@ public class AnimationThread extends SwingWorker{
 	public static final int CLEAR_SPEED = 10;
 	public static final int SHUFFLE_SPEED = 12;
 	public static final double DISTANCE_PER_SLEEP = 0.1;//in fractions of a tilesize
-	public static final int PHASE_SWITCH_SLEEP = 150;
+	public static final int PHASE_SWITCH_SLEEP = 20;
+	public static final int SHUFFLE_SLEEP = 200;
 	
 	private GameState theGame;
 	private Move move;
@@ -97,28 +99,19 @@ public class AnimationThread extends SwingWorker{
 			
 			
 			case MATCH_AND_REPLACE:// Stage where matches occur and the cells that matched are emptied.
+			case DETONATE_PENDING:// Detonate the special candies that were triggered in the first stage.
+			case PASSING_INGREDIENTS:// Pass the ingredients that can be passed through the ingredient sinks.
 				animateClear(old_game);
 				break;
 			case SHUFFLE:// The board is shuffled if there are no moves to be made, until there are.
 				animateShuffle(old_game,candy_offsets);
 				break;
-//			case DETONATE_PENDING:// Detonate the special candies that were triggered in the first stage.
-//				break;
-//			case BRING_DOWN_CANDIES:// Bring down the candies to the fillable positions on the board.
-//				break;
-//			case PASSING_INGREDIENTS:// Pass the ingredients that can be passed through the ingredient sinks.
-//				break;
-//			case FILL_BOARD:// Fill the empty cells on the board that are not blocked by blocker candies.
-//		    	break;
-			case AWAITING_MOVE:// The game state is awaiting a move.
-				break;
+			case BRING_DOWN_CANDIES:// Bring down the candies to the fillable positions on the board.
+			case FILL_BOARD:// Fill the empty cells on the board that are not blocked by blocker candies.
+				animateFall(old_game,candy_offsets);
+		    	break;
 			case MAKING_SWAP:// two candies are swapped
 				animateSwap(candy_offsets);
-				break;
-				default:
-					board.clear_offsets();
-					board.setBoard(theGame.getBoard());
-					Thread.sleep(PHASE_SWITCH_SLEEP);
 				break;
 			}
 		} catch(ArrayIndexOutOfBoundsException e){
@@ -130,7 +123,6 @@ public class AnimationThread extends SwingWorker{
 		Thread.sleep(50);
 		board.setBoard(old_game);
 		board.repaint();
-		Thread.sleep(PHASE_SWITCH_SLEEP);
 		//find the cells to animate
 		Cell[][] current = theGame.getBoard();
 		double[][] scales = new double[board.width][board.height];
@@ -177,10 +169,10 @@ public class AnimationThread extends SwingWorker{
 			board.repaint();
 			Thread.sleep(SHUFFLE_SPEED);
 		}
-		Thread.sleep(PHASE_SWITCH_SLEEP);
+		Thread.sleep(SHUFFLE_SLEEP);
 		board.setBoard(theGame.getBoard());
 		CandyManipulator.converge(candy_offsets,0,new Dimension((board.width-1)*board.tile_size/2,(board.height-1)*board.tile_size/2),board.tile_size);
-		Thread.sleep(100);
+		Thread.sleep(SHUFFLE_SLEEP);
 		while(!CandyManipulator.decrement(candy_offsets,DISTANCE_PER_SLEEP,board.tile_size)){
 			board.setOffsets(candy_offsets);
 			board.repaint();
@@ -201,6 +193,46 @@ public class AnimationThread extends SwingWorker{
 			Thread.sleep(SWAP_SPEED);
 		}
 		Thread.sleep(PHASE_SWITCH_SLEEP);
+	}
+	
+	private void animateFall(Cell[][] old_game, Dimension[][] candy_offsets) throws InterruptedException{
+		//Thread.sleep(50);
+		//board.setBoard(theGame.getBoard());
+		//board.repaint();
+		//Thread.sleep(PHASE_SWITCH_SLEEP);
+
+		Cell[][] current = copyBoard(theGame.getBoard());
+		boolean made_special = false;
+		for(int x=0;x<board.width;x++){
+			for(int y=board.height-1;y>=0;y--){
+				candy_offsets[x][y] = new Dimension(0,0);
+				if(!current[x][y].equals(old_game[x][y]) && old_game[x][y].getCellType() == CellType.EMPTY){//if something fell here
+					candy_offsets[x][y].height = -findSourceYAbove(x,y,old_game,current)*board.tile_size;
+					System.out.println(x);
+				}
+			}
+		}
+		CandyManipulator.bumpUp(candy_offsets,board.tile_size);
+
+		board.setOffsets(candy_offsets);
+		board.repaint();
+		while(!CandyManipulator.decrement(candy_offsets,DISTANCE_PER_SLEEP,board.tile_size)){
+			board.setOffsets(candy_offsets);
+			board.repaint();
+			Thread.sleep(FALL_SPEED);
+		}
+		board.clear_offsets();
+		Thread.sleep(PHASE_SWITCH_SLEEP);
+	}
+	
+	private int findSourceYAbove(int x, int y, Cell[][] before, Cell[][] after){
+		if(y==0)return 1;
+		int height = 0;
+		while(before[x][y-height].getCellType()==CellType.EMPTY){
+			if(y-height==0)break;
+			height++;
+		}
+		return height;
 	}
 
 	private void update() {
