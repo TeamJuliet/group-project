@@ -305,6 +305,35 @@ public class ConstraintChecker {
     	System.out.println("");
 	}
 	
+	public static double edgeFitness(CandyBoard board) {
+		int total = 0;
+		
+		int tDist = 0;
+		
+		for(int i = 0; i < board.width; i++) {
+			for(int j = 0; j < board.height; j++) {
+				if(board.getCellType(i, j) == DesignCellType.UNUSABLE) {
+					total++;
+					
+					int id = i - (board.width/2);
+					int jd = j - (board.height/2);
+					
+					tDist += Math.sqrt((id*id) + (jd*jd));
+				}
+			}
+		}
+		
+		if(total == 0) {
+			return 0.1;
+		}
+		
+		if(tDist == 0) {
+			return 0.1;
+		}
+		
+		return Math.pow((tDist / (total * (board.width / 2))),2);
+	}
+	
 	public static double matchFitness(DesignBoard board, CandyBoard bBoard) {
 		double factor = 1.0;
 		
@@ -319,11 +348,11 @@ public class ConstraintChecker {
         	PeakFunction pFunMatches = new PeakFunction(1.3, 1, 0, 4, 0.5, 0.8);
     		
     		factor *= pFunMatches.get(threeMatchBoard.getTotal() / bBoard.getCount());
+    		
+        	PeakFunction pFunFiveCount = new PeakFunction(3,1,0,10,0.1,0.6);
+        	
+        	factor *= pFunFiveCount.get(fiveMatchBoard.getTotal() / bBoard.getCount());
     	}
-    	
-    	PeakFunction pFunFiveCount = new PeakFunction(5,1,0,30,0.4, 0.9);
-    	
-    	factor *= pFunFiveCount.get(fiveMatchBoard.getTotal());
     	
     	factor *= icingMatchFitness(bBoard,threeMatchBoard);
     	
@@ -385,20 +414,27 @@ public class ConstraintChecker {
 		int totalColumnUnders = 0;
 		
 		for(int i = 0;  i < board.width; i++) {
+			int currentColumn = 0;
+			
 			boolean isColumn = false;
 			for(int j = 0; j < board.height; j++) {
 				isColumn = isColumn || columns.get(i, j);
 				if(isColumn && board.get(i, j)) {
 					totalColumnUnders++;
+					currentColumn++;
+					if(currentColumn > 1) {
+						totalColumnUnders += 1;
+					}
 				}
+				
 			}
 		}
 		
 		if(board.getCount() == 0) {
-			return 1.0;
+			return 0.0;
 		}
 		
-		return (double) totalColumnUnders / board.getCount();
+		return (double) totalColumnUnders / (2 * board.getCount());
 	}
 	
 	public static double columnFitness(DesignBoard board) {
@@ -406,7 +442,7 @@ public class ConstraintChecker {
 		
 		ILBoard ilBoard = new ILBoard(board);
 		
-		PeakFunction pFun = new PeakFunction(0.3,1,0,1,0.1,0.1);
+		PeakFunction pFun = new PeakFunction(0.2,1,0,1,0.8,0.5);
 		
 		return pFun.get(boardColumnProportion(ileBoard,ilBoard));
 	}
@@ -445,12 +481,8 @@ public class ConstraintChecker {
     	
     	factor *= matchFitness(board, bBoard);
     	
-    	double col = columnFitness(board);
-    	
-    	factor = (factor * col) + col;
-    	
-    	factor /= 2;
-    	
+    	factor *= columnFitness(board);
+
     	factor *= boardExtentFitness(bBoard);
     	
     	factor *= connectedAreaFitness(board,bBoard);

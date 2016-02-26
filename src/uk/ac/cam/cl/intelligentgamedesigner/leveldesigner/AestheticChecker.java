@@ -22,7 +22,7 @@ public class AestheticChecker {
 		double[][] distributionDesired = new double[counts.length][2];
 		
 		distributionDesired[0][0] = 0.2;
-		distributionDesired[0][1] = 0.7;
+		distributionDesired[0][1] = 0.5;
 		
 		distributionDesired[1][0] = 0.4;
 		distributionDesired[1][1] = 1.0;
@@ -60,18 +60,53 @@ public class AestheticChecker {
 	}
 	
 	private static double calculateSymmetryScore(DesignBoard board) {
-		int maxX = board.width / 2;
-    	int score = 0;
-    	for (int x = 0; x < maxX; x++) {
+    	int vertScore = 0;
+    	for (int x = 0; x < (board.width / 2); x++) {
     		for (int y = 0; y < board.height; y++) {
     			DesignCellType t1 = board.get(x, y).getDesignCellType();
     			DesignCellType t2 = board.get(board.width - x - 1, y).getDesignCellType();
     			if (t1 == t2) {
-    				score++;
+    				vertScore++;
     			}
     		}
     	}
-    	return score / (double) (maxX * board.height);
+    	
+    	double vert = 1.05 * Math.pow(vertScore / (double) ((board.width * board.height) / 2),2);
+    	
+    	int diagScore = 0;
+    	for(int j = 0; j < board.height; j++)
+    	{
+	    	for(int i = 0; i < j; i++) {
+	    		DesignCellType t1 = board.get(i, j).getDesignCellType();
+    			DesignCellType t2 = board.get(j, i).getDesignCellType();
+    			if (t1 == t2) {
+    				diagScore++;
+    			}
+	    	}
+    	}
+    	
+    	double diag = Math.pow(diagScore / (double) ((board.width * board.height) / 2),2);
+    	
+    	int invertDiagScore = 0;
+    	for(int j = 0; j < board.height; j++)
+    	{
+	    	for(int i = 0; i < board.height - (j + 1); i++) {
+	    		DesignCellType t1 = board.get(i, j).getDesignCellType();
+    			DesignCellType t2 = board.get(board.height - (j + 1), board.width - (i + 1)).getDesignCellType();
+    			if (t1 == t2) {
+    				invertDiagScore++;
+    			}
+	    	}
+    	}
+    	
+    	
+    	double invertDiag = Math.pow(invertDiagScore / (double) ((board.width * board.height) / 2),2);
+    	
+    	if(invertDiag > 0.3 && diag > 0.3) {
+    		return invertDiag * diag;
+    	}
+    	
+    	return Math.max(Math.max(vert, diag),invertDiag);
 	}
 	
 	private static double calculateCentralDistance(DesignBoard board)
