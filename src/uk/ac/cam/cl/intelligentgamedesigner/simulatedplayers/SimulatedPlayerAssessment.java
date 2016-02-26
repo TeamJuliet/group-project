@@ -274,11 +274,12 @@ public class SimulatedPlayerAssessment {
         List<SimulatedPlayerBase> players = new LinkedList<SimulatedPlayerBase>();
         players.add(new ScorePlayerAlpha());
         players.add(new ScorePlayerBeta());
+        players.add(new RuleBasedJellyPlayer());
 
         Design design = SimulatedPlayersTestHelpers.getBoardWithBlockersDesign();
         design.setGameMode(GameMode.HIGHSCORE);
         design.setObjectiveTarget(1800);
-        design.setNumberOfMovesAvailable(10);
+        design.setNumberOfMovesAvailable(16);
 
         final int numberOfGamesToRun = 10;
 
