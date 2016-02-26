@@ -183,6 +183,7 @@ public class AnimationThread extends SwingWorker{
 	}
 	
 	private void animateSwap(Dimension[][] candy_offsets) throws InterruptedException{
+		board.setMoveLoc(new Dimension(move.p2.x,move.p2.y));
 		candy_offsets[move.p1.x][move.p1.y] = new Dimension(
 				board.tile_size * (move.p2.x - move.p1.x),board.tile_size * (move.p2.y - move.p1.y));
 		candy_offsets[move.p2.x][move.p2.y] = new Dimension(
@@ -193,14 +194,10 @@ public class AnimationThread extends SwingWorker{
 			Thread.sleep(SWAP_SPEED);
 		}
 		Thread.sleep(PHASE_SWITCH_SLEEP);
+		board.setMoveLoc(null);
 	}
 	
 	private void animateFall(Cell[][] old_game, Dimension[][] candy_offsets) throws InterruptedException{
-		//Thread.sleep(50);
-		//board.setBoard(theGame.getBoard());
-		//board.repaint();
-		//Thread.sleep(PHASE_SWITCH_SLEEP);
-
 		Cell[][] current = copyBoard(theGame.getBoard());
 		boolean made_special = false;
 		for(int x=0;x<board.width;x++){

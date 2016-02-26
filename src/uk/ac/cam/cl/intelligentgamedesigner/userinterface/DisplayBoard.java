@@ -237,7 +237,7 @@ public class DisplayBoard extends JComponent {
 		int centralise_offset = 0;
 		if(scale != null && scale[x][y]>=0)centralise_offset = (int)((1-scale[x][y])*tile_size/2);
 		if(item != null)g.drawImage(item, candy_x_loc+centralise_offset, candy_y_loc+centralise_offset, candy_x_loc+tile_size-centralise_offset, candy_y_loc+tile_size-centralise_offset, 0, 0, image_size, image_size, null);
-		
+				
 		//after the candy
 		switch(board[x][y].getCellType()){
 		case DONT_CARE:

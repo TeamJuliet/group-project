@@ -42,7 +42,12 @@ public class GameBoard extends DisplayBoard{
 	
 	
 
-
+	//if there is a move, draw the selected one above
+	protected Dimension move_loc;
+	public void setMoveLoc(Dimension move_loc){
+		this.move_loc = move_loc;
+	}
+	
 	//drawing the screen, with animations!
 	@Override
 	public void paint(Graphics g){
@@ -60,6 +65,16 @@ public class GameBoard extends DisplayBoard{
 				}
 			}
 		}
+		if(move_loc != null)redrawCandy(move_loc.width,move_loc.height,g);
+	}
+	protected void redrawCandy(int x, int y, Graphics g){
+		int x_loc = x*tile_size;
+		int y_loc = y*tile_size;
+		if(candy_offsets != null && candy_offsets[x][y] != null){
+			x_loc += candy_offsets[x][y].width;
+			y_loc += candy_offsets[x][y].height;
+		}
+		draw_textured_cell(x,y,g,x_loc,y_loc,scale_factors);
 	}
 	
 }
