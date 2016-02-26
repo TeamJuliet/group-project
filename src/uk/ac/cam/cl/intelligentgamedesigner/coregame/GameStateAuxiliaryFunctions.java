@@ -71,7 +71,7 @@ public class GameStateAuxiliaryFunctions {
 	}
 
 	/**
-	 * This places an ingredient at random in the top half of a game board
+	 * This places an ingredient at random in the top 3/10ths of a game board
 	 *
 	 * @param board	The board to place the ingredient on
      */
@@ -92,7 +92,8 @@ public class GameStateAuxiliaryFunctions {
 		}
 
 		if (possibles.size() > 0) {
-			int range = possibles.size() / 2;
+			// Place the ingredient in the top 3/10ths of the replaceable part of the board
+			int range = (int) (possibles.size() * 0.3);
 			Random random = new Random();
 			Position replacePosition = possibles.get(random.nextInt(range));
 
