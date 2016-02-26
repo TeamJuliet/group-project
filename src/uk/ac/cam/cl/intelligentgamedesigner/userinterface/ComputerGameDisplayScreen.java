@@ -133,6 +133,14 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen {
         // set the locations
         position(controls, 0.75, 0.32, 300, 160);
     }
+    
+    @Override
+    protected void setButtons(boolean visible){
+    	visible = visible & !auto_playing;
+		next_move.setEnabled(!auto_playing);
+	    solve.setEnabled(!auto_playing);
+		quit_button.setEnabled(!auto_playing);
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -142,8 +150,7 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen {
 
         case "mode":
             auto_playing = auto_play.isSelected();
-            next_move.setEnabled(!auto_playing);
-            quit_button.setEnabled(!auto_playing);
+            setButtons(!auto_playing);
             if (auto_playing) {
                 timer.setDelay(waitspeed);
                 timer.start();
