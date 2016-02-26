@@ -4,6 +4,7 @@ import java.awt.Dimension;
 
 import javax.swing.SwingWorker;
 
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.CandyType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
@@ -46,7 +47,8 @@ public class AnimationThread extends SwingWorker{
 				board.setAnimating(true);
 				Cell[][] board_before = copyBoard(theGame.getBoard());
 				theGame.makeInitialMove(move);
-				animate(ProcessState.MAKING_SWAP,board_before,new Object[]{move});
+				if(notBomb(board_before,move))animate(ProcessState.MAKING_SWAP,board_before,new Object[]{move});
+				if(wasMatchNotMove(board_before,move))animate(ProcessState.DETONATE_PENDING,board_before,null);
 				board_before = copyBoard(theGame.getBoard());
 				
 				//variables for the shuffle needed check.
@@ -125,7 +127,6 @@ public class AnimationThread extends SwingWorker{
 			Dimension[][] candy_offsets = new Dimension[old_game.length][old_game[0].length];
 			switch(gameState){
 			
-			
 			case MATCH_AND_REPLACE:// Stage where matches occur and the cells that matched are emptied.
 			case DETONATE_PENDING:// Detonate the special candies that were triggered in the first stage.
 			case PASSING_INGREDIENTS:// Pass the ingredients that can be passed through the ingredient sinks.
@@ -158,6 +159,24 @@ public class AnimationThread extends SwingWorker{
 		}
 		return false;
 	}
+	private boolean wasMatchNotMove(Cell[][] old_game, Move move){
+		Cell[][] current = theGame.getBoard();
+		for(int x=0;x<board.width;x++){
+			for(int y=0;y<board.height;y++){
+				if(!current[x][y].equals(old_game[x][y])){//if newly cleared
+					if((x != move.p1.x || y != move.p1.y) && (x != move.p2.x || y != move.p2.y))
+						return true;
+				}
+			}
+		}
+		return false;
+	}
+	private boolean notBomb(Cell[][] old_game, Move move){
+		return (old_game[move.p1.x][move.p1.y].getCandy().getCandyType() != CandyType.BOMB &&
+				old_game[move.p2.x][move.p2.y].getCandy().getCandyType() != CandyType.BOMB);
+	}
+
+	
 	private void animateClear(Cell[][] old_game) throws InterruptedException{
 		Thread.sleep(50);
 		board.setBoard(old_game);
@@ -171,6 +190,8 @@ public class AnimationThread extends SwingWorker{
 			for(int y=0;y<board.height;y++){
 				scales[x][y] = -1;
 				scales2[x][y] = -1;
+				if(old_game[x][y].getCandy() != null && old_game[x][y].getCandy().getCandyType() == CandyType.INGREDIENT)
+					System.out.println("daddy I found one");
 				if(!current[x][y].equals(old_game[x][y])){//if newly cleared
 					if(//replace old with new
 							current[x][y].hasCandy() ||//if formed special candy
@@ -252,7 +273,7 @@ public class AnimationThread extends SwingWorker{
 				}
 			}
 		}
-		CandyManipulator.bumpUp(candy_offsets,board.tile_size,old_game);
+		CandyManipulator.bumpUp(candy_offsets,old_game);
 
 		board.setOffsets(candy_offsets);
 		board.repaint();
