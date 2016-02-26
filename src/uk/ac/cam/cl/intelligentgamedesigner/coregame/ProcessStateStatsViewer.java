@@ -5,6 +5,7 @@ import java.io.Serializable;
 /**
  * 
  * Immutable version of the class ProcessStateStats. 
+ * See ProcessStateStats for more information.
  *
  */
 public class ProcessStateStatsViewer implements Serializable {

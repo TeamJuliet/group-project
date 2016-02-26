@@ -9,13 +9,6 @@ import java.util.Random;
  */
 public class RandomCandyGenerator extends CandyGenerator {
 	
-	/**
-	 * Constructor using the level design and the progress of the game state.
-	 */
-	public RandomCandyGenerator() {
-		super();
-	}
-
 	@Override
 	public Candy generateCandy(int x) {
 		Random random = new Random();
