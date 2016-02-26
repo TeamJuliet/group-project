@@ -969,7 +969,7 @@ public class GameState implements Serializable {
         int[] prev = new int[width];
         for (int i = 0; i < width; ++i) prev[i] = height;
         for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
+            for (int y = height - 1; y >= 0; --y) {
                 Cell cell = board[x][y];
                 if (cell.isFillable()) {
 
