@@ -17,7 +17,7 @@ public class SimulatedPlayerManager {
         SimulatedPlayerBase player;
         int lookAhead = 0;
         int poolSize = 0;
-        boolean dimitris = false; // TODO: find better name
+        boolean dimitris = false; // TODO: integrate the players in properly
         switch (ability) {
         case 1:
             player = new ScorePlayerBeta();
@@ -29,27 +29,27 @@ public class SimulatedPlayerManager {
                 break;
         case 2:
             lookAhead = 1;
-            poolSize = 8;
+            poolSize = 7;
             break;
         case 3:
             lookAhead = 1;
-            poolSize = 16;
+            poolSize = 15;
             break;
         case 4:
             lookAhead = 2;
-            poolSize = 8;
+            poolSize = 7;
             break;
         case 5:
             lookAhead = 2;
-            poolSize = 16;
+            poolSize = 15;
             break;
         case 6:
             lookAhead = 3;
-            poolSize = 8;
+            poolSize = 7;
             break;
         case 7:
             lookAhead = 3;
-            poolSize = 16;
+            poolSize = 15;
             break;
         default:
             player = new ScorePlayerAlpha();

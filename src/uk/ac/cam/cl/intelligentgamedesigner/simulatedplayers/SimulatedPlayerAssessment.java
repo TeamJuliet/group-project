@@ -20,286 +20,269 @@ import uk.ac.cam.cl.intelligentgamedesigner.testing.SimulatedPlayersTestHelpers;
  */
 public class SimulatedPlayerAssessment {
 
-	/**
-	 * Scalar that determines by how much the level of the player should be
-	 * affected by the margin he /she won or lost the game.
-	 */
-	private static final double PERCENTAGE_BOOST = 0.05;
+    /**
+     * Scalar that determines by how much the level of the player should be
+     * affected by the margin he /she won or lost the game.
+     */
+    private static final double PERCENTAGE_BOOST = 0.05;
 
-	private static final int INF_ATTEMPTS = 10000;
+    private static final int    INF_ATTEMPTS     = 10000;
 
-	/**
-	 * Evaluates a list of score players given a design.
-	 * 
-	 * @param design
-	 *            The design of the level
-	 * @param players
-	 *            The players that will be evaluated.
-	 * @param gamesToRun
-	 *            The number of games that each player will try.
-	 * @return A list containing the respective percentage scores.
-	 */
-	public static List<Double> evaluateScorePlayers(Design design,
-			List<SimulatedPlayerBase> players, int gamesToRun) {
+    /**
+     * Evaluates a list of score players given a design.
+     * 
+     * @param design
+     *            The design of the level
+     * @param players
+     *            The players that will be evaluated.
+     * @param gamesToRun
+     *            The number of games that each player will try.
+     * @return A list containing the respective percentage scores.
+     */
+    public static List<Double> evaluateScorePlayers(Design design, List<SimulatedPlayerBase> players, int gamesToRun) {
 
-		List<PlayerAssessmentRecord> records = new LinkedList<PlayerAssessmentRecord>();
-		for (SimulatedPlayerBase player : players) {
-			List<GameStateProgress> progressRecords = getGameStateProgressList(
-					player, design, gamesToRun);
-			records.add(getScorePlayerAssessmentRecord(progressRecords, design));
-		}
+        List<PlayerAssessmentRecord> records = new LinkedList<PlayerAssessmentRecord>();
+        for (SimulatedPlayerBase player : players) {
+            List<GameStateProgress> progressRecords = getGameStateProgressList(player, design, gamesToRun);
+            records.add(getScorePlayerAssessmentRecord(progressRecords, design));
+        }
 
-		List<Double> ret = new LinkedList<Double>();
-		for (PlayerAssessmentRecord record : records) {
-			ret.add(getScorePlayerAssessment(record, records));
-		}
-		return ret;
-	}
-	
-	/**
-	 * Function that returns the average of a list of values. If the list does
-	 * not have any elements then the mean value returned is 0.
-	 * 
-	 * @param values
-	 *            The list of values that the average needs to be taken.
-	 * @return The average of the values in the list.
-	 */
-	public static double getAverage(List<Double> values) {
-		if (values.isEmpty())
-			return 0.0;
-		double sum = 0.0;
-		for (Double value : values) {
-			sum += value;
-		}
-		return sum / ((double) values.size());
-	}
+        List<Double> ret = new LinkedList<Double>();
+        for (PlayerAssessmentRecord record : records) {
+            ret.add(getScorePlayerAssessment(record, records));
+        }
+        return ret;
+    }
 
-	/**
-	 * Function that finds an estimate for the standard deviation of the values
-	 * in the given list.
-	 * 
-	 * @param values
-	 *            The list of values for which the estimate for s.d. will be
-	 *            found.
-	 * @return The s.d. estimate
-	 */
-	public static double getStandardDeviationEstimate(List<Double> values) {
-		if (values.isEmpty() || values.size() == 1)
-			return 0.0;
+    /**
+     * Function that returns the average of a list of values. If the list does
+     * not have any elements then the mean value returned is 0.
+     * 
+     * @param values
+     *            The list of values that the average needs to be taken.
+     * @return The average of the values in the list.
+     */
+    public static double getAverage(List<Double> values) {
+        if (values.isEmpty())
+            return 0.0;
+        double sum = 0.0;
+        for (Double value : values) {
+            sum += value;
+        }
+        return sum / ((double) values.size());
+    }
 
-		double sum = 0.0;
-		double mean = getAverage(values);
+    /**
+     * Function that finds an estimate for the standard deviation of the values
+     * in the given list.
+     * 
+     * @param values
+     *            The list of values for which the estimate for s.d. will be
+     *            found.
+     * @return The s.d. estimate
+     */
+    public static double getStandardDeviationEstimate(List<Double> values) {
+        if (values.isEmpty() || values.size() == 1)
+            return 0.0;
 
-		for (Double value : values) {
-			sum += (value - mean) * (value - mean);
-		}
-		
-		return Math.sqrt(sum / ((double) values.size() - 1.0));
-	}
+        double sum = 0.0;
+        double mean = getAverage(values);
 
-	/**
-	 * Function that generates the percentage that indicates how well in the
-	 * given list of players the current player (of which the records have to be
-	 * provided) performed.
-	 * 
-	 * @param playerRecordsToAssess
-	 * @param otherPlayers
-	 *            The assessment records for the rest of the players.
-	 * @return A value between 0.0 and 1.0 indicating the relative position of
-	 *         the player in the rank.
-	 */
-	public static double getScorePlayerAssessment(
-			PlayerAssessmentRecord playerRecordsToAssess,
-			List<PlayerAssessmentRecord> otherPlayers) {
-		List<Double> movesMeans = extractAverageMovesRemaining(otherPlayers);
-		List<Double> scoreMeans = extractScoreToTarget(otherPlayers);
+        for (Double value : values) {
+            sum += (value - mean) * (value - mean);
+        }
 
-		double movesMean = getAverage(movesMeans);
-		double scoreMean = getAverage(scoreMeans);
+        return Math.sqrt(sum / ((double) values.size() - 1.0));
+    }
 
-		double movesSD = getStandardDeviationEstimate(movesMeans);
-		double scoreSD = getStandardDeviationEstimate(scoreMeans);
-		
-		double movesDelta = movesSD == 0.0 ? 0.0 : ( (playerRecordsToAssess.averageRemainingMoves - movesMean)
-				/ movesSD );
-		double scoreDelta = scoreSD == 0.0 ? 0.0 : ( (scoreMean - playerRecordsToAssess.normalizedAverageScore)
-				/ scoreSD );
+    /**
+     * Function that generates the percentage that indicates how well in the
+     * given list of players the current player (of which the records have to be
+     * provided) performed.
+     * 
+     * @param playerRecordsToAssess
+     * @param otherPlayers
+     *            The assessment records for the rest of the players.
+     * @return A value between 0.0 and 1.0 indicating the relative position of
+     *         the player in the rank.
+     */
+    public static double getScorePlayerAssessment(PlayerAssessmentRecord playerRecordsToAssess,
+            List<PlayerAssessmentRecord> otherPlayers) {
+        List<Double> movesMeans = extractAverageMovesRemaining(otherPlayers);
+        List<Double> scoreMeans = extractScoreToTarget(otherPlayers);
 
-		double averageGamesWon = playerRecordsToAssess.getAverageGamesWon();
-		double percentage = countSmallerMeans(averageGamesWon, otherPlayers);
+        double movesMean = getAverage(movesMeans);
+        double scoreMean = getAverage(scoreMeans);
 
-		return sanitizePercentage(percentage
-				+ PERCENTAGE_BOOST
-				* (averageGamesWon * movesDelta + scoreDelta
-						* (1.0 - averageGamesWon)));
-	}
+        double movesSD = getStandardDeviationEstimate(movesMeans);
+        double scoreSD = getStandardDeviationEstimate(scoreMeans);
 
-	/**
-	 * Function that returns the assessment for a player that played a game with
-	 * highscore objective.
-	 * 
-	 * @param progressRecords
-	 *            The records for each of the last rounds of the game.
-	 * @param design
-	 *            The design for the level that was created.
-	 * @return The assessment record for the player.
-	 */
-	public static PlayerAssessmentRecord getScorePlayerAssessmentRecord(
-			List<GameStateProgress> progressRecords, Design design) {
-		int sumMovesRemaining = 0;
-		int numOfGamesWon = 0;
-		int numOfGamesLost = 0;
-		double scoreToTarget = 0;
+        double movesDelta = movesSD == 0.0 ? 0.0
+                : ((playerRecordsToAssess.averageRemainingMoves - movesMean) / movesSD);
+        double scoreDelta = scoreSD == 0.0 ? 0.0
+                : ((scoreMean - playerRecordsToAssess.normalizedAverageScore) / scoreSD);
 
-		// Calculate the conversion rate for how many moves correspond to the
-		// score remaining.
-		final double averageMovesPerScore = design.getNumberOfMovesAvailable()
-				/ design.getObjectiveTarget();
+        double averageGamesWon = playerRecordsToAssess.getAverageGamesWon();
+        double percentage = countSmallerMeans(averageGamesWon, otherPlayers);
 
-		// Calculate the number of games won / lost and the sumof moves
-		// remaining for the games that were won and the total normalised score
-		// that was not reached.
-		for (GameStateProgress progress : progressRecords) {
-			if (progress.isGameWon(design)) {
-				sumMovesRemaining += progress.getMovesRemaining();
-				++numOfGamesWon;
-			} else {
-				scoreToTarget += averageMovesPerScore
-						* (design.getObjectiveTarget() - progress.getScore());
-				++numOfGamesLost;
-			}
-		}
+        return sanitizePercentage(
+                percentage + PERCENTAGE_BOOST * (averageGamesWon * movesDelta + scoreDelta * (1.0 - averageGamesWon)));
+    }
 
-		final double normalizedAverageScore = numOfGamesLost == 0 ? 0.0
-				: scoreToTarget / ((double) numOfGamesLost);
-		final double averageRemainingMoves = numOfGamesWon == 0 ? 0.0
-				: sumMovesRemaining / ((double) numOfGamesWon);
+    /**
+     * Function that returns the assessment for a player that played a game with
+     * highscore objective.
+     * 
+     * @param progressRecords
+     *            The records for each of the last rounds of the game.
+     * @param design
+     *            The design for the level that was created.
+     * @return The assessment record for the player.
+     */
+    public static PlayerAssessmentRecord getScorePlayerAssessmentRecord(List<GameStateProgress> progressRecords,
+            Design design) {
+        int sumMovesRemaining = 0;
+        int numOfGamesWon = 0;
+        int numOfGamesLost = 0;
+        double scoreToTarget = 0;
 
-		return new PlayerAssessmentRecord(numOfGamesWon, numOfGamesLost,
-				normalizedAverageScore, averageRemainingMoves);
-	}
+        // Calculate the conversion rate for how many moves correspond to the
+        // score remaining.
+        final double averageMovesPerScore = design.getNumberOfMovesAvailable() / design.getObjectiveTarget();
 
-	/**
-	 * Function that returns the deviation of attempts required to win the game.
-	 * 
-	 * @param assessment
-	 *            The assessment of the player.
-	 * @param stats
-	 *            The statistics for the general population.
-	 * @return The number of attempts difference in completing the level between
-	 *         these two.
-	 */
-	public static int compareToPopulation(PlayerAssessmentRecord assessment,
-			GroupPlayerStats stats) {
-		if (assessment.numOfGamesWon == 0)
-			return INF_ATTEMPTS;
-		int attemptsNeededForWin = (int) (1.0 / assessment.getAverageGamesWon());
-		int expectedAttempts = stats.getAverageAttemptsRequired();
-		return expectedAttempts - attemptsNeededForWin;
-	}
+        // Calculate the number of games won / lost and the sumof moves
+        // remaining for the games that were won and the total normalised score
+        // that was not reached.
+        for (GameStateProgress progress : progressRecords) {
+            if (progress.isGameWon(design)) {
+                sumMovesRemaining += progress.getMovesRemaining();
+                ++numOfGamesWon;
+            } else {
+                scoreToTarget += averageMovesPerScore * (design.getObjectiveTarget() - progress.getScore());
+                ++numOfGamesLost;
+            }
+        }
 
-	/**
-	 * Function that returns the game progress at the end of the level.
-	 * 
-	 * @param player
-	 *            The player that will be used to run.
-	 * @param gameState
-	 *            The game that it should play.
-	 * @return The game progress at the last state.
-	 */
-	public static GameStateProgress getGameStateProgress(
-			SimulatedPlayerBase player, GameState gameState) {
-		while (!gameState.isGameOver()) {
-			try {
-				Move move = player.calculateBestMove(gameState);
-				gameState.makeFullMove(move);
-			} catch (NoMovesFoundException | InvalidMoveException e) {
-				return null;
-			}
-		}
-		return new GameStateProgress(gameState.getGameProgress());
-	}
+        final double normalizedAverageScore = numOfGamesLost == 0 ? 0.0 : scoreToTarget / ((double) numOfGamesLost);
+        final double averageRemainingMoves = numOfGamesWon == 0 ? 0.0 : sumMovesRemaining / ((double) numOfGamesWon);
 
-	/**
-	 * Function that returns a progress list for a player playing a particular
-	 * level.
-	 * 
-	 * @param player
-	 *            The player to be run.
-	 * @param design
-	 *            The design used to create the level.
-	 * @param gamesToRun
-	 *            The game to be run.
-	 * @return
-	 */
-	public static List<GameStateProgress> getGameStateProgressList(
-			SimulatedPlayerBase player, Design design, int gamesToRun) {
-		List<GameStateProgress> progressList = new ArrayList<GameStateProgress>();
-		for (int i = 0; i < gamesToRun; ++i) {
-			progressList
-					.add(getGameStateProgress(player, new GameState(design)));
-		}
-		return progressList;
-	}
+        return new PlayerAssessmentRecord(numOfGamesWon, numOfGamesLost, normalizedAverageScore, averageRemainingMoves);
+    }
 
-	// Auxiliary function that extracts a list of doubles from a list of
-	// Assessment records by taking the field of averageRemainingMoves.
-	private static List<Double> extractAverageMovesRemaining(
-			List<PlayerAssessmentRecord> otherPlayers) {
-		List<Double> ret = new LinkedList<Double>();
-		for (PlayerAssessmentRecord record : otherPlayers) {
-			ret.add(record.averageRemainingMoves);
-		}
-		return ret;
-	}
+    /**
+     * Function that returns the deviation of attempts required to win the game.
+     * 
+     * @param assessment
+     *            The assessment of the player.
+     * @param stats
+     *            The statistics for the general population.
+     * @return The number of attempts difference in completing the level between
+     *         these two.
+     */
+    public static int compareToPopulation(PlayerAssessmentRecord assessment, GroupPlayerStats stats) {
+        if (assessment.numOfGamesWon == 0)
+            return INF_ATTEMPTS;
+        int attemptsNeededForWin = (int) (1.0 / assessment.getAverageGamesWon());
+        int expectedAttempts = stats.getAverageAttemptsRequired();
+        return expectedAttempts - attemptsNeededForWin;
+    }
 
-	// Auxiliary function that extracts a list of doubles from a list of
-	// Assessment records by taking the field of normalizedAverageScore.
-	private static List<Double> extractScoreToTarget(
-			List<PlayerAssessmentRecord> otherPlayers) {
-		List<Double> ret = new LinkedList<Double>();
-		for (PlayerAssessmentRecord record : otherPlayers) {
-			ret.add(record.normalizedAverageScore);
-		}
-		return ret;
-	}
+    /**
+     * Function that returns the game progress at the end of the level.
+     * 
+     * @param player
+     *            The player that will be used to run.
+     * @param gameState
+     *            The game that it should play.
+     * @return The game progress at the last state.
+     */
+    public static GameStateProgress getGameStateProgress(SimulatedPlayerBase player, GameState gameState) {
+        while (!gameState.isGameOver()) {
+            try {
+                Move move = player.calculateBestMove(gameState);
+                gameState.makeFullMove(move);
+            } catch (NoMovesFoundException | InvalidMoveException e) {
+                return null;
+            }
+        }
+        return new GameStateProgress(gameState.getGameProgress());
+    }
 
-	// Function that counts how many players have smaller winning percentage
-	// than the mean provided.
-	private static int countSmallerMeans(double meanGamesWon,
-			List<PlayerAssessmentRecord> otherPlayers) {
-		int count = 0;
-		for (PlayerAssessmentRecord record : otherPlayers) {
-			if (record.getAverageGamesWon() <= meanGamesWon)
-				++count;
-		}
-		return count;
-	}
+    /**
+     * Function that returns a progress list for a player playing a particular
+     * level.
+     * 
+     * @param player
+     *            The player to be run.
+     * @param design
+     *            The design used to create the level.
+     * @param gamesToRun
+     *            The game to be run.
+     * @return
+     */
+    public static List<GameStateProgress> getGameStateProgressList(SimulatedPlayerBase player, Design design,
+            int gamesToRun) {
+        List<GameStateProgress> progressList = new ArrayList<GameStateProgress>();
+        for (int i = 0; i < gamesToRun; ++i) {
+            progressList.add(getGameStateProgress(player, new GameState(design)));
+        }
+        return progressList;
+    }
 
-	// Simple function that does not allow the percentage to be negative or
-	// above 0.
-	private static double sanitizePercentage(double percentage) {
-		if (percentage < 0.0)
-			return 0.0;
-		if (percentage > 1.0)
-			return 1.0;
-		return percentage;
-	}
-	
-	public static void main(String[] Args) {
-		List<SimulatedPlayerBase> players = new LinkedList<SimulatedPlayerBase>();
-		players.add(new ScorePlayerAlpha());
-		players.add(new ScorePlayerBeta());
-		
-		Design design = SimulatedPlayersTestHelpers.getBoardWithBlockersDesign();
-		design.setGameMode(GameMode.HIGHSCORE);
-		design.setObjectiveTarget(1800);
-		design.setNumberOfMovesAvailable(10);
-		
-		final int numberOfGamesToRun = 10;
-		
-		System.out.println(evaluateScorePlayers(design, players, numberOfGamesToRun));
-		
-	}
+    // Auxiliary function that extracts a list of doubles from a list of
+    // Assessment records by taking the field of averageRemainingMoves.
+    private static List<Double> extractAverageMovesRemaining(List<PlayerAssessmentRecord> otherPlayers) {
+        List<Double> ret = new LinkedList<Double>();
+        for (PlayerAssessmentRecord record : otherPlayers) {
+            ret.add(record.averageRemainingMoves);
+        }
+        return ret;
+    }
 
+    // Auxiliary function that extracts a list of doubles from a list of
+    // Assessment records by taking the field of normalizedAverageScore.
+    private static List<Double> extractScoreToTarget(List<PlayerAssessmentRecord> otherPlayers) {
+        List<Double> ret = new LinkedList<Double>();
+        for (PlayerAssessmentRecord record : otherPlayers) {
+            ret.add(record.normalizedAverageScore);
+        }
+        return ret;
+    }
+
+    // Function that counts how many players have smaller winning percentage
+    // than the mean provided.
+    private static int countSmallerMeans(double meanGamesWon, List<PlayerAssessmentRecord> otherPlayers) {
+        int count = 0;
+        for (PlayerAssessmentRecord record : otherPlayers) {
+            if (record.getAverageGamesWon() <= meanGamesWon)
+                ++count;
+        }
+        return count;
+    }
+
+    // Simple function that does not allow the percentage to be negative or
+    // above 0.
+    private static double sanitizePercentage(double percentage) {
+        if (percentage < 0.0)
+            return 0.0;
+        if (percentage > 1.0)
+            return 1.0;
+        return percentage;
+    }
+
+    public static void main(String[] Args) {
+        List<SimulatedPlayerBase> players = new LinkedList<SimulatedPlayerBase>();
+        players.add(new ScorePlayerAlpha());
+        players.add(new ScorePlayerBeta());
+
+        Design design = SimulatedPlayersTestHelpers.getBoardWithBlockersDesign();
+        design.setGameMode(GameMode.HIGHSCORE);
+        design.setObjectiveTarget(1800);
+        design.setNumberOfMovesAvailable(10);
+
+        final int numberOfGamesToRun = 10;
+
+        System.out.println(evaluateScorePlayers(design, players, numberOfGamesToRun));
+
+    }
 }

@@ -7,6 +7,11 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.MatchAnalysis;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.UnmovableCandyGenerator;
 
+/**
+ * 
+ * Basic player, find the move that makes the longest match and make it.
+ *
+ */
 public class ScorePlayerBeta extends SimulatedPlayerBase {
 
     @Override
