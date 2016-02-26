@@ -60,6 +60,7 @@ public class AestheticChecker {
 	}
 	
 	private static double calculateSymmetryScore(DesignBoard board) {
+		
     	int vertScore = 0;
     	for (int x = 0; x < (board.width / 2); x++) {
     		for (int y = 0; y < board.height; y++) {
@@ -73,7 +74,7 @@ public class AestheticChecker {
     	
     	double vert = 1.05 * Math.pow(vertScore / (double) ((board.width * board.height) / 2),2);
     	
-    	int diagScore = 0;
+    	/*int diagScore = 0;
     	for(int j = 0; j < board.height; j++)
     	{
 	    	for(int i = 0; i < j; i++) {
@@ -106,7 +107,9 @@ public class AestheticChecker {
     		return invertDiag * diag;
     	}
     	
-    	return Math.max(Math.max(vert, diag),invertDiag);
+    	return Math.max(Math.max(vert, diag),invertDiag);*/
+    	
+    	return vert;
 	}
 	
 	private static double calculateCentralDistance(DesignBoard board)
@@ -145,7 +148,7 @@ public class AestheticChecker {
 		{
 			for(int j = 1; j < board.width - 1; j++)
 			{
-				DesignCellType t = board.get(i, j).getDesignCellType();
+				DesignCellType t = board.get(i, j).getDesignCellType(); 
 				
 				if(t != board.get(i, j + 1).getDesignCellType())
 				{
@@ -172,7 +175,7 @@ public class AestheticChecker {
 		return 1.0 - ((double)meh / (4 * board.width * board.height));
 	}
 	
-	public static double calculateJellyFitness(DesignBoard board) {
+	public static double calculateJellyFitness(DesignBoard board) {	
 		int maxX = board.width / 2;
     	int score = 0;
     	for (int x = 0; x < maxX; x++) {
