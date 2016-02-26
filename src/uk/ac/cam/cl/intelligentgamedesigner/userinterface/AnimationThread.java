@@ -42,34 +42,36 @@ public class AnimationThread extends SwingWorker{
 		try {
 			if(animated){
 				board.setAnimating(true);
-				Cell[][] old_game = copyBoard(theGame.getBoard());
+				Cell[][] board_before = copyBoard(theGame.getBoard());
 				theGame.makeInitialMove(move);
-				animate(ProcessState.MAKING_SWAP,old_game,new Object[]{move});
-				old_game = copyBoard(theGame.getBoard());
+				animate(ProcessState.MAKING_SWAP,board_before,new Object[]{move});
+				board_before = copyBoard(theGame.getBoard());
 				
 				//variables for the shuffle needed check.
 				boolean checkforshuffled = false;
 				boolean draw_step = true;
-				
+				ProcessState state = theGame.getCurrentProcessState();
 				while(theGame.makeSmallMove()) {
 					draw_step = true;
 					if(checkforshuffled){
-						if(theGame.getCurrentProcessState() == ProcessState.MATCH_AND_REPLACE)
-							animate(ProcessState.SHUFFLE,old_game,null);
+						if(state == ProcessState.MATCH_AND_REPLACE)
+							animate(ProcessState.SHUFFLE,board_before,null);
 						checkforshuffled = false;
 					}
-					if(theGame.getCurrentProcessState() == ProcessState.SHUFFLE){
+					if(state == ProcessState.SHUFFLE){
 						checkforshuffled = true;
 						draw_step = false;
 					}
 					//handle shuffling if needed
 					
 					if(draw_step){
-						animate(theGame.getCurrentProcessState(),old_game,null);
+						animate(state,board_before,null);
 						update();
-						old_game = copyBoard(theGame.getBoard());	
+						board_before = copyBoard(theGame.getBoard());	
 					}
+					state = theGame.getCurrentProcessState();
 				}
+				Thread.sleep(PHASE_SWITCH_SLEEP);
 			} else {
 				theGame.makeFullMove(move);
 				update();
@@ -132,12 +134,18 @@ public class AnimationThread extends SwingWorker{
 		//find the cells to animate
 		Cell[][] current = theGame.getBoard();
 		double[][] scales = new double[board.width][board.height];
+		double[][] scales2 = new double[board.width][board.height];
+		boolean made_special = false;
 		for(int x=0;x<board.width;x++){
 			for(int y=0;y<board.height;y++){
 				scales[x][y] = -1;
-				if(current[x][y].equals(old_game[x][y])){
+				scales2[x][y] = -1;
+				if(!current[x][y].equals(old_game[x][y])){//if newly cleared
+					if(current[x][y].hasCandy()){//if formed special candy
+						scales2[x][y] = DISTANCE_PER_SLEEP;
+						made_special = true;
+					}
 					scales[x][y] = 1;
-					System.out.println(x+", "+y);
 				}
 			}
 		}
@@ -146,8 +154,17 @@ public class AnimationThread extends SwingWorker{
 			board.repaint();
 			Thread.sleep(CLEAR_SPEED);
 		}
-		board.setResize(null);
 		Thread.sleep(PHASE_SWITCH_SLEEP);
+		board.setBoard(theGame.getBoard());
+		if(made_special){
+			board.setResize(scales2);
+			while(!CandyManipulator.expand(scales2,DISTANCE_PER_SLEEP)){
+				board.setResize(scales2);
+				board.repaint();
+				Thread.sleep(CLEAR_SPEED);
+			}
+		}
+		board.setResize(null);
 	}
 	
 	private void animateShuffle(Cell[][] old_game,Dimension[][]candy_offsets) throws InterruptedException{

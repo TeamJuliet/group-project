@@ -17,6 +17,19 @@ public class CandyManipulator {
 		}
 		return done;
 	}
+	public static boolean expand(double[][] sizes, double increment){
+		boolean done = true;
+		for(int x=0;x<sizes.length;x++){
+			for(int y=0;y<sizes[0].length;y++){
+				if(sizes[x][y]>0 && sizes[x][y]<1){
+					sizes[x][y]+=increment;
+					if(sizes[x][y]>1)sizes[x][y] = 1;
+					else done = false;
+				}
+			}
+		}
+		return done;
+	}
 	
 	
 //CANDY OFFSET

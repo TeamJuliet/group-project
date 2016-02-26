@@ -52,8 +52,7 @@ public class GameBoard extends DisplayBoard{
 				for(int y=0;y<height;y++){
 					int x_loc = x*tile_size;
 					int y_loc = y*tile_size;
-					if(candy_offsets != null && 
-							candy_offsets[x][y] != null){
+					if(candy_offsets != null && candy_offsets[x][y] != null){
 						x_loc += candy_offsets[x][y].width;
 						y_loc += candy_offsets[x][y].height;
 					}
