@@ -50,7 +50,10 @@ public class LevelDesigner implements Runnable {
 		}
     }
 
-	@Override
+    /**
+     * This is called by the LevelDesignerManager and runs the whole level generation process in a background thread.
+     */
+    @Override
     public void run() {
     	long startTime = System.currentTimeMillis();
     	
@@ -123,7 +126,16 @@ public class LevelDesigner implements Runnable {
 			}
 		}
 	}
-    
+
+    /**
+     * This performs a single iteration of the genetic algorithm. That is, taking the current population, and then
+     * performing cross-over and mutation to generate the next one.
+     *
+     * @param current           The current population
+     * @param numberToGenerate  The number of members that need to be generated
+     * @param newFeasible       The new feasible population
+     * @param newInfeasible     The new infeasible population
+     */
     private void iterate(List<LevelDesignIndividual> current,
 						 int numberToGenerate,
 						 List<LevelDesignIndividual> newFeasible,
@@ -177,15 +189,4 @@ public class LevelDesigner implements Runnable {
 			}
     	}
     }
-
-	public void printIndividuals() {
-		List<LevelDesignIndividual> population = new ArrayList<>(feasiblePopulation);
-		Collections.sort(population);
-		for (LevelDesignIndividual individual : population) {
-			DebugFilter.println("", DebugFilterKey.LEVEL_DESIGN);
-			((ArrayLevelRepresentation) individual.getLevelRepresentation()).printRepresentation();
-			DebugFilter.println("Fitness: " + individual.getFitness(), DebugFilterKey.LEVEL_DESIGN);
-		}
-	}
-
 }

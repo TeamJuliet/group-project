@@ -11,6 +11,11 @@ public class ArrayLevelRepresentationIngredients extends ArrayLevelRepresentatio
         super(random, numberOfCandyColours);
     }
 
+    /**
+     * This returns a design corresponding to the representation.
+     *
+     * @return The design
+     */
 	@Override
     public Design getDesign() {
     	Design design = super.getDesign();

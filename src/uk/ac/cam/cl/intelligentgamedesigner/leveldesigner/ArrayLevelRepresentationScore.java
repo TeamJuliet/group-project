@@ -10,7 +10,12 @@ public class ArrayLevelRepresentationScore extends ArrayLevelRepresentation {
     public ArrayLevelRepresentationScore(Random random, int numberOfCandyColours) {
         super(random, numberOfCandyColours);
     }
-    
+
+    /**
+     * This returns a design corresponding to the representation.
+     *
+     * @return The design
+     */
     @Override
     public Design getDesign() {
     	Design design = super.getDesign();
