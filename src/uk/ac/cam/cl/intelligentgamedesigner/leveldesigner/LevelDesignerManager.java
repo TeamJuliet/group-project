@@ -484,7 +484,7 @@ public class LevelDesignerManager extends SwingWorker {
      * @param abilityDistribution   The abilities of the simulated players to be run
      * @return                      The game statistics for all of the simulations
      */
-    private List<List<RoundStatistics>> runSimulations (Design design,
+    private static List<List<RoundStatistics>> runSimulations (Design design,
                                                             int[] abilityDistribution) {
         int numberOfSimulations = abilityDistribution.length;
         GameState[] gameStates = new GameState[numberOfSimulations];
@@ -512,5 +512,33 @@ public class LevelDesignerManager extends SwingWorker {
         }
 
         return gameStatistics;
+    }
+
+    // Given a design and a simulated player ability, this returns the proportion of players who passed the level
+    public static double calculatePassRate (int ability, Design design) {
+        int numberOfSimulations = 20 - (ability * 2);
+        int[] abilityDistribution = new int[numberOfSimulations];
+        for (int i = 0; i < numberOfSimulations; i++) abilityDistribution[i] = ability;
+
+        // Run the simulations
+        List<List<RoundStatistics>> gameStatistics = runSimulations(design, abilityDistribution);
+
+        // Calculate the number who passed
+        int numPassed = 0;
+        for (List<RoundStatistics> stats : gameStatistics) {
+            switch (design.getMode()) {
+                case HIGHSCORE:
+                    if (stats.get(stats.size() - 1).progress.score >= design.getObjectiveTarget()) numPassed++;
+                    break;
+                case JELLY:
+                    if (stats.get(stats.size() - 1).progress.jelliesRemaining == 0) numPassed++;
+                    break;
+                default:
+                    if (stats.get(stats.size() - 1).progress.ingredientsRemaining == 0) numPassed++;
+                    break;
+            }
+        }
+
+        return numPassed / (double) numberOfSimulations;
     }
 }
