@@ -8,7 +8,7 @@ public class DesignCell {
 
     private DesignCellType designCellType;
     private int jellyLevel;
-    
+
     // Constructor for creating a randomly initialised design cell type
     public DesignCell (LevelRepresentationParameters parameters, int jellyLevel) {
         // Create a cell with random cell type

@@ -5,7 +5,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 
 public class Specification {
        
-    private double targetDifficulty;
+    private double targetFailRate;
     private GameMode gameMode;
     private LevelDesignerAccuracy accuracy;
     
@@ -21,7 +21,7 @@ public class Specification {
     	lock_density;
     	
     //the new constructor, with the added specifications
-    public Specification(double targetDifficulty,
+    public Specification(double targetFailRate,
                          GameMode gameMode,
                          LevelDesignerAccuracy accuracy,
                          int max_moves,
@@ -31,7 +31,7 @@ public class Specification {
                          double jelly_density,
                          double icing_density,
                          double lock_density) {
-    	this.targetDifficulty = targetDifficulty;
+    	this.targetFailRate = targetFailRate;
     	this.gameMode = gameMode;
         this.accuracy = accuracy;
         this.max_moves = max_moves; 
@@ -41,11 +41,11 @@ public class Specification {
         this.jelly_density = jelly_density;
         this.icing_density = icing_density;
         this.lock_density = lock_density;
-    	if (targetDifficulty < 0.0 || targetDifficulty > 1.0) throw new IllegalArgumentException();
+    	if (targetFailRate < 0.0 || targetFailRate > 1.0) throw new IllegalArgumentException();
     }
 
-    public double getTargetDifficulty () {
-        return targetDifficulty;
+    public double getTargetFailRate () {
+        return targetFailRate;
     }
 
     public GameMode getGameMode () {
