@@ -61,6 +61,9 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 	int val_accuracy;
 	int val_max_moves;
 	int val_min_moves;
+	double val_icing_density;
+	double val_lock_density;
+	double val_jelly_density;
 	
 	public LevelRequesterScreen(){
 		super();
@@ -158,18 +161,27 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		val_max_moves = 50;
 		min_moves.setValue(val_min_moves);
 		max_moves.setValue(val_max_moves);
-		jelly_density.setValue(5);
+
+		val_jelly_density = 0.3;
+		jelly_density.setValue((int) (val_jelly_density * jelly_density.getMaximum()));
 		jelly_density.setMajorTickSpacing(1);
 		jelly_density.setPaintTicks(true);
 		jelly_density.setPaintLabels(true);
-		lock_density.setValue(5);
+		jelly_density.addChangeListener(this);
+
+		val_lock_density = 0.1;
+		lock_density.setValue((int) (val_lock_density * lock_density.getMaximum()));
 		lock_density.setMajorTickSpacing(1);
 		lock_density.setPaintTicks(true);
 		lock_density.setPaintLabels(true);
-		icing_density.setValue(5);
+		lock_density.addChangeListener(this);
+
+		val_icing_density = 0.4;
+		icing_density.setValue((int) (val_icing_density * icing_density.getMaximum()));
 		icing_density.setMajorTickSpacing(1);
 		icing_density.setPaintTicks(true);
 		icing_density.setPaintLabels(true);
+		icing_density.addChangeListener(this);
 	}
 	
 	private JPanel settings;
@@ -295,9 +307,9 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 					val_min_moves,
 					(int)max_candies.getSelectedItem(),
 					(int)min_candies.getSelectedItem(),
-					jelly_density.getValue(),
-					icing_density.getValue(),
-					lock_density.getValue()				
+					val_jelly_density,
+					val_icing_density,
+					val_lock_density
 							));
 	    	InterfaceManager.switchScreen(Windows.REQUESTING);
 			break;
@@ -353,5 +365,9 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 	    	show_accuracy.setText("Maximum accuracy, but slow");
 	    	break;
 	    }
+
+		val_icing_density = icing_density.getValue() / (double) icing_density.getMaximum();
+		val_lock_density = lock_density.getValue() / (double) lock_density.getMaximum();
+		val_jelly_density = jelly_density.getValue() / (double) jelly_density.getMaximum();
 	}
 }

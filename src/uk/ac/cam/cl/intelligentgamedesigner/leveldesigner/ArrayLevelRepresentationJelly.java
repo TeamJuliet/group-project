@@ -1,7 +1,5 @@
 package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
-import java.util.Random;
-
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 
@@ -21,8 +19,8 @@ public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
         3 => Liquorice
      */
 
-    public ArrayLevelRepresentationJelly(Random random, int numberOfCandyColours) {
-        super(random, numberOfCandyColours);
+    public ArrayLevelRepresentationJelly(LevelRepresentationParameters parameters) {
+        super(parameters);
 		board.initialiseJellyLevels();
     }
 
@@ -45,7 +43,7 @@ public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
 	public void mutate() {
 		super.mutate();
 		
-		if (random.nextDouble() > 0.5) { // Mutate one of the jelly levels with 50% probability.
+		if (parameters.random.nextDouble() > 0.5) { // Mutate one of the jelly levels with 50% probability.
 			board.mutateJellyLevels();
 		}
 	}
