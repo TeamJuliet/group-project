@@ -248,7 +248,7 @@ public class DesignDisplayScreen extends DisplayScreen{
 	}
 	
 	private void testAndAnalyse(){
-		Analyser loader = new Analyser(level);
+		Analyser loader = new Analyser(level,ai_strength.getValue());
 		JOptionPane.showMessageDialog(this, loader,"Load Unit Tests",JOptionPane.INFORMATION_MESSAGE);
 	}
 	
