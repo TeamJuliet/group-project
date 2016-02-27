@@ -17,7 +17,7 @@ public class LevelDesignerManager extends SwingWorker {
     public static int NUMBER_TO_DISPLAY = DesigningLevelScreen.BOARD_COUNT;
 
     private long seed = 1;                      // The seed for debugging purposes
-    private Specification specification;        // The
+    private Specification specification;        // The specification
     private Random originalRandoms[];           // Can't use one random for debugging because of concurrency
     private LevelDesigner[] levelDesigners;     // The level designers
     private Design[] topDesigns;                // The top design of each thread
@@ -189,23 +189,30 @@ public class LevelDesignerManager extends SwingWorker {
     public synchronized List<LevelRepresentation> getPopulation(int size, int threadID) {
 
         // Calculate the number of candy colours to be used
-        int numberOfCandyColours = getNumberOfCandyColours(threadID);
+        int min = specification.getMinCandies();
+        int max = specification.getMaxCandies();
+
+        DebugFilter.println("MIN CANDIES: " + min, DebugFilterKey.LEVEL_DESIGN);
+        DebugFilter.println("MAX CANDIES: " + max, DebugFilterKey.LEVEL_DESIGN);
 
         List<LevelRepresentation> population = new ArrayList<>();
 
         switch (specification.getGameMode()) {
             case HIGHSCORE:
                 for (int i = 0; i < size; i++) {
+                    int numberOfCandyColours = originalRandoms[threadID].nextInt(max - min + 1) + min;
                     population.add(new ArrayLevelRepresentationScore(originalRandoms[threadID], numberOfCandyColours));
                 }
                 break;
             case JELLY:
                 for (int i = 0; i < size; i++) {
+                    int numberOfCandyColours = originalRandoms[threadID].nextInt(max - min + 1) + min;
                     population.add(new ArrayLevelRepresentationJelly(originalRandoms[threadID], numberOfCandyColours));
                 }
                 break;
             default:
                 for (int i = 0; i < size; i++) {
+                    int numberOfCandyColours = originalRandoms[threadID].nextInt(max - min + 1) + min;
                     population.add(new ArrayLevelRepresentationIngredients(originalRandoms[threadID], numberOfCandyColours));
                 }
         }
@@ -274,7 +281,8 @@ public class LevelDesignerManager extends SwingWorker {
                 assignMovesJellyOrIngredients(design, abilityDistribution);
                 break;
             default:
-                // For ingredient levels, we guess the number of ingredients a player should clear based on the
+                // For ingredient levels, we set the number of moves and then estimate the number of ingredientsguess
+                // the number of ingredients a player should clear based on the
                 // target difficulty and then base the number of moves available on how well the players do
                 assignIngredients(design, threadID);
                 assignMovesJellyOrIngredients(design, abilityDistribution);
@@ -289,8 +297,8 @@ public class LevelDesignerManager extends SwingWorker {
      * @param design    The level design to assign the moves to
      */
     private void assignMovesHighscore (Design design, int threadID) {
-        int minMoves = 5;
-        int maxMoves = 50;
+        int minMoves = specification.getMinMoves();
+        int maxMoves = specification.getMaxMoves();
 
         design.setNumberOfMovesAvailable(weightedParameterSelection(minMoves, maxMoves, threadID));
     }
