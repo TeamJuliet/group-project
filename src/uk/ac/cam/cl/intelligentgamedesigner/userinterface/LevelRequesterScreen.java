@@ -162,7 +162,7 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		min_moves.setValue(val_min_moves);
 		max_moves.setValue(val_max_moves);
 
-		val_jelly_density = 0.4;
+		val_jelly_density = 0.3;
 		jelly_density.setValue((int) (val_jelly_density * jelly_density.getMaximum()));
 		jelly_density.setMajorTickSpacing(1);
 		jelly_density.setPaintTicks(true);
@@ -176,7 +176,7 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		lock_density.setPaintLabels(true);
 		lock_density.addChangeListener(this);
 
-		val_icing_density = 0.1;
+		val_icing_density = 0.4;
 		icing_density.setValue((int) (val_icing_density * icing_density.getMaximum()));
 		icing_density.setMajorTickSpacing(1);
 		icing_density.setPaintTicks(true);
