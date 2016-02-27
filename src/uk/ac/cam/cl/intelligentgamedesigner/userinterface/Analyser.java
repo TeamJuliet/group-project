@@ -12,24 +12,27 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 
 public class Analyser extends JPanel{
 
-	public Analyser(Design design){
+	public Analyser(Design design, int ability){
 		super();
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 		
 		JLabel text = new JLabel("Analysing...");
 		add(text);
-		analyse(design);
+		String theText = "The Simulated Player with ability level " + ability + " finished with a pass rate of " + analyse(design) + "%";
 		text.setText("Done!");
-		JTable table = new JTable(2,2);
-		fillTable(table);
-		add(table);
+		//JTable table = new JTable(2,2);
+		//fillTable(table);
+		//add(table);
+		JLabel value = new JLabel(theText);
+		add(value);
 	}
 	
-	private void analyse(Design design){
-		
+	private int analyse(Design design){
+		double passrate = 1;
+		return (int)(passrate*100);
 	}
 	
-	private void fillTable(JTable table){
-		
-	}
+//	private void fillTable(JTable table){
+//		
+//	}
 }
