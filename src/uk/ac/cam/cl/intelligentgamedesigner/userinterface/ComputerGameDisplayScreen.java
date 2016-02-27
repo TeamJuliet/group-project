@@ -137,9 +137,9 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen {
     @Override
     protected void setButtons(boolean visible){
     	visible = visible & !auto_playing;
-		next_move.setEnabled(!auto_playing);
-	    solve.setEnabled(!auto_playing);
-		quit_button.setEnabled(!auto_playing);
+		next_move.setEnabled(visible);
+	    solve.setEnabled(visible);
+		quit_button.setEnabled(visible);
     }
 
     @Override
@@ -178,8 +178,8 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen {
         if (!playing_move) {
             try {
                 Move next = playerManager.calculateBestMove(theGame, ability);
-
                 ((ComputerGameBoard) board).showMove(next);
+                quit_button.setEnabled(false);
                 Thread.sleep(wait_between_moves);
                 ((ComputerGameBoard) board).hideMove();
 
