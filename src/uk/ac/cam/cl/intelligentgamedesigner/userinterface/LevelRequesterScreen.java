@@ -275,27 +275,26 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 	    	InterfaceManager.switchScreen(Windows.MAIN);
 			break;
 		case "go":
-			GameMode mode = GameMode.HIGHSCORE;
-			if(jelly_clear.isSelected())mode = GameMode.JELLY;
-			if(ingredients.isSelected())mode = GameMode.INGREDIENTS;
-
 			move_to_text = max_moves.getValue().toString();
 			val_max_moves = Integer.parseInt(move_to_text);
 			move_to_text = min_moves.getValue().toString();
 			val_min_moves = Integer.parseInt(move_to_text);
 			if(val_min_moves>val_max_moves){
-				JOptionPane.showMessageDialog(this, "You entered invalid bounds for the moves. using the defaults (5-50)","Notification",JOptionPane.INFORMATION_MESSAGE);
-				val_min_moves = 5;
-				val_max_moves = 50;
+				JOptionPane.showMessageDialog(this, "You entered invalid bounds for the moves.","Error",JOptionPane.ERROR_MESSAGE);
+				break;
 			}
+			GameMode mode = GameMode.HIGHSCORE;
+			if(jelly_clear.isSelected())mode = GameMode.JELLY;
+			if(ingredients.isSelected())mode = GameMode.INGREDIENTS;
+
 			InterfaceManager.setLevelSpecifications(new Specification(
 					val_difficulty,
 					mode,
 					LevelDesignerAccuracy.values()[val_accuracy-1],
 					val_max_moves,
 					val_min_moves,
-					max_candies.getSelectedIndex(),
-					min_candies.getSelectedIndex(),
+					(int)max_candies.getSelectedItem(),
+					(int)min_candies.getSelectedItem(),
 					jelly_density.getValue(),
 					icing_density.getValue(),
 					lock_density.getValue()				
