@@ -21,9 +21,16 @@ public class Specification {
     	lock_density;
     	
     //the new constructor, with the added specifications
-    public Specification(double targetDifficulty, GameMode gameMode, LevelDesignerAccuracy accuracy,
-    		int max_moves, int min_moves, int max_candies, int min_candies,
-        	double jelly_density, double icing_density, double lock_density) {
+    public Specification(double targetDifficulty,
+                         GameMode gameMode,
+                         LevelDesignerAccuracy accuracy,
+                         int max_moves,
+                         int min_moves,
+                         int max_candies,
+                         int min_candies,
+                         double jelly_density,
+                         double icing_density,
+                         double lock_density) {
     	this.targetDifficulty = targetDifficulty;
     	this.gameMode = gameMode;
         this.accuracy = accuracy;

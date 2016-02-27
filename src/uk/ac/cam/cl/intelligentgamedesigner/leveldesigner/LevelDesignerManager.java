@@ -191,7 +191,14 @@ public class LevelDesignerManager extends SwingWorker {
         // Calculate the number of candy colours to be used
         int min = specification.getMinCandies();
         int max = specification.getMaxCandies();
-        
+
+        DebugFilter.println("THREAD " + threadID, DebugFilterKey.LEVEL_DESIGN);
+        DebugFilter.println("MIN CANDIES:       " + specification.getMinCandies(), DebugFilterKey.LEVEL_DESIGN);
+        DebugFilter.println("MAX CANDIES:       " + specification.getMaxCandies(), DebugFilterKey.LEVEL_DESIGN);
+        DebugFilter.println("ICING DENSITY:     " + specification.getDesiredIcing(), DebugFilterKey.LEVEL_DESIGN);
+        DebugFilter.println("LIQUORICE DENSITY: " + specification.getDesiredLiquorice(), DebugFilterKey.LEVEL_DESIGN);
+        DebugFilter.println("JELLY DENSITY:     " + specification.getDesiredJelly(), DebugFilterKey.LEVEL_DESIGN);
+
         List<LevelRepresentation> population = new ArrayList<>();
 
         for (int i = 0; i < size; i++) {
@@ -200,7 +207,8 @@ public class LevelDesignerManager extends SwingWorker {
                     this.originalRandoms[threadID],
                     numberOfCandyColours,
                     this.specification.getDesiredIcing(),
-                    this.specification.getDesiredLiquorice());
+                    this.specification.getDesiredLiquorice(),
+                    this.specification.getDesiredJelly());
 
             switch (specification.getGameMode()) {
                 case HIGHSCORE:

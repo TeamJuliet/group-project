@@ -42,12 +42,10 @@ public class DesignBoard {
 		for (DesignCell designCell : board) {
 			if (designCell.getDesignCellType() != DesignCellType.UNUSABLE) {
 				double probability = parameters.random.nextDouble();
-				if (probability < 0.65) {
-					designCell.setJellyLevel(0);
-				} else if (probability < 0.95) {
+				if (probability < parameters.targetJellyDensity) {
 					designCell.setJellyLevel(1);
 				} else {
-					designCell.setJellyLevel(2);
+					designCell.setJellyLevel(0);
 				}
 			}
 		}
