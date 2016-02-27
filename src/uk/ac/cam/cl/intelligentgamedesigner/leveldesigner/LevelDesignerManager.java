@@ -191,30 +191,28 @@ public class LevelDesignerManager extends SwingWorker {
         // Calculate the number of candy colours to be used
         int min = specification.getMinCandies();
         int max = specification.getMaxCandies();
-
-        DebugFilter.println("MIN CANDIES: " + min, DebugFilterKey.LEVEL_DESIGN);
-        DebugFilter.println("MAX CANDIES: " + max, DebugFilterKey.LEVEL_DESIGN);
-
+        
         List<LevelRepresentation> population = new ArrayList<>();
 
-        switch (specification.getGameMode()) {
-            case HIGHSCORE:
-                for (int i = 0; i < size; i++) {
-                    int numberOfCandyColours = originalRandoms[threadID].nextInt(max - min + 1) + min;
-                    population.add(new ArrayLevelRepresentationScore(originalRandoms[threadID], numberOfCandyColours));
-                }
-                break;
-            case JELLY:
-                for (int i = 0; i < size; i++) {
-                    int numberOfCandyColours = originalRandoms[threadID].nextInt(max - min + 1) + min;
-                    population.add(new ArrayLevelRepresentationJelly(originalRandoms[threadID], numberOfCandyColours));
-                }
-                break;
-            default:
-                for (int i = 0; i < size; i++) {
-                    int numberOfCandyColours = originalRandoms[threadID].nextInt(max - min + 1) + min;
-                    population.add(new ArrayLevelRepresentationIngredients(originalRandoms[threadID], numberOfCandyColours));
-                }
+        for (int i = 0; i < size; i++) {
+            int numberOfCandyColours = originalRandoms[threadID].nextInt(max - min + 1) + min;
+            LevelRepresentationParameters parameters = new LevelRepresentationParameters(
+                    this.originalRandoms[threadID],
+                    numberOfCandyColours,
+                    this.specification.getDesiredIcing(),
+                    this.specification.getDesiredLiquorice());
+
+            switch (specification.getGameMode()) {
+                case HIGHSCORE:
+                    population.add(new ArrayLevelRepresentationScore(parameters));
+                    break;
+                case JELLY:
+                    population.add(new ArrayLevelRepresentationJelly(parameters));
+                    break;
+                default:
+                    population.add(new ArrayLevelRepresentationIngredients(parameters));
+                    break;
+            }
         }
 
         return population;

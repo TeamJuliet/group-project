@@ -11,15 +11,12 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
     protected DesignBoard board;
     protected static int maxWidth = 9;
     protected static int maxHeight = 9;
-    protected int numberOfCandyColours;
 
-    public ArrayLevelRepresentation(Random random, int numberOfCandyColours) {
-    	super(random);
-
-        this.numberOfCandyColours = numberOfCandyColours;
+    public ArrayLevelRepresentation(LevelRepresentationParameters parameters) {
+    	super(parameters);
 
         // Initialise the board
-        board = new DesignBoard(maxWidth, maxHeight, random);
+        board = new DesignBoard(maxWidth, maxHeight, parameters);
     }
 
     /**
@@ -34,8 +31,11 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
     	// Copy the board.
     	clone.board = new DesignBoard(board);
 
-        // Copy the number of candy colours
-        clone.numberOfCandyColours = this.numberOfCandyColours;
+        // Copy the parameters
+        clone.parameters = new LevelRepresentationParameters(parameters.random,
+                parameters.numberOfCandyColours,
+                parameters.targetIcingDensity,
+                parameters.targetLiquoriceDensity);
     	
     	return clone;
     }
@@ -93,7 +93,7 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
         design.setBoard(designBoard);
 
         // Set the general parameters
-        design.setNumberOfCandyColours(this.numberOfCandyColours);
+        design.setNumberOfCandyColours(parameters.numberOfCandyColours);
 
         return design;
     }

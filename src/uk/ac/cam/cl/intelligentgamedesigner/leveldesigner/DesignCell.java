@@ -1,17 +1,15 @@
 package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
-import java.util.Random;
-
 public class DesignCell {
 
     private DesignCellType designCellType;
     private int jellyLevel;
 
     // Constructor for creating a randomly initialised design cell type
-    public DesignCell (Random random, int jellyLevel) {
+    public DesignCell (LevelRepresentationParameters parameters, int jellyLevel) {
         // Create a cell with random cell type
     	
-    	double r = random.nextDouble();
+    	double r = parameters.random.nextDouble();
     	
     	if(r < 0.75) {
     		this.designCellType = DesignCellType.EMPTY;
