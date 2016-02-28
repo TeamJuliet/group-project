@@ -258,7 +258,7 @@ public class SimulatedPlayerAssessment {
     /**
      * Function that generates the percentage that indicates how well in the
      * given list of players the current player (of which the records have to be
-     * provided) performed.
+     * provided) performed in jelly objective games.
      * 
      * @param playerRecordsToAssess
      * @param otherPlayers
@@ -291,7 +291,7 @@ public class SimulatedPlayerAssessment {
 
     /**
      * Function that returns the assessment for a player that played a game with
-     * highscore objective.
+     * jelly objective.
      * 
      * @param progressRecords
      *            The records for each of the last rounds of the game.
@@ -370,12 +370,14 @@ public class SimulatedPlayerAssessment {
         return percentage;
     }
     
+    // Auxiliary function to output the assessment results.
     private static void outputResults(List<SimulatedPlayerBase> players, List<Double> scores) {
         for (int i = 0; i < scores.size(); ++i) {
             System.out.println(players.get(i).getClass().getSimpleName() + ": " + scores.get(i));
         }
     }
 
+    // Function that assess the score players.
     private static void assessScoreBasedPlayers() {
         final int numberOfGamesToRun = 20;
         
@@ -387,12 +389,13 @@ public class SimulatedPlayerAssessment {
 
         Design design = SimulatedPlayersTestHelpers.getBoardWithBlockersDesign();
         design.setGameMode(GameMode.HIGHSCORE);
-        design.setObjectiveTarget(2400);
+        design.setObjectiveTarget(3400);
         design.setNumberOfMovesAvailable(12);
 
         outputResults(scorePlayers, evaluateScorePlayers(design, scorePlayers, numberOfGamesToRun));
     }
     
+    // Function that assess the players that play jelly levels.
     private static void assessJellyBasedPlayers() {
         final int numberOfGamesToRun = 20;
         
@@ -411,7 +414,9 @@ public class SimulatedPlayerAssessment {
     }
     
     public static void main(String[] Args) {
-        assessScoreBasedPlayers();
+        System.out.println("Score based players assessment:");
+        //assessScoreBasedPlayers();
+        System.out.println("Jelly based players assessment:");
         assessJellyBasedPlayers();
     }
 }

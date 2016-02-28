@@ -56,8 +56,8 @@ public class LevelDesignerTestRunner {
 
     @Test
     public void crossoverTest1 () {
-        LevelRepresentation mother = new ArrayLevelRepresentationScore(new Random(), 6);
-        LevelRepresentation father = new ArrayLevelRepresentationScore(new Random(), 6);
+        LevelRepresentation mother = new ArrayLevelRepresentationScore(getParameters());
+        LevelRepresentation father = new ArrayLevelRepresentationScore(getParameters());
 
         LevelRepresentation child1 = mother.clone();
         LevelRepresentation child2 = father.clone();
@@ -147,11 +147,15 @@ public class LevelDesignerTestRunner {
     private LevelRepresentation getLevelRepresentation (GameMode gameMode) {
         switch (gameMode) {
             case HIGHSCORE:
-                return new ArrayLevelRepresentationScore(new Random(), 6);
+                return new ArrayLevelRepresentationScore(getParameters());
             case JELLY:
-                return new ArrayLevelRepresentationJelly(new Random(), 6);
+                return new ArrayLevelRepresentationJelly(getParameters());
             default:
-                return new ArrayLevelRepresentationIngredients(new Random(), 6);
+                return new ArrayLevelRepresentationIngredients(getParameters());
         }
+    }
+
+    private LevelRepresentationParameters getParameters () {
+        return new LevelRepresentationParameters(new Random(), 6, 0.1, 0.1, 0.1, 0.2);
     }
 }

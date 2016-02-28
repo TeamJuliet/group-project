@@ -79,7 +79,7 @@ public class MainMenuScreen extends DisplayScreen{
 		add(request_level);
 		add(create_level);
 		add(load_level);	
-		add(unit_test);
+		//add(unit_test);
 		
 		//set the locations
 		position(title_text,0.5,0.9,500,50);
@@ -87,7 +87,7 @@ public class MainMenuScreen extends DisplayScreen{
 		position(request_level,0.5,0.6,140,40);
 		position(create_level,0.5,0.45,140,40);
 		position(load_level,0.5,0.3,140,40);
-		position(unit_test,0.9,0.15,160,40);
+		//position(unit_test,0.9,0.15,160,40);
 	}
 
 	@Override

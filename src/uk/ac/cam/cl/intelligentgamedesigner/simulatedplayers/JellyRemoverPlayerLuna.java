@@ -15,6 +15,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
@@ -145,7 +146,8 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
     }
 
     private double hopefulCellsScore(Cell[][] cellBoard) {
-        return 10.0 - countHopeful(cellBoard) / 2.0;
+        int numOfHopeful = countHopeful(cellBoard);
+        return 10.0 - ( (double) numOfHopeful) / 2.0;
     }
 
     @Override
@@ -160,7 +162,7 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
             // System.out.println(getJelliesDifficulty(board));
             // System.out.println(getBlockersDifficulty(board));
             score = (2.0 + targetAlpha) * getJelliesDifficulty(board) + (1.0 - targetAlpha)
-                    * (getBlockersDifficulty(board) + 0.2 * getCandyScore(board) + 1.5 * hopefulCellsScore(board));
+                    * (getBlockersDifficulty(board) + getCandyScore(board) + hopefulCellsScore(board));
             // System.err.println(score);
         }
         return new ScalarGameMetric(score);
@@ -174,12 +176,20 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
 
     @Override
     public GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {
-        return new ScalarCombinedMetric(metric.metric);
+        return new ScalarCombinedMetric(((ScalarGameMetric) metric).score);
     }
 
     @Override
     protected List<Move> selectMoves(GameState gameState) {
         List<Move> ret = gameState.getValidMoves();
+        List<Move> tmp = new LinkedList<Move>();
+        for (Move move : ret) {
+            if (GameStateAuxiliaryFunctions.hasSpecialOrColourBomb(gameState.getCell(move.p1.x, move.p1.y))
+                    && GameStateAuxiliaryFunctions.hasSpecialOrColourBomb(gameState.getCell(move.p2.x, move.p2.y)))
+                tmp.add(move);
+        }
+        if (!tmp.isEmpty())
+            return tmp; 
         Collections.shuffle(ret);
         return ret;
     }

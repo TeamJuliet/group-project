@@ -71,11 +71,15 @@ public class GameStateAuxiliaryFunctions {
 	}
 
 	/**
-	 * This places an ingredient at random in the top 3/10ths of a game board
+	 * This places an ingredient at random in the top 3/10ths of a game board, provided that no ingredients have
+	 * already been placed.
 	 *
 	 * @param board	The board to place the ingredient on
      */
 	public static void placeInitialIngredient(Cell[][] board) {
+		// Don't bother placing an initial ingredient if the user has already done so
+		if (getIngredientsNumber(board) > 0) return;
+
 		ArrayList<Position> possibles = new ArrayList<Position>();
 
 		int width = board.length;
@@ -215,6 +219,17 @@ public class GameStateAuxiliaryFunctions {
 		return cell.hasCandy() && cell.getCandy().getCandyType().isSpecial();
 	}
 
+	/**
+     * Function that checks whether the position contains a detonated special candy.
+     * 
+     * @param cell
+     *            The cell to be checked.
+     * @return Whether that cell contains a detonated special candy.
+     */
+    public static boolean hasDetonated(Cell cell) {
+        return cell.hasCandy() && cell.getCandy().isDetonated();
+    }
+	
 	/**
 	 * Function that checks whether the position contains a colour bomb.
 	 * 
@@ -445,6 +460,22 @@ public class GameStateAuxiliaryFunctions {
 			}
 		}
 		return totalLiquorice;
+	}
+
+	/** Get the number of ingredient candies on the board of the game state.
+	*
+	* @param board	The board to count the ingredients.
+	* @return The number of ingredient candies on the board.
+	*/
+	public static int getIngredientsNumber(Cell[][] board) {
+		int totalIngredients = 0;
+		for (Cell[] row : board) {
+			for (Cell cell : row) {
+				if (hasIngredient(cell))
+					totalIngredients++;
+				}
+			}
+		return totalIngredients;
 	}
 
 	/**

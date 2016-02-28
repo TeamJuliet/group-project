@@ -86,10 +86,10 @@ public class DisplayBoard extends JComponent {
 	}
 	
 	public static Cell[][] blank_board(){
-		Cell[][] new_board = new Cell[10][10];
+		Cell[][] new_board = new Cell[Design.MAX_DIMENSIONS][Design.MAX_DIMENSIONS];
 
-		for(int x=0;x<10;x++){
-			for(int y=0;y<10;y++){
+		for(int x=0;x<Design.MAX_DIMENSIONS;x++){
+			for(int y=0;y<Design.MAX_DIMENSIONS;y++){
 				new_board[x][y] = defaultCell();
 			}
 		}
@@ -228,14 +228,18 @@ public class DisplayBoard extends JComponent {
 			}
 		}
 
+		//calculate shrinking/expanding when needed
+		int centralise_offset = 0;
+		if(scale != null && scale[x][y]>=0)centralise_offset = (int)((1-scale[x][y])*tile_size/2);
+
+		//draw the jelly
 		int jl = board[x][y].getJellyLevel();
 		if(jl>0){
-			g.drawImage(objective_piece[jl], x*tile_size, y*tile_size, (x+1)*tile_size, (y+1)*tile_size, 0, 0, image_size, image_size, null);
+			g.drawImage(objective_piece[jl], x*tile_size+centralise_offset, y*tile_size+centralise_offset, (x+1)*tile_size-centralise_offset, (y+1)*tile_size-centralise_offset, 0, 0, image_size, image_size, null);
 		}
 		
 		//draw the candy itself
-		int centralise_offset = 0;
-		if(scale != null && scale[x][y]>=0)centralise_offset = (int)((1-scale[x][y])*tile_size/2);
+		
 		if(item != null)g.drawImage(item, candy_x_loc+centralise_offset, candy_y_loc+centralise_offset, candy_x_loc+tile_size-centralise_offset, candy_y_loc+tile_size-centralise_offset, 0, 0, image_size, image_size, null);
 				
 		//after the candy
@@ -244,7 +248,7 @@ public class DisplayBoard extends JComponent {
 		case LIQUORICE:
 		case ICING:
 			g.drawImage(cell[board[x][y].getCellType().ordinal()]
-					, x*tile_size, y*tile_size, (x+1)*tile_size, (y+1)*tile_size, 0, 0, image_size, image_size, null);
+					, x*tile_size+centralise_offset, y*tile_size+centralise_offset, (x+1)*tile_size-centralise_offset, (y+1)*tile_size-centralise_offset, 0, 0, image_size, image_size, null);
 			break;
 		default: break;
 		}

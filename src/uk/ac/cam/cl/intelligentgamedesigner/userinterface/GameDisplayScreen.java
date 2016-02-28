@@ -119,7 +119,7 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 	public void playMove(Move move){
 		if(!playing_move){
 			playing_move = true;
-			
+//			setButtons(false);
 			animation = new AnimationThread(theGame, move, board, show_animations);
 	        animation.addPropertyChangeListener(this);
 	        animation.execute();	
@@ -179,6 +179,7 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 			
 			//after the message, quit the game
 			InterfaceManager.switchScreen(Windows.DISPLAY);
+
 		}
 	}
 	protected void stopGame(){
@@ -262,8 +263,7 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 		switch(e.getActionCommand()){
 		
 		case "quit":
-			playing_move = false;
-			InterfaceManager.switchScreen(Windows.DISPLAY);
+			if(!playing_move)InterfaceManager.switchScreen(Windows.DISPLAY);
 			break;
 		case "toggle":
 			show_animations = toggle_animations.isSelected();
@@ -275,7 +275,6 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 			} else { //failed to save
 				JOptionPane.showMessageDialog(this,"Failed to save","Round Statistics",JOptionPane.ERROR_MESSAGE);
 			}
-			save_statistics.setEnabled(false);
 			break;
 		}
 	}
@@ -292,12 +291,16 @@ public abstract class GameDisplayScreen extends DisplayScreen implements Propert
 				playing_move = false;
 				theGame = (GameState)evt.getNewValue();
 				stats.add(theGame.getRoundStatistics());
+//				setButtons(true);
 				update();
 				endGameCheck();
 				break;
 			}
 		}
 	}
+//	protected void setButtons(boolean visible){
+//		quit_button.setEnabled(visible);
+//	}
 	
 	@Override
 	protected void resizeBoards(){

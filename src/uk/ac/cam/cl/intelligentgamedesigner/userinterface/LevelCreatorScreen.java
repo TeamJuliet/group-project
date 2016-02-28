@@ -33,7 +33,6 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 	private JButton save_and_quit;
 	private JButton just_quit;
 	private JButton just_save;
-	private JButton analyse;
 	private JButton reset_board;
 	
 	private JSlider dimensions_width;
@@ -128,12 +127,11 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 	protected void makeItems() {
 		save_and_quit = new JButton("Save and Quit");
 		just_quit = new JButton("Quit");
-		analyse = new JButton("Analyse Level");
 		just_save = new JButton("Save Level");
 		reset_board = new JButton("Clear Board");
 		
-		dimensions_width = new JSlider(5,10);
-		dimensions_height = new JSlider(5,10);
+		dimensions_width = new JSlider(5,Design.MAX_DIMENSIONS);
+		dimensions_height = new JSlider(5,Design.MAX_DIMENSIONS);
 
 		number_of_candies = new JSlider(4,6);
 		
@@ -171,8 +169,8 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		level_on_label = new JLabel(level_on+". ");
 
 		//The Game Board
-		width = 10;
-		height = 10;
+		width = Design.MAX_DIMENSIONS;
+		height = Design.MAX_DIMENSIONS;
 		board = new CustomBoard(width,height);
 		board.watchLevelCreator(this);
 		
@@ -197,9 +195,6 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		just_quit.setToolTipText("Warning: unsaved progress will be lost.");
 		just_quit.setActionCommand("quit");
 		just_quit.addActionListener(this);
-		analyse.setToolTipText("Runs the simulated players on the level to get an estimated difficulty");
-		analyse.setActionCommand("analyse");
-		analyse.addActionListener(this);
 		reset_board.setToolTipText("Clears the game board entirely");
 		reset_board.setActionCommand("reset");
 		reset_board.addActionListener(this);
@@ -291,10 +286,6 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		just_save.setAlignmentX(CENTER_ALIGNMENT);
 		controls.add(just_save);
 		controls.add(getSpace());
-		//The analyse button is never used
-		//analyse.setAlignmentX(CENTER_ALIGNMENT);
-		//controls.add(analyse);
-		//controls.add(getSpace());
 		save_and_quit.setAlignmentX(CENTER_ALIGNMENT);
 		controls.add(save_and_quit);
 		controls.add(getSpace());

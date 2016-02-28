@@ -6,7 +6,16 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.MatchAnalysis;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 
+/**
+ * 
+ * This is a simple rule based player for removing ingredients. The order with
+ * which it evaluates moves is by considering moves that are of combinable
+ * candies, moves that remove jellies, moves that remove blockers, moves that
+ * remove specials and then an element of randomness.
+ *
+ */
 public class RuleBasedIngredientsPlayer extends SimulatedPlayerBase {
+    
     @Override
     public Move calculateBestMove(GameState currentState) throws NoMovesFoundException {
         List<Move> moves = currentState.getValidMoves();
