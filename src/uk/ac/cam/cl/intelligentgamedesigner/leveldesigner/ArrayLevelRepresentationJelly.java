@@ -6,19 +6,6 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
 	public static final int maxJellyLevel = 2;
 
-    /*
-        Parameters list:
-        ----------------
-        [0] - number of moves available
-
-        Board cell types:
-        -----------------
-        0 => Empty
-        1 => Unusable
-        2 => Icing
-        3 => Liquorice
-     */
-
     public ArrayLevelRepresentationJelly(LevelRepresentationParameters parameters) {
         super(parameters);
 		board.initialiseJellyLevels();
@@ -73,6 +60,6 @@ public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
     	
     	double jellyFitness = AestheticChecker.calculateJellyFitness(board);
     	
-    	return fitness + jellyFitness * 0.2;
+    	return fitness * 0.8 + jellyFitness * 0.2;
     }
 }
