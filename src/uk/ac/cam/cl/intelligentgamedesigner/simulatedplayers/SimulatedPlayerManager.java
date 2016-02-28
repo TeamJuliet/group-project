@@ -9,10 +9,11 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 
 public class SimulatedPlayerManager {
 
-    EnumMap<GameMode, HashMap<Integer, SimulatedPlayerBase>> players = new EnumMap<>(GameMode.class);
+    EnumMap<GameMode, HashMap<Integer, SimulatedPlayerBase>> players                = new EnumMap<>(GameMode.class);
 
-    private static final int MAXIMUM_PLAYER_ABILITY = 7;
-    
+    // Decided by the switch in makeSimulatedPlayer()
+    private static final int                                 MAXIMUM_PLAYER_ABILITY = 7;
+
     private static SimulatedPlayerBase makeSimulatedPlayer(int ability, GameMode mode) {
         SimulatedPlayerBase player;
         int lookAhead = 0;
@@ -20,13 +21,10 @@ public class SimulatedPlayerManager {
         boolean dimitris = false; // TODO: integrate the players in properly
         switch (ability) {
         case 1:
-            player = new ScorePlayerBeta();
-            if (mode.equals(GameMode.HIGHSCORE))
-                return new ScorePlayerBeta();
-            else if (mode.equals(GameMode.JELLY))
+            if (mode.equals(GameMode.JELLY))
                 return new RuleBasedJellyPlayer();
-            else 
-                break;
+            else
+                return new ScorePlayerBeta();
         case 2:
             lookAhead = 1;
             poolSize = 7;
@@ -89,8 +87,11 @@ public class SimulatedPlayerManager {
         return level.getValidMoves().get(0);
     }
 
+    /**
+     * @return Maximum available ability level
+     */
     public static int getMaxAbilityLevel() {
-        return MAXIMUM_PLAYER_ABILITY; // Decided by the switch in makeSimulatedPlayer()
+        return MAXIMUM_PLAYER_ABILITY;
     }
 
     private void checkPlayer(GameMode mode, int ability) {
