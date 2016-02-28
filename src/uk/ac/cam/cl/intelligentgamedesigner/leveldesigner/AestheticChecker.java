@@ -4,59 +4,8 @@ public class AestheticChecker {
 	
 	public static double calculateFitness(DesignBoard board) {
 		double fitness = calculateSymmetryScore(board);
-		
-		return 0.1 + ( fitness * calculateDistributionScore(board) * calculateCentralDistance(board) * calculateConnectedFitness(board) );
-	}
-	
-	private static double calculateDistributionScore(DesignBoard board) {
-		int[] counts = new int[DesignCellType.values().length];
-		int cellCount = board.height * board.width;
-		
-		for (int x = 0; x < board.width; x++) {
-    		for (int y = 0; y < board.height; y++) {
-    			DesignCellType type = board.get(x, y).getDesignCellType();
-    			counts[type.ordinal()]++;
-    		}
-    	}
-		
-		double[][] distributionDesired = new double[counts.length][2];
-		
-		distributionDesired[0][0] = 0.2;
-		distributionDesired[0][1] = 0.5;
-		
-		distributionDesired[1][0] = 0.4;
-		distributionDesired[1][1] = 1.0;
-		
-		distributionDesired[2][0] = 0.05;
-		distributionDesired[2][1] = 0.1;
-	
-		distributionDesired[3][0] = 0.05;
-		distributionDesired[3][1] = 0.1;
-		
-		double[] distributions = new double[counts.length];
-		for (int i = 0; i < counts.length; i++) {
-			distributions[i] = counts[i] / (double) cellCount;
-		}
-		
-		double score = 1.0;
-		
-		for(int c = 0; c < distributionDesired.length; c++)
-		{
-			double diff = 0.0;
-			
-			if(distributions[c] < distributionDesired[c][0])
-			{
-				diff = (distributionDesired[c][0] - distributions[c]) / distributionDesired[c][0];  
-			}else
-			if(distributions[c] > distributionDesired[c][1])
-			{
-				diff = (distributions[c] - distributionDesired[c][1]) / (1.0 - distributionDesired[c][1]);  
-			}
-			
-			score -= diff / (counts.length);
-		}
-		
-		return score;
+
+		return 0.1 + ( fitness * calculateCentralDistance(board) * calculateConnectedFitness(board) );
 	}
 	
 	private static double calculateSymmetryScore(DesignBoard board) {
@@ -174,8 +123,12 @@ public class AestheticChecker {
 		
 		return 1.0 - ((double)meh / (4 * board.width * board.height));
 	}
-	
-	public static double calculateJellyFitness(DesignBoard board) {	
+
+	public static double calculateJellyFitness(DesignBoard board) {
+		return calculateJellyNonIsolationFitness(board) * calculateJellySymmetryFitness(board);
+	}
+
+	public static double calculateJellySymmetryFitness(DesignBoard board) {
 		int maxX = board.width / 2;
     	int score = 0;
     	for (int x = 0; x < maxX; x++) {
@@ -188,6 +141,26 @@ public class AestheticChecker {
     		}
     	}
     	return score / (double) (maxX * board.height);
+	}
+
+	public static double calculateJellyNonIsolationFitness (DesignBoard board) {
+		int totalJelly = 0;
+		int totalIsolatedJelly = 0;
+		for (int x = 1; x < board.width - 1; x++) {
+			for (int y = 1; y < board.height - 1; y++) {
+				if (board.get(x, y).getJellyLevel() > 0) {
+					totalJelly++;
+
+					if (board.get(x - 1, y).getJellyLevel() == 0
+							&& board.get(x, y - 1).getJellyLevel() == 0
+							&& board.get(x + 1, y).getJellyLevel() == 0
+							&& board.get(x, y + 1).getJellyLevel() == 0) totalIsolatedJelly++;
+				}
+			}
+		}
+		double proportionIsolated = totalIsolatedJelly / (double) totalJelly;
+
+		return Math.exp(-proportionIsolated);
 	}
 	
 }

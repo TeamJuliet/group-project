@@ -27,7 +27,7 @@ public class ScalarGamePotential extends GameStatePotential {
     }
 
     /**
-     * Initialization using the scalar score potential of the game state.
+     * Initialisation using the scalar score potential of the game state.
      * 
      * @param realScore
      *            The scalar real score assigned to it.

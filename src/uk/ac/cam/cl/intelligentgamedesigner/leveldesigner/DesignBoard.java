@@ -5,29 +5,29 @@ import java.util.List;
 import java.util.Random;
 
 public class DesignBoard {
-	private Random random;
+	private LevelRepresentationParameters parameters;
 	private List<DesignCell> board;
 	public final int width;
 	public final int height;
 
-	public DesignBoard(int width, int height, Random random) {
+	public DesignBoard(int width, int height, LevelRepresentationParameters parameters) {
 		this.width = width;
 		this.height = height;
-		this.random = random;
+		this.parameters = parameters;
 		this.board = new ArrayList<>(width * height);
 
 		int length = width * height;
 		for (int i = 0; i < length; i++) {
 			// Initialise the cells with a random cell type, but with no jelly
 			// If the ArrayLevelRepresentationJelly calls initialiseJellyLevels manually
-			board.add(new DesignCell(random, 0));
+			board.add(new DesignCell(parameters, 0));
 		}
 	}
 
 	public DesignBoard(DesignBoard designBoardToCopy) {
 		this.width = designBoardToCopy.width;
 		this.height = designBoardToCopy.height;
-		this.random = designBoardToCopy.random;
+		this.parameters = designBoardToCopy.parameters;
 		this.board = new ArrayList<>(width * height);
 
 		// Copy the cell type and
@@ -41,21 +41,26 @@ public class DesignBoard {
 	public void initialiseJellyLevels() {
 		for (DesignCell designCell : board) {
 			if (designCell.getDesignCellType() != DesignCellType.UNUSABLE) {
-				designCell.setJellyLevel(random.nextInt(ArrayLevelRepresentationJelly.maxJellyLevel));
+				double probability = parameters.random.nextDouble();
+				if (probability < parameters.targetJellyDensity) {
+					designCell.setJellyLevel(1);
+				} else {
+					designCell.setJellyLevel(0);
+				}
 			}
 		}
 	}
 
 
 	public void mutateCellType() {
-		int x = random.nextInt(width);
-        int y = random.nextInt(height);
+		int x = parameters.random.nextInt(width);
+        int y = parameters.random.nextInt(height);
         
         DesignCell currentCell = get(x, y);
         int currentIndex = currentCell.getDesignCellType().ordinal();
         
         // Doing the following guarantees the new index will be different.
-        int newIndex = random.nextInt(DesignCellType.values().length - 1);
+        int newIndex = parameters.random.nextInt(DesignCellType.values().length - 1);
         if (newIndex >= currentIndex) {
         	newIndex++;
         }
@@ -64,14 +69,14 @@ public class DesignBoard {
 	}
 
 	public void mutateJellyLevels() {
-		int x = random.nextInt(width);
-		int y = random.nextInt(height);
+		int x = parameters.random.nextInt(width);
+		int y = parameters.random.nextInt(height);
 
 		DesignCell currentCell = get(x, y);
 		int currentJellyLevel = currentCell.getJellyLevel();
 
 		// Doing the following guarantees the new index will be different.
-		int newJellyLevel = random.nextInt(ArrayLevelRepresentationJelly.maxJellyLevel - 1);
+		int newJellyLevel = parameters.random.nextInt(ArrayLevelRepresentationJelly.maxJellyLevel - 1);
 		if (newJellyLevel >= currentJellyLevel) {
 			newJellyLevel++;
 		}
@@ -84,12 +89,12 @@ public class DesignBoard {
 			throw new RuntimeException("Trying to crossover boards that have different dimensions.");
 		}
 		
-		boolean isVerticalSplit = random.nextBoolean();
+		boolean isVerticalSplit = parameters.random.nextBoolean();
 		
         // This gives a range slightly in from the maxHeight or maxWidth.
         // For example, if the maxWidth is 10, this gives us a range of 1 - 8 instead of 0 - 9.
 		int max = isVerticalSplit ? width : height;
-        int splitEnd = random.nextInt(max - 1) + 1;
+        int splitEnd = parameters.random.nextInt(max - 1) + 1;
         
         int length = isVerticalSplit ? height : width;
         for (int i = 0; i < splitEnd; i++) {

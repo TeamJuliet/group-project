@@ -107,7 +107,7 @@ public class GameState implements Serializable {
                 CellType cellType = cellToCopy.getCellType();
                 Candy cellCandy = cellToCopy.getCandy();
 
-                // For ICING and UNUSABLEs, we can just replace the cell with
+                // For ICING, UNUSABLEs and INGREDIENTS, we can just replace the cell with
                 // the design element
                 if (cellType == CellType.ICING || cellType == CellType.UNUSABLE
                         || (cellCandy != null && cellCandy.getCandyType() == CandyType.INGREDIENT)) {
@@ -126,6 +126,9 @@ public class GameState implements Serializable {
 
         recordIngredientSinks();
 
+        // For ingredients levels, place the first ingredient randomly in the top 3/10ths of the board
+        if (levelDesign.getMode() == GameMode.INGREDIENTS) GameStateAuxiliaryFunctions.placeInitialIngredient(board);
+
         // The score may have been prematurely increased from initial
         // reductions, so we reset it to 0
         this.progress.resetScore();
@@ -135,6 +138,9 @@ public class GameState implements Serializable {
         if (getValidMoves().size() == 0) {
             progress.setDidFailShuffle();
         }
+
+        // Finally, we indicate that the game has begun
+        progress.gameHasBegun();
     }
 
     /**
@@ -198,7 +204,6 @@ public class GameState implements Serializable {
 
     // **** GETTER FUNCTIONS START *****
 
-    // TODO: Consider returning a copy of the board.
     public Cell[][] getBoard() {
         return board;
     }
@@ -405,6 +410,8 @@ public class GameState implements Serializable {
                 currentProcessState = ProcessState.MATCH_AND_REPLACE;
             }
             break;
+        default:
+            break;
         }
         return true;
     }
@@ -488,6 +495,20 @@ public class GameState implements Serializable {
         return moves;
     }
 
+    /**
+     * Function that returns whether there are moves on the board.
+     * @return whether there are any valid moves on the board.
+     */
+    public boolean hasMoves() {
+        for (int i = 0; i < width; ++i) {
+            for (int j = 0; j < height; ++j) {
+                if (isMoveValid(new Move(new Position(i, j), new Position(i+1, j)))) return true;
+                if (isMoveValid(new Move(new Position(i, j), new Position(i, j+1)))) return true;
+            }
+        }
+        return false;
+    }
+    
     // **** FUNCIONS THAT MONITOR PROGRESS ****
     private void incrementScore(int addedScore) {
         progress.incrementScore(addedScore);
@@ -547,12 +568,11 @@ public class GameState implements Serializable {
 
         if (current.hasCandy() && current.getCandy().isDetonated())
             return;
-        if (current.hasCandy() && current.getCandy().getCandyType().isSpecial()) {
-            if (current.getCandy().getCandyType().equals(CandyType.BOMB)) {
-                current.removeCandy();
-                wasSomethingPopped = true;
-                return;
-            }
+        if (current.hasCandy() && current.getCandy().getCandyType().equals(CandyType.BOMB)) {
+            current.removeCandy();
+            wasSomethingPopped = true;
+            return;
+        } else if (current.hasCandy() && current.getCandy().getCandyType().isSpecial()) { 
             if (!current.getCandy().isDetonated()) {
                 detonated.add(new Position(x, y));
                 current.getCandy().setDetonated();
@@ -613,20 +633,28 @@ public class GameState implements Serializable {
         makeCellBomb(x, y);
     }
 
+    private boolean isValidPoint(int x, int y) {
+        return (x >= 0 && x < width && y >= 0 && y < height);
+    }
+
     private void makeCellBomb(int x, int y) {
-        incrementScore(Scoring.MADE_BOMB);
-        board[x][y].setCandy(new Candy(null, CandyType.BOMB));
-        this.statCandiesFormed.candyProcessed(board[x][y].getCandy());
+        if (isValidPoint(x, y)) {
+            incrementScore(Scoring.MADE_BOMB);
+            board[x][y].setCandy(new Candy(null, CandyType.BOMB));
+            this.statCandiesFormed.candyProcessed(board[x][y].getCandy());
+        }
     }
 
     private void makeWrapped(int x, int y, CandyColour clr) {
         incrementScore(Scoring.MADE_WRAPPED_CANDY);
+        if (hasDetonated(board[x][y])) return;
         board[x][y].setCandy(new Candy(clr, CandyType.WRAPPED));
         this.statCandiesFormed.candyProcessed(board[x][y].getCandy());
     }
 
     private void makeStripped(int x, int y, CandyColour clr, boolean isVertical) {
         incrementScore(Scoring.MADE_STRIPPED_CANDY);
+        if (hasDetonated(board[x][y])) return;
         board[x][y]
                 .setCandy(new Candy(clr, isVertical ? CandyType.VERTICALLY_STRIPPED : CandyType.HORIZONTALLY_STRIPPED));
         this.statCandiesFormed.candyProcessed(board[x][y].getCandy());
@@ -640,7 +668,7 @@ public class GameState implements Serializable {
         for (int x = 0; x < width; ++x) {
             for (int y = 0; y < height; ++y) {
                 // Do not consider cells with no candy.
-                if (!board[x][y].hasCandy())
+                if (!board[x][y].hasCandy()|| board[x][y].getCandy().getCandyType().equals(CandyType.UNMOVABLE))
                     continue;
                 markAndReplaceForTile(x, y);
             }
@@ -941,7 +969,7 @@ public class GameState implements Serializable {
         int[] prev = new int[width];
         for (int i = 0; i < width; ++i) prev[i] = height;
         for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
+            for (int y = height - 1; y >= 0; --y) {
                 Cell cell = board[x][y];
                 if (cell.isFillable()) {
 
@@ -1036,16 +1064,6 @@ public class GameState implements Serializable {
                 }
             }
         }
-    }
-
-    public boolean hasMoves() {
-        for (int i = 0; i < width; ++i) {
-            for (int j = 0; j < height; ++j) {
-                if (isMoveValid(new Move(new Position(i, j), new Position(i+1, j)))) return true;
-                if (isMoveValid(new Move(new Position(i, j), new Position(i, j+1)))) return true;
-            }
-        }
-        return false;
     }
     
     // TODO: Handle case in which no amount of shuffling can introduce a

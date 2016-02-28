@@ -130,22 +130,30 @@ public class Cell implements Cloneable, Serializable {
 		return candy != null;
 	}
 
+	/**
+	 * Function that removes the candy from a cell.
+	 */
 	public void removeCandy() {
 		cellType = CellType.EMPTY;
 		candy = null;
 	}
 
-	// Upgrades candy to the type specified.
+	/**
+	 * Function that upgrades candy to the type specified.
+	 * @param candyType The new CandyType specified.
+	 */
 	public void changeCandyType(CandyType candyType) {
-		if (candyType == CandyType.BOMB || candyType == CandyType.INGREDIENT) {
+		if (!candyType.needsColour()) {
 			candy = new Candy(null, candyType);
 		} else {
 			candy = new Candy(candy.getColour(), candyType);
 		}
 	}
 
-	// Function that returns whether it is possible to move the contents of the
-	// block.
+	/**
+	 * Function that returns whether it is possible to move the contents of the cell.
+	 * @return whether it is possible to move the contents of the cell.
+	 */
 	public boolean isMovable() {
 		return cellType == CellType.NORMAL
 				&& !(hasCandy() && candy.getCandyType().equals(
@@ -178,11 +186,13 @@ public class Cell implements Cloneable, Serializable {
 		return cellType;
 	}
 
-	// added a setter for customisation purposes
+	/**
+	 * Changing the CellType for customisation purposes.
+	 * @param cellType The cellType that will replace the current type of the cell.
+	 */
 	public void setCellType(CellType cellType) {
 		this.cellType = cellType;
-		if (!cellType.equals(CellType.NORMAL)
-				&& !cellType.equals(CellType.LIQUORICE))
+		if (!cellType.needsCandy())
 			this.candy = null;
 	}
 
@@ -230,7 +240,7 @@ public class Cell implements Cloneable, Serializable {
 	 * @return whether the cell will allow candies to be dropped through it.
 	 */
 	public boolean blocksCandies() {
-		return cellType.blocksCandies()
+		return cellType.isBlocker()
 				|| (hasCandy() && candy.isDetonated() && candy.getCandyType()
 						.isStripped());
 	}

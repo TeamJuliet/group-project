@@ -10,6 +10,7 @@ import java.io.Serializable;
  *
  */
 public class Design implements Serializable {
+	public static int MAX_DIMENSIONS = 9;
 	// The dimensions of the board.
 	private int height, width;
 
@@ -62,8 +63,8 @@ public class Design implements Serializable {
 	 * available and the objective to reach a score of 1.
 	 */
 	public Design() {
-		this.height = 10;
-		this.width = 10;
+		this.height = MAX_DIMENSIONS;
+		this.width = MAX_DIMENSIONS;
 		this.boardLayout = new Cell[width][height];
 		for (int x = 0; x < this.width; x++) {
 			for (int y = 0; y < this.height; y++) {

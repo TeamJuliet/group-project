@@ -39,7 +39,7 @@ public class SimulationThread implements Runnable {
         int movesMade = 1;
         try {
             SimulatedPlayerManager playerManager = new SimulatedPlayerManager();
-            while (level.getGameProgress().movesRemaining > 0 && !level.didFailShuffle()) {
+            while (!level.isGameOver() && !level.didFailShuffle()) {
 
                 // Query the appropriate simulated player for the next best move
                 Move bestMove = playerManager.calculateBestMove(level, playerAbility);

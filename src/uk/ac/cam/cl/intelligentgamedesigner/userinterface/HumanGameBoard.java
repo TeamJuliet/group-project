@@ -75,6 +75,10 @@ public class HumanGameBoard extends GameBoard implements MouseListener, MouseMot
 			boolean draw_to = 
 					move_to.x<width && move_to.y<height &&
 					board[move_to.x][move_to.y].getCellType()!=CellType.UNUSABLE;
+
+			//draw the swapping choice above
+			redrawCandy(move_from.x,move_from.y,g);
+			
 			if(draw_from)g.drawRect(move_from.x*tile_size, move_from.y*tile_size, tile_size, tile_size);
 			if(draw_to)g.drawRect(move_to.x*tile_size, move_to.y*tile_size, tile_size, tile_size);
 			g.setColor(Color.BLACK);
@@ -83,6 +87,7 @@ public class HumanGameBoard extends GameBoard implements MouseListener, MouseMot
 			g.setColor(Color.WHITE);
 			if(draw_from)g.drawRect(move_from.x*tile_size+2, move_from.y*tile_size+2, tile_size-4, tile_size-4);
 			if(draw_to)g.drawRect(move_to.x*tile_size+2, move_to.y*tile_size+2, tile_size-4, tile_size-4);
+			
 		}
 	}
 

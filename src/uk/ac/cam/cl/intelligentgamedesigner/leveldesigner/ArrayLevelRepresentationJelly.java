@@ -1,7 +1,5 @@
 package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
-import java.util.Random;
-
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 
@@ -21,11 +19,16 @@ public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
         3 => Liquorice
      */
 
-    public ArrayLevelRepresentationJelly(Random random, int numberOfCandyColours) {
-        super(random, numberOfCandyColours);
+    public ArrayLevelRepresentationJelly(LevelRepresentationParameters parameters) {
+        super(parameters);
 		board.initialiseJellyLevels();
     }
-    
+
+	/**
+	 * This method clones the current representation.
+	 *
+	 * @return The clone
+	 */
     @Override
     public ArrayLevelRepresentationJelly clone() {
     	ArrayLevelRepresentationJelly clone = (ArrayLevelRepresentationJelly) super.clone();
@@ -33,15 +36,23 @@ public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
     	return clone;
     }
 
+	/**
+	 * This extends the mutation to alter jelly levels.
+	 */
 	@Override
 	public void mutate() {
 		super.mutate();
 		
-		if (random.nextDouble() > 0.5) { // Mutate one of the jelly levels with 50% probability.
+		if (parameters.random.nextDouble() > 0.5) { // Mutate one of the jelly levels with 50% probability.
 			board.mutateJellyLevels();
 		}
 	}
 
+	/**
+	 * This returns a design corresponding to the representation.
+	 *
+	 * @return The design
+	 */
 	@Override
     public Design getDesign() {
     	Design design = super.getDesign();
@@ -50,7 +61,12 @@ public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
     	
     	return design;
     }
-	
+
+	/**
+	 * This extends the aesthetic fitness function for jelly levels.
+	 *
+	 * @return	The fitness
+     */
 	@Override
     public double getAestheticFitness() {
     	double fitness = super.getAestheticFitness();

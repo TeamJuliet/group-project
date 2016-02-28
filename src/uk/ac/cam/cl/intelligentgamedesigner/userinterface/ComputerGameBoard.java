@@ -30,6 +30,10 @@ public class ComputerGameBoard extends GameBoard{
 		//draw the cursor	
 		g.setColor(Color.WHITE);
 		if(move != null){
+			
+			//draw the swapping choice above
+			redrawCandy(move.p1.x,move.p2.y,g);
+			
 			g.drawRect(move.p1.x*tile_size, move.p1.y*tile_size, tile_size, tile_size);
 			g.drawRect(move.p2.x*tile_size, move.p2.y*tile_size, tile_size, tile_size);
 			g.setColor(Color.BLACK);

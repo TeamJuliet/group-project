@@ -5,10 +5,10 @@ import java.util.Random;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 
 public abstract class LevelRepresentation implements Cloneable {
-	protected Random random;
+	protected LevelRepresentationParameters parameters;
 	
-	public LevelRepresentation(Random r) {
-		random = r;
+	public LevelRepresentation(LevelRepresentationParameters parameters) {
+		this.parameters = parameters;
 	}
 	
 	public LevelRepresentation clone() {
@@ -39,7 +39,6 @@ public abstract class LevelRepresentation implements Cloneable {
 
 	public abstract double getConstraintFitness();
 
-	public abstract String representationToString();
-
-	public abstract void printRepresentation();
+	@Override
+	public abstract String toString ();
 }

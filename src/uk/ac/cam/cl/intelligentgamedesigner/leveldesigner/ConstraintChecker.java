@@ -126,23 +126,13 @@ public class ConstraintChecker {
 			if (!nonUnusableFound) yLower++;
 		}
 
-		int yUpper = board.height;
-		while (yUpper > 0 && !nonUnusableFound) {
-			nonUnusableFound = false;
-			for (int x = 0; x < board.width; x++) {
-				if (board.get(x, yUpper - 1).getDesignCellType() != DesignCellType.UNUSABLE) nonUnusableFound = true;
-			}
-			if (!nonUnusableFound) yUpper--;
-		}
-
-		int actualHeight = yUpper - yLower;
-
 		double totalDropProportion = 0;
 		int actualWidth = 0;
+		int minDropHeight = yLower + 1;
 		for (int x = 0; x < board.width; x++) {
-			int y = 0;
+			int y = yLower;
 			nonUnusableFound = false;
-			while (y < board.height) {
+			while (y < minDropHeight) {
 				DesignCellType cellType = board.get(x, y).getDesignCellType();
 				if (cellType != DesignCellType.UNUSABLE) nonUnusableFound = true;
 				if (cellType == DesignCellType.ICING || cellType == DesignCellType.LIQUORICE) {
@@ -152,12 +142,12 @@ public class ConstraintChecker {
 				}
 			}
 			if (nonUnusableFound) {
-				totalDropProportion += (y / (double) actualHeight);
+				totalDropProportion += (y / (double) minDropHeight);
 				actualWidth++;
 			}
 		}
 
-		return (totalDropProportion / (double) actualWidth);
+		return Math.exp((totalDropProportion / (double) actualWidth) + 1);
 	}
 
 	public static boolean hasFiveByFiveArea (DesignBoard board) {
@@ -237,16 +227,15 @@ public class ConstraintChecker {
 			for(int j = 0; j < board.height; j++) {
 								
 				if(board.getCellType(i, j) == DesignCellType.ICING || board.getCellType(i, j) == DesignCellType.LIQUORICE) {
-					total++;
-					
+					total += 3;
 
-					
-					if(	board.getCellType(i, j + 1) == DesignCellType.UNUSABLE &&
-						board.getCellType(i + 1, j) == DesignCellType.UNUSABLE &&
-						board.getCellType(i - 1, j) == DesignCellType.UNUSABLE)
-					{
-						totalSurrounded++;
-					}
+					int surroundingUnusable = 0;
+					if (board.getCellType(i - 1, j) == DesignCellType.UNUSABLE) surroundingUnusable++;
+					if (board.getCellType(i, j - 1) == DesignCellType.UNUSABLE) surroundingUnusable++;
+					if (board.getCellType(i + 1, j) == DesignCellType.UNUSABLE) surroundingUnusable++;
+					if (board.getCellType(i, j + 1) == DesignCellType.UNUSABLE) surroundingUnusable++;
+
+					if (surroundingUnusable > 1) totalSurrounded += surroundingUnusable - 1;
 				}
 			}
 		}
@@ -486,6 +475,8 @@ public class ConstraintChecker {
     	factor *= boardExtentFitness(bBoard);
     	
     	factor *= connectedAreaFitness(board,bBoard);
+
+		factor *= calculateDropFitness(board);
     	
     	return factor;
     }

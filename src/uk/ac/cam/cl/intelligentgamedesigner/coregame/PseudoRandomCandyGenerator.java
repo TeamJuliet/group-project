@@ -7,12 +7,10 @@ package uk.ac.cam.cl.intelligentgamedesigner.coregame;
  */
 public class PseudoRandomCandyGenerator extends CandyGenerator {
 
-    public PseudoRandomCandyGenerator() {
-        super();
-    }
-
     private int curNum = 38, prime = 361, anotherPrime = 991;
 
+    // Auxiliary function that generates a pseudo random number based on the
+    // seeds given.
     private int nextPseudoRandom() {
         // System.out.println(curNum + " " + CandyColour.values().length);
         curNum = (curNum * prime) % anotherPrime;
@@ -21,17 +19,9 @@ public class PseudoRandomCandyGenerator extends CandyGenerator {
 
     @Override
     public Candy generateCandy(int x) {
-        // This ensures a new ingredient is introduced whenever a user clears
-        // one on the board. It also introduces
-        // another ingredient with a small probability
-        if (super.ingredientsToDrop > 0) {
-            if (previousNumberOfIngredientsRemaining > gameStateProgress.getIngredientsRemaining()
-                    || nextPseudoRandom() % 100 < 2) {
-                ingredientsToDrop--;
-                previousNumberOfIngredientsRemaining--;
-                return new Candy(null, CandyType.INGREDIENT);
-            }
-        }
+
+        if (shouldGenerateIngredient((nextPseudoRandom() % 100) < 2))
+            return new Candy(null, CandyType.INGREDIENT);
 
         int num = nextPseudoRandom();
         // This line just adds some bombs for testing.

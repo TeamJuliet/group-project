@@ -1,5 +1,7 @@
 package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
+import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
+
 import java.util.Random;
 
 public class DesignCell {
@@ -8,20 +10,31 @@ public class DesignCell {
     private int jellyLevel;
 
     // Constructor for creating a randomly initialised design cell type
-    public DesignCell (Random random, int jellyLevel) {
+    public DesignCell (LevelRepresentationParameters parameters, int jellyLevel) {
         // Create a cell with random cell type
     	
-    	double r = random.nextDouble();
-    	
-    	if(r < 0.75) {
-    		this.designCellType = DesignCellType.EMPTY;
-    	}else if(r < 0.85){
-    		this.designCellType = DesignCellType.UNUSABLE;
-    	}else if(r < 0.95){
-    		this.designCellType = DesignCellType.ICING;
-    	}else{
-    		this.designCellType = DesignCellType.LIQUORICE;
-    	}
+    	double rand1 = parameters.random.nextDouble();
+
+        double unusableProbability = parameters.targetUnusableDensity * 0.8;
+
+        if (rand1 < unusableProbability) {
+            this.designCellType = DesignCellType.UNUSABLE;
+        } else {
+            // Otherwise, we choose between icing, liquorice or empty
+            double rand2 = parameters.random.nextDouble();
+
+            double icingProbability     = parameters.targetIcingDensity * 0.4;
+            double liquoriceProbability = parameters.targetLiquoriceDensity * 0.4;
+
+            if (rand2 < icingProbability) {
+                this.designCellType = DesignCellType.ICING;
+            } else if (rand2 < icingProbability + liquoriceProbability) {
+                this.designCellType = DesignCellType.LIQUORICE;
+            } else {
+                this.designCellType = DesignCellType.EMPTY;
+            }
+        }
+
         this.jellyLevel = jellyLevel;
     }
 

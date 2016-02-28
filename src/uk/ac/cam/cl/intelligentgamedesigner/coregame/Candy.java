@@ -155,6 +155,7 @@ public class Candy implements Cloneable, Serializable {
 
     @Override
     public boolean equals(Object toCompare) {
+    	if(toCompare == null)return false;
         Candy candyToCompare = (Candy) toCompare;
 
         return (this.colour == candyToCompare.colour && this.candyType == candyToCompare.candyType

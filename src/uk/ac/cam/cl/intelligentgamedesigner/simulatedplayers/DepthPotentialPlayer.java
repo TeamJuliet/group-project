@@ -18,19 +18,71 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
     // Note: again, when this is -1, it discovers all possible moves.
     protected final int                                numOfStatesInPool;
 
+    // The pool of game states with their respective metric that are currently
+    // being considered.
     private PriorityQueue<GameStateWithCombinedMetric> pool;
+
+    // The pool of game states with their respective metric that have been
+    // completed or have no more moves.
     private PriorityQueue<GameStateWithCombinedMetric> results;
 
-    // Function that evaluates the current game state based on the knowledge
-    // at that particular state.
-    public abstract GameStateMetric getGameStateMetric(GameState gameState);
+    /**
+     * Function that evaluates the current game state based on the knowledge at
+     * that particular state.
+     * 
+     * @param gameState
+     *            The game state to be evaluated.
+     * @return The metric for that state of the game.
+     */
+    abstract GameStateMetric getGameStateMetric(GameState gameState);
 
-    // Function that evaluates the current game state based on its potential
-    // of making progress towards the goal. (e.g. if there is a large number
-    // of cells containing jellies refreshed, etc).
-    public abstract GameStatePotential getGameStatePotential(GameState gameState);
+    /**
+     * Function that evaluates the current game state based on its potential of
+     * making progress towards the goal. (e.g. if there is a large number of
+     * cells containing jellies refreshed, etc).
+     * 
+     * @param gameState
+     *            The game state that will be evaluated.
+     * @return The potential for that game state.
+     */
+    GameStatePotential getGameStatePotential(GameState gameState) {
+        // Return the highest increase in score of all possible matches
+        GameState original = new GameState(gameState, new UnmovableCandyGenerator());
+        GameStateMetric bestMetric = null;
+        List<Move> moves = original.getValidMoves();
+        for (Move move : moves) {
+            GameState tmp = new GameState(original);
+            try {
+                tmp.makeFullMove(move);
+            } catch (InvalidMoveException e) {
+                // Just eat the exception since we don't care if wrong move is
+                // suggested
+                printInvalidSuggestionError(tmp, move);
+                continue;
+            }
 
-    public abstract GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential);
+            GameStateMetric nextMetric = getGameStateMetric(tmp);
+            if (nextMetric.compareTo(bestMetric) == -1)
+                bestMetric = nextMetric;
+        }
+        if (bestMetric == null)
+            return new GameStatePotential(Integer.MAX_VALUE);
+        return new GameStatePotential(bestMetric);
+    }
+
+    /**
+     * Function that is used for combining the metric and the potential for that
+     * game state.
+     * 
+     * @param metric
+     *            The metric for a game state.
+     * @param potential
+     *            The potential for a game state.
+     * @return The Combined metric for the two.
+     */
+    GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {
+        return new GameStateCombinedMetric(metric, potential, (metric.metric + potential.potential) / 2);
+    }
 
     /**
      * Function that filters the moves on the board that will be checked next.
@@ -46,6 +98,18 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
         Collections.shuffle(ret);
         return ret;
     }
+
+    /**
+     * Function that generates combined metric for game state that would occur
+     * if the move was made.
+     * 
+     * @param state
+     *            GameStateWithCombinedMetric to be used for evaluation.
+     * @param move
+     *            Move to be evaluated.
+     * @return GameStateWithCombinedMetric instance containing evaluation
+     *         results
+     */
 
     private GameStateWithCombinedMetric generateCombinedMetric(GameStateWithCombinedMetric state, Move move) {
         GameState nextState;
@@ -63,6 +127,7 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
                 getCombinedMetric(getGameStateMetric(nextState), getGameStatePotential(nextState)), moveRecorded);
     }
 
+    // Function that calculates the next depth for the game states given.
     private void nextDepth() {
         int upperLimit = numOfStatesInPool == -1 ? pool.size() : numOfStatesInPool;
         int elementsProcessed = 0;
@@ -89,11 +154,10 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
             throw new NoMovesFoundException(currentState);
         pool = new PriorityQueue<GameStateWithCombinedMetric>();
         results = new PriorityQueue<GameStateWithCombinedMetric>();
-        // Add the current game state with the
         pool.add(new GameStateWithCombinedMetric(currentState, new GameStateCombinedMetric(), null));
+
         int stages = 0;
-        // TODO: Add handling for -1.
-        while (stages < numOfStatesAhead) {
+        while (stages < numOfStatesAhead || (numOfStatesAhead == -1 && !pool.isEmpty())) {
             nextDepth();
             stages++;
         }
@@ -111,7 +175,7 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
     }
 
     public DepthPotentialPlayer() {
-        this(2, 4);
+        this(2, 15);
     }
 
     protected void printInvalidMoveError(GameState level, Move move) {
@@ -126,7 +190,7 @@ abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
         System.err.println(level.getValidMoves());
     }
 
-    private GameState simulateNextMove(GameState gameState, Move move) throws InvalidMoveException {
+    protected GameState simulateNextMove(GameState gameState, Move move) throws InvalidMoveException {
         GameState nextState = new GameState(gameState, new UnmovableCandyGenerator());
         nextState.makeFullMove(move);
         return nextState;

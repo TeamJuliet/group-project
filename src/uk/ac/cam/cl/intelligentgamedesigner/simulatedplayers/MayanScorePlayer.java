@@ -11,102 +11,29 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
 
+/**
+ * 
+ * Score player that uses several considerations in the metric apart from score
+ * distance, including the difficulty of removing certain jellies, the
+ * probability of removing blockers in close rounds, encourages the formation of
+ * candies and the generation of combinable candies.
+ *
+ */
 public class MayanScorePlayer extends DepthPotentialPlayer {
     private final double   blockerAtBoundaryConstant = 0.5;
-    private final double   scoreSmoothing            = 0.0005;
+    private final double   scoreSmoothing            = 0.005;
     private final double   hopefulBoost              = 1.5;
 
     private List<Position> jellies                   = new LinkedList<Position>(),
-                           blockers                  = new LinkedList<Position>();
+            blockers = new LinkedList<Position>();
 
     private Design         referenceDesign           = null;
-
-    private void recordJelliesAndBlockers(Design design) {
-        Cell[][] cellBoard = design.getBoard();
-        for (int x = 0; x < cellBoard.length; ++x) {
-            for (int y = 0; y < cellBoard[0].length; ++y) {
-                Position currentPosition = new Position(x, y);
-                if (cellBoard[x][y].getJellyLevel() > 0) {
-                    // this.difficultyOfFixedPositions.put(currentPosition,
-                    // BoardDifficultyGenerator.getCellDifficulty(design, x, y,
-                    // fixedNumberOfRounds));
-                    this.jellies.add(currentPosition);
-                }
-                if (cellBoard[x][y].getCellType().blocksCandies()) {
-                    this.blockers.add(currentPosition);
-                }
-            }
-        }
-    }
-
-    public static Cell getCell(Cell[][] board, Position pos) {
-        return BoardDifficultyGenerator.getCell(board, pos.x, pos.y);
-    }
-
-    private double getBlockerCriticality(Cell[][] board, int x, int y) {
-        double multiplier;
-        if (x == board.length - 1 || x == 0)
-            multiplier = blockerAtBoundaryConstant;
-        else
-            multiplier = 1.0;
-        return multiplier * (2.5 - Math.exp(-0.2 * countBlockersHeight(board, x, y)));
-    }
-
-    private double getBlockersDifficulty(Cell[][] board) {
-        double score = 0.0;
-        for (Position blockerPosition : this.blockers) {
-            if (board[blockerPosition.x][blockerPosition.y].getCellType().blocksCandies())
-                score += getBlockerCriticality(board, blockerPosition.x, blockerPosition.y);
-        }
-        return score;
-    }
-
-    private int countBlockersHeight(Cell[][] board, int x, int y) {
-        int count = 0;
-        for (int j = y + 1; j < board.length; ++j) {
-            if (!board[x][y].getCellType().equals(CellType.UNUSABLE)) {
-                ++count;
-            }
-        }
-        return count;
-    }
-
-    private double getCandyScore(Cell[][] board) {
-        int combinableCandies = BoardDifficultyGenerator.getCombinableCandies(board);
-        double combinableCandiesScore;
-        switch (combinableCandies) {
-        case 0:
-            combinableCandiesScore = 3.0;
-            break;
-        case 1:
-            combinableCandiesScore = 1.5;
-            break;
-        default:
-            combinableCandiesScore = 0.0;
-        }
-        // TODO: add potential to be detonated.
-        double candiesScore = 10.0 - getSpecialCandiesScore(board);
-        if (candiesScore < 0.0)
-            candiesScore = 0.0;
-        return combinableCandiesScore + candiesScore;
-    }
-
-    private static double targetWeight(int movesRemaining) {
-        return 0.5 * Math.exp(-0.2 * movesRemaining);
-    }
-
-    private double hopefulCellsScore(Cell[][] cellBoard) {
-        return 10.0 - countHopeful(cellBoard) / 2.0;
-    }
-
-    public MayanScorePlayer(int numOfStatesAhead, int numOfStatesInPool) {
-        super(numOfStatesAhead, numOfStatesInPool);
-    }
 
     @Override
     public GameStateMetric getGameStateMetric(GameState gameState) {
@@ -120,11 +47,9 @@ public class MayanScorePlayer extends DepthPotentialPlayer {
             // System.out.println(gameState.getGameProgress().movesRemaining);
             final double scoreDistance = (gameState.levelDesign.getObjectiveTarget()
                     - gameState.getGameProgress().score) * scoreSmoothing;
-            System.out.println(scoreDistance + " " + getCandyScore(board));
-            System.out.println(getBlockersDifficulty(board));
-            score = (1.0 + targetAlpha) * (scoreDistance) + (1.0 - targetAlpha)
-                    * (getBlockersDifficulty(board) + getCandyScore(board) + hopefulBoost * hopefulCellsScore(board));
-            // System.err.println(score);
+
+            score = (2.0 + targetAlpha) * (scoreDistance) + (1.0 - targetAlpha) * (getBlockersDifficulty(board)
+                    + 1.5 * getCandyScore(board) + hopefulBoost * hopefulCellsScore(board));
         }
         return new ScalarGameMetric(score);
     }
@@ -149,12 +74,108 @@ public class MayanScorePlayer extends DepthPotentialPlayer {
 
     @Override
     public GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {
-        return new ScalarCombinedMetric(metric.metric);
+        return new ScalarCombinedMetric(((ScalarGameMetric) metric).score);
+    }
+    
+    private void recordJelliesAndBlockers(Design design) {
+        Cell[][] cellBoard = design.getBoard();
+        for (int x = 0; x < cellBoard.length; ++x) {
+            for (int y = 0; y < cellBoard[0].length; ++y) {
+                Position currentPosition = new Position(x, y);
+                if (cellBoard[x][y].getJellyLevel() > 0) {
+                    // this.difficultyOfFixedPositions.put(currentPosition,
+                    // BoardDifficultyGenerator.getCellDifficulty(design, x, y,
+                    // fixedNumberOfRounds));
+                    this.jellies.add(currentPosition);
+                }
+                if (cellBoard[x][y].getCellType().isBlocker()) {
+                    this.blockers.add(currentPosition);
+                }
+            }
+        }
     }
 
+    public static Cell getCell(Cell[][] board, Position pos) {
+        return BoardDifficultyGenerator.getCell(board, pos.x, pos.y);
+    }
+
+    private double getBlockerCriticality(Cell[][] board, int x, int y) {
+        double multiplier;
+        if (x == board.length - 1 || x == 0)
+            multiplier = blockerAtBoundaryConstant;
+        else
+            multiplier = 1.0;
+        return multiplier * (2.5 - Math.exp(-0.2 * countBlockersHeight(board, x, y)));
+    }
+
+    private double getBlockersDifficulty(Cell[][] board) {
+        double score = 0.0;
+        for (Position blockerPosition : this.blockers) {
+            if (board[blockerPosition.x][blockerPosition.y].getCellType().isBlocker())
+                score += getBlockerCriticality(board, blockerPosition.x, blockerPosition.y);
+        }
+        return score;
+    }
+
+    private int countBlockersHeight(Cell[][] board, int x, int y) {
+        int count = 0;
+        for (int j = y + 1; j < board.length; ++j) {
+            if (!board[x][y].getCellType().equals(CellType.UNUSABLE)) {
+                ++count;
+            }
+        }
+        return count;
+    }
+
+    private double getCandyScore(Cell[][] board) {
+        int combinableCandies = BoardDifficultyGenerator.getCombinableCandies(board);
+        double combinableCandiesScore;
+        switch (combinableCandies) {
+        case 0:
+            combinableCandiesScore = 8.0;
+            break;
+        case 1:
+            combinableCandiesScore = 4.0;
+            break;
+        default:
+            combinableCandiesScore = 0.0;
+        }
+        // TODO: add potential to be detonated.
+        double candiesScore = 10.0 - getSpecialCandiesScore(board);
+        if (candiesScore < 0.0)
+            candiesScore = 0.0;
+        return combinableCandiesScore + candiesScore;
+    }
+
+    private static double targetWeight(int movesRemaining) {
+        return 0.5 * Math.exp(-0.2 * movesRemaining);
+    }
+
+    private double hopefulCellsScore(Cell[][] cellBoard) {
+        return 10.0 - countHopeful(cellBoard) / 2.0;
+    }
+
+    public MayanScorePlayer(int numOfStatesAhead, int numOfStatesInPool) {
+        super(numOfStatesAhead, numOfStatesInPool);
+    }
+
+
+
+    /**
+     * If there is any move that forms a combinable candy then it should be
+     * performed.
+     */
     @Override
     protected List<Move> selectMoves(GameState gameState) {
         List<Move> ret = gameState.getValidMoves();
+        List<Move> tmp = new LinkedList<Move>();
+        for (Move move : ret) {
+            if (GameStateAuxiliaryFunctions.hasSpecialOrColourBomb(gameState.getCell(move.p1.x, move.p1.y))
+                    && GameStateAuxiliaryFunctions.hasSpecialOrColourBomb(gameState.getCell(move.p2.x, move.p2.y)))
+                tmp.add(move);
+        }
+        if (!tmp.isEmpty())
+            return tmp;
         Collections.shuffle(ret);
         return ret;
     }

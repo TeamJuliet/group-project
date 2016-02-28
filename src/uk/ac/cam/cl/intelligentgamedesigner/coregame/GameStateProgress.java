@@ -11,6 +11,7 @@ public class GameStateProgress {
     private int     ingredientsRemaining;
     private int     movesRemaining;
     private boolean didFailShuffle = false;
+    private boolean hasGameBegun = false;
 
     public GameStateProgress(int score, int jellies, int ingredients, int moves) {
         this.score = score;
@@ -94,6 +95,15 @@ public class GameStateProgress {
     }
 
     /**
+     * Function that returns whether the game has begun.
+     *
+     * @return Whether the game has begun.
+     */
+    public boolean hasGameBegun () {
+        return this.hasGameBegun;
+    }
+
+    /**
      * Function that returns whether the shuffling phase failed.
      * 
      * @return Whether the shuffling phase failed.
@@ -144,6 +154,13 @@ public class GameStateProgress {
      */
     public void resetScore() {
         score = 0;
+    }
+
+    /**
+     * Function to indicate that the game has begun.
+     */
+    public void gameHasBegun () {
+        this.hasGameBegun = true;
     }
 
     /**

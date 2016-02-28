@@ -1,24 +1,25 @@
 package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.image.BufferedImage;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
-import uk.ac.cam.cl.intelligentgamedesigner.coregame.ProcessState;
 
 public class GameBoard extends DisplayBoard{
-	public Dimension[][] candy_offsets;
+	protected Dimension[][] candy_offsets;
+	protected double[][] scale_factors;
 
 	public GameBoard(Design design) {
 		super(design);
 		showing_unusables = false;
 		candy_offsets = new Dimension[width][height];
+		scale_factors = null;
 	}
 	public GameBoard(int width, int height) {
 		super(width,height);
 		showing_unusables = false;
+		candy_offsets = new Dimension[width][height];
+		scale_factors = null;
 	}
 	
 	protected boolean animating;
@@ -35,10 +36,18 @@ public class GameBoard extends DisplayBoard{
 	protected void setOffsets(Dimension[][] offsets){
 		candy_offsets = offsets;
 	}
+	protected void setResize(double[][] new_size){
+		scale_factors = new_size;
+	}
 	
 	
 
-
+	//if there is a move, draw the selected one above
+	protected Dimension move_loc;
+	public void setMoveLoc(Dimension move_loc){
+		this.move_loc = move_loc;
+	}
+	
 	//drawing the screen, with animations!
 	@Override
 	public void paint(Graphics g){
@@ -52,10 +61,20 @@ public class GameBoard extends DisplayBoard{
 						x_loc += candy_offsets[x][y].width;
 						y_loc += candy_offsets[x][y].height;
 					}
-					draw_textured_cell(x,y,g,x_loc,y_loc);
+					draw_textured_cell(x,y,g,x_loc,y_loc,scale_factors);
 				}
 			}
 		}
+		if(move_loc != null)redrawCandy(move_loc.width,move_loc.height,g);
+	}
+	protected void redrawCandy(int x, int y, Graphics g){
+		int x_loc = x*tile_size;
+		int y_loc = y*tile_size;
+		if(candy_offsets != null && candy_offsets[x][y] != null){
+			x_loc += candy_offsets[x][y].width;
+			y_loc += candy_offsets[x][y].height;
+		}
+		draw_textured_cell(x,y,g,x_loc,y_loc,scale_factors);
 	}
 	
 }
