@@ -23,7 +23,7 @@ public class SimulatedPlayerManager {
         SimulatedPlayerBase player;
         int lookAhead = 0;
         int poolSize = 0;
-        boolean dimitris = true; // TODO: integrate the players in properly
+        boolean dimitris = false; // TODO: integrate the players in properly
         switch (ability) {
         case 1:
             if (mode.equals(GameMode.JELLY))
