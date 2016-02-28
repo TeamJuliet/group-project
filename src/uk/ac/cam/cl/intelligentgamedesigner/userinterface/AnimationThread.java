@@ -14,18 +14,22 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.ProcessState;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
 
-//Handles the animations used whilst playing a game.
-//this is done on a separate thread to ensure that the screen is responsive whilst animation is going on
-//when given a move to perform, it takes it small step at a time, and animates each step.
-//These steps include:
-//making the move (swapping two candies, or 'activating' them if they are special effects (like colour bombs))
-//clearing tiles
-//making tiles fall down
-//shuffling the board if there are no moves available
-//(when tiles are cleared, they shrink until they disappear)
-//The animations are performed by comparing the current board layout to how it was before
-//and getting the current state the board is in (what stage of the move)
-//to infer what happened, and then animating that
+/**
+ * 
+ * Handles the animations used whilst playing a game.
+ * this is done on a separate thread to ensure that the screen is responsive whilst animation is going on
+ * when given a move to perform, it takes it small step at a time, and animates each step.
+ * These steps include:
+ * making the move (swapping two candies, or 'activating' them if they are special effects (like colour bombs))
+ * clearing tiles
+ * making tiles fall down
+ * shuffling the board if there are no moves available
+ * (when tiles are cleared, they shrink until they disappear)
+ * The animations are performed by comparing the current board layout to how it was before
+ * and getting the current state the board is in (what stage of the move)
+ * to infer what happened, and then animating that
+ *
+ */
 public class AnimationThread extends SwingWorker{
 	
 	public static final String NEW_STATE = "new state";

@@ -17,9 +17,13 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
 
-//This is the base class for displating a game board.
-//It stores a cell array, which it iterates through to draw the specific cells to the screen
-//It loads textures for the candies etc. and suports animations through the use of scaling and offsets
+/**
+ * 
+ * This is the base class for displating a game board.
+ * It stores a cell array, which it iterates through to draw the specific cells to the screen
+ * It loads textures for the candies etc. and suports animations through the use of scaling and offsets
+ *
+ */
 public class DisplayBoard extends JComponent {
 
 	protected int tile_size;

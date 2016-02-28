@@ -10,8 +10,12 @@ import java.awt.event.MouseListener;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 
-//The board used in the Designing Level screen.
-//You can select one of these and de-select the rest. (controlled through the screen)
+/**
+ * 
+ * The board used in the Designing Level screen.
+ * You can select one of these and de-select the rest. (controlled through the screen)
+ *
+ */
 public class SelectBoard extends DisplayBoard implements MouseListener{
 
 	private boolean selected;

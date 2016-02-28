@@ -36,8 +36,11 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.GameStateTestRunner;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.TestCaseGame;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.TestLibrary;
-
-//an interface for a human user to manually create a level, to then save
+/**
+ * 
+ * An interface for a human user to manually create a level, to then save
+ *
+ */
 public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener{
 	
 	//buttons for controlling stuff

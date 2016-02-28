@@ -2,7 +2,7 @@ package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 
-//defines functionality specific to the Human controlled game
+/**defines functionality specific to the Human controlled game**/
 public class HumanGameDisplayScreen extends GameDisplayScreen{
 	public HumanGameDisplayScreen(){
 		super();

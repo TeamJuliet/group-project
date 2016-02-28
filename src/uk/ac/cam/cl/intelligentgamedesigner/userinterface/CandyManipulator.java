@@ -5,8 +5,13 @@ import java.awt.Dimension;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 
-//handles some more line intensive functions manipulating the transformations to candy positions.
-//This includes the operations of moving offsets and resizing them, (for a single timestep)
+/**
+ * 
+ * 
+ * handles some more line intensive functions manipulating the transformations to candy positions.
+ * This includes the operations of moving offsets and resizing them, (for a single timestep)
+ *
+ */
 public class CandyManipulator {
 //CANDY SIZE
 	public static boolean shrink(double[][] sizes, double increment){

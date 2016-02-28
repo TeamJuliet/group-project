@@ -8,11 +8,16 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
-//The starting menu. from here you can select:
-//request level
-//create level
-//load level
-//(unit test creator omitted)
+/**
+ * 
+ * The starting menu. from here you can select:
+ * request level
+ * create level
+ * load level
+ * (unit test creator omitted)
+ *
+ */
+
 public class MainMenuScreen extends DisplayScreen{
 	
 	//Declaring the buttons

@@ -14,7 +14,7 @@ import javax.swing.Box.Filler;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-//This will be used as a template for all following menu screens
+/**This will be used as a template for all following menu screens**/
 public abstract class DisplayScreen extends JPanel  implements ActionListener{
 	//default UI settings
 	protected static final Color BACKGROUND = new Color(225,143,80);

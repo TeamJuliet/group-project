@@ -26,9 +26,14 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.RoundStatistics;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.RoundStatisticsManager;
 
-//Defines functionality shared by the human and simulated player games
-//Displays the game, score and how to handle animations etc.
-//Animations can be turned on or off using the toggle
+/**
+ * 
+ * Defines functionality shared by the human and simulated player games
+ * Displays the game, score and how to handle animations etc.
+ * Animations can be turned on or off using the toggle
+ *
+ */
+
 public abstract class GameDisplayScreen extends DisplayScreen implements PropertyChangeListener{
 	
 	protected JButton quit_button;

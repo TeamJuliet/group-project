@@ -6,10 +6,15 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
 
-//This class is responsible for loading and saving the designs
-//when created (by the interface manager), it scans the 'level' folder for existing (supported) designs
-//these are added to a list, which is updated when files are edited or added (also saving to the respective files)
-
+/**
+ * 
+ * 
+ * This class is responsible for loading and saving the designs
+ * when created (by the interface manager), it scans the 'level' folder for existing (supported) designs
+ * these are added to a list, which is updated when files are edited or added (also saving to the respective files)
+ * 
+ *
+ */
 public class LevelManager {
 	static int levels_so_far;
 	static final String location = System.getProperty("user.dir") + File.separator + "levels" + File.separator;
