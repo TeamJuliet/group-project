@@ -20,21 +20,42 @@ public class LevelDesignIndividual implements Comparable<LevelDesignIndividual> 
         this.constraintFitness = levelRepresentation.getConstraintFitness();
     }
 
+    /**
+     * A get method for the fitness of the individual.
+     *
+     * @return  The fitness of the individual
+     */
     public double getFitness() {
         return aestheticFitness * constraintFitness;
     }
 
+    /**
+     * A get method for the level representation.
+     *
+     * @return  The level representation
+     */
     public LevelRepresentation getLevelRepresentation() {
         return levelRepresentation;
     }
 
+    /**
+     * A method for getting the corresponding Design of an individual.
+     *
+     * @return  The corresponding Design instance
+     */
     public Design getDesign() {
         if (design == null) {
             design = levelRepresentation.getDesign();
         }
         return design;
     }
-    
+
+    /**
+     * For comparing individuals based on fitness.
+     *
+     * @param individual    The individual to compare against
+     * @return  The result of the comparison
+     */
     @Override
 	public int compareTo(LevelDesignIndividual individual) {
 		double compared = this.getFitness() - individual.getFitness();

@@ -1,5 +1,8 @@
 package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
+/**
+ * This class contains the methods for calculating how aesthetic a design is.
+ */
 public class AestheticChecker {
 	
 	public static double calculateFitness(DesignBoard board) {

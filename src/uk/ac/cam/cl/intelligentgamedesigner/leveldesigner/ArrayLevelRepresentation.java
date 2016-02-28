@@ -7,6 +7,9 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * A LevelRepresentation subclass in which the board is represented using a 2D array.
+ */
 public abstract class ArrayLevelRepresentation extends LevelRepresentation {
     protected DesignBoard board;
     protected static int maxWidth = 9;

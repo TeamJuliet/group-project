@@ -3,6 +3,9 @@ package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 
+/**
+ * A class for representing jelly levels.
+ */
 public class ArrayLevelRepresentationJelly extends ArrayLevelRepresentation {
 	public static final int maxJellyLevel = 2;
 

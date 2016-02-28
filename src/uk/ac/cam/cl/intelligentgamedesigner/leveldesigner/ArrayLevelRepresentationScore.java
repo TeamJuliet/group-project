@@ -2,6 +2,9 @@ package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 
+/**
+ * A class for representing score levels.
+ */
 public class ArrayLevelRepresentationScore extends ArrayLevelRepresentation {
 
     public ArrayLevelRepresentationScore(LevelRepresentationParameters parameters) {

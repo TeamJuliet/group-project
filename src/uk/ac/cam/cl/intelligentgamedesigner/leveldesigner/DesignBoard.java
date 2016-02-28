@@ -42,6 +42,9 @@ public class DesignBoard {
 		}
 	}
 
+	/**
+	 * This initialises the cells of the DesignBoard to have non-zero jelly levels.
+	 */
 	public void initialiseJellyLevels() {
 		for (DesignCell designCell : board) {
 			if (designCell.getDesignCellType() != DesignCellType.UNUSABLE) {

@@ -2,6 +2,9 @@ package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
 import java.util.ArrayList;
 
+/**
+ * A class for checking how playable a level is.
+ */
 public class ConstraintChecker {	
 	
 	public static IntegerBoard getPossibleMatches(BaseBinaryBoard board) {

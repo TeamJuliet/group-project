@@ -6,6 +6,9 @@ import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
 
 import java.util.List;
 
+/**
+ * A class for checking how fun a level is.
+ */
 public class FunChecker {
 
     // Just for testing purposes
