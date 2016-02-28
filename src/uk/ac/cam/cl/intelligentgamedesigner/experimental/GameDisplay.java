@@ -7,15 +7,20 @@ import javax.swing.JPanel;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
 
+/**
+ * 
+ * Panel that displays a single board.
+ * Note: use only for testing purposes.
+ *
+ */
 public class GameDisplay extends JPanel {
-	private int blockSize;
+	private static final long serialVersionUID = 1L;
 	private int sizeX, sizeY;
 	
 	private CellDisplay[][] displays;
 	public GameDisplay(int N, int M, int blockSize) {
 		sizeX = N;
 		sizeY = M;
-		this.blockSize = blockSize;
 		displays = new CellDisplay[sizeX][sizeY];
 		setLayout(null);
 		setPreferredSize(new Dimension(sizeX * blockSize, sizeY * blockSize));
@@ -35,7 +40,6 @@ public class GameDisplay extends JPanel {
 	public void setBoard(Cell[][] values) {
 		for (int i = 0; i < sizeX; ++i) {
 			for (int j = 0; j < sizeY; ++j) {
-				// TODO: Check indices.
 				displays[i][j].setCell(values[i][j]);
 			}
 		}

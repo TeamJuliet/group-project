@@ -23,6 +23,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 /**
+ * Class that tests that the basic matches, combinations, ingredient and blockers behaviour works as expected.
+ * 
  * To write a test for GameState you must create an initial layout of the candies in place.
  * e.g.
  *  Candy[][] board = { 

@@ -19,11 +19,18 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameStateAuxiliaryFunctions
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
 
+/**
+ * 
+ * Player that removes jelly based on the jellies remaining on the board, the
+ * potential to remove this jellies in the next moves, the potential to make
+ * combinable or special candies and the potential to remove blockers.
+ *
+ */
 public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
 
 	// The number of rounds for which the target player will be run.
 	private static final int NUMBER_OF_ROUNDS = 15;
-	
+
 	// Constant that reduces score for jellies that are removable.
 	private static final double IS_REMOVABLE = 0.5;
 

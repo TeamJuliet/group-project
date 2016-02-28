@@ -20,6 +20,11 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.MayanScorePlayer;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.NoMovesFoundException;
 
+/**
+ * 
+ * Class that tests that the MayanScorePlayer operates as expected.
+ *
+ */
 public class MayanScorePlayerTest {
     
     public static final int TWO_MOVES_AHEAD = 2;
