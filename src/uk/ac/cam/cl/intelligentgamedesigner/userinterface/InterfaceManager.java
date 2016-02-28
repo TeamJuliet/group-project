@@ -20,7 +20,9 @@ import uk.ac.cam.cl.intelligentgamedesigner.leveldesigner.Specification;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.TestCaseGame;
 
 //This will be used to navigate between the menu screens
-//I will also use this for testing the different screens
+//Information being sent across the screen is also managed by this class (statically)
+//The program is initialised from this. (it also handles setting up the screen and format)
+
 public class InterfaceManager extends JFrame {
 	public static final LevelManager level_manager = new LevelManager();
 	

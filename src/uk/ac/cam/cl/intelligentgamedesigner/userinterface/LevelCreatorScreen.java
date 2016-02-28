@@ -471,7 +471,8 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 	
 	private void makeAndSave(){
 		Design level = new Design();
-		
+	
+		//crop the board,to make the design more efficient
 		board.minimumBoundingBox();
 		
 		int temp_width = board.width;
@@ -479,6 +480,7 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		dimensions_width.setValue(temp_width);
 		dimensions_height.setValue(temp_height);
 		
+		//get information from the customiser screen
 		int number_of_moves = 1;
 		if (moves.getValue() instanceof Long) { 
 			number_of_moves = ((Long) moves.getValue()).intValue();
@@ -492,6 +494,7 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 			objective_value = (int) mode_objective.getValue(); 
 		}
 		
+		//set the design's objectives
 		level.setBoard(board.getBoard());
 		level.resizeBoard(temp_width, temp_height);
 		positionBoard(board,0.5,0.5);

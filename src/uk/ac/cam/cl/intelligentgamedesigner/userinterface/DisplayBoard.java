@@ -17,6 +17,9 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
 
+//This is the base class for displating a game board.
+//It stores a cell array, which it iterates through to draw the specific cells to the screen
+//It loads textures for the candies etc. and suports animations through the use of scaling and offsets
 public class DisplayBoard extends JComponent {
 
 	protected int tile_size;
@@ -34,6 +37,8 @@ public class DisplayBoard extends JComponent {
 	private static final String suffix = ".png";
 	private static final int image_size = 100;
 	
+	//Load the in-game textures. 
+	//If this fails, it reverts to the original drawing circles and squares etc.
 	public static void loadTextures(){
 	       try {     
 	    	   
@@ -186,6 +191,7 @@ public class DisplayBoard extends JComponent {
 	}
 
 	//drawing the screen
+	//This is for textured cells, supporting scaling and translating the objects from their original locations on the board
 	protected void draw_textured_cell(int x, int y, Graphics g, int candy_x_loc, int candy_y_loc, double[][] scale){
 		BufferedImage item = null;
 		
@@ -238,11 +244,11 @@ public class DisplayBoard extends JComponent {
 			g.drawImage(objective_piece[jl], x*tile_size+centralise_offset, y*tile_size+centralise_offset, (x+1)*tile_size-centralise_offset, (y+1)*tile_size-centralise_offset, 0, 0, image_size, image_size, null);
 		}
 		
-		//draw the candy itself
+		//draw the candy itself (offset if necessary)
 		
 		if(item != null)g.drawImage(item, candy_x_loc+centralise_offset, candy_y_loc+centralise_offset, candy_x_loc+tile_size-centralise_offset, candy_y_loc+tile_size-centralise_offset, 0, 0, image_size, image_size, null);
 				
-		//after the candy
+		//after the candy (offset if necessary)
 		switch(board[x][y].getCellType()){
 		case DONT_CARE:
 		case LIQUORICE:
@@ -254,6 +260,7 @@ public class DisplayBoard extends JComponent {
 		}
 		
 	}
+	//if the textures fail, this is called, not involving any textures
 	private void draw_cell(int x, int y, Graphics g){
 		
 		//draw the cell

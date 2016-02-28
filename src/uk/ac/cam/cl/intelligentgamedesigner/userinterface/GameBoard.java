@@ -5,6 +5,8 @@ import java.awt.Graphics;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 
+//The display board specific to games.
+//It supports animations by allowing the candy/icing/etc. images to be resized or moved from their initial positions
 public class GameBoard extends DisplayBoard{
 	protected Dimension[][] candy_offsets;
 	protected double[][] scale_factors;
