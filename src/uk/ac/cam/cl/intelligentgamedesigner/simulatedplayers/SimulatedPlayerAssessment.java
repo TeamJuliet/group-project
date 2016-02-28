@@ -379,7 +379,7 @@ public class SimulatedPlayerAssessment {
 
     // Function that assess the score players.
     private static void assessScoreBasedPlayers() {
-        final int numberOfGamesToRun = 20;
+        final int numberOfGamesToRun = 40;
         
         List<SimulatedPlayerBase> scorePlayers = new LinkedList<SimulatedPlayerBase>();
         scorePlayers.add(new ScorePlayerAlpha());
@@ -390,7 +390,7 @@ public class SimulatedPlayerAssessment {
         Design design = SimulatedPlayersTestHelpers.getBoardWithBlockersDesign();
         design.setGameMode(GameMode.HIGHSCORE);
         design.setObjectiveTarget(3400);
-        design.setNumberOfMovesAvailable(12);
+        design.setNumberOfMovesAvailable(10);
 
         outputResults(scorePlayers, evaluateScorePlayers(design, scorePlayers, numberOfGamesToRun));
     }
@@ -410,7 +410,7 @@ public class SimulatedPlayerAssessment {
         jellyDesign.setNumberOfMovesAvailable(7);
 
 
-        outputResults(jellyPlayers, evaluateScorePlayers(jellyDesign, jellyPlayers, numberOfGamesToRun));
+        outputResults(jellyPlayers, evaluateJellyPlayers(jellyDesign, jellyPlayers, numberOfGamesToRun));
     }
     
     public static void main(String[] Args) {
