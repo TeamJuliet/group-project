@@ -1,5 +1,8 @@
 package uk.ac.cam.cl.intelligentgamedesigner.testing;
 
+/**
+ * A class used to control which debug statements are printed.
+ */
 public class DebugFilter {
 
     // Comment out any of these filters according to what debug output you want to see when running the code

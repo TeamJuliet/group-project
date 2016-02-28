@@ -8,6 +8,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 
+/**
+ * A class used to run visual GameState tests.
+ */
 public class GameStateTestRunner extends JPanel implements ActionListener, PropertyChangeListener {
 
     private JProgressBar progressBar;

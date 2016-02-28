@@ -1,6 +1,5 @@
 package uk.ac.cam.cl.intelligentgamedesigner.testing;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -9,6 +8,9 @@ import uk.ac.cam.cl.intelligentgamedesigner.leveldesigner.*;
 
 import java.util.Random;
 
+/**
+ * A class which contains the leveldesigner unit tests.
+ */
 public class LevelDesignerTestRunner {
 
     /*

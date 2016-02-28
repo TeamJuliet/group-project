@@ -22,8 +22,8 @@ public class DesignCell {
             // Otherwise, we choose between icing, liquorice or empty
             double rand2 = parameters.random.nextDouble();
 
-            double icingProbability     = parameters.targetIcingDensity * 0.4;
-            double liquoriceProbability = parameters.targetLiquoriceDensity * 0.4;
+            double icingProbability     = parameters.targetIcingDensity * 0.5;
+            double liquoriceProbability = parameters.targetLiquoriceDensity * 0.3;
 
             if (rand2 < icingProbability) {
                 this.designCellType = DesignCellType.ICING;
