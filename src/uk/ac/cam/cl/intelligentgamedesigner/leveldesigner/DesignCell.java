@@ -13,22 +13,27 @@ public class DesignCell {
     public DesignCell (LevelRepresentationParameters parameters, int jellyLevel) {
         // Create a cell with random cell type
     	
-    	double r = parameters.random.nextDouble();
+    	double rand1 = parameters.random.nextDouble();
 
-        double icingProbability     = parameters.targetIcingDensity * 0.4;
-        double liquoriceProbability = parameters.targetLiquoriceDensity * 0.4;
-        double remaining            = 1 - icingProbability - liquoriceProbability;
-        double emptyProbability     = remaining * 0.8;
+        double unusableProbability = parameters.targetUnusableDensity * 0.8;
 
-    	if (r < icingProbability) {
-    		this.designCellType = DesignCellType.ICING;
-    	} else if (r < icingProbability + liquoriceProbability) {
-    		this.designCellType = DesignCellType.LIQUORICE;
-    	} else if (r < icingProbability + liquoriceProbability + emptyProbability) {
-    		this.designCellType = DesignCellType.EMPTY;
-    	} else {
-    		this.designCellType = DesignCellType.UNUSABLE;
-    	}
+        if (rand1 < unusableProbability) {
+            this.designCellType = DesignCellType.UNUSABLE;
+        } else {
+            // Otherwise, we choose between icing, liquorice or empty
+            double rand2 = parameters.random.nextDouble();
+
+            double icingProbability     = parameters.targetIcingDensity * 0.4;
+            double liquoriceProbability = parameters.targetLiquoriceDensity * 0.4;
+
+            if (rand2 < icingProbability) {
+                this.designCellType = DesignCellType.ICING;
+            } else if (rand2 < icingProbability + liquoriceProbability) {
+                this.designCellType = DesignCellType.LIQUORICE;
+            } else {
+                this.designCellType = DesignCellType.EMPTY;
+            }
+        }
 
         this.jellyLevel = jellyLevel;
     }

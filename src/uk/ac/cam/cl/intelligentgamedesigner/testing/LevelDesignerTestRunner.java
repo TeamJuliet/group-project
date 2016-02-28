@@ -156,6 +156,6 @@ public class LevelDesignerTestRunner {
     }
 
     private LevelRepresentationParameters getParameters () {
-        return new LevelRepresentationParameters(new Random(), 6, 0.1, 0.1, 0.1);
+        return new LevelRepresentationParameters(new Random(), 6, 0.1, 0.1, 0.1, 0.2);
     }
 }

@@ -186,7 +186,7 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		icing_density.setPaintLabels(true);
 		icing_density.addChangeListener(this);
 
-		val_unusable_density = 0.2;
+		val_unusable_density = 0.3;
 		unusable_density.setValue((int) (val_unusable_density * unusable_density.getMaximum()));
 		unusable_density.setMajorTickSpacing(1);
 		unusable_density.setPaintTicks(true);

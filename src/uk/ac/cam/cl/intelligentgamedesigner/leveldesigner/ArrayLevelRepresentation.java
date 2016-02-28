@@ -36,7 +36,8 @@ public abstract class ArrayLevelRepresentation extends LevelRepresentation {
                 parameters.numberOfCandyColours,
                 parameters.targetIcingDensity,
                 parameters.targetLiquoriceDensity,
-                parameters.targetJellyDensity);
+                parameters.targetJellyDensity,
+                parameters.targetUnusableDensity);
     	
     	return clone;
     }

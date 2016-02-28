@@ -210,7 +210,8 @@ public class LevelDesignerManager extends SwingWorker {
                     numberOfCandyColours,
                     this.specification.getDesiredIcing(),
                     this.specification.getDesiredLiquorice(),
-                    this.specification.getDesiredJelly());
+                    this.specification.getDesiredJelly(),
+                    this.specification.getDesiredUnusable());
 
             switch (specification.getGameMode()) {
                 case HIGHSCORE:
