@@ -88,7 +88,7 @@ public class LevelDesignerManager extends SwingWorker {
      * @param threadID  The thread identifier for the calling LevelDesign instance
      */
     public synchronized void notifyInterfacePhase1(LevelRepresentation topLevel, int threadID) {
-        this.topDesigns[threadID] = topLevel.getDesign();
+        this.topDesigns[threadID] = topLevel == null ? null : topLevel.getDesign();
 
         firePropertyChange(PropertyChanges.PROPERTY_CHANGE_DESIGNS, null, this.topDesigns);
     }

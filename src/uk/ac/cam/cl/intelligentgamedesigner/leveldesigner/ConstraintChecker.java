@@ -227,15 +227,13 @@ public class ConstraintChecker {
 			for(int j = 0; j < board.height; j++) {
 								
 				if(board.getCellType(i, j) == DesignCellType.ICING || board.getCellType(i, j) == DesignCellType.LIQUORICE) {
-					total += 3;
+					total++;
 
-					int surroundingUnusable = 0;
-					if (board.getCellType(i - 1, j) == DesignCellType.UNUSABLE) surroundingUnusable++;
-					if (board.getCellType(i, j - 1) == DesignCellType.UNUSABLE) surroundingUnusable++;
-					if (board.getCellType(i + 1, j) == DesignCellType.UNUSABLE) surroundingUnusable++;
-					if (board.getCellType(i, j + 1) == DesignCellType.UNUSABLE) surroundingUnusable++;
-
-					if (surroundingUnusable > 1) totalSurrounded += surroundingUnusable - 1;
+					if(	board.getCellType(i, j + 1) == DesignCellType.UNUSABLE
+							&& board.getCellType(i + 1, j) == DesignCellType.UNUSABLE
+							&& board.getCellType(i - 1, j) == DesignCellType.UNUSABLE) {
+						totalSurrounded++;
+					}
 				}
 			}
 		}
