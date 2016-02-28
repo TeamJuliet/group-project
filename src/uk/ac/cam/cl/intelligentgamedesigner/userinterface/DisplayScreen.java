@@ -80,6 +80,7 @@ public abstract class DisplayScreen extends JPanel  implements ActionListener{
 		scale_factor = ((double)screen_width)/1200;		
 	}
 	
+	//when resized, the items will need to be repositioned
 	public void rePosition(){
 		resizeBoards();
 		placeItems();
@@ -88,6 +89,7 @@ public abstract class DisplayScreen extends JPanel  implements ActionListener{
 		//Default does nothing
 	}
 	
+	//scale and place it at the centre of the specified point
 	protected void position(JComponent thing,double frac_w,double frac_h, int width, int height){
 		double scaled_width = scale_factor * width;
 		double scaled_height = scale_factor * height;
@@ -101,10 +103,12 @@ public abstract class DisplayScreen extends JPanel  implements ActionListener{
 				);
 	}
 	
+	//define some font sizes
 	public static final int FONT_NORMAL = 12;
 	public static final int FONT_SMALL = 10;
 	public static final int FONT_TITLE = 24;
 	public static final int FONT_SUBTITLE = 18;
+	//scale the font in components and any subcomponents
 	protected void fontScale(JComponent thing, int fontsize){
 		float scaled_font = (float) (scale_factor * fontsize);
 		if(lobster != null && (fontsize == FONT_TITLE || fontsize == FONT_SUBTITLE)){
@@ -125,6 +129,7 @@ public abstract class DisplayScreen extends JPanel  implements ActionListener{
 			}
 		}
 	}
+	//position the scaled board, centred at that point
 	protected void positionBoard(DisplayBoard board, double frac_w, double frac_h){
 		board.setAlignmentX(CENTER_ALIGNMENT);
 		board.setAlignmentY(CENTER_ALIGNMENT);

@@ -15,6 +15,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * This class serves as a middleman between the user interface and the LevelDesigner. It handles running and
+ * evaluating the performance of simulated players, and is used to initiate separate generation processes in the
+ * background.
+ */
 public class LevelDesignerManager extends SwingWorker {
     public static int NUMBER_TO_DISPLAY = DesigningLevelScreen.BOARD_COUNT;
 
@@ -88,7 +93,7 @@ public class LevelDesignerManager extends SwingWorker {
      * @param threadID  The thread identifier for the calling LevelDesign instance
      */
     public synchronized void notifyInterfacePhase1(LevelRepresentation topLevel, int threadID) {
-        this.topDesigns[threadID] = topLevel.getDesign();
+        this.topDesigns[threadID] = topLevel == null ? null : topLevel.getDesign();
 
         firePropertyChange(PropertyChanges.PROPERTY_CHANGE_DESIGNS, null, this.topDesigns);
     }

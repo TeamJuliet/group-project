@@ -8,70 +8,57 @@ public class AestheticChecker {
 		return 0.1 + ( fitness * calculateCentralDistance(board) * calculateConnectedFitness(board) );
 	}
 	
-	private static double calculateDistributionScore(DesignBoard board) {
-		int[] counts = new int[DesignCellType.values().length];
-		int cellCount = board.height * board.width;
-		
-		for (int x = 0; x < board.width; x++) {
-    		for (int y = 0; y < board.height; y++) {
-    			DesignCellType type = board.get(x, y).getDesignCellType();
-    			counts[type.ordinal()]++;
-    		}
-    	}
-		
-		double[][] distributionDesired = new double[counts.length][2];
-		
-		distributionDesired[0][0] = 0.2;
-		distributionDesired[0][1] = 0.7;
-		
-		distributionDesired[1][0] = 0.4;
-		distributionDesired[1][1] = 1.0;
-		
-		distributionDesired[2][0] = 0.05;
-		distributionDesired[2][1] = 0.1;
-	
-		distributionDesired[3][0] = 0.05;
-		distributionDesired[3][1] = 0.1;
-		
-		double[] distributions = new double[counts.length];
-		for (int i = 0; i < counts.length; i++) {
-			distributions[i] = counts[i] / (double) cellCount;
-		}
-		
-		double score = 1.0;
-		
-		for(int c = 0; c < distributionDesired.length; c++)
-		{
-			double diff = 0.0;
-			
-			if(distributions[c] < distributionDesired[c][0])
-			{
-				diff = (distributionDesired[c][0] - distributions[c]) / distributionDesired[c][0];  
-			}else
-			if(distributions[c] > distributionDesired[c][1])
-			{
-				diff = (distributions[c] - distributionDesired[c][1]) / (1.0 - distributionDesired[c][1]);  
-			}
-			
-			score -= diff / (counts.length);
-		}
-		
-		return score;
-	}
-	
 	private static double calculateSymmetryScore(DesignBoard board) {
-		int maxX = board.width / 2;
-    	int score = 0;
-    	for (int x = 0; x < maxX; x++) {
+		
+    	int vertScore = 0;
+    	for (int x = 0; x < (board.width / 2); x++) {
     		for (int y = 0; y < board.height; y++) {
     			DesignCellType t1 = board.get(x, y).getDesignCellType();
     			DesignCellType t2 = board.get(board.width - x - 1, y).getDesignCellType();
     			if (t1 == t2) {
-    				score++;
+    				vertScore++;
     			}
     		}
     	}
-    	return score / (double) (maxX * board.height);
+    	
+    	double vert = 1.05 * Math.pow(vertScore / (double) ((board.width * board.height) / 2),2);
+    	
+    	/*int diagScore = 0;
+    	for(int j = 0; j < board.height; j++)
+    	{
+	    	for(int i = 0; i < j; i++) {
+	    		DesignCellType t1 = board.get(i, j).getDesignCellType();
+    			DesignCellType t2 = board.get(j, i).getDesignCellType();
+    			if (t1 == t2) {
+    				diagScore++;
+    			}
+	    	}
+    	}
+    	
+    	double diag = Math.pow(diagScore / (double) ((board.width * board.height) / 2),2);
+    	
+    	int invertDiagScore = 0;
+    	for(int j = 0; j < board.height; j++)
+    	{
+	    	for(int i = 0; i < board.height - (j + 1); i++) {
+	    		DesignCellType t1 = board.get(i, j).getDesignCellType();
+    			DesignCellType t2 = board.get(board.height - (j + 1), board.width - (i + 1)).getDesignCellType();
+    			if (t1 == t2) {
+    				invertDiagScore++;
+    			}
+	    	}
+    	}
+    	
+    	
+    	double invertDiag = Math.pow(invertDiagScore / (double) ((board.width * board.height) / 2),2);
+    	
+    	if(invertDiag > 0.3 && diag > 0.3) {
+    		return invertDiag * diag;
+    	}
+    	
+    	return Math.max(Math.max(vert, diag),invertDiag);*/
+    	
+    	return vert;
 	}
 	
 	private static double calculateCentralDistance(DesignBoard board)
@@ -110,7 +97,7 @@ public class AestheticChecker {
 		{
 			for(int j = 1; j < board.width - 1; j++)
 			{
-				DesignCellType t = board.get(i, j).getDesignCellType();
+				DesignCellType t = board.get(i, j).getDesignCellType(); 
 				
 				if(t != board.get(i, j + 1).getDesignCellType())
 				{
@@ -136,7 +123,7 @@ public class AestheticChecker {
 		
 		return 1.0 - ((double)meh / (4 * board.width * board.height));
 	}
-	
+
 	public static double calculateJellyFitness(DesignBoard board) {
 		return calculateJellyNonIsolationFitness(board) * calculateJellySymmetryFitness(board);
 	}

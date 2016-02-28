@@ -12,6 +12,8 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
 
+//Like a regular game board, but with the addition of clicking and dragging mechanics
+//it detects human input and uses this to signal moves, which it sends to the game screen
 public class HumanGameBoard extends GameBoard implements MouseListener, MouseMotionListener {
 
 	protected GameDisplayScreen screen;

@@ -6,7 +6,19 @@ public class CandyBoard extends BaseBinaryBoard {
 	{
 		super(board.width,board.height,false);
 		
+		initializationPhase = true;
 		this.board = board;
+		
+		for(int i = 0; i < board.width; i++) {
+			for(int j = 0; j < board.height; j++) {
+				if(this.get(i, j)){
+					count++;
+					set(i, j, true);
+				}
+			}
+		}
+		
+		initializationPhase = false;
 	}
 
 	@Override
@@ -25,9 +37,11 @@ public class CandyBoard extends BaseBinaryBoard {
 	}
 	
 	@Override
-	protected final void validStatSet(int i, int j, Boolean obj) {		
-		//This should never be called (Otherwise there is an error in the code)
-		assert(false);
+	protected final void validStatSet(int i, int j, Boolean obj) {
+		if(!initializationPhase) {
+			//This should never be called (Otherwise there is an error in the code)
+			assert(false);
+		}
 		
 	}
 	
@@ -44,10 +58,13 @@ public class CandyBoard extends BaseBinaryBoard {
 		return get(i, j) ? 1 : 0;
 	}
 
+
 	@Override
 	public final int getCount() {
-		return 0;
+		return count;
 	}
 	
+	private int count;
+	private boolean initializationPhase;
 	protected DesignBoard board;
 }

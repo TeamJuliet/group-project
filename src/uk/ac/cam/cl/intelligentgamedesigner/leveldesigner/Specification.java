@@ -2,7 +2,10 @@ package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 
-
+/**
+ * This class is passed from the user interface to the level designer manager, and specifies what kind of level the
+ * user wants to generate.
+ */
 public class Specification {
        
     private double targetFailRate;

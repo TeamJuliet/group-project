@@ -11,6 +11,9 @@ import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
 
 import java.util.List;
 
+/**
+ * This class is for running a simulation in a thread
+ */
 public class SimulationThread implements Runnable {
 
     private GameState level;
@@ -39,7 +42,7 @@ public class SimulationThread implements Runnable {
         int movesMade = 1;
         try {
             SimulatedPlayerManager playerManager = new SimulatedPlayerManager();
-            while (level.getGameProgress().movesRemaining > 0 && !level.didFailShuffle()) {
+            while (!level.isGameOver() && !level.didFailShuffle()) {
 
                 // Query the appropriate simulated player for the next best move
                 Move bestMove = playerManager.calculateBestMove(level, playerAbility);

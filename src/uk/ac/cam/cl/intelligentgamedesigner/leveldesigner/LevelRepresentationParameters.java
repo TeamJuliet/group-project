@@ -2,6 +2,9 @@ package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
 import java.util.Random;
 
+/**
+ * This class is used for encapsulating parameters for a given level requested by the user.
+ */
 public class LevelRepresentationParameters {
     public final Random random;
     public final int numberOfCandyColours;

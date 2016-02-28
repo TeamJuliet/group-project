@@ -11,6 +11,9 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 
+//The display board for the level creator
+//It detects clicking to the board and communicates with the screen it is on.
+//it uses this to update the board with the new cell types.
 public class CustomBoard extends DisplayBoard implements MouseListener, MouseMotionListener{
 		
 	protected DisplayScreen watch_creator;

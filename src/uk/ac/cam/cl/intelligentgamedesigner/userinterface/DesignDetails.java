@@ -13,6 +13,11 @@ import javax.swing.SwingConstants;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 
+//Used in the Designing level screen.
+//This describes the small box underneath each of the levels in progress,
+//and shows the progress of the game objectives/info)
+//either a work in progress, or showing the objective, the game mode, 
+//the number of candies and the number of moves allowed
 public class DesignDetails extends JPanel{
 	private JLabel numberOfCandies;
 	private JLabel movesAllowed;

@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * This class is used to represent a board in a way such that it can be initialised, mutated and crossed over with
+ * other boards.
+ */
 public class DesignBoard {
 	private LevelRepresentationParameters parameters;
 	private List<DesignCell> board;

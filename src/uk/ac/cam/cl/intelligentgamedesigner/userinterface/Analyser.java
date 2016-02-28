@@ -17,6 +17,7 @@ import javax.swing.WindowConstants;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.leveldesigner.LevelDesignerManager;
 
+//This class sets a thread working on a analysing a design using a simulated player and displays the result
 public class Analyser extends JPanel implements ActionListener,PropertyChangeListener{
 	int ability;
 	Design design;

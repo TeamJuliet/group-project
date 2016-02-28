@@ -23,6 +23,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.testing.TestCase;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.TestCaseGame;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.TestLibrary;
 
+//This class is used for a popup from which you can load saved unit tests
 public class UnitTestLoader extends JPanel implements ActionListener,ListSelectionListener {
 
 	private JScrollPane test_list;
