@@ -7,6 +7,11 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 
+/**
+ * 
+ * Class that is used to select the appropriate players according to ability and the game mode.
+ *
+ */
 public class SimulatedPlayerManager {
 
     EnumMap<GameMode, HashMap<Integer, SimulatedPlayerBase>> players                = new EnumMap<>(GameMode.class);
@@ -18,7 +23,7 @@ public class SimulatedPlayerManager {
         SimulatedPlayerBase player;
         int lookAhead = 0;
         int poolSize = 0;
-        boolean dimitris = false; // TODO: integrate the players in properly
+        boolean dimitris = true; // TODO: integrate the players in properly
         switch (ability) {
         case 1:
             if (mode.equals(GameMode.JELLY))
@@ -94,6 +99,15 @@ public class SimulatedPlayerManager {
         return MAXIMUM_PLAYER_ABILITY;
     }
 
+    // TODO: Should this function be removed?
+    public void solve(GameState level, int ability) throws NoMovesFoundException {
+        GameMode mode = level.levelDesign.getMode();
+        checkPlayer(mode, ability);
+
+        SimulatedPlayerBase player = players.get(mode).get(ability);
+        player.solve(level);
+    }
+    
     private void checkPlayer(GameMode mode, int ability) {
         if (!players.containsKey(mode))
             players.put(mode, new HashMap<Integer, SimulatedPlayerBase>());
@@ -102,11 +116,5 @@ public class SimulatedPlayerManager {
             modePlayers.put(ability, makeSimulatedPlayer(ability, mode));
     }
 
-    public void solve(GameState level, int ability) throws NoMovesFoundException {
-        GameMode mode = level.levelDesign.getMode();
-        checkPlayer(mode, ability);
 
-        SimulatedPlayerBase player = players.get(mode).get(ability);
-        player.solve(level);
-    }
 }

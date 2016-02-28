@@ -1,5 +1,7 @@
 package uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers;
 
+import java.util.Random;
+
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameState;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 
@@ -9,10 +11,16 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
  *
  */
 public class ScorePlayerAlpha extends SimulatedPlayerBase {
+
+    private static Random random = new Random();
+
     @Override
     public Move calculateBestMove(GameState currentState) throws NoMovesFoundException {
-        if (currentState.getValidMoves().size() > 0)
-            return currentState.getValidMoves().get(0);
+        // Randomly choose a move so that they are not ordered from top to
+        // bottom and left to right.
+        int numOfMovesAvailable = currentState.getValidMoves().size();
+        if (numOfMovesAvailable > 0)
+            return currentState.getValidMoves().get(random.nextInt(numOfMovesAvailable));
         throw new NoMovesFoundException(currentState);
     }
 }
