@@ -20,6 +20,11 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.JellyRemoverPlayerLuna;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.NoMovesFoundException;
 
+/**
+ * 
+ * Class that tests that the LunaJellyRemoverPlayer operates as expected.
+ *
+ */
 public class LunaJellyRemoverPlayerTest {
     public static final int TWO_MOVES_AHEAD = 2;
     public static final int TEN_STATES_IN_POOL = 10;

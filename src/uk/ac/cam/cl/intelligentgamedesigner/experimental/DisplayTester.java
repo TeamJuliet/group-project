@@ -12,6 +12,11 @@ import javax.swing.border.EtchedBorder;
 
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.*;
 
+/**
+ * 
+ * Class used to display and play the game for testing purposes.
+ *
+ */
 public class DisplayTester {	
 	
 	public static Design getSampleDesign() {

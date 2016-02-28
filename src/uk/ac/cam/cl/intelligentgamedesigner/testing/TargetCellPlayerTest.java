@@ -21,130 +21,141 @@ import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.TargetCellPlayer;
 
 /**
  * 
- * Class that checks that the target player plays games with simple boards and with blockers.
+ * Class that checks that the target player plays games with simple boards and
+ * with blockers.
  *
  */
 public class TargetCellPlayerTest {
 
-    public static final int TWO_MOVES_AHEAD = 2;
-    public static final int TEN_STATES_IN_POOL = 10;
-    
-    /**
-     * Tests that the player can play and win a plain board game with simple target.
-     */
-    @Test
-    public void playsPlainBoardSimpleTarget() {
-        Design design = getPlainBoardDesign();
-        design.setRules(GameMode.HIGHSCORE, FIVE_MOVES_AVAILABLE, MINIMUM_TARGET_SCORE, SIX_CANDY_COLOURS);
-        GameState game = new GameState(design);
+	public static final int TWO_MOVES_AHEAD = 2;
+	public static final int TEN_STATES_IN_POOL = 10;
 
-        int targetXcoordinate = 5, targetYcoordinate = 5;
-        TargetCellPlayer player = new TargetCellPlayer(TWO_MOVES_AHEAD, TEN_STATES_IN_POOL, targetXcoordinate, targetYcoordinate);
+	/**
+	 * Tests that the player can play and win a plain board game with simple
+	 * target.
+	 */
+	@Test
+	public void playsPlainBoardSimpleTarget() {
+		Design design = getPlainBoardDesign();
+		design.setRules(GameMode.HIGHSCORE, FIVE_MOVES_AVAILABLE,
+				MINIMUM_TARGET_SCORE, SIX_CANDY_COLOURS);
+		GameState game = new GameState(design);
 
-        while (!game.isGameOver()) {
-            try {
-                Move move = player.calculateBestMove(game);
-                game.makeFullMove(move);
-            } catch (NoMovesFoundException e) {
-                e.printStackTrace();
-            } catch (InvalidMoveException e) {
-                // There shouldn't be an invalid move attempted.
-                assertTrue (false);
-                e.printStackTrace();
-            }
-        }
+		int targetXcoordinate = 5, targetYcoordinate = 5;
+		TargetCellPlayer player = new TargetCellPlayer(TWO_MOVES_AHEAD,
+				TEN_STATES_IN_POOL, targetXcoordinate, targetYcoordinate);
 
-        assertTrue (game.isGameOver());
-        // Since the game is won with one move, the game state should be in won
-        // state.
-        assertTrue (game.isGameWon());
-    }
+		while (!game.isGameOver()) {
+			try {
+				Move move = player.calculateBestMove(game);
+				game.makeFullMove(move);
+			} catch (NoMovesFoundException e) {
+				e.printStackTrace();
+			} catch (InvalidMoveException e) {
+				// There shouldn't be an invalid move attempted.
+				assertTrue(false);
+				e.printStackTrace();
+			}
+		}
 
-    /**
-     * Tests that the player can play a plain board with many moves.
-     */
-    @Test
-    public void playsPlainBoardLongTarget() {
-        Design design = getPlainBoardDesign();
-        design.setRules(GameMode.HIGHSCORE, TWENTY_MOVES_AVAILABLE, INFINITE_TARGET_SCORE, SIX_CANDY_COLOURS);
-        GameState game = new GameState(design);
+		assertTrue(game.isGameOver());
+		// Since the game is won with one move, the game state should be in won
+		// state.
+		assertTrue(game.isGameWon());
+	}
 
-        int targetXcoordinate = 5, targetYcoordinate = 5;
-        TargetCellPlayer player = new TargetCellPlayer(TWO_MOVES_AHEAD, TEN_STATES_IN_POOL, targetXcoordinate, targetYcoordinate);
+	/**
+	 * Tests that the player can play a plain board with many moves.
+	 */
+	@Test
+	public void playsPlainBoardLongTarget() {
+		Design design = getPlainBoardDesign();
+		design.setRules(GameMode.HIGHSCORE, TWENTY_MOVES_AVAILABLE,
+				INFINITE_TARGET_SCORE, SIX_CANDY_COLOURS);
+		GameState game = new GameState(design);
 
-        while (!game.isGameOver()) {
-            try {
-                Move move = player.calculateBestMove(game);
-                game.makeFullMove(move);
-            } catch (NoMovesFoundException e) {
-                e.printStackTrace();
-            } catch (InvalidMoveException e) {
-                // There shouldn't be an invalid move attempted.
-                assertTrue (false);
-                e.printStackTrace();
-            }
-        }
+		int targetXcoordinate = 5, targetYcoordinate = 5;
+		TargetCellPlayer player = new TargetCellPlayer(TWO_MOVES_AHEAD,
+				TEN_STATES_IN_POOL, targetXcoordinate, targetYcoordinate);
 
-        // Simply checks that the game has ended.
-        assertTrue (game.isGameOver());
-    }
+		while (!game.isGameOver()) {
+			try {
+				Move move = player.calculateBestMove(game);
+				game.makeFullMove(move);
+			} catch (NoMovesFoundException e) {
+				e.printStackTrace();
+			} catch (InvalidMoveException e) {
+				// There shouldn't be an invalid move attempted.
+				assertTrue(false);
+				e.printStackTrace();
+			}
+		}
 
-    /**
-     * Tests that the player can play and win a board with blockers and simple target.
-     */
-    @Test
-    public void playsBoardWithBlockersSimpleTarget() {
-        Design design = getBoardWithBlockersDesign();
-        design.setRules(GameMode.HIGHSCORE, FIVE_MOVES_AVAILABLE, MINIMUM_TARGET_SCORE, SIX_CANDY_COLOURS);
-        GameState game = new GameState(design);
+		// Simply checks that the game has ended.
+		assertTrue(game.isGameOver());
+	}
 
-        int targetXcoordinate = 5, targetYcoordinate = 5;
-        TargetCellPlayer player = new TargetCellPlayer(TWO_MOVES_AHEAD, TEN_STATES_IN_POOL, targetXcoordinate, targetYcoordinate);
+	/**
+	 * Tests that the player can play and win a board with blockers and simple
+	 * target.
+	 */
+	@Test
+	public void playsBoardWithBlockersSimpleTarget() {
+		Design design = getBoardWithBlockersDesign();
+		design.setRules(GameMode.HIGHSCORE, FIVE_MOVES_AVAILABLE,
+				MINIMUM_TARGET_SCORE, SIX_CANDY_COLOURS);
+		GameState game = new GameState(design);
 
-        while (!game.isGameOver()) {
-            try {
-                Move move = player.calculateBestMove(game);
-                game.makeFullMove(move);
-            } catch (NoMovesFoundException e) {
-                e.printStackTrace();
-            } catch (InvalidMoveException e) {
-                // There shouldn't be an invalid move attempted.
-                assertTrue (false);
-                e.printStackTrace();
-            }
-        }
+		int targetXcoordinate = 5, targetYcoordinate = 5;
+		TargetCellPlayer player = new TargetCellPlayer(TWO_MOVES_AHEAD,
+				TEN_STATES_IN_POOL, targetXcoordinate, targetYcoordinate);
 
-        assertTrue (game.isGameOver());
-        assertTrue (game.isGameWon());
-    }
+		while (!game.isGameOver()) {
+			try {
+				Move move = player.calculateBestMove(game);
+				game.makeFullMove(move);
+			} catch (NoMovesFoundException e) {
+				e.printStackTrace();
+			} catch (InvalidMoveException e) {
+				// There shouldn't be an invalid move attempted.
+				assertTrue(false);
+				e.printStackTrace();
+			}
+		}
 
-    /**
-     * Tests that the player can play a board with blockers and many moves.
-     */
-    @Test
-    public void playsBoardWithBlockersLongTarget() {
-        Design design = getBoardWithBlockersDesign();
-        design.setRules(GameMode.HIGHSCORE, TWENTY_MOVES_AVAILABLE, INFINITE_TARGET_SCORE, SIX_CANDY_COLOURS);
-        GameState game = new GameState(design);
+		assertTrue(game.isGameOver());
+		assertTrue(game.isGameWon());
+	}
 
-        int targetXcoordinate = 5, targetYcoordinate = 5;
-        TargetCellPlayer player = new TargetCellPlayer(TWO_MOVES_AHEAD, TEN_STATES_IN_POOL, targetXcoordinate, targetYcoordinate);
+	/**
+	 * Tests that the player can play a board with blockers and many moves.
+	 */
+	@Test
+	public void playsBoardWithBlockersLongTarget() {
+		Design design = getBoardWithBlockersDesign();
+		design.setRules(GameMode.HIGHSCORE, TWENTY_MOVES_AVAILABLE,
+				INFINITE_TARGET_SCORE, SIX_CANDY_COLOURS);
+		GameState game = new GameState(design);
 
-        while (!game.isGameOver()) {
-            try {
-                Move move = player.calculateBestMove(game);
-                game.makeFullMove(move);
-            } catch (NoMovesFoundException e) {
-                e.printStackTrace();
-                break;
-            } catch (InvalidMoveException e) {
-                // There shouldn't be an invalid move attempted.
-                assertTrue (false);
-                e.printStackTrace();
-            }
-        }
+		int targetXcoordinate = 5, targetYcoordinate = 5;
+		TargetCellPlayer player = new TargetCellPlayer(TWO_MOVES_AHEAD,
+				TEN_STATES_IN_POOL, targetXcoordinate, targetYcoordinate);
 
-        assertTrue (game.isGameOver());
-    }
-    
+		while (!game.isGameOver()) {
+			try {
+				Move move = player.calculateBestMove(game);
+				game.makeFullMove(move);
+			} catch (NoMovesFoundException e) {
+				e.printStackTrace();
+				break;
+			} catch (InvalidMoveException e) {
+				// There shouldn't be an invalid move attempted.
+				assertTrue(false);
+				e.printStackTrace();
+			}
+		}
+
+		assertTrue(game.isGameOver());
+	}
+
 }

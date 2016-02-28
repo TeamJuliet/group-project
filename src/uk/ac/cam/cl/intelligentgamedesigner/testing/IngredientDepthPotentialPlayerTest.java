@@ -20,6 +20,11 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.IngredientDepthPotentialPlayer;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.NoMovesFoundException;
 
+/**
+ * 
+ * Class that tests that the IngredientDepthPotentialPlayer operates as expected.
+ *
+ */
 public class IngredientDepthPotentialPlayerTest {
     
     public static final int TWO_MOVES_AHEAD = 2;

@@ -20,6 +20,11 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.DepthPotentialScorePlayer;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.NoMovesFoundException;
 
+/**
+ * 
+ * Class that tests that the DepthPotentialScorePlayer operates as expected.
+ *
+ */
 public class DepthPotentialScorePlayerTest {
     
     public static final int TWO_MOVES_AHEAD = 2;

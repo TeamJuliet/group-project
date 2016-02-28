@@ -12,7 +12,13 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
 
+/**
+ * 
+ * A Panel that is used to display a single cell of the board.
+ *
+ */
 public class CellDisplay extends JPanel  {
+	private static final long serialVersionUID = 1L;
 	final private int borderSize = 3;
 	final private static Color emptyColor = Color.WHITE;
 	private Color clr;
@@ -20,7 +26,6 @@ public class CellDisplay extends JPanel  {
 	private CandyType candyType;
 	private CellType cellType;
 	private int jellyLevel = 0;
-	private int x = 0, y = 0;
 	private Position position;
 	
 	// Indicates whether this is a selected block.
