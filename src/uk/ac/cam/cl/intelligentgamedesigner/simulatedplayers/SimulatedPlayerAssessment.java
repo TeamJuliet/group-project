@@ -415,7 +415,7 @@ public class SimulatedPlayerAssessment {
     
     public static void main(String[] Args) {
         System.out.println("Score based players assessment:");
-        //assessScoreBasedPlayers();
+        assessScoreBasedPlayers();
         System.out.println("Jelly based players assessment:");
         assessJellyBasedPlayers();
     }
