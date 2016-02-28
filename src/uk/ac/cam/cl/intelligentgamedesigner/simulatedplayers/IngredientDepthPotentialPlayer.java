@@ -26,20 +26,26 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
 public class IngredientDepthPotentialPlayer extends DepthPotentialPlayer {
     // The multiplier value for how much less should we care about clearing a
     // blocker at the boundary.
-    private final double   blockerAtBoundaryConstant = 0.5;
+    private static final double   BLOCKER_AT_BOUNDARY = 0.5;
 
     // Rounds to execute in the estimation of the difficulty for the board.
-    private final int      numOfRoundsToExecute      = 10;
+    private static final int      NUMBER_OF_ROUNDS      = 10;
 
     // The bonus given for removing a single ingredient.
-    private final double   ingredientsBonusRemoval   = 5.0;
+    private static final double   INGREDIENTS_BONUS_REMOVAL   = 5.0;
 
     // Constant that is used to promote candy combinations or moves that remove
     // a lot of cells (but are possible to refill them).
-    private final double   hopefulBoost              = 1.5;
+    private static final double   HOPEFUL_BOOST              = 1.5;
 
-    private final double   ingredientPercentageBoost = 10.0;
+    private static final double   INGREDIENT_PERCENTAGE_BOOST = 10.0;
 
+	// Score given by each special candy on the board.
+	private static final double SPECIAL_CANDY_SCORE = 1.2;
+
+	// Score given by each colour bomb on the board.
+	private static final double COLOUR_BOMB_SCORE = 2.5;
+	
     // The positions of the initial blockers on the board.
     private List<Position> blockers                  = new LinkedList<Position>();
 
@@ -49,7 +55,7 @@ public class IngredientDepthPotentialPlayer extends DepthPotentialPlayer {
     // Keep the difficulty for removing all cells in an array, corresponding to
     // the reference design.
     private double[][]     difficultyBoard;
-
+    
     public IngredientDepthPotentialPlayer(int numOfStatesAhead, int numOfStatesInPool) {
         super(numOfStatesAhead, numOfStatesInPool);
     }
@@ -59,7 +65,7 @@ public class IngredientDepthPotentialPlayer extends DepthPotentialPlayer {
         if (referenceDesign != currentState.levelDesign) {
             referenceDesign = currentState.levelDesign;
             this.blockers = GameStateAuxiliaryFunctions.getBlockerPositions(referenceDesign.getBoard());
-            this.difficultyBoard = BoardDifficultyGenerator.getBoardDifficulty(referenceDesign, numOfRoundsToExecute);
+            this.difficultyBoard = BoardDifficultyGenerator.getBoardDifficulty(referenceDesign, NUMBER_OF_ROUNDS);
         }
         return super.calculateBestMove(currentState);
     }
@@ -72,7 +78,7 @@ public class IngredientDepthPotentialPlayer extends DepthPotentialPlayer {
 
     @Override
     public GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {
-        return new ScalarCombinedMetric(metric.metric);
+    	return new ScalarCombinedMetric(((ScalarGameMetric) metric).score);
     }
 
     @Override
@@ -90,7 +96,7 @@ public class IngredientDepthPotentialPlayer extends DepthPotentialPlayer {
         // If the blocker is at the board then it is not as important, hence set
         // the multiplier to be a fraction smaller than 1.0.
         if (x == board.length - 1 || x == 0)
-            multiplier = blockerAtBoundaryConstant;
+            multiplier = BLOCKER_AT_BOUNDARY;
 
         return multiplier * (2.5 - Math.exp(-0.2 * countBlockersHeight(board, x, y)));
     }
@@ -145,7 +151,7 @@ public class IngredientDepthPotentialPlayer extends DepthPotentialPlayer {
             // If the difficulty remaining for the ingredients on the column
             // were Di and the total difficulty is D we are taking the Sum(Di/D)
             // which is Sum(Di) / D.
-            score += colIngredientsDifficulty / colTotalDifficulty * ingredientPercentageBoost;
+            score += colIngredientsDifficulty / colTotalDifficulty * INGREDIENT_PERCENTAGE_BOOST;
         }
         return score;
     }
@@ -193,7 +199,8 @@ public class IngredientDepthPotentialPlayer extends DepthPotentialPlayer {
             combinableCandiesScore = 0.0;
         }
 
-        double candiesScore = 10.0 - getSpecialCandiesScore(board);
+        double candiesScore = 10.0 - getSpecialCandiesScore(board,
+				COLOUR_BOMB_SCORE, SPECIAL_CANDY_SCORE);
         if (candiesScore < 0.0)
             candiesScore = 0.0;
         return combinableCandiesScore + candiesScore;
@@ -222,12 +229,12 @@ public class IngredientDepthPotentialPlayer extends DepthPotentialPlayer {
                     targetWeight(gameState.getGameProgress().ingredientsRemaining));
 
             // Term that promotes the removal of ingredients.
-            final double remainingIngredients = ingredientsBonusRemoval
+            final double remainingIngredients = INGREDIENTS_BONUS_REMOVAL
                     * gameState.getGameProgress().ingredientsRemaining;
 
             score = (1.0 + targetAlpha) * (getIngredientsDifficulty(board) + remainingIngredients)
                     + (1.0 - targetAlpha) * (getBlockersDifficulty(board) + getSpecialCandyScore(board)
-                            + hopefulBoost * hopefulCellsScore(board) + getIngredientsPotential(board));
+                            + HOPEFUL_BOOST * hopefulCellsScore(board) + getIngredientsPotential(board));
         }
         return new ScalarGameMetric(score);
     }

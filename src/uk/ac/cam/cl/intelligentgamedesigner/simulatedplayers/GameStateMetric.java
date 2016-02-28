@@ -1,5 +1,10 @@
 package uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers;
 
+/**
+ * 
+ * The metric for a single game state.
+ *
+ */
 public class GameStateMetric implements Comparable<GameStateMetric> {
     public final int metric;
 

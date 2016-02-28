@@ -14,7 +14,7 @@ import java.util.Random;
 public class LevelDesigner implements Runnable {
 	private static final int populationSize = 100;
 	private static final double elitePercentage = 0.05;
-	private static final double feasibleThreshold = 0.06;
+	private static final double feasibleThreshold = 0.04;
 	private static final double crossoverProbability = 0.8;
 	private int iterations;
 

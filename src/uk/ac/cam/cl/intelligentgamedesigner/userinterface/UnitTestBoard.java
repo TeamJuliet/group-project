@@ -14,6 +14,11 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
 
+//The specialisation of a board used for the unit test.
+//this differs from teh custom board in that candies can be explicitly placed
+//supports the three unit test board types - the regular one,
+//the 'board after' one (that is affected by changes to the regular one,
+//and the board above, which only supports candies.
 public class UnitTestBoard extends CustomBoard {
 
 	private int type;//0 is before, 1 is after, 2 is lookahead

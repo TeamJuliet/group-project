@@ -1,11 +1,23 @@
 package uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers;
 
-// Class that contains the combined evaluation for the current form of the gameState
-// and its potential to reach the required target.
+/**
+ * Class that contains the combined evaluation for the current form of the gameState
+ * and its potential to reach the required target.
+ *
+ */
 public class GameStateCombinedMetric implements Comparable<GameStateCombinedMetric> {
-    // Not sure if we need metric and potential to be stored here as well
+	/**
+	 * The metric for the given game state.
+	 */
     public final GameStateMetric    metric;
+    /**
+     * The potential for the given game state.
+     */
     public final GameStatePotential potential;
+    
+    /**
+     * A scalar int potential.
+     */
     public final int                value;
 
     public GameStateCombinedMetric(GameStateMetric m, GameStatePotential p, int v) {

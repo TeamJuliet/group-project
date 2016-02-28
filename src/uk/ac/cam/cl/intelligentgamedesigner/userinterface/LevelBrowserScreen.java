@@ -18,6 +18,8 @@ import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
 
 //loads the saved levels and allows you to scroll between them and select one
+//the loaded levels are displayed in a list.
+//Once you select a level, you can take it to the Design Display screen
 public class LevelBrowserScreen extends DisplayScreen implements ListSelectionListener{
 	
 	private JScrollPane level_list;

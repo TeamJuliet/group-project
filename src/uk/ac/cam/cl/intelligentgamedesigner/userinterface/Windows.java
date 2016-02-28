@@ -1,5 +1,5 @@
 package uk.ac.cam.cl.intelligentgamedesigner.userinterface;
-
+//The different game screens
 public enum Windows {
 	MAIN,
 	REQUEST,
