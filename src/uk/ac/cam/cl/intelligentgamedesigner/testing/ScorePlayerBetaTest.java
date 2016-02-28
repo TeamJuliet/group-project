@@ -20,6 +20,12 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.NoMovesFoundException;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.ScorePlayerBeta;
 
+/**
+ * 
+ * Class that tests that the ScorePlayerBeta operates as expected for
+ * boards that do not contain jellies nor ingredients).
+ *
+ */
 public class ScorePlayerBetaTest {
     
     /**

@@ -20,12 +20,19 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.RuleBasedJellyPlayer;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.NoMovesFoundException;
 
+/**
+ * 
+ * Class that tests that the RuleBasedJellyPlayer operates as expected for
+ * boards containing jellies.
+ *
+ */
 public class RuleBasedJellyPlayerTest {
-    public static final int TWO_MOVES_AHEAD = 2;
+    public static final int TWO_MOVES_AHEAD    = 2;
     public static final int TEN_STATES_IN_POOL = 10;
-    
+
     /**
-     * Tests that the player can play and win a plain board game with simple target.
+     * Tests that the player can play and win a plain board game with simple
+     * target.
      */
     @Test
     public void playsPlainBoardSimpleTarget() {
@@ -43,15 +50,15 @@ public class RuleBasedJellyPlayerTest {
                 e.printStackTrace();
             } catch (InvalidMoveException e) {
                 // There shouldn't be an invalid move attempted.
-                assertTrue (false);
+                assertTrue(false);
                 e.printStackTrace();
             }
         }
 
-        assertTrue (game.isGameOver());
+        assertTrue(game.isGameOver());
         // Since the game is won with one move, the game state should be in won
         // state.
-        assertTrue (game.isGameWon());
+        assertTrue(game.isGameWon());
     }
 
     /**
@@ -63,7 +70,6 @@ public class RuleBasedJellyPlayerTest {
         design.setRules(GameMode.HIGHSCORE, TWENTY_MOVES_AVAILABLE, INFINITE_TARGET_SCORE, SIX_CANDY_COLOURS);
         GameState game = new GameState(design);
 
-
         RuleBasedJellyPlayer player = new RuleBasedJellyPlayer();
 
         while (!game.isGameOver()) {
@@ -74,17 +80,18 @@ public class RuleBasedJellyPlayerTest {
                 e.printStackTrace();
             } catch (InvalidMoveException e) {
                 // There shouldn't be an invalid move attempted.
-                assertTrue (false);
+                assertTrue(false);
                 e.printStackTrace();
             }
         }
 
         // Simply checks that the game has ended.
-        assertTrue (game.isGameOver());
+        assertTrue(game.isGameOver());
     }
 
     /**
-     * Tests that the player can play and win a board with blockers and simple target.
+     * Tests that the player can play and win a board with blockers and simple
+     * target.
      */
     @Test
     public void playsBoardWithBlockersSimpleTarget() {
@@ -102,13 +109,13 @@ public class RuleBasedJellyPlayerTest {
                 e.printStackTrace();
             } catch (InvalidMoveException e) {
                 // There shouldn't be an invalid move attempted.
-                assertTrue (false);
+                assertTrue(false);
                 e.printStackTrace();
             }
         }
 
-        assertTrue (game.isGameOver());
-        assertTrue (game.isGameWon());
+        assertTrue(game.isGameOver());
+        assertTrue(game.isGameWon());
     }
 
     /**
@@ -119,7 +126,6 @@ public class RuleBasedJellyPlayerTest {
         Design design = getBoardWithBlockersDesign();
         design.setRules(GameMode.HIGHSCORE, TWENTY_MOVES_AVAILABLE, INFINITE_TARGET_SCORE, SIX_CANDY_COLOURS);
         GameState game = new GameState(design);
-
 
         RuleBasedJellyPlayer player = new RuleBasedJellyPlayer();
 
@@ -132,16 +138,17 @@ public class RuleBasedJellyPlayerTest {
                 break;
             } catch (InvalidMoveException e) {
                 // There shouldn't be an invalid move attempted.
-                assertTrue (false);
+                assertTrue(false);
                 e.printStackTrace();
             }
         }
 
-        assertTrue (game.isGameOver());
+        assertTrue(game.isGameOver());
     }
-    
+
     /**
-     * Tests that the player can play and win a board with blockers and simple target.
+     * Tests that the player can play and win a board with blockers and simple
+     * target.
      */
     @Test
     public void playsBoardWithBlockersAndJelliesSimpleTarget() {
@@ -159,13 +166,13 @@ public class RuleBasedJellyPlayerTest {
                 e.printStackTrace();
             } catch (InvalidMoveException e) {
                 // There shouldn't be an invalid move attempted.
-                assertTrue (false);
+                assertTrue(false);
                 e.printStackTrace();
             }
         }
 
-        assertTrue (game.isGameOver());
-        assertTrue (game.isGameWon());
+        assertTrue(game.isGameOver());
+        assertTrue(game.isGameWon());
     }
 
     /**
@@ -176,7 +183,6 @@ public class RuleBasedJellyPlayerTest {
         Design design = getBoardWithBlockersAndJelliesDesign();
         design.setRules(GameMode.HIGHSCORE, TWENTY_MOVES_AVAILABLE, INFINITE_TARGET_SCORE, SIX_CANDY_COLOURS);
         GameState game = new GameState(design);
-
 
         RuleBasedJellyPlayer player = new RuleBasedJellyPlayer();
 
@@ -189,11 +195,11 @@ public class RuleBasedJellyPlayerTest {
                 break;
             } catch (InvalidMoveException e) {
                 // There shouldn't be an invalid move attempted.
-                assertTrue (false);
+                assertTrue(false);
                 e.printStackTrace();
             }
         }
 
-        assertTrue (game.isGameOver());
+        assertTrue(game.isGameOver());
     }
 }

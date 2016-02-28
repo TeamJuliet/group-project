@@ -69,6 +69,9 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
 		super(numOfStatesAhead, numOfStatesInPool);
 	}
 
+	/**
+	 * Updates appropriately the design of the board.
+	 */
 	@Override
 	public Move calculateBestMove(GameState currentState)
 			throws NoMovesFoundException {
@@ -96,12 +99,17 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
 		return new ScalarGameMetric(score);
 	}
 
+	/**
+	 * The player does not have a potential.
+	 */
 	@Override
 	public GameStatePotential getGameStatePotential(GameState gameState) {
-		// Doesn't use gameStatePotential
 		return null;
 	};
 
+	/**
+	 * This player uses scalar potential metric.
+	 */
 	@Override
 	public GameStateCombinedMetric getCombinedMetric(GameStateMetric metric,
 			GameStatePotential potential) {
@@ -271,5 +279,7 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
 			}
 		}
 	}
+	
+	 
 
 }

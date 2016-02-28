@@ -20,6 +20,12 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.RuleBasedIngredientsPlayer;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.NoMovesFoundException;
 
+/**
+ * 
+ * Class that tests that the RuleBasedingredientsPlayer operates as expected for
+ * boards containing ingredients.
+ *
+ */
 public class RuleBasedIngredientsPlayerTest {
     
     public static final int THREE_INGREDIENTS = 3;

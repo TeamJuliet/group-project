@@ -6,15 +6,22 @@ import java.util.Stack;
 
 /**
  * 
- * Candy generator used for testing where it generates candies using the specified lookahead candies specified.
- * Note: If the specified candies have been used then a random candy will be used.
+ * Candy generator used for testing where it generates candies using the
+ * specified lookahead candies specified. Note: If the specified candies have
+ * been used then a random candy will be used.
  *
  */
 public class PreFilledCandyGenerator extends CandyGenerator {
 
     private ArrayList<Stack<Cell>> lookahead;
 
-    public PreFilledCandyGenerator (Cell[][] lookahead) {
+    /**
+     * Create a candy generator that will fill the candies from the array given.
+     * 
+     * @param lookahead
+     *            The array of the candies that will be dropped for each column.
+     */
+    public PreFilledCandyGenerator(Cell[][] lookahead) {
         super();
 
         this.lookahead = new ArrayList<>(lookahead.length);
@@ -32,7 +39,7 @@ public class PreFilledCandyGenerator extends CandyGenerator {
     }
 
     @Override
-    public Candy generateCandy (int x) {
+    public Candy generateCandy(int x) {
         if (x >= 0 && x < lookahead.size() && !lookahead.get(x).empty()) {
             return lookahead.get(x).pop().getCandy();
         }

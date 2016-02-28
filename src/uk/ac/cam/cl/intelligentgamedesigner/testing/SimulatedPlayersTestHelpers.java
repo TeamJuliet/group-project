@@ -4,6 +4,11 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Cell;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 
+/**
+ * 
+ * Class that contains functions that are used in the simulated players.
+ *
+ */
 public class SimulatedPlayersTestHelpers {
 
     public static final int FIVE_MOVES_AVAILABLE = 5;
