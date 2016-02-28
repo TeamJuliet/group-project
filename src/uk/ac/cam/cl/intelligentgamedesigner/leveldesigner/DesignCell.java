@@ -1,9 +1,8 @@
 package uk.ac.cam.cl.intelligentgamedesigner.leveldesigner;
 
-import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
-
-import java.util.Random;
-
+/**
+ * This class is used to encapsulate the details of a particular cell on a DesignBoard.
+ */
 public class DesignCell {
 
     private DesignCellType designCellType;

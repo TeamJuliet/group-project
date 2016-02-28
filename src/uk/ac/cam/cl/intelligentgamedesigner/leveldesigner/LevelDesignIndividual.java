@@ -4,6 +4,9 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
 
+/**
+ * This class is used for encapsulating a level representation an its associated fitnesses.
+ */
 public class LevelDesignIndividual implements Comparable<LevelDesignIndividual> {
 
     private final LevelRepresentation levelRepresentation;

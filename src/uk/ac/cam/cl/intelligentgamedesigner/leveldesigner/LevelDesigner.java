@@ -8,6 +8,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * This class contains the genetic algorithm used to generate board layouts.
+ */
 public class LevelDesigner implements Runnable {
 	private static final int populationSize = 100;
 	private static final double elitePercentage = 0.05;

@@ -15,6 +15,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * This class serves as a middleman between the user interface and the LevelDesigner. It handles running and
+ * evaluating the performance of simulated players, and is used to initiate separate generation processes in the
+ * background.
+ */
 public class LevelDesignerManager extends SwingWorker {
     public static int NUMBER_TO_DISPLAY = DesigningLevelScreen.BOARD_COUNT;
 

@@ -11,6 +11,9 @@ import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
 
 import java.util.List;
 
+/**
+ * This class is for running a simulation in a thread
+ */
 public class SimulationThread implements Runnable {
 
     private GameState level;
