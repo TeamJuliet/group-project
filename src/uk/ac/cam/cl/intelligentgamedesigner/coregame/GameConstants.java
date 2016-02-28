@@ -18,6 +18,7 @@ public class GameConstants {
 	 * board).
 	 */
 	public static final int DOUBLE_WRAPPED_RADIUS_A = 0;
+	
 	public static final int DOUBLE_WRAPPED_RADIUS_B = 3;
 	
 	/**
