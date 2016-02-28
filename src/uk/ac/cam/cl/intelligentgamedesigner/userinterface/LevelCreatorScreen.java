@@ -26,7 +26,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 
-//an interface for a human user to manually create a level, to then save
+/**an interface for a human user to manually create a level, to then save**/
 public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 	
 	//buttons for controlling stuff

@@ -6,8 +6,13 @@ import java.awt.Graphics;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 
-//The game board used by the simulated player watcher.
-//moves selected by the simulated player are shown momentarily before the board performs the move
+/**
+ * 
+ * 
+ * The game board used by the simulated player watcher.
+ * moves selected by the simulated player are shown momentarily before the board performs the move
+ *
+ */
 public class ComputerGameBoard extends GameBoard{
 	
 	private Move move;

@@ -24,9 +24,14 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 import uk.ac.cam.cl.intelligentgamedesigner.leveldesigner.LevelDesignerAccuracy;
 import uk.ac.cam.cl.intelligentgamedesigner.leveldesigner.Specification;
 
-//The menu from which you can request levels.
-//using sliders, buttons, etc. you modify the specification which is used by the
-//level manager to design some levels.
+/**
+ * 
+ * The menu from which you can request levels.
+ * using sliders, buttons, etc. you modify the specification which is used by the
+ * level manager to design some levels.
+ *
+ */
+
 public class LevelRequesterScreen extends DisplayScreen implements ChangeListener{
 	
 	//buttons etc.

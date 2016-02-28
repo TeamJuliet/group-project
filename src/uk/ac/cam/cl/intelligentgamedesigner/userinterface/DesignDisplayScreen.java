@@ -19,14 +19,18 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerManager;
 
-//This screen is where a created/saved design can be viewed. (it is sent here from other screens)
-//It displays the design and the objectives/game information, and gives the opportunity to:
-//save the level
-//play the level yourself
-//watch a simulated player play the level (you can set the ability of the simulated player)
-//run an analysis of the level using a simulated player (you can set the ability of the simulated player)
-//(The analysis shows the percentage of players who pass the level's requirements
-//edit the level (sending it to the level creator screen)
+/**
+ * 
+ * This screen is where a created/saved design can be viewed. (it is sent here from other screens)
+ * It displays the design and the objectives/game information, and gives the opportunity to:
+ * save the level
+ * play the level yourself
+ * watch a simulated player play the level (you can set the ability of the simulated player)
+ * run an analysis of the level using a simulated player (you can set the ability of the simulated player)
+ * (The analysis shows the percentage of players who pass the level's requirements
+ * edit the level (sending it to the level creator screen)
+ *
+ */
 public class DesignDisplayScreen extends DisplayScreen{
 	private JPanel title;
 	private JLabel level_number;

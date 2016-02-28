@@ -22,11 +22,16 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.RoundStatisticsManager;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.NoMovesFoundException;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerManager;
 
-//defines the functionality specific to the Simulated Player viewer
-//This includes the option to:
-//play next move (calling the simulated player to get its 'best' move and play that)
-//toggle auto-play (when on, it will play the next move as soon as the previous is done)
-//auto-complete (play all the moves until the end of the game (without displaying them), notify when done)
+/**
+ * 
+ * 
+ * defines the functionality specific to the Simulated Player viewer
+ * This includes the option to:
+ * play next move (calling the simulated player to get its 'best' move and play that)
+ * toggle auto-play (when on, it will play the next move as soon as the previous is done)
+ * auto-complete (play all the moves until the end of the game (without displaying them), notify when done)
+ *
+ */
 public class ComputerGameDisplayScreen extends GameDisplayScreen {
     private JLabel           ai_name;
     private JRadioButton     auto_play;

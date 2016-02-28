@@ -17,11 +17,15 @@ import uk.ac.cam.cl.intelligentgamedesigner.leveldesigner.Specification;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
 
-//The screen while the level designer is working
-//It shows the top 5 designs as they are being made.
-//the first phase involves designing the appearance of the level
-//the second phase involves determining the game objectives (which are displayed when made)
-//Buttons are disabled until the generation is done
+/**
+ * 
+ * The screen while the level designer is working
+ * It shows the top 5 designs as they are being made.
+ * the first phase involves designing the appearance of the level
+ * the second phase involves determining the game objectives (which are displayed when made)
+ * Buttons are disabled until the generation is done
+ *
+ */
 public class DesigningLevelScreen extends DisplayScreen implements ActionListener, PropertyChangeListener {
 
 	public static final int BOARD_COUNT = 5;
