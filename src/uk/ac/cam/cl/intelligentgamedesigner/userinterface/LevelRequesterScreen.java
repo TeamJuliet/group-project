@@ -53,6 +53,7 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 	JSlider jelly_density;
 	JSlider lock_density;
 	JSlider icing_density;
+	JSlider unusable_density;
 	JComboBox<Integer> max_candies;
 	JComboBox<Integer> min_candies;
 	
@@ -64,6 +65,7 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 	double val_icing_density;
 	double val_lock_density;
 	double val_jelly_density;
+	double val_unusable_density;
 	
 	public LevelRequesterScreen(){
 		super();
@@ -102,6 +104,7 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		jelly_density = new JSlider(1,10);
 		lock_density = new JSlider(0,10);
 		icing_density = new JSlider(0,10);
+		unusable_density = new JSlider(0,10);
 		min_candies = new JComboBox<Integer>();
 		max_candies = new JComboBox<Integer>();
 		for(int n=4;n<=6;n++){
@@ -182,6 +185,13 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		icing_density.setPaintTicks(true);
 		icing_density.setPaintLabels(true);
 		icing_density.addChangeListener(this);
+
+		val_unusable_density = 0.2;
+		unusable_density.setValue((int) (val_unusable_density * unusable_density.getMaximum()));
+		unusable_density.setMajorTickSpacing(1);
+		unusable_density.setPaintTicks(true);
+		unusable_density.setPaintLabels(true);
+		unusable_density.addChangeListener(this);
 	}
 	
 	private JPanel settings;
@@ -197,11 +207,9 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		settings.add(getSpace());
 		settings.add(game_mode_text);
 		settings.add(getSmallSpace());
-		settings.add(getSmallSpace());
 		settings.add(high_score);
 		settings.add(jelly_clear);
 		settings.add(ingredients);
-		settings.add(getSpace());
 		settings.add(getSpace());
 		settings.add(difficulty_text);
 		settings.add(getSmallSpace());
@@ -239,6 +247,10 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		settings2.add(getSmallSpace());
 		settings2.add(max_candies);
 		settings2.add(getSpace());
+		settings2.add(new JLabel("Density of Unusable/Absent Tiles:"));
+		settings2.add(getSmallSpace());
+		settings2.add(unusable_density);
+		settings2.add(getSpace());
 		settings2.add(new JLabel("Density of Liquorice Locks:"));
 		settings2.add(getSmallSpace());
 		settings2.add(lock_density);
@@ -273,10 +285,10 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		
 		//set the locations
 		position(title,0.5,0.9,400,50);
-		position(go_button,0.5,0.2,100,40);
+		position(go_button,0.5,0.5,100,40);
 		position(back_button,0.1,0.9,150,30);
-		position(settings,0.3,0.55,400,380);
-		position(settings2,0.7,0.55,400,380);
+		position(settings,0.26,0.47,400,380);
+		position(settings2,0.74,0.47,400,470);
 	}
 	
 	@Override
@@ -309,7 +321,8 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 					(int)min_candies.getSelectedItem(),
 					val_jelly_density,
 					val_icing_density,
-					val_lock_density
+					val_lock_density,
+					val_unusable_density
 							));
 	    	InterfaceManager.switchScreen(Windows.REQUESTING);
 			break;
@@ -369,5 +382,6 @@ public class LevelRequesterScreen extends DisplayScreen implements ChangeListene
 		val_icing_density = icing_density.getValue() / (double) icing_density.getMaximum();
 		val_lock_density = lock_density.getValue() / (double) lock_density.getMaximum();
 		val_jelly_density = jelly_density.getValue() / (double) jelly_density.getMaximum();
+		val_unusable_density = unusable_density.getValue() / (double) unusable_density.getMaximum();
 	}
 }

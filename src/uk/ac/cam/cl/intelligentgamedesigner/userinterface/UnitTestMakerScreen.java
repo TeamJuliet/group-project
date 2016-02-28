@@ -29,6 +29,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Candy;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CandyColour;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CandyType;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.CellType;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
@@ -112,8 +113,8 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 
 			high_score.setSelected(true);
 		} else {
-			width = 10;
-			height = 10;
+			width = Design.MAX_DIMENSIONS;
+			height = Design.MAX_DIMENSIONS;
 			above_screen = 5;
 			
 			test_name.setText("the name");
@@ -153,8 +154,8 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 		load_test = new JButton("Load Test");
 		run_tests = new JButton("Run Tests");
 		
-		dimensions_width = new JSlider(5,10);
-		dimensions_height = new JSlider(5,10);
+		dimensions_width = new JSlider(5,Design.MAX_DIMENSIONS);
+		dimensions_height = new JSlider(5,Design.MAX_DIMENSIONS);
 		dimensions_above = new JSlider(5,30);
 		
 		game_mode = new ButtonGroup();
@@ -200,8 +201,8 @@ public class UnitTestMakerScreen extends DisplayScreen implements ChangeListener
 		test_name = new JTextField("the name");
 
 		//The Game Board
-		width = 10;
-		height = 10;
+		width = Design.MAX_DIMENSIONS;
+		height = Design.MAX_DIMENSIONS;
 		above_screen = 5;
 		board_before = new UnitTestBoard(width,height,0);
 		board_before.watchLevelCreator(this);

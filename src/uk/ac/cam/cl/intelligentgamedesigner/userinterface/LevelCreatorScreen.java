@@ -130,8 +130,8 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		just_save = new JButton("Save Level");
 		reset_board = new JButton("Clear Board");
 		
-		dimensions_width = new JSlider(5,10);
-		dimensions_height = new JSlider(5,10);
+		dimensions_width = new JSlider(5,Design.MAX_DIMENSIONS);
+		dimensions_height = new JSlider(5,Design.MAX_DIMENSIONS);
 
 		number_of_candies = new JSlider(4,6);
 		
@@ -169,8 +169,8 @@ public class LevelCreatorScreen extends DisplayScreen implements ChangeListener{
 		level_on_label = new JLabel(level_on+". ");
 
 		//The Game Board
-		width = 10;
-		height = 10;
+		width = Design.MAX_DIMENSIONS;
+		height = Design.MAX_DIMENSIONS;
 		board = new CustomBoard(width,height);
 		board.watchLevelCreator(this);
 		

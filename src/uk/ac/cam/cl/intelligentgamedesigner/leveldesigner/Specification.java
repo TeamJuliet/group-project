@@ -18,7 +18,8 @@ public class Specification {
     private double //arbitrary value from 0-1 of how many of each should be in the design
     	jelly_density,
     	icing_density,
-    	lock_density;
+    	lock_density,
+    	unusable_density;
     	
     //the new constructor, with the added specifications
     public Specification(double targetFailRate,
@@ -30,7 +31,8 @@ public class Specification {
                          int min_candies,
                          double jelly_density,
                          double icing_density,
-                         double lock_density) {
+                         double lock_density, 
+                         double unusable_density) {
     	this.targetFailRate = targetFailRate;
     	this.gameMode = gameMode;
         this.accuracy = accuracy;
@@ -41,6 +43,7 @@ public class Specification {
         this.jelly_density = jelly_density;
         this.icing_density = icing_density;
         this.lock_density = lock_density;
+        this.unusable_density = unusable_density;
     	if (targetFailRate < 0.0 || targetFailRate > 1.0) throw new IllegalArgumentException();
     }
 
@@ -77,5 +80,8 @@ public class Specification {
     }
     public double getDesiredIcing(){
     	return icing_density;
+    }
+    public double getDesiredUnusable(){
+    	return unusable_density;
     }
 }

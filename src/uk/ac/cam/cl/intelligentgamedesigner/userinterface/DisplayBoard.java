@@ -86,10 +86,10 @@ public class DisplayBoard extends JComponent {
 	}
 	
 	public static Cell[][] blank_board(){
-		Cell[][] new_board = new Cell[10][10];
+		Cell[][] new_board = new Cell[Design.MAX_DIMENSIONS][Design.MAX_DIMENSIONS];
 
-		for(int x=0;x<10;x++){
-			for(int y=0;y<10;y++){
+		for(int x=0;x<Design.MAX_DIMENSIONS;x++){
+			for(int y=0;y<Design.MAX_DIMENSIONS;y++){
 				new_board[x][y] = defaultCell();
 			}
 		}
