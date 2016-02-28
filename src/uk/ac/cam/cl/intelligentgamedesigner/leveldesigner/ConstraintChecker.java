@@ -469,7 +469,7 @@ public class ConstraintChecker {
     	
     	double factor = IcingSurroundFitness(bBoard);
     	
-    	factor *= matchFitness(board, bBoard);
+    	//factor *= matchFitness(board, bBoard);
     	
     	factor *= columnFitness(board);
 
