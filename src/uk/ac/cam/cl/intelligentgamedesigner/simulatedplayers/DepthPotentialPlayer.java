@@ -17,12 +17,16 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.UnmovableCandyGenerator;
  *
  */
 public abstract class DepthPotentialPlayer extends SimulatedPlayerBase {
-	// The number of states that the Player should look ahead at each move.
-	// Note: when this is -1, it generates all possible moves.
+	/**
+	 * The number of states that the Player should look ahead at each move.
+	 * Note: when this is -1, it generates all possible moves.
+	 */
 	protected final int numOfStatesAhead;
 
-	// The number of states in the pool that will be chosen to be explored next.
-	// Note: again, when this is -1, it discovers all possible moves.
+	/**
+	 * The number of states in the pool that will be chosen to be explored next.
+	 * Note: again, when this is -1, it discovers all possible moves.
+	 */
 	protected final int numOfStatesInPool;
 
 	// The pool of game states with their respective metric that are currently
