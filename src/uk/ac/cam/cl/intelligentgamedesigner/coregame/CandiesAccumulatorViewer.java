@@ -10,10 +10,29 @@ import java.io.Serializable;
 public class CandiesAccumulatorViewer implements Serializable {
     private static final long serialVersionUID = 1L;
     
+    /**
+     * Normal candies accumulated.
+     */
     public final int normalCandies;
+    
+    /**
+     * Horizontally stripped candies accumulated.
+     */
     public final int horizontallyStrippedCandies;
+    
+    /**
+     * Vertically stripped candies accumulated.
+     */
     public final int verticallyStrippedCandies;
+    
+    /**
+     * Wrapped candies accumulated.
+     */
     public final int wrappedCandies;
+    
+    /**
+     * Colour Bombs accumulated.
+     */
     public final int colourBombs;
 
     public CandiesAccumulatorViewer(int normalCandies, int horizontallyStrippedCandies, int verticallyStrippedCandies,
