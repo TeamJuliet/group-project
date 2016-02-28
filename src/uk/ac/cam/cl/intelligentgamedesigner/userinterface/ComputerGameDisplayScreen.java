@@ -9,6 +9,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.Timer;
@@ -17,6 +18,7 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Design;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.GameMode;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.InvalidMoveException;
 import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
+import uk.ac.cam.cl.intelligentgamedesigner.coregame.RoundStatisticsManager;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.NoMovesFoundException;
 import uk.ac.cam.cl.intelligentgamedesigner.simulatedplayers.SimulatedPlayerManager;
 
@@ -133,17 +135,36 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen {
         // set the locations
         position(controls, 0.75, 0.32, 300, 160);
     }
+    
+//    @Override
+//    protected void setButtons(boolean visible){
+//    	visible = visible & !auto_playing;
+//		next_move.setEnabled(visible);
+//	    solve.setEnabled(visible);
+//		quit_button.setEnabled(visible);
+//    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
         // additional button effects
         switch (e.getActionCommand()) {
-
+		case "quit":
+			if(!playing_move && !auto_playing)InterfaceManager.switchScreen(Windows.DISPLAY);
+			break;
+		case "toggle":
+			show_animations = toggle_animations.isSelected();
+			break;
+		case "save":
+			String name = RoundStatisticsManager.saveStats(stats, game_mode, isHuman());
+			if(name != null){
+				JOptionPane.showMessageDialog(this,name+" saved!","Round Statistics",JOptionPane.INFORMATION_MESSAGE);
+			} else { //failed to save
+				JOptionPane.showMessageDialog(this,"Failed to save","Round Statistics",JOptionPane.ERROR_MESSAGE);
+			}
+			break;
         case "mode":
             auto_playing = auto_play.isSelected();
-            next_move.setEnabled(!auto_playing);
-            quit_button.setEnabled(!auto_playing);
+//            setButtons(!auto_playing);
             if (auto_playing) {
                 timer.setDelay(waitspeed);
                 timer.start();
@@ -153,7 +174,7 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen {
             nextMove();
             break;
         case "next":
-            nextMove();
+            if(!auto_playing)nextMove();
             break;
         case "trigger":
             if (auto_playing) {
@@ -162,7 +183,7 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen {
             timer.setDelay(waitspeed);
             break;
         case "solve":
-            allMoves();
+        	if(!auto_playing)allMoves();
             break;
         }
     }
@@ -171,7 +192,6 @@ public class ComputerGameDisplayScreen extends GameDisplayScreen {
         if (!playing_move) {
             try {
                 Move next = playerManager.calculateBestMove(theGame, ability);
-
                 ((ComputerGameBoard) board).showMove(next);
                 Thread.sleep(wait_between_moves);
                 ((ComputerGameBoard) board).hideMove();

@@ -77,14 +77,14 @@ public class JellyRemoverPlayerLuna extends DepthPotentialPlayer {
             if (cell.getJellyLevel() > 0) {
                 double positionDifficulty = this.difficultyOfFixedPositions.get(jellyPosition);
                 double multiplier;
-                if (canBeRemoved(board, x, y)) {
+                /* if (canBeRemoved(board, x, y)) {
                     multiplier = isRemovableConstant;
-                } else {
+                } else { */
                     double likelihood = getProbabilityOfHopefulCells(board, x, y,
                             this.levelDesign.getNumberOfCandyColours());
                     double potential = getMotionPotential(board, x, y);
                     multiplier = 1.0 - ((1.0 - alphaLikelihood) * potential / 3.0 + alphaLikelihood * likelihood) / 4.0;
-                }
+                // }
 
                 jellyScore += cell.getJellyLevel() * multiplier * positionDifficulty;
             }

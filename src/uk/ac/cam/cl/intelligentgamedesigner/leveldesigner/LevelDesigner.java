@@ -29,10 +29,10 @@ public class LevelDesigner implements Runnable {
 		// Set the number of iterations based on how accurate the user wants the generation
 		switch (accuracy) {
 			case LOW:
-				this.iterations = 1500;
+				this.iterations = 1000;
 				break;
 			case MEDIUM:
-				this.iterations = 2000;
+				this.iterations = 1750;
 				break;
 			case HIGH:
 				this.iterations = 2500;

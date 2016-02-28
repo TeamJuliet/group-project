@@ -220,6 +220,17 @@ public class GameStateAuxiliaryFunctions {
 	}
 
 	/**
+     * Function that checks whether the position contains a detonated special candy.
+     * 
+     * @param cell
+     *            The cell to be checked.
+     * @return Whether that cell contains a detonated special candy.
+     */
+    public static boolean hasDetonated(Cell cell) {
+        return cell.hasCandy() && cell.getCandy().isDetonated();
+    }
+	
+	/**
 	 * Function that checks whether the position contains a colour bomb.
 	 * 
 	 * @param cell

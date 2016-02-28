@@ -5,7 +5,7 @@ public class AestheticChecker {
 	public static double calculateFitness(DesignBoard board) {
 		double fitness = calculateSymmetryScore(board);
 
-		return 0.1 + ( fitness * calculateDistributionScore(board) * calculateCentralDistance(board) * calculateConnectedFitness(board) );
+		return 0.1 + ( fitness * calculateCentralDistance(board) * calculateConnectedFitness(board) );
 	}
 	
 	private static double calculateDistributionScore(DesignBoard board) {

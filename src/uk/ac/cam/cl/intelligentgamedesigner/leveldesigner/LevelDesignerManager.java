@@ -7,9 +7,11 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.RoundStatistics;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
 import uk.ac.cam.cl.intelligentgamedesigner.userinterface.DesigningLevelScreen;
+import uk.ac.cam.cl.intelligentgamedesigner.userinterface.InterfaceManager;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -17,7 +19,7 @@ public class LevelDesignerManager extends SwingWorker {
     public static int NUMBER_TO_DISPLAY = DesigningLevelScreen.BOARD_COUNT;
 
     private long seed = 1;                      // The seed for debugging purposes
-    private Specification specification;        // The
+    private Specification specification;        // The specification
     private Random originalRandoms[];           // Can't use one random for debugging because of concurrency
     private LevelDesigner[] levelDesigners;     // The level designers
     private Design[] topDesigns;                // The top design of each thread
@@ -189,25 +191,38 @@ public class LevelDesignerManager extends SwingWorker {
     public synchronized List<LevelRepresentation> getPopulation(int size, int threadID) {
 
         // Calculate the number of candy colours to be used
-        int numberOfCandyColours = getNumberOfCandyColours(threadID);
+        int min = specification.getMinCandies();
+        int max = specification.getMaxCandies();
+
+        DebugFilter.println("THREAD " + threadID, DebugFilterKey.LEVEL_DESIGN);
+        DebugFilter.println("MIN CANDIES:       " + specification.getMinCandies(), DebugFilterKey.LEVEL_DESIGN);
+        DebugFilter.println("MAX CANDIES:       " + specification.getMaxCandies(), DebugFilterKey.LEVEL_DESIGN);
+        DebugFilter.println("ICING DENSITY:     " + specification.getDesiredIcing(), DebugFilterKey.LEVEL_DESIGN);
+        DebugFilter.println("LIQUORICE DENSITY: " + specification.getDesiredLiquorice(), DebugFilterKey.LEVEL_DESIGN);
+        DebugFilter.println("JELLY DENSITY:     " + specification.getDesiredJelly(), DebugFilterKey.LEVEL_DESIGN);
 
         List<LevelRepresentation> population = new ArrayList<>();
 
-        switch (specification.getGameMode()) {
-            case HIGHSCORE:
-                for (int i = 0; i < size; i++) {
-                    population.add(new ArrayLevelRepresentationScore(originalRandoms[threadID], numberOfCandyColours));
-                }
-                break;
-            case JELLY:
-                for (int i = 0; i < size; i++) {
-                    population.add(new ArrayLevelRepresentationJelly(originalRandoms[threadID], numberOfCandyColours));
-                }
-                break;
-            default:
-                for (int i = 0; i < size; i++) {
-                    population.add(new ArrayLevelRepresentationIngredients(originalRandoms[threadID], numberOfCandyColours));
-                }
+        for (int i = 0; i < size; i++) {
+            int numberOfCandyColours = originalRandoms[threadID].nextInt(max - min + 1) + min;
+            LevelRepresentationParameters parameters = new LevelRepresentationParameters(
+                    this.originalRandoms[threadID],
+                    numberOfCandyColours,
+                    this.specification.getDesiredIcing(),
+                    this.specification.getDesiredLiquorice(),
+                    this.specification.getDesiredJelly());
+
+            switch (specification.getGameMode()) {
+                case HIGHSCORE:
+                    population.add(new ArrayLevelRepresentationScore(parameters));
+                    break;
+                case JELLY:
+                    population.add(new ArrayLevelRepresentationJelly(parameters));
+                    break;
+                default:
+                    population.add(new ArrayLevelRepresentationIngredients(parameters));
+                    break;
+            }
         }
 
         return population;
@@ -226,7 +241,7 @@ public class LevelDesignerManager extends SwingWorker {
         int c;
         while (true) {
             c = originalRandoms[threadID].nextInt(3);
-            if (originalRandoms[threadID].nextDouble() > Math.abs(choices[c] - specification.getTargetDifficulty())) {
+            if (originalRandoms[threadID].nextDouble() > Math.abs(choices[c] - specification.getTargetFailRate())) {
                 return c + 4;
             }
         }
@@ -245,10 +260,10 @@ public class LevelDesignerManager extends SwingWorker {
     private void assignObjectiveAndMoves (Design design, int threadID) {
 
         // Specify the distribution of abilities that we want to run:
-        int loopNumber = 2;
+        int loopNumber = 1;
         int numberOfPlayersPerBatch = 5;
-        if (specification.getAccuracy() == LevelDesignerAccuracy.MEDIUM) loopNumber *= 2;
-        if (specification.getAccuracy() == LevelDesignerAccuracy.HIGH) loopNumber *= 4;
+        if (specification.getAccuracy() == LevelDesignerAccuracy.MEDIUM) loopNumber *= 4;
+        if (specification.getAccuracy() == LevelDesignerAccuracy.HIGH) loopNumber *= 8;
 
         int numberOfSimulations = numberOfPlayersPerBatch * loopNumber;
         int[] abilityDistribution = new int[numberOfSimulations];
@@ -265,19 +280,18 @@ public class LevelDesignerManager extends SwingWorker {
             case HIGHSCORE:
                 // For highscore levels we pick a sensible number of moves and then adjust the objective score to meet
                 // the target difficulty
-                assignMovesHighscore(design, threadID);
+                assignMovesHighscoreOrIngredients(design, threadID);
                 assignHighscore(design, abilityDistribution);
                 break;
             case JELLY:
                 // For jelly levels we just set the number of moves depending on how long the players take
                 // to clear the jellies
-                assignMovesJellyOrIngredients(design, abilityDistribution);
+                assignMovesJelly(design, abilityDistribution);
                 break;
             default:
-                // For ingredient levels, we guess the number of ingredients a player should clear based on the
-                // target difficulty and then base the number of moves available on how well the players do
-                assignIngredients(design, threadID);
-                assignMovesJellyOrIngredients(design, abilityDistribution);
+                // For ingredient levels, we set the number of moves and then estimate the number of ingredients
+                assignMovesHighscoreOrIngredients(design, threadID);
+                assignIngredients(design, abilityDistribution);
                 break;
         }
     }
@@ -288,9 +302,9 @@ public class LevelDesignerManager extends SwingWorker {
      *
      * @param design    The level design to assign the moves to
      */
-    private void assignMovesHighscore (Design design, int threadID) {
-        int minMoves = 5;
-        int maxMoves = 50;
+    private void assignMovesHighscoreOrIngredients (Design design, int threadID) {
+        int minMoves = specification.getMinMoves();
+        int maxMoves = specification.getMaxMoves();
 
         design.setNumberOfMovesAvailable(weightedParameterSelection(minMoves, maxMoves, threadID));
     }
@@ -310,25 +324,23 @@ public class LevelDesignerManager extends SwingWorker {
         List<List<RoundStatistics>> gameStatistics = runSimulations(design, abilityDistribution);
 
         // Analyse the perfomance of the players
-        double scoreObtained = 0;
         DebugFilter.println("PLAYER PERFORMANCE: ", DebugFilterKey.LEVEL_DESIGN);
         DebugFilter.println("------------------- ", DebugFilterKey.LEVEL_DESIGN);
+        ArrayList<Integer> scores = new ArrayList<Integer>();
         int tempCount = 0;
         for (List<RoundStatistics> stats : gameStatistics) {
             if (stats.size() > 0) {
-                scoreObtained += stats.get(stats.size() - 1).progress.score;
+                scores.add(stats.get(stats.size() - 1).progress.score);
                 DebugFilter.println("ABILITY " + abilityDistribution[tempCount] + " REACHED: " +
                         stats.get(stats.size() - 1).progress.score, DebugFilterKey.LEVEL_DESIGN);
+            } else {
+                scores.add(0);
             }
             tempCount++;
         }
 
-        // For now, convert the target difficulty range from [0.0, 1.0] to [0.5, 1.5] and multiply this by the
-        // average number of moves taken:
-        double difficultyShift = specification.getTargetDifficulty() + 0.5;
-        double objectiveTarget = difficultyShift * (scoreObtained / (double) gameStatistics.size());
+        double objectiveTarget = findParameterWhichGivesFailRate(scores);
         int scoreRoundedTo10   = (((int) objectiveTarget + 5) / 10) * 10;
-
         design.setObjectiveTarget(scoreRoundedTo10);
     }
 
@@ -336,7 +348,7 @@ public class LevelDesignerManager extends SwingWorker {
      * This fixes the number of moves to for a jelly level by running simulated players on it and assessing how long
      * they took to clear the jellies.
      */
-    private void assignMovesJellyOrIngredients (Design design, int[] abilityDistribution) {
+    private void assignMovesJelly (Design design, int[] abilityDistribution) {
         // Give the players up to 100 moves
         design.setNumberOfMovesAvailable(100);
 
@@ -368,17 +380,40 @@ public class LevelDesignerManager extends SwingWorker {
 
         // For now, convert the target difficulty range from [0.0, 1.0] to [1.5, 0.5] and multiply this by the
         // average number of moves taken:
-        double difficultyShift = 1.5 - specification.getTargetDifficulty();
+        double difficultyShift = 1.5 - specification.getTargetFailRate();
         double numberOfMovesAvailable = difficultyShift * (numMoves / (double) gameStatistics.size());
 
         design.setNumberOfMovesAvailable((int) numberOfMovesAvailable);
     }
 
-    private void assignIngredients (Design design, int threadID) {
-        int minIngredients = 1;
-        int maxIngredients = 3;
+    private void assignIngredients (Design design, int[] abilityDistribution) {
 
-        design.setObjectiveTarget(weightedParameterSelection(minIngredients, maxIngredients, threadID));
+        // Ensure the players don't face game over
+        design.setObjectiveTarget(Integer.MAX_VALUE);
+
+        // Run simulations with the given abilities in multiple threads
+        List<List<RoundStatistics>> gameStatistics = runSimulations(design, abilityDistribution);
+
+        // Analyse the perfomance of the players
+        DebugFilter.println("PLAYER PERFORMANCE: ", DebugFilterKey.LEVEL_DESIGN);
+        DebugFilter.println("------------------- ", DebugFilterKey.LEVEL_DESIGN);
+        ArrayList<Integer> ingredientsCleared = new ArrayList<Integer>();
+        int tempCount = 0;
+        for (List<RoundStatistics> stats : gameStatistics) {
+            if (stats.size() > 0) {
+                int numCleared = Integer.MAX_VALUE - stats.get(stats.size() - 1).progress.ingredientsRemaining;
+                ingredientsCleared.add(numCleared);
+                DebugFilter.println("ABILITY " + abilityDistribution[tempCount] + " CLEARED: " +
+                        numCleared, DebugFilterKey.LEVEL_DESIGN);
+            } else {
+                ingredientsCleared.add(0);
+            }
+            tempCount++;
+        }
+
+        int numIngredientsToClear = Math.max((int) findParameterWhichGivesFailRate(ingredientsCleared), 1);
+
+        design.setObjectiveTarget(numIngredientsToClear);
     }
 
 
@@ -405,7 +440,7 @@ public class LevelDesignerManager extends SwingWorker {
             // Map the suggested parameter in the range [min, max]
             // to a double in the range [0.0, 1.0]
             double mappedValue = (suggestedNumber - min) / (double) (max - min);
-            double diff = Math.abs(specification.getTargetDifficulty() - mappedValue);
+            double diff = Math.abs(specification.getTargetFailRate() - mappedValue);
 
             // This means we're more likely to pick a lower parameter for easy levels, and a higher parameter for
             // harder levels
@@ -413,6 +448,32 @@ public class LevelDesignerManager extends SwingWorker {
         }
 
         return suggestedNumber;
+    }
+
+    private double findParameterWhichGivesFailRate (ArrayList<Integer> parameters) {
+        // Sort the scores, and scan through them until the approximate fail rate is correct
+        Collections.sort(parameters);
+        double fraction = 1 / (double) parameters.size();
+        double proportionFailed = 0;
+        int count = 0;
+        while (proportionFailed < specification.getTargetFailRate()) {
+            proportionFailed += fraction;
+            count++;
+        }
+
+        double upper;
+        if (count >= parameters.size()) {
+            double averageDiff = 0;
+            for (int i = 1; i < parameters.size(); i++) {
+                averageDiff += parameters.get(i) - parameters.get(i - 1);
+            }
+            averageDiff = averageDiff / (double) (parameters.size() - 1);
+            upper = parameters.get(parameters.size() - 1) + averageDiff;
+        } else {
+            upper = parameters.get(count);
+        }
+        double lower = parameters.get(count - 1);
+        return (upper + lower) / 2;
     }
 
     /**
@@ -423,7 +484,7 @@ public class LevelDesignerManager extends SwingWorker {
      * @param abilityDistribution   The abilities of the simulated players to be run
      * @return                      The game statistics for all of the simulations
      */
-    private List<List<RoundStatistics>> runSimulations (Design design,
+    private static List<List<RoundStatistics>> runSimulations (Design design,
                                                             int[] abilityDistribution) {
         int numberOfSimulations = abilityDistribution.length;
         GameState[] gameStates = new GameState[numberOfSimulations];
@@ -451,5 +512,33 @@ public class LevelDesignerManager extends SwingWorker {
         }
 
         return gameStatistics;
+    }
+
+    // Given a design and a simulated player ability, this returns the proportion of players who passed the level
+    public static double calculatePassRate (int ability, Design design) {
+        int numberOfSimulations = 20 - (ability * 2);
+        int[] abilityDistribution = new int[numberOfSimulations];
+        for (int i = 0; i < numberOfSimulations; i++) abilityDistribution[i] = ability;
+
+        // Run the simulations
+        List<List<RoundStatistics>> gameStatistics = runSimulations(design, abilityDistribution);
+
+        // Calculate the number who passed
+        int numPassed = 0;
+        for (List<RoundStatistics> stats : gameStatistics) {
+            switch (design.getMode()) {
+                case HIGHSCORE:
+                    if (stats.get(stats.size() - 1).progress.score >= design.getObjectiveTarget()) numPassed++;
+                    break;
+                case JELLY:
+                    if (stats.get(stats.size() - 1).progress.jelliesRemaining == 0) numPassed++;
+                    break;
+                default:
+                    if (stats.get(stats.size() - 1).progress.ingredientsRemaining == 0) numPassed++;
+                    break;
+            }
+        }
+
+        return numPassed / (double) numberOfSimulations;
     }
 }

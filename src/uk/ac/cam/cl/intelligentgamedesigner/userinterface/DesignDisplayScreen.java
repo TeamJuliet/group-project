@@ -38,6 +38,8 @@ public class DesignDisplayScreen extends DisplayScreen{
 	private JSlider ai_strength;
 	private Windows previous_screen;
 
+	private JButton analyse;
+
 	GameMode mode;
 	int number_of_moves;
 	int objective_value;
@@ -83,7 +85,7 @@ public class DesignDisplayScreen extends DisplayScreen{
 		candies.setText(number_of_candies+" candy colours in play");
 		board.setBoard(design.getBoard());
 		level = design;
-		positionBoard(board,0.35,0.5);
+		positionBoard(board,0.35,0.46);
 	}
 
 	@Override
@@ -105,6 +107,8 @@ public class DesignDisplayScreen extends DisplayScreen{
 		difficulty = new JLabel("Difficulty: Unknown");
 		candies = new JLabel("Candies in play");
 		ai_strength = new JSlider(1,SimulatedPlayerManager.getMaxAbilityLevel()+1);
+		
+		analyse = new JButton("Analyse Level");
 	}
 
 	@Override
@@ -132,6 +136,10 @@ public class DesignDisplayScreen extends DisplayScreen{
 		ai_strength.setMajorTickSpacing(1);
 		ai_strength.setPaintTicks(true);
 		ai_strength.setPaintLabels(true);
+
+		analyse.setToolTipText("Runs the selected simulated player on the level");
+		analyse.setActionCommand("analyse");
+		analyse.addActionListener(this);
 	}
 
 	private JPanel details;
@@ -173,6 +181,8 @@ public class DesignDisplayScreen extends DisplayScreen{
 		buttons.add(getSpace());
 		buttons.add(watch_level);
 		buttons.add(getSpace());
+		buttons.add(analyse);
+		buttons.add(getSpace());
 		buttons.add(save_level);
 		buttons.add(getSpace());
 		buttons.add(edit_level);
@@ -196,9 +206,9 @@ public class DesignDisplayScreen extends DisplayScreen{
 		fontScale(back, DisplayScreen.FONT_NORMAL);
 		
 		position(title, 0.35, 0.9, 300, 50);
-		position(details, 0.7,0.3,250,150);
-		position(buttons,0.7,0.7,250,250);
-		positionBoard(board,0.35,0.5);
+		position(details, 0.7,0.28,250,150);
+		position(buttons,0.7,0.65,250,280);
+		positionBoard(board,0.35,0.46);
 		position(back,0.1,0.85,100,30);
 	}
 
@@ -223,6 +233,9 @@ public class DesignDisplayScreen extends DisplayScreen{
 			InterfaceManager.setSelectedCDesign(level, level_name.getText(), level_num);
 			InterfaceManager.switchScreen(Windows.CREATE);
 			break;
+		case "analyse":
+			testAndAnalyse();
+			break;
 		}
 	}
 	
@@ -232,6 +245,11 @@ public class DesignDisplayScreen extends DisplayScreen{
 		InterfaceManager.refreshLevelBrowser();
 		String message = success?(fileName+".lv Saved!"):("Failed to save.");
 		JOptionPane.showMessageDialog(this,message,"Notification",JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	private void testAndAnalyse(){
+		Analyser loader = new Analyser(level,ai_strength.getValue());
+		JOptionPane.showMessageDialog(this, loader,"Analyse Level",JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	@Override
