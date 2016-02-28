@@ -17,6 +17,14 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Position;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilter;
 import uk.ac.cam.cl.intelligentgamedesigner.testing.DebugFilterKey;
 
+/**
+ * 
+ * Score player that uses several considerations in the metric apart from score
+ * distance, including the difficulty of removing certain jellies, the
+ * probability of removing blockers in close rounds, encourages the formation of
+ * candies and the generation of combinable candies.
+ *
+ */
 public class MayanScorePlayer extends DepthPotentialPlayer {
     private final double   blockerAtBoundaryConstant = 0.5;
     private final double   scoreSmoothing            = 0.005;
@@ -27,6 +35,48 @@ public class MayanScorePlayer extends DepthPotentialPlayer {
 
     private Design         referenceDesign           = null;
 
+    @Override
+    public GameStateMetric getGameStateMetric(GameState gameState) {
+        double score = 0.0;
+        if (!gameState.isGameOver()) {
+            Cell[][] board = gameState.getBoard();
+            // Accelerates jellies detonation when the number of moves
+            // approaches 0 or the number
+            // of jellies approaches zero.
+            final double targetAlpha = targetWeight(gameState.getGameProgress().movesRemaining);
+            // System.out.println(gameState.getGameProgress().movesRemaining);
+            final double scoreDistance = (gameState.levelDesign.getObjectiveTarget()
+                    - gameState.getGameProgress().score) * scoreSmoothing;
+
+            score = (2.0 + targetAlpha) * (scoreDistance) + (1.0 - targetAlpha) * (getBlockersDifficulty(board)
+                    + 1.5 * getCandyScore(board) + hopefulBoost * hopefulCellsScore(board));
+        }
+        return new ScalarGameMetric(score);
+    }
+
+    @Override
+    public Move calculateBestMove(GameState currentState) throws NoMovesFoundException {
+        if (referenceDesign != currentState.levelDesign) {
+            referenceDesign = currentState.levelDesign;
+            recordJelliesAndBlockers(referenceDesign);
+            DebugFilter.println("Design was replaced by MayanScorePlayer", DebugFilterKey.SIMULATED_PLAYERS);
+            DebugFilter.println("Number of difficulties examined " + (jellies.size() + this.blockers.size()),
+                    DebugFilterKey.SIMULATED_PLAYERS);
+        }
+        return super.calculateBestMove(currentState);
+    }
+
+    @Override
+    public GameStatePotential getGameStatePotential(GameState gameState) {
+        // Doesn't use gameStatePotential
+        return null;
+    }
+
+    @Override
+    public GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {
+        return new ScalarCombinedMetric(((ScalarGameMetric) metric).score);
+    }
+    
     private void recordJelliesAndBlockers(Design design) {
         Cell[][] cellBoard = design.getBoard();
         for (int x = 0; x < cellBoard.length; ++x) {
@@ -109,48 +159,12 @@ public class MayanScorePlayer extends DepthPotentialPlayer {
         super(numOfStatesAhead, numOfStatesInPool);
     }
 
-    @Override
-    public GameStateMetric getGameStateMetric(GameState gameState) {
-        double score = 0.0;
-        if (!gameState.isGameOver()) {
-            Cell[][] board = gameState.getBoard();
-            // Accelerates jellies detonation when the number of moves
-            // approaches 0 or the number
-            // of jellies approaches zero.
-            final double targetAlpha = targetWeight(gameState.getGameProgress().movesRemaining);
-            // System.out.println(gameState.getGameProgress().movesRemaining);
-            final double scoreDistance = (gameState.levelDesign.getObjectiveTarget()
-                    - gameState.getGameProgress().score) * scoreSmoothing;
 
-            score = (2.0 + targetAlpha) * (scoreDistance) + (1.0 - targetAlpha)
-                    * (getBlockersDifficulty(board) + 1.5 * getCandyScore(board) + hopefulBoost * hopefulCellsScore(board));
-        }
-        return new ScalarGameMetric(score);
-    }
 
-    @Override
-    public Move calculateBestMove(GameState currentState) throws NoMovesFoundException {
-        if (referenceDesign != currentState.levelDesign) {
-            referenceDesign = currentState.levelDesign;
-            recordJelliesAndBlockers(referenceDesign);
-            DebugFilter.println("Design was replaced by MayanScorePlayer", DebugFilterKey.SIMULATED_PLAYERS);
-            DebugFilter.println("Number of difficulties examined " + (jellies.size() + this.blockers.size()),
-                    DebugFilterKey.SIMULATED_PLAYERS);
-        }
-        return super.calculateBestMove(currentState);
-    }
-
-    @Override
-    public GameStatePotential getGameStatePotential(GameState gameState) {
-        // Doesn't use gameStatePotential
-        return null;
-    }
-
-    @Override
-    public GameStateCombinedMetric getCombinedMetric(GameStateMetric metric, GameStatePotential potential) {
-        return new ScalarCombinedMetric(metric.metric);
-    }
-
+    /**
+     * If there is any move that forms a combinable candy then it should be
+     * performed.
+     */
     @Override
     protected List<Move> selectMoves(GameState gameState) {
         List<Move> ret = gameState.getValidMoves();
@@ -161,7 +175,7 @@ public class MayanScorePlayer extends DepthPotentialPlayer {
                 tmp.add(move);
         }
         if (!tmp.isEmpty())
-            return tmp; 
+            return tmp;
         Collections.shuffle(ret);
         return ret;
     }
