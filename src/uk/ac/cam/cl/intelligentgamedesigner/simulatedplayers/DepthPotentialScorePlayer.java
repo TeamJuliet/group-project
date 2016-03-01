@@ -10,7 +10,7 @@ public class DepthPotentialScorePlayer extends DepthPotentialPlayer {
     }
 
     @Override
-    public GameStateMetric getGameStateMetric(GameState gameState) {
+    GameStateMetric getGameStateMetric(GameState gameState) {
         return new GameStateMetric(gameState.levelDesign.getObjectiveTarget() - gameState.getGameProgress().score);
     }
 }

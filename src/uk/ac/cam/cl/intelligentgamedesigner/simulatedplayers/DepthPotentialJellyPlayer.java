@@ -11,8 +11,8 @@ public class DepthPotentialJellyPlayer extends DepthPotentialPlayer {
         super(numOfStatesAhead, numOfStatesInPool);
     }
 
-    @Override
-    public GameStateMetric getGameStateMetric(GameState gameState) {
-        return new GameStateMetric(getJellyNumber(gameState));
-    }
+	@Override
+	GameStateMetric getGameStateMetric(GameState gameState) {
+		return new GameStateMetric(getJellyNumber(gameState));
+	}
 }
