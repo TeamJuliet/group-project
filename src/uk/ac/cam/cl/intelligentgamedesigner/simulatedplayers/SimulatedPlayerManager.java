@@ -9,10 +9,10 @@ import uk.ac.cam.cl.intelligentgamedesigner.coregame.Move;
 
 public class SimulatedPlayerManager {
 
-    EnumMap<GameMode, HashMap<Integer, SimulatedPlayerBase>> players = new EnumMap<>(GameMode.class);
+    EnumMap<GameMode, HashMap<Integer, SimulatedPlayerBase>> players                = new EnumMap<>(GameMode.class);
 
-    private static final int MAXIMUM_PLAYER_ABILITY = 7;
-    
+    private static final int                                 MAXIMUM_PLAYER_ABILITY = 7;
+
     private static SimulatedPlayerBase makeSimulatedPlayer(int ability, GameMode mode) {
         SimulatedPlayerBase player;
         int lookAhead = 0;
@@ -20,13 +20,10 @@ public class SimulatedPlayerManager {
         boolean dimitris = false; // TODO: integrate the players in properly
         switch (ability) {
         case 1:
-            player = new ScorePlayerBeta();
-            if (mode.equals(GameMode.HIGHSCORE))
-                return new ScorePlayerBeta();
-            else if (mode.equals(GameMode.JELLY))
+            if (mode.equals(GameMode.JELLY))
                 return new RuleBasedJellyPlayer();
-            else 
-                break;
+            else
+                return new ScorePlayerBeta();
         case 2:
             lookAhead = 1;
             poolSize = 7;
@@ -78,6 +75,14 @@ public class SimulatedPlayerManager {
         return player;
     }
 
+    /**
+     * @param level
+     *            GameState to be evaluated
+     * @param ability
+     *            Quality of move returned
+     * @return Move calculated by the player of specified ability
+     * @throws NoMovesFoundException
+     */
     public Move calculateBestMove(GameState level, int ability) throws NoMovesFoundException {
         GameMode mode = level.levelDesign.getMode();
         checkPlayer(mode, ability);
@@ -89,8 +94,12 @@ public class SimulatedPlayerManager {
         return level.getValidMoves().get(0);
     }
 
+    /**
+     * @return maximum move quality which can be used with calculateBestMove
+     */
     public static int getMaxAbilityLevel() {
-        return MAXIMUM_PLAYER_ABILITY; // Decided by the switch in makeSimulatedPlayer()
+        return MAXIMUM_PLAYER_ABILITY; // Decided by the switch in
+                                       // makeSimulatedPlayer()
     }
 
     private void checkPlayer(GameMode mode, int ability) {
@@ -99,13 +108,5 @@ public class SimulatedPlayerManager {
         HashMap<Integer, SimulatedPlayerBase> modePlayers = players.get(mode);
         if (!modePlayers.containsKey(ability))
             modePlayers.put(ability, makeSimulatedPlayer(ability, mode));
-    }
-
-    public void solve(GameState level, int ability) throws NoMovesFoundException {
-        GameMode mode = level.levelDesign.getMode();
-        checkPlayer(mode, ability);
-
-        SimulatedPlayerBase player = players.get(mode).get(ability);
-        player.solve(level);
     }
 }
