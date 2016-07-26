@@ -2,10 +2,19 @@
 Intelligent Game Designer was developed by Team Juliet\* for their part IB (second year) group project at Cambridge University. 
 
 ## For the Intrigued
+### Our Presentation!
 If you'd like to understand what this project is all about, check out our 5 minute presentation:
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=z9l56cxIFd4" target="_blank"><img src="http://img.youtube.com/vi/z9l56cxIFd4/0.jpg" 
-alt="IMAGE ALT TEXT HERE" width="240" height="180" border="10" /></a>
+alt="IMAGE ALT TEXT HERE" width="480" height="180" border="10" /></a>
+
+### \*The Team
+Alastair Holmes
+Artem Vasenin
+Ben Naccarato
+Ciaran Lawlor
+Devan Kuleindiren
+Dimitrios Los
 
 ## For Developers
 ### Branching
